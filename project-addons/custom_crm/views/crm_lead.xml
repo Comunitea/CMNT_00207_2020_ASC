@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_case_form_view_oppor" model="ir.ui.view">
+        <field name="name">crm.lead.inherit.view.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']/.." position="replace"/>
+            <page name="lead" position="after">
+                <page string="Internal Notes">
+                    <field name="description"/>
+                </page>
+            </page>
+
+        </field>
+    </record>
+
+    <record id="view_crm_case_opportunities_filter" model="ir.ui.view">
+        <field name="name">crm.lead.inherit.view.search</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="before">
+                <field name="state_id"/>
+            </field>
+            <filter name="salesperson" position="after">
+                <filter string="State" name="state" context="{'group_by':'state_id'}"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
