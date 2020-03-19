@@ -1,0 +1,129 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_report_custom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-19 17:39+0000\n"
+"PO-Revision-Date: 2020-03-19 17:39+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__days
+msgid "# Days"
+msgstr "# Días"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__attachment_ids
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__code
+msgid "Code"
+msgstr "Código"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales
+msgid "Count sales"
+msgstr "# Ventas"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_0
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_0
+msgid "Count sales 0"
+msgstr "€ Ventas 0"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_1
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_1
+msgid "Count sales 1"
+msgstr "€ Ventas 1"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_2
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_2
+msgid "Count sales 2"
+msgstr "€ Ventas 2"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_3
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_3
+msgid "Count sales 3"
+msgstr "€ Ventas 3"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__days_for_alarm
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__days_for_alarm
+msgid "Days for sale alarm"
+msgstr "Grupo de aviso"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__id
+msgid "ID"
+msgstr ""
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: product_report_custom
+#: model:ir.model,name:product_report_custom.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_report_custom
+#: model:ir.model,name:product_report_custom.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: product_report_custom
+#: model:ir.model.fields,field_description:product_report_custom.field_product_product__days_with_sales
+#: model:ir.model.fields,field_description:product_report_custom.field_product_template__days_with_sales
+msgid "Sale alarm day"
+msgstr "Sin ventas"
+
+#. module: product_report_custom
+#: model_terms:ir.ui.view,arch_db:product_report_custom.product_
+msgid "Sales info"
+msgstr "Info. Ventas"
+
+#. module: product_report_custom
+#: model:ir.model,name:product_report_custom.model_product_alarm_days
+msgid "product.alarm.days"
+msgstr ""
+
