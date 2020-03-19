@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="product_template_form_view_stock_location" model="ir.ui.view">
+            <field name="name">product.template.form.stock_location</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <button name="toggle_active" position="after">
+                        <button class="oe_stat_button" name="open_product_putaway_strat" string="Ubicaciones"
+                                icon="fa-sitemap" type="object" attrs="{'invisible':[('type', '!=', 'product')]}">
+                        </button>
+                </button>
+            </field>
+     </record>
+
+     <record id="stock_fixed_putaway_strat_tree_pp" model="ir.ui.view">
+        <field name="name">stock.fixed.putaway.strat.tre.pp</field>
+        <field name="model">stock.fixed.putaway.strat</field>
+        <field name="arch" type="xml">
+            <tree string="Putaway" create="1" delete="1" editable="top">
+                <field name="sequence" widget="handle"/>
+                <field name="product_id" invisible="context.get('hide_product')"/>
+                <field name="putaway_id" invisible="context.get('hide_putaway')"/>
+                <field name="fixed_location_id" invisible="context.get('hide_location')"/>
+                <field name="category_id" invisible="context.get('hide_category')"/>
+            </tree>
+        </field>
+    </record>
+
+     <record id="action_stock_fixed_putaway_strat_tree_pp" model="ir.actions.act_window">
+            <field name="name">Ubicaciones predeterminadas</field>
+            <field name="res_model">stock.fixed.putaway.strat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+</odoo>
