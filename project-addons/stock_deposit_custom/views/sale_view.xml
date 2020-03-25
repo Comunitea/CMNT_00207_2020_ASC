@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_deposit" model="ir.ui.view">
+        <field name="name">sale.order.form.deposit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/form//field[@name='state']" position="before">
+                <field name="deposit"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='route_id']" position="after">
+                 <field name="deposit" invisible="1"/>
+                 <field name="deposit_date" invisible="1"/>
+            </xpath>
+            <field name="confirmation_date" position="before">
+                 <field name="deposit_date" attrs="{'invisible': [('deposit_count', '=', 0)]}" />
+            </field>
+            <div name="button_box" position="inside">
+                <button
+                    class="oe_stat_button"
+                    icon="fa-cogs"
+                    name="action_open_deposit"
+                    type="object"
+                    attrs="{'invisible': [('deposit_count', '=', 0)]}"
+                    context="{'search_default_order_id': id}">
+                        <field name="id" invisible="1"/>
+                        <field name="deposit_count" widget="statinfo" string="Deposits" invisible="0"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_sale_line_deposits" model="ir.ui.view">
+            <field name="name">sale.order.line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Order Lines" create="false" edit="false"
+                      decoration-success="deposit and qty_in_deposit == 0"
+                      decoration-danger="qty_in_deposit and deposit_date &lt; current_date">
+                    <field name="order_id"/>
+                    <field name="order_partner_id"/>
+                    <field name="name"/>
+                    <field name="product_uom_qty" string="Qty" invisible="1"/>
+                    <field name="qty_delivered" invisible="1"/>
+                    <field name="qty_invoiced" invisible="1"/>
+                    <field name="qty_to_invoice" invisible="1"/>
+                    <field name="qty_in_deposit"/>
+                    <field name="deposit" invisible="1"/>
+                    <field name="deposit_date"/>
+                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"/>
+                    <field name="price_subtotal" sum="Total" widget="monetary" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="act_sale_order_2_deposit" model="ir.actions.act_window">
+        <field name="name">Deposits</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="view_id" ref="view_sale_line_deposits"/>
+        <field name="domain">[('deposit', '=', True)]</field>
+        <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+
+     <record id="view_sales_order_line_filter" model="ir.ui.view">
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='to_invoice']" position="after">
+                <field name="deposit"/>
+                <filter string="Is Deposit" name="to_deposit" domain="[('deposit','=', True)]" />
+                <filter string="Is Active Deposit" name="to_deposit_active" domain="[('deposit','=', True), ('qty_in_deposit', '!=', 0)]" help="Active deposit"/>
+                <filter string="Today deposits" name="deposits_today"
+                        domain="[('deposit_date', '&lt;=', time.strftime('%Y-%m-%d'))]"
+                        help="Active deposit today"/>
+
+            </xpath>
+            <!--field name="product_id" position="after">
+                <separator/>
+                <field name="order_id" string="Sale"/>
+            </field-->
+            <group position="inside">
+                <filter string="Partner" context="{'group_by':'order_partner_id'}" name="gropup_order_partner_id"/>
+                <filter string="Deposit date" context="{'group_by':'deposit_date: month'}" name="partner_grouped"/>
+            </group>
+        </field>
+    </record>
+    <delete id="view_order_form_deposit_button" model="ir.ui.view"/>
+    <!--record id="view_order_form_deposit_button" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+                    class="oe_stat_button"
+                    icon="fa-cogs"
+                    name="action_open_deposit"
+                    type="object"
+                    attrs="{'invisible': [('deposit_count', '=', 0)]}"
+                    context="{'search_default_order_id': id}">
+                        <field name="id" invisible="1"/>
+                        <field name="deposit_count" widget="statinfo" string="Deposits" invisible="0"/>
+                </button>
+            </div>
+        </field>
+    </record-->
+</odoo>

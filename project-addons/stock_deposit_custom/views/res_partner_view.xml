@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<odoo>
+     <record id="act_res_partner_2_deposit" model="ir.actions.act_window">
+        <field name="name">Deposits</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="view_id" ref="view_sale_line_deposits"/>
+        <field name="domain">[('deposit', '=', True)]</field>
+        <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+
+    <!-- Partner kanban view inherte -->
+    <record model="ir.ui.view" id="deposit_partner_kanban_view">
+        <field name="name">res.partner.kanban.deposit.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="deposit_count"/>
+            </field>
+            <xpath expr="//div[@class='oe_kanban_partner_links']" position="inside">
+                <a name="action_open_deposit" type="object" t-if="record.deposit_count.value>0">
+                    <t t-esc="record.deposit_count.value"/> Deposits
+                </a>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_stock_form_add_deposit_loc" model="ir.ui.view">
+        <field name="name">res.partner.stock.property.form.inherit.add_deposit_loc</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="stock.view_partner_stock_form"/>
+        <field name="arch" type="xml">
+            <field name="property_stock_customer" position="before">
+                <!--field name="deposit_count"/-->
+                <field name="deposit_days"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="res_partner_view_deposit_buttons" model="ir.ui.view">
+        <field name="name">res.partner.view.deposit.buttons</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <button name="toggle_active" position="before">
+                <button class="oe_inline oe_stat_button" type="object" name="action_open_deposit"
+                    attrs="{'invisible': [('customer', '=', False), ('deposit_count', '>', 0)]}"
+                    context="{'search_default_order_partner_id': id}"
+                    icon="fa-strikethrough" groups="sales_team.group_sale_salesman">
+                    <field string="Deposits" name="deposit_count" widget="statinfo"/>
+                </button>
+            </button>
+        </field>
+    </record>
+</odoo>
