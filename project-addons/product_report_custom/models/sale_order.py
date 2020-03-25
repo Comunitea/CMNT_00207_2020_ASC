@@ -10,9 +10,9 @@ class SaleOrder(models.Model):
 
     @api.multi
     def write(self, vals):
-        res = super().write(vals=vals)
-        if 'state' in vals:
-            self.mapped('order_lines').mapped('product_id').compute_product_sale_alarm()
+        return super().write(vals=vals)
+        # if 'state' in vals:
+        #     self.mapped('order_lines').mapped('product_id').compute_product_sale_alarm()
 
 
 
