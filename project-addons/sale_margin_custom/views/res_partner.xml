@@ -7,7 +7,12 @@
             <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
             <field name="arch" type="xml">
                 <group name="sale">
-                    <field name="average_sale_margin" groups="base.group_user"/>
+                    <label for="average_sale_margin" string="Average margin" />
+                    <div class="o_row">
+                        <field name="average_sale_margin" groups="base.group_user"/>
+                        <label for="total_sale_margin" string="%" />
+                        <field name="total_sale_margin" groups="base.group_user"/>
+                    </div>
                 </group>
             </field>
         </record>
