@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<odoo >
+    <record id="stock_deposit_advise_partner" model="mail.template">
+        <field name="name">Deposit advise partners</field>
+        <field name="email_from">${(object.user_id.email or user.company_id.email or 'noreply@localhost')|safe}</field>
+        <field name="subject">Depósito vencido ${object.name}</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="auto_delete" eval="True"/>
+        <field name="add_followers" eval="True"/>
+        <field name="body_html"><![CDATA[
+            <html>
+                <head>
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+                    <title>Recibos ${ctx['partner_name']}</title>
+                    <style>
+                        span.oe_mail_footer_access {
+                            display:block;
+                            text-align:center;
+                            color:grey;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+                    <p>Hola</p><br>
+                    <p>El depósito ${object.name} ha concluído su periodo de cesión a fecha ${object.deposit_date}. Por favor, póngase en contacto con el cliente ${object.partner_id.name} para proceder a su recuperación.</p><br>
+                    <p>Un cordial saludo</p>
+                    <br>
+                    <br>
+                    <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+                        <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+                            <strong style="text-transform:uppercase;">${user.company_id.name}</strong></h3>
+                    </div>
+                    <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+                        <span style="color: #222; margin-bottom: 5px; display: block; ">
+                        % if user.company_id.street:
+                            ${user.company_id.street}<br>
+                        % endif
+                        % if user.company_id.street2:
+                            ${user.company_id.street2}<br>
+                        % endif
+                        % if user.company_id.city or user.company_id.zip:
+                            ${user.company_id.zip} ${user.company_id.city}<br>
+                        % endif
+                        % if user.company_id.country_id:
+                            ${user.company_id.state_id and ('%s, ' % user.company_id.state_id.name) or ''} ${user.company_id.country_id.name or ''}<br>
+                        % endif
+                        </span>
+                        % if user.company_id.phone:
+                            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+                                Teléfono:&nbsp; ${user.company_id.phone}
+                            </div>
+                        % endif
+                        % if user.company_id.website:
+                            <div>
+                                Web :&nbsp;<a href="${user.company_id.website}">${user.company_id.website}</a>
+                            </div>
+                        %endif
+                        <p></p>
+                    </div>
+                    </div>
+                </body>
+            </html>
+            ]]>
+            </field>
+    </record>
+
+    <record forcecreate="True" id="ir_cron_email_deposit" model="ir.cron">
+        <field name="name">Advise deposits by email</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="True"/>
+        <field name="model" eval="'sale_order'"/>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">model.send_advise_email()</field>
+    </record>
+</odoo>
