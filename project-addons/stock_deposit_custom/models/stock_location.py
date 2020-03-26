@@ -5,8 +5,10 @@ from odoo.tools.float_utils import float_compare, float_round, float_is_zero
 
 from odoo import api, models, fields, _
 
+
 class StockLocation(models.Model):
-    _inherit = 'stock.location'
+    _inherit = "stock.location"
+
 
     deposit_location = fields.Boolean('Customer deposit', default = False)
     # bypass_owner = fields.Boolean('Bypass owner', default = False, help="Sometimes, we need to overwrite owner in stock location")
@@ -26,5 +28,3 @@ class StockLocation(models.Model):
         if self.deposit_location:
             return False
         return super().should_bypass_reservation()
-
-

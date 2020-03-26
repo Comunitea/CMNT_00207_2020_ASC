@@ -18,9 +18,10 @@ class StockScrap(models.Model):
         return vals
 
 class StockPickingType(models.Model):
-    _inherit = 'stock.picking.type'
+    _inherit = "stock.picking.type"
 
-    is_deposit = fields.Boolean('Is deposit', default=False)
+    is_deposit = fields.Boolean("Is deposit", default=False)
+
 
 # class StockQuant (models.Model):
 #     _inherit="stock.quant"
@@ -32,7 +33,8 @@ class StockPickingType(models.Model):
 #                                owner_id=owner_id, strict=strict)
 
 class StockMove(models.Model):
-    _inherit = 'stock.move'
+    _inherit = "stock.move"
+
 
     deposit_line_id = fields.Many2one('sale.order.line')
     #
@@ -45,11 +47,11 @@ class StockMove(models.Model):
     #             move.move_line_ids.write({'owner_id': False})
     #     return super(StockMove, self)._action_done()
 
-
     def _prepare_procurement_values(self):
         vals = super()._prepare_procurement_values()
         vals.update(deposit_line_id=self.deposit_line_id.id)
         return vals
+
 
 # class StockRule(models.Model):
 #     _inherit = 'stock.rule'

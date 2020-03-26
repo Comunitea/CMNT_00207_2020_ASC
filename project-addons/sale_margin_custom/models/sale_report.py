@@ -4,9 +4,9 @@ from odoo import fields, models
 
 
 class SaleReport(models.Model):
-    _inherit = 'sale.report'
+    _inherit = "sale.report"
 
-    perc_margin = fields.Float('Margin (%)')
+    perc_margin = fields.Float("Margin (%)")
 
     def _select(self):
         return super(SaleReport, self)._select() + ", s.perc_margin AS margin"
