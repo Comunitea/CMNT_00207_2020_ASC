@@ -6,14 +6,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-19 17:42+0000\n"
-"PO-Revision-Date: 2020-03-19 17:42+0000\n"
+"POT-Creation-Date: 2020-03-26 15:36+0000\n"
+"PO-Revision-Date: 2020-03-26 15:36+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: sale_margin_custom
+#: model_terms:ir.ui.view,arch_db:sale_margin_custom.view_partner_property_form
+msgid "Average margin"
+msgstr "Margen promedio"
+
+#. module: sale_margin_custom
+#: model:ir.model.fields,field_description:sale_margin_custom.field_res_partner__average_sale_margin
+#: model:ir.model.fields,field_description:sale_margin_custom.field_res_users__average_sale_margin
+msgid "Average margin (%)"
+msgstr "Margen promedio (%)"
+
+#. module: sale_margin_custom
+#: model:ir.model.fields,field_description:sale_margin_custom.field_res_partner__total_sale_margin
+#: model:ir.model.fields,field_description:sale_margin_custom.field_res_users__total_sale_margin
+msgid "Average margin (€)"
+msgstr "Margen promedio /€)"
 
 #. module: sale_margin_custom
 #: model:ir.model,name:sale_margin_custom.model_res_partner
@@ -26,8 +43,6 @@ msgid "It gives profitability by calculating the difference between the Unit Pri
 msgstr "Diferencia entre el precio de venta y de coste en %"
 
 #. module: sale_margin_custom
-#: model:ir.model.fields,field_description:sale_margin_custom.field_res_partner__average_sale_margin
-#: model:ir.model.fields,field_description:sale_margin_custom.field_res_users__average_sale_margin
 #: model:ir.model.fields,field_description:sale_margin_custom.field_sale_order__perc_margin
 #: model:ir.model.fields,field_description:sale_margin_custom.field_sale_report__perc_margin
 msgid "Margin (%)"

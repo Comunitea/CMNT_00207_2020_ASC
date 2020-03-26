@@ -1,6 +1,17 @@
 <?xml version="1.0"?>
 
 <odoo>
+    <delete id="stock_location_form_sdc" model="ir.ui.view"/>
+<!--    <record id="stock_location_form_sdc" model="ir.ui.view">-->
+<!--            <field name="name">stock.location.form.sdc</field>-->
+<!--            <field name="model">stock.location</field>-->
+<!--            <field name="inherit_id" ref="stock.view_location_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='usage']" position="after">-->
+<!--                    <field name="bypass_owner"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--     </record>-->
     <record id="view_picking_type_form_inherit_mrp" model="ir.ui.view">
         <field name="name">Operation Types</field>
         <field name="model">stock.picking.type</field>

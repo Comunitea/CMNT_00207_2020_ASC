@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-19 17:39+0000\n"
-"PO-Revision-Date: 2020-03-19 17:39+0000\n"
+"POT-Creation-Date: 2020-03-26 15:38+0000\n"
+"PO-Revision-Date: 2020-03-26 15:38+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,6 +31,13 @@ msgid "Code"
 msgstr "Código"
 
 #. module: product_report_custom
+#: model:ir.actions.server,name:product_report_custom.cron_compute_product_sales_ir_actions_server
+#: model:ir.cron,cron_name:product_report_custom.cron_compute_product_sales
+#: model:ir.cron,name:product_report_custom.cron_compute_product_sales
+msgid "Compute product sales"
+msgstr "Calculo de ventas"
+
+#. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales
 msgid "Count sales"
@@ -40,25 +47,25 @@ msgstr "# Ventas"
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_0
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_0
 msgid "Count sales 0"
-msgstr "€ Ventas 0"
+msgstr "# Ventas 0"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_1
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_1
 msgid "Count sales 1"
-msgstr "€ Ventas 1"
+msgstr "# Ventas 1"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_2
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_2
 msgid "Count sales 2"
-msgstr "€ Ventas 2"
+msgstr "# Ventas 2"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_3
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_3
 msgid "Count sales 3"
-msgstr "€ Ventas 3"
+msgstr "# Ventas 3"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__create_uid

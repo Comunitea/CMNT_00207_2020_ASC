@@ -50,11 +50,11 @@ class SaleOrderLine(models.Model):
         "deposit_move_ids.product_uom",
     )
     def _compute_qty_in_deposit(self):
-        for line in self.filtered("deposit"):
+
+        ## Al filtrar por tipo de albarán is_deposit puedo mover mercancia a/desde deposito sin que influya en la cantidad en deposito a la hora tenerla en cuenta
+        for line in self.filtered('deposit'):
             qty = 0.00
-            move_to_check = line.deposit_move_ids.filtered(
-                lambda x: x.state == "done"
-            )
+            move_to_check = line.deposit_move_ids.filtered(lambda x: x.state=='done' and x.picking_type_id.is_deposit)
             if move_to_check:
                 for move in move_to_check:
                     if move.location_dest_id.deposit_location:
@@ -136,6 +136,7 @@ class SaleOrder(models.Model):
             .mapped("order_id")
         )
         # Busco el albarán asociado a la venta/depósito
+        # Si quiero mover stock a/desde depñósito sin que tenga influencia en el stock del depósito, tengo que utilizar un tipo de albarán marcado como no depósito
         for so in so_ids:
             pickings = so.mapped("picking_ids").filtered(
                 lambda x: x.state in ("done", "sale")
