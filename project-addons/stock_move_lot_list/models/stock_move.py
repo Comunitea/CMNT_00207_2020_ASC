@@ -1,8 +1,7 @@
 # © 2018 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo.tools.float_utils import float_compare, float_round, float_is_zero
-
-from odoo import api, models, fields, _
+from odoo.tools.float_utils import float_is_zero
+from odoo import api, models, fields
 
 
 class StockMove(models.Model):
@@ -88,7 +87,8 @@ class StockMove(models.Model):
         self.mapped("picking_id")._check_entire_pack()
 
     def _action_assign(self):
-        ##Tengo que hacer el action_Assign uno a uno para pasar en el contexto los lotes permidos a la busqueda de quants
+        # Tengo que hacer el action_Assign uno a uno para pasar en el
+        # contexto los lotes permidos a la busqueda de quants
         move_ids = self.filtered(
             lambda x: x.picking_type_id.code != "incoming"
             and x.picking_type_id.use_proposed_lots

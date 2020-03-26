@@ -131,7 +131,8 @@ class ProductProduct(models.Model):
             for i in range(0, 4):
                 str = "{}".format(i)
                 if res[str] and res[str].get(product.id, False):
-                    product["count_sales_{}".format(str)] = res[str][product.id]
+                    product["count_sales_{}".format(str)] = \
+                        res[str][product.id]
                 else:
                     product["count_sales_{}".format(str)] = 0
                 if not i:

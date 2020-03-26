@@ -29,4 +29,3 @@ class StockQuant(models.Model):
                 lambda x: x.lot_id.id in self._context["proposed_lot_ids"]
             )
         return quants
-

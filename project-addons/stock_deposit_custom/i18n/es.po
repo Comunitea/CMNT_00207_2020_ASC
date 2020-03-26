@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* stock_deposit_custom
+#       * stock_deposit_custom
 #
 msgid ""
 msgstr ""
@@ -230,8 +230,8 @@ msgstr "Movimiento de existencias"
 
 #. module: stock_deposit_custom
 #: model:ir.model.fields,field_description:stock_deposit_custom.field_sale_order_line__deposit_move_ids
-msgid "Stock Moves"
-msgstr "Movimientos de stock"
+msgid "Deposit Stock Moves"
+msgstr "Movimientos de depósito"
 
 #. module: stock_deposit_custom
 #: model:ir.model,name:stock_deposit_custom.model_stock_rule

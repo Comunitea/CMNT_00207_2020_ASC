@@ -11,7 +11,8 @@ class SaleOrder(models.Model):
     perc_margin = fields.Float(
         compute="_product_margin",
         string="Margin (%)",
-        help="It gives profitability by calculating the difference between the Unit Price and the cost in %",
+        help="It gives profitability by calculating the difference between "
+             "the Unit Price and the cost in %",
         digits=dp.get_precision("Product Price"),
         store=True,
     )

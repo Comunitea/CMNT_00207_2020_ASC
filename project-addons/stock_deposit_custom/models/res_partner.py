@@ -7,10 +7,9 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-
     def compute_deposit_domain(self):
         return [
-            ("order_partner_id", "child_of", self.id),
+            ("order_partner_id", "child_of", [self.id]),
             ("deposit", "=", True),
         ]
 
