@@ -15,7 +15,6 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_deposit_ids(self):
-        self.ensure_one()
         for partner in self:
             domain = partner.compute_deposit_domain()
             deposit_ids = self.env["sale.order.line"].search(domain)
