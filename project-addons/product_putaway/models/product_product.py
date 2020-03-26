@@ -102,7 +102,7 @@ class ProductProduct(models.Model):
         for product_id in self.filtered(lambda x: not x.product_putaway_ids):
             q_d = [
                 ("product_id", "=", product_id.id),
-                ("location_id", "child_of", location_id.id),
+                ("location_id", "child_of", [location_id.id]),
             ]
             sq = self.env["stock.quant"].search(
                 q_d, order="quantity desc", limit=1

@@ -21,7 +21,7 @@
             <field name="mobile" position="after">
                 <field name="deposit_count"/>
             </field>
-            <xpath expr="//div[@class='oe_kanban_partner_links']" position="inside">
+            <xpath expr="//div[hasclass('oe_kanban_partner_links')]" position="inside">
                 <a name="action_open_deposit" type="object" t-if="record.deposit_count.value>0">
                     <t t-esc="record.deposit_count.value"/> Deposits
                 </a>
