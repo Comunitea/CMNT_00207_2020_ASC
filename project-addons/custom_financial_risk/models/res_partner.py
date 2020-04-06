@@ -12,7 +12,6 @@ class ResPartner(models.Model):
     risk_account_amount = fields.Monetary(store=False)
     risk_account_amount_unpaid = fields.Monetary(store=False)
     risk_sale_order = fields.Monetary(store=False)
-    risk_sale_order_include = fields.Boolean(default=True)
     risk_invoice_draft_include = fields.Boolean(default=True)
     risk_invoice_open_include = fields.Boolean(default=True)
     risk_invoice_unpaid_include = fields.Boolean(default=True)
