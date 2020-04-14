@@ -99,7 +99,8 @@ class SaleOrder(models.Model):
         for sale in self.filtered(lambda x: x.state in ("sale", "done")):
             domain = sale.compute_deposit_domain()
             sale.deposit_ids = sol.search(domain)
-            sale.deposit_date = min(x.deposit_date for x in sale.deposit_ids)
+            if sale.deposit_ids:
+                sale.deposit_date = min(x.deposit_date for x in sale.deposit_ids)
 
     @api.multi
     def action_confirm(self):
@@ -111,7 +112,8 @@ class SaleOrder(models.Model):
                 delta = timedelta(days=line.order_id.partner_id.deposit_days)
                 result = current_date + delta
                 line.deposit_date = result.strftime(DEFAULT_SERVER_DATE_FORMAT)
-            order.deposit_date = min(line.deposit_date for line in deposit_ids)
+            if deposit_ids:
+                order.deposit_date = min(line.deposit_date for line in deposit_ids)
         return res
 
     @api.multi
