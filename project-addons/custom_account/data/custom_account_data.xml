@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="warning_sii_failed_invoices" model="base.automation">
+        <field name="name">Facturas fallidas en la presentación al SII</field>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="state">next_activity</field>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="True"/>
+        <field name="filter_pre_domain">[('sii_send_failed', '=', False)]</field>
+        <field name="filter_domain">[('sii_send_failed', '=', True)]</field>
+        <field name="activity_type_id" ref="mail.mail_activity_data_warning"/>
+        <field name="activity_summary">Ha fallado el envío de la factura al SII</field>
+        <field name="activity_user_type">specific</field>
+        <field name="activity_user_id" ref="base.user_admin"/>
+        <field name="activity_note">Compruebe el motivo y vuelva a enviar la factura al SII.</field>
+    </record>
+
+    <record id="warning_draft_account_moves" model="base.automation">
+        <field name="name">Asientos pendientes de asentar</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">next_activity</field>
+        <field name="trigger">on_time</field>
+        <field name="trg_date_id" ref="account.field_account_move__date"/>
+        <field name="trg_date_range">2</field>
+        <field name="trg_date_calendar_id" ref="resource.resource_calendar_std"/>
+        <field name="active" eval="True"/>
+        <field name="filter_domain">[('state', '=', 'draft')]</field>
+        <field name="activity_type_id" ref="mail.mail_activity_data_warning"/>
+        <field name="activity_summary">Asiento en borrador</field>
+        <field name="activity_user_type">specific</field>
+        <field name="activity_user_id" ref="base.user_admin"/>
+        <field name="activity_note">Asiente el asiento o elimínelo, lleva al menos dos días en borrador.</field>
+    </record>
+
+    <record id="warning_due_invoices" model="base.automation">
+        <field name="name">Facturas vencidas</field>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="state">next_activity</field>
+        <field name="trigger">on_time</field>
+        <field name="trg_date_id" ref="account.field_account_invoice__date_due"/>
+        <field name="trg_date_range">5</field>
+        <field name="trg_date_calendar_id" ref="resource.resource_calendar_std"/>
+        <field name="active" eval="True"/>
+        <field name="filter_domain">[('state', '=', 'open')]</field>
+        <field name="activity_type_id" ref="mail.mail_activity_data_warning"/>
+        <field name="activity_summary">Factura vencida</field>
+        <field name="activity_user_type">specific</field>
+        <field name="activity_user_id" ref="base.user_admin"/>
+        <field name="activity_note">La factura sigue abierta y ya ha pasado su fecha de vencimiento. Compruebe su estado o notifique al cliente este hecho, para que proceda al pago.</field>
+    </record>
+
+</odoo>
