@@ -21,7 +21,9 @@ class ProductTemplateImporter(Component):
         ):
             bundle_products = {}
             binder = self.binder_for("prestashop.product.template")
-            product_lines = record.get("associations").get("product_bundle").get("product")
+            product_lines = (
+                record.get("associations").get("product_bundle").get("product")
+            )
             if type(product_lines) is dict:
                 product_lines = [product_lines]
             for product_line in product_lines:
@@ -72,6 +74,25 @@ class ProductTemplateImporter(Component):
                             ],
                         }
                     )
+
+    def import_images(self, binding):
+        prestashop_record = self._get_prestashop_data()
+        associations = prestashop_record.get("associations", {})
+        images = associations.get("images", {}).get(
+            self.backend_record.get_version_ps_key("image"), {}
+        )
+        if not isinstance(images, list):
+            images = [images]
+        if images:
+            images = [images[0]]
+        for image in images:
+            if image.get("id"):
+                delayable = self.env["prestashop.product.image"].with_delay(
+                    priority=10
+                )
+                delayable.import_product_image(
+                    self.backend_record, prestashop_record["id"], image["id"]
+                )
 
 
 class TemplateMapper(Component):
