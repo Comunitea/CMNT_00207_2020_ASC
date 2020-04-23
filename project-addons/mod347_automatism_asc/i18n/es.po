@@ -1,0 +1,58 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* mod347_automatism_asc
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-23 12:59+0000\n"
+"PO-Revision-Date: 2020-04-23 12:59+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mod347_automatism_asc
+#: model:ir.model,name:mod347_automatism_asc.model_l10n_es_aeat_mod347_report
+msgid "AEAT 347 Report"
+msgstr "Modelo 347"
+
+#. module: mod347_automatism_asc
+#: model:ir.actions.server,name:mod347_automatism_asc.ir_cron_mod347_ir_actions_server
+#: model:ir.cron,cron_name:mod347_automatism_asc.ir_cron_mod347
+#: model:ir.cron,name:mod347_automatism_asc.ir_cron_mod347
+msgid "Automatic 347 generation"
+msgstr ""
+
+#. module: mod347_automatism_asc
+#: model:ir.model,name:mod347_automatism_asc.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: mod347_automatism_asc
+#: model:ir.model.fields,field_description:mod347_automatism_asc.field_res_partner__date_alert
+#: model:ir.model.fields,field_description:mod347_automatism_asc.field_res_users__date_alert
+msgid "Date Alert"
+msgstr "Fecha de alerta"
+
+#. module: mod347_automatism_asc
+#: code:addons/mod347_automatism_asc/models/mod347.py:39
+#, python-format
+msgid "The Model347 for this year is marked as done."
+msgstr "El Modelo 347 para este año ya está marcado como hecho."
+
+#. module: mod347_automatism_asc
+#: code:addons/mod347_automatism_asc/models/mod347.py:54
+#, python-format
+msgid "The company {} needs to have a valid VAT and phone."
+msgstr "La compañía {} necesita tener NIF y teléfonos válidos."
+
+#. module: mod347_automatism_asc
+#: code:addons/mod347_automatism_asc/models/mod347.py:47
+#, python-format
+msgid "The payments amount for the partner {} is currently surpassing 6000€."
+msgstr "La cantidad de pagos para el partner {} supera el límite de 6000€."
+
