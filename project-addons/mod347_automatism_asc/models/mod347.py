@@ -47,7 +47,7 @@ class L10nEsAeatMod347Report(models.Model):
                     body = _('The payments amount for the partner {} is currently surpassing 6000€.'.format(
                         partner.partner_id.name)
                     )
-                    partner.partner_id.message_post(body=body)
+                    partner.partner_id.message_post(body=body, message_type="comment", subtype="mail.mt_comment")
                     partner.partner_id.date_alert=datetime.datetime.now().date()
             else:
                 raise ValidationError(
