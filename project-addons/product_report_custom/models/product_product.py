@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
+    _rec_name = 'code'
 
     code = fields.Char("Code")
     days = fields.Integer("# Days")
