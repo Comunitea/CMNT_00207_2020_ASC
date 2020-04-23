@@ -21,6 +21,24 @@
         </xpath>
     </template>
 
+    <template id="report_picking" name="Custom Document Stock Picking A-sec" inherit_id="stock.report_picking">
+        <xpath expr="//div[hasclass('page')]" position="after">
+            <t t-set="type" t-value="'Picking'"/>
+        </xpath>
+    </template>
+
+    <template id="report_delivery_document" name="Custom Document Delivery Document A-sec" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-set='o']" position="after">
+            <t t-set="type" t-value="'Delivery'"/>
+        </xpath>
+    </template>
+
+    <template id="report_repairorder" name="Custom Document Repair Document A-sec" inherit_id="repair.report_repairorder">
+        <xpath expr="//t[@t-set='o']" position="after">
+            <t t-set="type" t-value="'Repair'"/>
+        </xpath>
+    </template>
+
     <template id="report_purchasequotation_document" name="Custom Document Quotation A-sec" inherit_id="purchase.report_purchasequotation_document">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'Quotation'"/>
@@ -55,6 +73,40 @@
                     <div class="col-5" style="padding-top:90px; background-color: #23384d; color: #fafaf8;font-size: 45px; text-transform: uppercase; text-align: center;font-weight: bold;letter-spacing: 5.2px;">
                         <span t-if="type" t-esc="type"/>
                         <br t-else=""/>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+
+    <!-- Templates for internal layout -->
+
+    <template id="internal_layout" name="Custom Document Internal Layout" inherit_id="web.internal_layout">
+        <xpath expr="//div[hasclass('header')]" position="replace">
+            <div class="header">
+                <div class="row">
+                    <div class="col-7" style="padding-top:90px; background-color: #e5e5e5; color: #23384d; text-transform: uppercase; text-align: center;font-weight: bold;">
+                        <div class="col-12" style="margin-top: 5px;">
+                            <div class="col-4" style="float: left; text-align: right;">
+                                <img t-if="'team_id' in o and o.team_id.team_logo" t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;" alt="Logo"/>
+                                <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 40px;" alt="Logo"/>
+                            </div>
+                            <div class="col-8" style="float: left; text-align: left;">
+                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                                <span t-elif="company.name" t-esc="company.name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                            </div>
+                            <div class="col-7 offset-1" style="float: left; text-align: left;">
+                                <small t-if="'team_id' in o and o.team_id.team_tag_line" t-esc="o.team_id.team_tag_line" style="float: left;text-align: left;margin-top: -1.5%;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5" style="padding-top:90px; background-color: #23384d; color: #fafaf8;font-size: 45px; text-transform: uppercase; text-align: center;font-weight: bold;letter-spacing: 5.2px;">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><span class="page"/></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item"><span class="topage"/></li>
+                        </ul>
                     </div>
                 </div>
             </div>
