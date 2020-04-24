@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-23 12:43+0000\n"
-"PO-Revision-Date: 2020-04-23 12:43+0000\n"
+"POT-Creation-Date: 2020-04-24 12:54+0000\n"
+"PO-Revision-Date: 2020-04-24 12:54+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,32 +18,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_name
 msgid "Company Name"
-msgstr "Nombre Equipo"
-
-#. module: custom_documents_asc
-#: model_terms:ir.ui.view,arch_db:custom_documents_asc.crm_team_view_form_custom_documents_data
-msgid "Documents Info"
-msgstr "Información para Documentos"
-
-#. module: custom_documents_asc
-#: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
-msgid "Logo"
-msgstr "Logo"
-
-#. module: custom_documents_asc
-#: model:ir.model,name:custom_documents_asc.model_crm_team
-msgid "Sales Channels"
-msgstr "Canales de Ventas"
-
-#. module: custom_documents_asc
-#: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_logo
-msgid "Team Logo"
-msgstr "Logo Equipo"
-
-#. module: custom_documents_asc
-#: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_tag_line
-msgid "Team Tag Line"
-msgstr "Eslogan"
+msgstr "Nome da empresa"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
@@ -51,19 +26,30 @@ msgid "Delivery"
 msgstr "Entrega"
 
 #. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.crm_team_view_form_custom_documents_data
+msgid "Documents Info"
+msgstr "Documentos Info"
+
+#. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Invoice"
-msgstr "Factura"
+msgstr "Fatura"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.internal_layout
+msgid "Logo"
+msgstr "Logótipo"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "PRO-FORMA Invoice"
-msgstr "Factura PRO-FORMA"
+msgstr "Fatura proforma"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Picking"
-msgstr "Albarán"
+msgstr "Operação de Stock"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
@@ -73,14 +59,30 @@ msgstr "Compra"
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Quotation"
-msgstr "Presupuesto"
+msgstr "Orçamento"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Repair Order"
-msgstr "Orden de reparación"
+msgstr "Ordem de Reparação"
+
+#. module: custom_documents_asc
+#: model:ir.model,name:custom_documents_asc.model_crm_team
+msgid "Sales Channels"
+msgstr "Canais de Vendas"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Sales Order"
-msgstr "Pedido de venta"
+msgstr "Ordem de Vendas"
+
+#. module: custom_documents_asc
+#: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_logo
+msgid "Team Logo"
+msgstr "Logo da equipe"
+
+#. module: custom_documents_asc
+#: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_tag_line
+msgid "Team Tag Line"
+msgstr "Tagline da equipe"
+
