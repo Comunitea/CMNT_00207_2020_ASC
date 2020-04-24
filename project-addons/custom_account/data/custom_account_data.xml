@@ -42,7 +42,7 @@
         <field name="trg_date_range">5</field>
         <field name="trg_date_calendar_id" ref="resource.resource_calendar_std"/>
         <field name="active" eval="True"/>
-        <field name="filter_domain">[('state', '=', 'open')]</field>
+        <field name="filter_domain">[('state', '=', 'open'),('type', '=', 'out_invoice')]</field>
         <field name="activity_type_id" ref="mail.mail_activity_data_warning"/>
         <field name="activity_summary">Factura vencida</field>
         <field name="activity_user_type">specific</field>
