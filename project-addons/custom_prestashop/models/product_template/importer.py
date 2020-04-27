@@ -101,3 +101,9 @@ class TemplateMapper(Component):
     @mapping
     def standard_price(self, record):
         return {}
+
+    @mapping
+    def taxes_id(self, record):
+        taxes = self._get_tax_ids(record)
+        if taxes:
+            return {'taxes_id': [(6, 0, taxes.ids)]}
