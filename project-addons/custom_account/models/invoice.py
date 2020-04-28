@@ -52,10 +52,12 @@ class AccountInvoice(models.Model):
         invoices.write({'sii_send_failed': False})
         return super()._send_invoice_to_sii()
 
-
     @api.model
-    def create(self, values):
-        res = super(AccountInvoice, self).create(values)
-        if res.refund_invoice_id and res.refund_invoice_id.payment_term_id:
-            res.payment_term_id = res.refund_invoice_id.payment_term_id
-        return res
+    def _prepare_refund(self, invoice, date_invoice=None,
+                        date=None, description=None, journal_id=None):
+        vals = super(AccountInvoice, self)._prepare_refund(
+            invoice, date_invoice, date, description, journal_id)
+
+        if invoice.payment_term_id:
+            vals['payment_term_id'] = invoice.payment_term_id.id
+        return vals
