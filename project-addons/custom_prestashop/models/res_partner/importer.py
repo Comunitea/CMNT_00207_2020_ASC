@@ -99,6 +99,20 @@ class AddressImportMapper(Component):
             parent = binder.to_internal(record["id_customer"], unwrap=True)
             return {"odoo_id": parent.id}
 
+    @mapping
+    def state_id(self, record):
+        if record.get("id_country") and record.get("postcode"):
+            binder = self.binder_for("prestashop.res.country")
+            country = binder.to_internal(record["id_country"], unwrap=True)
+            city_zip = self.env["res.city.zip"].search(
+                [
+                    ("name", "=", record.get("postcode")),
+                    ("city_id.country_id", "=", country.id),
+                ], limit=1
+            )
+            if city_zip:
+                return {"state_id": city_zip.city_id.state_id.id}
+
 
 class AddressImporter(Component):
     _inherit = "prestashop.address.importer"

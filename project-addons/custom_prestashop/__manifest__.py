@@ -9,7 +9,12 @@
     "maintainer": "Comunitea",
     "website": "www.comunitea.com",
     "license": "AGPL-3",
-    "depends": ["connector_prestashop", "sales_team", "base_multi_image"],
+    "depends": [
+        "connector_prestashop",
+        "sales_team",
+        "base_multi_image",
+        "base_location",
+    ],
     "data": [
         "views/account_payment_term.xml",
         "views/crm_team.xml",
