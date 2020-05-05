@@ -10,6 +10,7 @@
     "depends": ["stock", "stock_picking_report_valued"],
     "data": [
         "views/stock_location.xml",
+        'views/stock_picking.xml'
     ],
     "installable": True,
     "license": "AGPL-3",
