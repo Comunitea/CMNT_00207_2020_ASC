@@ -7,7 +7,8 @@
     "version": "12.0.1.0.0",
     "author": "Comunitea",
     "category": "Inventory",
-    "depends": ["stock"],
+    "depends": ["stock",
+                "stock_removal_location_by_priority"],
     "data": [
         "views/stock_location.xml",
     ],
