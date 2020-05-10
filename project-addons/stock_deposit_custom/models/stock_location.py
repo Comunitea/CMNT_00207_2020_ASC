@@ -11,17 +11,6 @@ class StockLocation(models.Model):
 
 
     deposit_location = fields.Boolean('Customer deposit', default = False)
-    # bypass_owner = fields.Boolean('Bypass owner', default = False, help="Sometimes, we need to overwrite owner in stock location")
-    #
-    # @api.multi
-    # def write(self, vals):
-    #
-    #     super().write(values=vals)
-    #     if 'bypass_owner' in vals:
-    #         for location in self:
-    #             location.child_ids.write({'bypass_owner': vals['bypass_owner']})
-    #
-    #     return True
 
     def should_bypass_reservation(self):
         ## Las ubicaciones de depóstio nunca deberían de saltarse el bypass reservtion, aunque sea de proveedor o de cliente

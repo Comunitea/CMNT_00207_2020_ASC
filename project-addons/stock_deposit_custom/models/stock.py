@@ -22,7 +22,6 @@ class StockPickingType(models.Model):
 
     is_deposit = fields.Boolean("Is deposit", default=False)
 
-
 # class StockQuant (models.Model):
 #     _inherit="stock.quant"
 #
@@ -35,17 +34,13 @@ class StockPickingType(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-
     deposit_line_id = fields.Many2one('sale.order.line')
-    #
-    # @api.multi
-    # def _action_done(self):
-    #     for move in self.filtered('picking_type_id.is_deposit'):
-    #         if move.location_dest_id.deposit_location:
-    #             move.move_line_ids.write({'owner_id': move.partner_id.id})
-    #         else:
-    #             move.move_line_ids.write({'owner_id': False})
-    #     return super(StockMove, self)._action_done()
+
+    @api.multi
+    def _action_done(self):
+        res = super(StockMove, self)._action_done()
+        self.mapped('deposit_line_id')._compute_qty_in_deposit()
+        return res
 
     def _prepare_procurement_values(self):
         vals = super()._prepare_procurement_values()
