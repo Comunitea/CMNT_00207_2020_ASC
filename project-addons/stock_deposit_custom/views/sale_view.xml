@@ -49,6 +49,7 @@
                     <field name="deposit_date"/>
                     <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"/>
                     <field name="price_subtotal" sum="Total" widget="monetary" invisible="1"/>
+                    <button name="action_show_deposit_lots" string="Números de serie/Lotes" type="object" icon="fa-barcode"/>
                 </tree>
             </field>
         </record>

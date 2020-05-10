@@ -23,7 +23,16 @@
                 <body>
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
                     <p>Hola</p><br>
-                    <p>El depósito ${object.name} ha concluído su periodo de cesión a fecha ${object.deposit_date}. Por favor, póngase en contacto con el cliente ${object.partner_id.name} para proceder a su recuperación.</p><br>
+                    <p>El depósito ${object.name} ha concluído su periodo de cesión a fecha ${object.deposit_date}. Por favor, póngase en contacto con el cliente ${object.partner_id.name} para proceder a su recuperación.</p>
+                    <br>
+                    <p>El stock en cesión es el siguiente<p>
+                    % set deposit_ids  = object.deposit_ids
+                    <ul>
+                    % for line in deposit_ids:
+                    <li><strong>${line.name}. </strong> Cantidad: ${line.qty_in_deposit}. ${line.compute_str_lots()}</li>
+                    % endfor
+                    </ul>
+                    <br>
                     <p>Un cordial saludo</p>
                     <br>
                     <br>
@@ -67,7 +76,7 @@
 
     <record forcecreate="True" id="ir_cron_email_deposit" model="ir.cron">
         <field name="name">Advise deposits by email</field>
-        <field name="active" eval="True"/>
+        <field name="active" eval="False"/>
         <field name="user_id" ref="base.user_root"/>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
