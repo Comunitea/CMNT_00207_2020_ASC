@@ -13,7 +13,8 @@
                 "stock_picking_report_valued"],
     "data": [
         "views/stock_location.xml",
-        'views/stock_picking.xml'
+        'views/stock_picking.xml',
+        'views/sale_order.xml'
     ],
     "installable": True,
     "license": "AGPL-3",
