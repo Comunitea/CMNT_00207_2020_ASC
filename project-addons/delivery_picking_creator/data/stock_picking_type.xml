@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_picking_type_delivery" model="ir.sequence">
+            <field name="name">Picking Delivery</field>
+            <field name="prefix">DEL/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    <record id="delivery_picking_type" model="stock.picking.type">
+        <field name="name">Delivery type</field>
+        <field name="code">outgoing</field>
+        <field name="sequence_id" ref="seq_picking_type_delivery"/>
+        <field name="use_existing_lots">True</field>
+        <field name="default_location_src_id" ref="stock.stock_location_customers"/>
+        <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        <field name="warehouse_id" eval="False"/>
+    </record>
+</odoo>
