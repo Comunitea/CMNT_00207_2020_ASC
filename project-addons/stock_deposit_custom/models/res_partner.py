@@ -7,16 +7,14 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-
     def compute_deposit_domain(self):
         return [
-            ("order_partner_id", "child_of", self.id),
+            ("order_partner_id", "child_of", [self.id]),
             ("deposit", "=", True),
         ]
 
     @api.multi
     def _compute_deposit_ids(self):
-        self.ensure_one()
         for partner in self:
             domain = partner.compute_deposit_domain()
             deposit_ids = self.env["sale.order.line"].search(domain)

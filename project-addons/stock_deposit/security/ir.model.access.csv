@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_deposit,access_stock_deposit,model_stock_deposit,base.group_user,1,1,1,0
+access_stock_deposit_manager,access_stock_deposit_manager,model_stock_deposit,sales_team.group_sale_manager,1,1,1,0

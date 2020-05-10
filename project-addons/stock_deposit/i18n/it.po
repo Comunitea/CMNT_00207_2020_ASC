@@ -1,0 +1,374 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * stock_deposit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-10 12:20+0000\n"
+"PO-Revision-Date: 2015-02-10 12:20+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_deposit
+#: model:ir.actions.act_window,help:stock_deposit.action_stock_deposit
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                    This menu allow you to view deposit\n"
+"                    of products.\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                    Este menú permite ver los depósitos\n"
+"                    de productos.\n"
+"                </p>\n"
+"            "
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+msgid "Active deposits"
+msgstr "Depositi attivi"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.stock_invoice_deposit_form
+msgid "Cancel"
+msgstr "Cancellare"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_user_id
+msgid "Comercial"
+msgstr "Commerciale"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.stock_invoice_deposit_form
+msgid "Create invoice"
+msgstr "Creare fattura"
+
+#. module: stock_deposit
+#: model:ir.actions.act_window,name:stock_deposit.stock_invoice_deposit_action
+msgid "Create invoices"
+msgstr "Creare fatturas"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.stock_sale_deposit_form
+msgid "Create sales"
+msgstr "Creare vendite"
+
+#. module: stock_deposit
+#: model:ir.actions.act_window,name:stock_deposit.stock_sale_deposit_action
+msgid "Create sales"
+msgstr "Creare vendite"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_create_uid
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_create_date
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_sale_order_line_deposit_date
+msgid "Date Dep."
+msgstr "Data Dep."
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_company_id
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_delivery_date
+msgid "Date of Transfer"
+msgstr "Data di trasferimento"
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_message_last_post
+msgid "Date of the last message posted on the record."
+msgstr "Data dell'ultimo messaggio."
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+msgid "Dates"
+msgstr "Date"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_sale_order_line_deposit
+#: model:stock.location,name:stock_deposit.stock_location_deposit
+msgid "Deposit"
+msgstr "Deposito"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_move_id
+msgid "Deposit Move"
+msgstr "Movimento di deposito "
+
+#. module: stock_deposit
+#: model:ir.actions.act_window,name:stock_deposit.act_res_partner_2_deposit
+#: model:ir.actions.act_window,name:stock_deposit.action_stock_deposit
+#: model:ir.ui.menu,name:stock_deposit.menu_action_stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.deposit_partner_kanban_view
+#: model:ir.ui.view,arch_db:stock_deposit.res_partner_view_deposit_buttons
+#: model:ir.model.fields,field_description:stock_deposit.field_res_partner_deposit_ids
+#: model:ir.ui.view,arch_db:stock_deposit.view_order_form_deposit_button
+#: model:ir.model.fields,field_description:stock_deposit.field_sale_order_deposit_ids
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_tree
+msgid "Deposits"
+msgstr "Depositi"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_partner_id
+msgid "Destination Address"
+msgstr "Indirizzo di destinazione"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_journal_id
+msgid "Destination Journal"
+msgstr "Diario di destinazione"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+msgid "Details"
+msgstr "Dettagli"
+
+#. module: stock_deposit
+#: selection:stock.deposit,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_stock_deposit
+msgid "Email Thread"
+msgstr "Filo della conversazione"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+msgid "Group By..."
+msgstr "Raggruppare per..."
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_message_summary
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Mostra il riepilogo delle comunicazioni (numero di messaggi, ...). Questo riepilogo è direttamente in formato html in modo da poterlo inserire nelle viste kanban. "
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_id
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_id
+msgid "ID"
+msgstr "ID"
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_message_unread
+msgid "If checked new messages require your attention."
+msgstr "Se contrassegnati, i nuovi messaggi richiederanno la tua attenzione."
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_invoice_id
+msgid "Invoice"
+msgstr "Fatture"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.stock_invoice_deposit_form
+msgid "Invoice deposits"
+msgstr "Depositi di fatturazione"
+
+#. module: stock_deposit
+#: selection:stock.deposit,state:0
+msgid "Invoiced"
+msgstr "Fattura inviata"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_is_follower
+msgid "Is a Follower"
+msgstr "è un Follower"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_last_post
+msgid "Last Message Date"
+msgstr "Ult. data messaggio"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_write_uid
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_write_uid
+msgid "Last Updated by"
+msgstr "Ult aggiornamento da"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_write_date
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_invoice_deposit_write_date
+msgid "Last Updated on"
+msgstr "Ult. aggiornamento il"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_ids
+msgid "Messages"
+msgstr "Messaggi"
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_message_ids
+msgid "Messages and communication history"
+msgstr "Cronologia dei messaggi e delle comunicazioni"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+msgid "Moves"
+msgstr "Movimenti"
+
+#. module: stock_deposit
+#: code:addons/stock_deposit/wizard/stock_invoice_deposit.py:41
+#, python-format
+msgid "No deposit"
+msgstr "Nessun deposito"
+
+#. module: stock_deposit
+#: code:addons/stock_deposit/wizard/stock_invoice_deposit.py:41
+#, python-format
+msgid "No deposit selected"
+msgstr "Nessun deposito selezionato"
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_partner_id
+msgid "Optional address where goods are to be delivered, specifically used for allotment"
+msgstr "Indirizzo facoltativo, dove verrà consegnata la merce, utilizzata in particolare per l'aggiudicazione"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_res_partner
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+msgid "Partner"
+msgstr "Partner"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_picking_id
+msgid "Picking"
+msgstr "Bolle"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_stock_picking
+msgid "Picking List"
+msgstr "Bolle"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_product_id
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_product_uom_qty
+msgid "Product qty"
+msgstr "Quantità"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+msgid "Return"
+msgstr "Restituire"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_return_picking_id
+msgid "Return Picking"
+msgstr "Bolle per la restituzione"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_return_date
+msgid "Return date"
+msgstr "Data restituzione"
+
+#. module: stock_deposit
+#: selection:stock.deposit,state:0
+msgid "Returned"
+msgstr "Restituito"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_sale_id
+#: selection:stock.deposit,state:0
+msgid "Sale"
+msgstr "Vendita"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_sale_move_id
+msgid "Sale Move"
+msgstr "Movimento vendita"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine vendita"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea ordine vendita"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_search
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_state
+msgid "State"
+msgstr "Stato"
+
+#. module: stock_deposit
+#: model:ir.model,name:stock_deposit.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento di scorta"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_summary
+msgid "Summary"
+msgstr "Indice"
+
+#. module: stock_deposit
+#: model:ir.model.fields,help:stock_deposit.field_stock_deposit_product_uom_qty
+msgid "This is the quantity of products from an inventory point of view. For moves in the state 'done', this is the quantity of products that were actually moved. For other moves, this is the quantity of product that is planned to be moved. Lowering this quantity does not generate a backorder. Changing this quantity on assigned moves affects the product reservation, and should be done with care."
+msgstr "Questa è la quantità di prodotti dal punto di vista dell'inventario. Per i movimenti nello stato "Fine", si tratta della quantità di prodotto che è stata attualmente spostata. Per gli altri movimenti, questa è la quantità di prodotto che si prevede di spostare. La modifica di questo importo non genererà una bolla di consegna parziale. La modifica di questo importo nei movimenti assegnati influirà sulla prenotazione del prodotto, dovrebbe essere eseguita con cura. "
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_tree
+msgid "Total"
+msgstr "Totale"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_message_unread
+msgid "Unread Messages"
+msgstr "Messaggi non letti"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_product_uom
+msgid "Uom"
+msgstr "Udm"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_sale_order_deposit_count
+msgid "deposit count"
+msgstr "Depositi #"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_loss_picking_id
+msgid "Loss Picking"
+msgstr "Bolla di consegna"
+
+#. module: stock_deposit
+#: model:ir.model.fields,field_description:stock_deposit.field_stock_deposit_loss_move_id
+msgid "Loss Move"
+msgstr "Mov. perdida"
+
+#. module: stock_deposit
+#: selection:stock.deposit,state:0
+msgid "Loss"
+msgstr "Perdida"
+
+#. module: stock_deposit
+#: model:ir.ui.view,arch_db:stock_deposit.view_stock_deposit_form
+msgid "Deposit loss"
+msgstr "A perdere"

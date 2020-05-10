@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="view_stock_deposit_form" model="ir.ui.view">
+        <field name="name">stock.deposit.form</field>
+        <field name="model">stock.deposit</field>
+        <field name="arch" type="xml">
+            <form string="Deposits">
+                <header>
+                    <button name="return_deposit" type="object"
+                        string="Return"
+                        class="oe_highlight"
+                        states="draft"/>
+                    <button name="sale" type="object"
+                        string="Sale"
+                        class="oe_highlight"
+                        states="draft"/>
+                    <button name="deposit_loss" type="object"
+                        string="Deposit loss"
+                        class="oe_highlight"
+                        states="draft"/>
+                    <!--<button name="%(stock_deposit.stock_invoice_deposit_action)d" type="action"
+                        string="Invoice"
+                        class="oe_highlight"
+                        states="sale"/>-->
+
+                    <field name="state" widget="statusbar"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group name="main_grp" string="Details">
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="product_id"/>
+                                <label for="product_uom_qty"/>
+                                <div>
+                                    <field name="product_uom_qty"
+                                        class="oe_inline"/>
+                                    <field name="product_uom"
+                                        class="oe_inline"/>
+                                </div>
+                            </group>
+                            <newline/>
+                            <group name="moves_grp" string="Moves">
+                                <field name="picking_id" />
+                                <field name="sale_id" />
+                                <field name="invoice_id" />
+                                <field name="move_id" />
+                                <field name="sale_move_id" />
+                                <field name="loss_move_id" />
+                                <field name="sale_picking_id"/>
+                                <field name="return_picking_id" />
+                                <field name="loss_picking_id" />
+                             </group>
+                            <group name="dates_grp" string="Dates">
+                                <field name="delivery_date" />
+                                <field name="return_date" />
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                            </group>
+                            <field name="company_id"
+                                groups="base.group_multi_company"
+                                widget="selection"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_stock_deposit_tree" model="ir.ui.view">
+        <field name="name">stock.deposit.tree</field>
+        <field name="model">stock.deposit</field>
+        <field name="arch" type="xml">
+            <tree string="Deposits" create="0" >
+                <field name="product_id" />
+                <field name="partner_id" />
+                <field name="picking_id" />
+                <field name="sale_id" />
+                <field name="invoice_id" />
+                <field name="user_id"/>
+                <field name="product_uom_qty" sum="Total" />
+                <field name="product_uom" />
+                <!-- TODO: Migrar <field name="cost_subtotal" sum="Total cost"/> -->
+                <field name="delivery_date" />
+                <field name="return_date" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_stock_deposit_search" model="ir.ui.view">
+        <field name="name">stock.deposit.search</field>
+        <field name="model">stock.deposit</field>
+        <field name="arch" type="xml">
+            <search string="Deposits">
+                <field name="product_id" />
+                <field name="user_id" />
+                <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+                <field name="picking_id" />
+                <field name="sale_id" />
+                <filter name="draft" string="Deposits"
+                    domain="[('state', '=', 'draft')]"
+                    help="Active deposits"/>
+                <group expand="0" string="Group By">
+                    <filter string="Partner"
+                        name="groupby_parner"
+                        context="{'group_by': 'partner_id'}"/>
+                    <filter string="Comercial"
+                        name="groupby_comercial"
+                        context="{'group_by': 'user_id'}"/>
+                    <filter string="Product" domain="[]"
+                        name="groupby_product"
+                        context="{'group_by': 'product_id'}"/>
+                    <filter string="State" domain="[]"
+                        name="groupby_state"
+                        context="{'group_by': 'state'}"/>
+                    <filter string="Delivery Date" domain="[]"
+                        name="groupby_delivery_date"
+                        context="{'group_by': 'delivery_date'}"/>
+                    <filter string="Picking" domain="[]"
+                        name="groupby_picking_id"
+                        context="{'group_by': 'picking_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_stock_deposit" model="ir.actions.act_window">
+        <field name="name">Deposits</field>
+        <field name="res_model">stock.deposit</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_stock_deposit_tree"/>
+        <field name="search_view_id" ref="view_stock_deposit_search"/>
+        <field name="context">{'search_default_draft': 1,
+                              'search_default_groupby_picking_id': 1}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                This menu allow you to view deposit
+                of products.
+            </p>
+        </field>
+    </record>
+
+    <menuitem action="action_stock_deposit"
+        id="menu_action_stock_deposit"
+        parent="stock.menu_stock_inventory_control"
+        sequence="40"/>
+</odoo>

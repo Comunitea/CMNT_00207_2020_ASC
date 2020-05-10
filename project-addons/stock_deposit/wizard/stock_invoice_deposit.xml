@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_invoice_deposit_form" model="ir.ui.view">
+        <field name="name">stock.invoice.deposit.form</field>
+        <field name="model">stock.invoice.deposit</field>
+        <field name="arch" type="xml">
+            <form string="Invoice deposits">
+                <group>
+                    <field name="journal_id"/>
+                </group>
+                <footer>
+                    <button string="Create invoice" name="create_invoice" type="object"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Create invoices"
+        res_model="stock.invoice.deposit"
+        src_model="stock.deposit"
+        view_id="stock_invoice_deposit_form"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"
+        id="stock_invoice_deposit_action"/>
+</odoo>

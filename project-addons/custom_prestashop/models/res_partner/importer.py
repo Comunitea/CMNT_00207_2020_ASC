@@ -10,6 +10,7 @@ class PartnerImportMapper(Component):
     _inherit = "prestashop.res.partner.mapper"
 
     @mapping
+    @only_create
     def property_payment_term_id(self, record):
         if record.get("plazo") and record.get("plazo") != "0":
             payment_term = self.env["account.payment.term"].search(
@@ -22,6 +23,21 @@ class PartnerImportMapper(Component):
                     )
                 )
             return {"property_payment_term_id": payment_term.id}
+
+    @mapping
+    def customer_payment_mode_id(self, record):
+        if record.get("f_pago") and record.get("f_pago") in ["1", "2"]:
+            payment_mode = self.env["account.payment.mode"].search(
+                [("prestashop_name", "=", record.get("f_pago"))]
+            )
+            if not payment_mode:
+                raise MappingError(
+                    _("Payment mode with {} prestashop name not found.").format(
+                        record.get("f_pago")
+                    )
+                )
+            return {"customer_payment_mode_id": payment_mode.id}
+        return {}
 
     @mapping
     def payment_days(self, record):
@@ -83,6 +99,20 @@ class AddressImportMapper(Component):
             parent = binder.to_internal(record["id_customer"], unwrap=True)
             return {"odoo_id": parent.id}
 
+    @mapping
+    def state_id(self, record):
+        if record.get("id_country") and record.get("postcode"):
+            binder = self.binder_for("prestashop.res.country")
+            country = binder.to_internal(record["id_country"], unwrap=True)
+            city_zip = self.env["res.city.zip"].search(
+                [
+                    ("name", "=", record.get("postcode")),
+                    ("city_id.country_id", "=", country.id),
+                ], limit=1
+            )
+            if city_zip:
+                return {"state_id": city_zip.city_id.state_id.id}
+
 
 class AddressImporter(Component):
     _inherit = "prestashop.address.importer"
@@ -99,8 +129,33 @@ class AddressImporter(Component):
             )
         write_binding = binding.parent_id or binding
         if vat_number:
-            if self._check_vat(vat_number):
+            if self._check_vat(vat_number, write_binding.country_id):
                 write_binding.write({"vat": vat_number})
             else:
                 msg = _("Please, check the VAT number: %s") % vat_number
                 self.backend_record.add_checkpoint(write_binding, message=msg)
+
+    def _check_vat(self, vat_number, partner_country):
+        if self.env.context.get("company_id"):
+            company = self.env["res.company"].browse(
+                self.env.context["company_id"]
+            )
+        else:
+            company = self.env.user.company_id
+        if company.vat_check_vies:
+            # force full VIES online check
+            check_func = self.env["res.partner"].vies_vat_check
+        else:
+            # quick and partial off-line checksum validation
+            check_func = self.env["res.partner"].simple_vat_check
+        # check with country code as prefix of the TIN
+        vat_country, vat_number_ = self.env["res.partner"]._split_vat(
+            vat_number
+        )
+        if not check_func(vat_country, vat_number_):
+            # if fails, check with country code from country
+            country_code = partner_country.code
+            if country_code:
+                if not check_func(country_code.lower(), vat_number):
+                    return False
+        return True

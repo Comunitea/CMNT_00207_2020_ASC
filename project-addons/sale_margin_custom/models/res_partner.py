@@ -43,6 +43,6 @@ class ResPartner(models.Model):
         )
         for partner in self:
             rp = res.get(partner.id)
-            if rp:
+            if rp and rp["count"] and rp["amount"]:
                 partner.total_sale_margin = rp["margin"] / rp["count"]
                 partner.average_sale_margin = rp["margin"] / rp["amount"] * 100
