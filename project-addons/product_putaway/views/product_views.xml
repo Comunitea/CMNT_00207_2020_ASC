@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-      <record id="product_template_form_view_stock_location" model="ir.ui.view">
+    <delete id="view_product_putaway" model="ir.ui.view"/>
+    <!--record id="view_product_putaway" model="ir.ui.view">
+            <field name="name">product.putaway_ids</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_template_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='stock_property']" position="inside">
+                    <div>
+                        <h3>Ubicaciones de traslado</h3>
+                        <field name="product_putaway_ids">
+                            <tree>
+                                <field name="sequence" widget="handle"/>
+                                <field name="putaway_id"/>
+                                <field name="fixed_location_id"/>
+                            </tree>
+                        </field>
+                    </div>
+                </xpath>
+            </field>
+    </record-->
+
+     <record id="product_template_form_view_stock_location" model="ir.ui.view">
             <field name="name">product.template.form.stock_location</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
