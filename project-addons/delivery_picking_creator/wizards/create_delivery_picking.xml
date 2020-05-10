@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_picking_wxd" model="ir.ui.view">
+        <field name="name">view.delivery.picking.wzd</field>
+        <field name="model">delivery.picking.wzd</field>
+        <field name="arch" type="xml">
+            <form>
+                <label for="partner_id" string="Partner"/>
+                <h2>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="picking_type_id"  invisible="1" readonly="1"/>
+                </h2>
+                <group>
+                    <field name="line_ids" nolabel="1">
+                        <tree editable="button" edit="1" create="0" delete="0">
+                            <field name="selected"/>
+                            <field name="picking_id" readonly="1"/>
+                            <field name="n_lines" readonly="1"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_find_picking" string="Search picking" attrs="{'invisible':[('partner_id', '=', False)]}" type="object" class="oe_highlight" />
+                    <button name="action_create_picking" string="Create delivery picking" context="{'from_menu': False}" attrs="{'invisible': [('partner_id', '=', False)]}"  type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Delivery picking wzd"
+                res_model="delivery.picking.wzd"
+                src_model="stock.picking"
+                view_mode="form"
+                target="new"
+                key2="client_action_multi"
+                context="{'create_delivery': True}"
+                id="view_delivery_picking_wxd_act_window"/>
+
+
+</odoo>
+
