@@ -16,7 +16,8 @@
             <field name="inherit_id" ref="stock.view_location_tree2"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='usage']" position="before">
-                        <field name="oldname" />
+                    <field name="oldname" />
+                    <field name="removal_priority" />
                 </xpath>
             </field>
      </record>
