@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_team_view_form_custom_documents_data" model="ir.ui.view">
+        <field name="name">crm.team.custom.documents.data</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="Documents Info" string="Documents Info">
+                    <group>
+                        <field name="team_logo" widget="image"  class="oe_avatar"/>
+                        <field name="team_name"/>
+                        <field name="team_tag_line"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
