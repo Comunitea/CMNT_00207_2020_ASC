@@ -7,9 +7,11 @@
     "version": "12.0.1.0.0",
     "author": "Comunitea",
     "category": "Inventory",
-    "depends": ["stock"],
+    "depends": ["stock", "stock_picking_batch"],
     "data": [
-        "views/product_views.xml"
+        "views/product_views.xml",
+        "views/models.xml",
+
     ],
     "installable": True,
     "license": "AGPL-3",
