@@ -8,8 +8,8 @@
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_cancel']" position="after">
                 <field name="ready_to_send" invisible="1"/>
-                <button name="set_ready_to_send_pick_status" attrs="{'invisible': [('ready_to_send', '=', True)]}" context="{'ready_to_send': True}" states="sale" type="object" string="Ready PDA"/>
-                <button name="set_ready_to_send_pick_status" attrs="{'invisible': [('ready_to_send', '=', False)]}" context="{'ready_to_send': False}" states="sale" type="object" string="Not ready PDA"/>
+                <button name="set_ready_to_send_pick_status" invisible="1" context="{'ready_to_send': True}" type="object" string="Ready PDA"/>
+                <button name="set_ready_to_send_pick_status" invisible="1" context="{'ready_to_send': False}" type="object" string="Not ready PDA"/>
             </xpath>
         </field>
     </record>
