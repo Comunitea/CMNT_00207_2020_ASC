@@ -3,9 +3,9 @@
 from odoo import _
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.component.core import Component
-from odoo.addons.queue_job.exception import FailedJobError
+from odoo.addons.queue_job.exception import FailedJobError, NothingToDoJob
 
-MODO_DIFERIDO = '_sd_pago_rapido'
+MODO_DIFERIDO = "_sd_pago_rapido"
 
 
 class SaleImportRule(Component):
@@ -54,6 +54,7 @@ class SaleImportRule(Component):
 
 class SaleOrderImportMapper(Component):
     _inherit = "prestashop.sale.order.mapper"
+    _map_child_fallback = "sale.order.line.map.child.import"
 
     @mapping
     def payment(self, record):
@@ -65,7 +66,7 @@ class SaleOrderImportMapper(Component):
                 partner, unwrap=True
             ).customer_payment_mode_id
             if not payment_mode:
-                raise Exception('Payment mode not configured in partner')
+                raise Exception("Payment mode not configured in partner")
         else:
             binder = self.binder_for("account.payment.mode")
             payment_mode = binder.to_internal(record["module"])
@@ -75,3 +76,79 @@ class SaleOrderImportMapper(Component):
         )
         return {"payment_mode_id": payment_mode.id}
 
+
+class ImportMapChild(Component):
+    _name = "sale.order.line.map.child.import"
+    _inherit = "base.map.child.import"
+
+    def format_items(self, items_values):
+        """ Format the values of the items mapped from the child Mappers.
+
+        It can be overridden for instance to add the Odoo
+        relationships commands ``(6, 0, [IDs])``, ...
+
+        As instance, it can be modified to handle update of existing
+        items: check if an 'id' has been defined by
+        :py:meth:`get_item_values` then use the ``(1, ID, {values}``)
+        command
+
+        :param items_values: list of values for the items to create
+        :type items_values: list
+
+        """
+        res = []
+        for values in items_values:
+            if "tax_id" in values:
+                values.pop("tax_id")
+            prestashop_id = values["prestashop_id"]
+            prestashop_binding = self.binder_for(
+                "prestashop.sale.order.line"
+            ).to_internal(prestashop_id)
+            if prestashop_binding:
+                values.pop("prestashop_id")
+                final_vals = {}
+                for item in values.keys():
+                    # integer and float values come as string
+                    if (
+                        prestashop_binding._fields[item].type == "integer"
+                        and values[item]
+                    ):
+                        if int(values[item]) != prestashop_binding[item]:
+                            final_vals[item] = values[item]
+                    elif (
+                        prestashop_binding._fields[item].type == "float"
+                        and values[item]
+                    ):
+                        if float(values[item]) != prestashop_binding[item] and (
+                            prestashop_binding[item] - float(values[item])
+                            > 0.01
+                            or prestashop_binding[item] - float(values[item])
+                            < -0.01
+                        ):
+                            final_vals[item] = values[item]
+                    elif prestashop_binding._fields[item].type == "many2one":
+                        if values[item] != prestashop_binding[item].id:
+                            final_vals[item] = values[item]
+                    else:
+                        if values[item] != prestashop_binding[item]:
+                            final_vals[item] = values[item]
+                if final_vals:
+                    res.append((1, prestashop_binding.id, final_vals))
+            else:
+                res.append((0, 0, values))
+        return res
+
+
+class SaleOrderImporter(Component):
+    _inherit = "prestashop.sale.order.importer"
+
+    def _has_to_skip(self):
+        """ Sobreescribimos para traernos cualquier actualización sobre el pedido """
+        rules = self.component(usage="sale.import.rule")
+        try:
+            return rules.check(self.prestashop_record)
+        except NothingToDoJob as err:
+            # we don't let the NothingToDoJob exception let go out, because if
+            # we are in a cascaded import, it would stop the whole
+            # synchronization and set the whole job to done
+            return str(err)

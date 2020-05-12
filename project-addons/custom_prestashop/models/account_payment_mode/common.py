@@ -10,6 +10,9 @@ class AccountPaymentMode(models.Model):
 
     prestashop_name = fields.Char()
     prestashop_module = fields.Char()
+    defaullt_sale_invoice_policy = fields.Selection(
+        [("order", "Ordered quantities"), ("delivery", "Delivered quantities")]
+    )
 
 
 class PaymentModeBinder(Component):
