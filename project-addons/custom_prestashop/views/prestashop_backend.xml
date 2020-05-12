@@ -15,6 +15,12 @@
                         string="Import in background" />
                 </group>
             </xpath>
+            <xpath expr="//field[@name='matching_product_template']/../.." position="before">
+                <group>
+                    <field name="sent_state"/>
+                    <field name="delivered_state"/>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>
