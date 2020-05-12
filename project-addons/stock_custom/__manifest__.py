@@ -10,7 +10,8 @@
 
     "depends": ["stock",
                 "stock_removal_location_by_priority",
-                "stock_picking_report_valued"],
+                "stock_picking_report_valued",
+                "stock_picking_type_group", "warehouse_apk"],
     "data": [
         "views/stock_location.xml",
         'views/stock_picking.xml',

@@ -11,9 +11,11 @@
     "license": "AGPL-3",
     "depends": [
         "connector_prestashop",
+        "cmnt_prestashop_custom",
         "sales_team",
         "base_multi_image",
         "base_location",
+        "stock_custom"
     ],
     "data": [
         "views/account_payment_term.xml",
@@ -21,5 +23,6 @@
         "views/account_payment_mode.xml",
         "views/product_attribute.xml",
         "views/prestashop_backend.xml",
+        "views/sale_order_state.xml",
     ],
 }
