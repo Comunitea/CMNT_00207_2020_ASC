@@ -57,9 +57,6 @@ class PartnerImportMapper(Component):
                         record.get("plazo")
                     )
                 )
-            import ipdb
-
-            ipdb.set_trace()
             return {"team_id": crm_team.id}
 
 
