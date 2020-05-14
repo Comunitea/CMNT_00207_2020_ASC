@@ -17,32 +17,24 @@ class StockPicking(models.Model):
 
 
 class PrestashopStockPickingListener(Component):
-    _name = "prestashop.stock.picking.listener"
-    _inherit = "base.event.listener"
-    _apply_on = ["stock.picking"]
+    _inherit = "prestashop.stock.picking.listener"
 
     def on_tracking_number_added(self, record):
         res = super().on_tracking_number_added(record)
         for binding in record.sale_id.prestashop_bind_ids:
             state = binding.backend_id.sent_state
-            bind_state = state.prestashp_bind_ids.filtered(
+            record.sale_id.prestashop_state = state
+            bind_state = state.prestashop_bind_ids.filtered(
                 lambda r: r.backend_id == binding.backend_id
             )
-            rel_binder = self.binder_for("sale.order.state.exporter")
-            rel_binder.to_external(bind_state)
-            binding.with_delay().export_order_state(
-                rel_binder.to_external(bind_state)
-            )
+            binding.with_delay().export_sale_state(bind_state.prestashop_id)
         return res
 
     def on_delivered(self, record):
         for binding in record.sale_id.prestashop_bind_ids:
             state = binding.backend_id.delivered_state
-            bind_state = state.prestashp_bind_ids.filtered(
+            record.sale_id.prestashop_state = state
+            bind_state = state.prestashop_bind_ids.filtered(
                 lambda r: r.backend_id == binding.backend_id
             )
-            rel_binder = self.binder_for("sale.order.state.exporter")
-            rel_binder.to_external(bind_state)
-            binding.with_delay().export_order_state(
-                rel_binder.to_external(bind_state)
-            )
+            binding.with_delay().export_sale_state(bind_state.prestashop_id)
