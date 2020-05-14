@@ -1,7 +1,7 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import _
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.component.core import Component
 from odoo.addons.queue_job.exception import FailedJobError, NothingToDoJob
 
@@ -75,6 +75,19 @@ class SaleOrderImportMapper(Component):
             "when the payment mode is missing"
         )
         return {"payment_mode_id": payment_mode.id}
+
+    @mapping
+    @only_create
+    def name(self, record):
+        basename = record['reference']
+        if not self._sale_order_exists(basename):
+            return {"name": basename}
+        i = 1
+        name = basename + '_%d' % (i)
+        while self._sale_order_exists(name):
+            i += 1
+            name = basename + '_%d' % (i)
+        return {"name": name}
 
 
 class ImportMapChild(Component):
