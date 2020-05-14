@@ -15,7 +15,7 @@
         "sales_team",
         "base_multi_image",
         "base_location",
-        "stock_custom"
+        "stock_custom",
     ],
     "data": [
         "views/account_payment_term.xml",

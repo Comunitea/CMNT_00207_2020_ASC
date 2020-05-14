@@ -79,14 +79,14 @@ class SaleOrderImportMapper(Component):
     @mapping
     @only_create
     def name(self, record):
-        basename = record['reference']
+        basename = record["reference"]
         if not self._sale_order_exists(basename):
             return {"name": basename}
         i = 1
-        name = basename + '_%d' % (i)
+        name = basename + "_%d" % (i)
         while self._sale_order_exists(name):
             i += 1
-            name = basename + '_%d' % (i)
+            name = basename + "_%d" % (i)
         return {"name": name}
 
 
