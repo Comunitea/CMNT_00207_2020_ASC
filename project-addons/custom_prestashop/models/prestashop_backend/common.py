@@ -6,8 +6,8 @@ from odoo import fields, models
 class PrestashopBackend(models.Model):
     _inherit = "prestashop.backend"
 
-    sent_state = fields.Many2one('sale.order.state', required=True)
-    delivered_state = fields.Many2one('sale.order.state', required=True)
+    sent_state = fields.Many2one("sale.order.state", required=True)
+    delivered_state = fields.Many2one("sale.order.state", required=True)
 
     def import_attributes(self):
         for backend_record in self:

@@ -31,14 +31,14 @@ class ProductCombinationOptionImporter(Component):
 
 
 class ProductCombinationOptionValueImporter(Component):
-    _inherit = 'prestashop.product.combination.option.value.importer'
+    _inherit = "prestashop.product.combination.option.value.importer"
 
     def _import_dependencies(self):
         record = self.prestashop_record
         if record.get("id_product") != "0":
             self._import_dependency(
-                    record["id_product"], "prestashop.product.template"
-                )
+                record["id_product"], "prestashop.product.template"
+            )
 
 
 class ProductCombinationOptionValueMapper(Component):

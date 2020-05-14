@@ -15,8 +15,8 @@ class PrestashopStandardPriceExporter(Component):
         vals = self.component(usage="backend.adapter").read(
             binding.prestashop_id
         )
-        vals.pop('manufacturer_name')
-        vals.pop('quantity')
+        vals.pop("manufacturer_name")
+        vals.pop("quantity")
         vals["wholesale_price"] = binding.standard_price
         self.component(usage="backend.adapter").write(
             binding.prestashop_id, vals

@@ -84,13 +84,13 @@ class PrestashopSaleOrder(models.Model):
             self.odoo_id.action_confirm()
         return res
 
-    @job(default_channel='root.prestashop')
-    @related_action(action='related_action_unwrap_binding')
+    @job(default_channel="root.prestashop")
+    @related_action(action="related_action_unwrap_binding")
     @api.multi
     def export_sale_state(self, new_state):
         for sale in self:
             if not new_state:
                 continue
             with sale.backend_id.work_on(self._name) as work:
-                exporter = work.component(usage='sale.order.state.exporter')
+                exporter = work.component(usage="sale.order.state.exporter")
                 return exporter.run(self, new_state)
