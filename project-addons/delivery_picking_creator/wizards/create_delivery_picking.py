@@ -28,7 +28,7 @@ class DeliveryPickingWzdLine(models.TransientModel):
     @api.model
     def default_get(self, field_list):
         res = super(DeliveryPickingWzdLine, self).default_get(field_list)
-        if self._context.get('active_id', False) and self._context.get('from_menu', False):
+        if self._context.get('active_id', False) and self._context.get('create_delivery', False):
             pick = self.env['stock.picking'].browse(self._context['active_id'])
             picking_type_id = self.env.ref(
                 'delivery_picking_creator.delivery_picking_type')
@@ -66,7 +66,7 @@ class DeliveryPickingWzdLine(models.TransientModel):
         action_picking = self.env.ref('stock.action_picking_tree_ready')
         action = action_picking.read()[0]
         action['context'] = {}
-        action['domain'] = [('id', 'in', delivery_ids.id)]
+        action['domain'] = [('id', 'in', delivery_ids.ids)]
         return action
 
     def get_same_partner_picks(self, partner_id):
