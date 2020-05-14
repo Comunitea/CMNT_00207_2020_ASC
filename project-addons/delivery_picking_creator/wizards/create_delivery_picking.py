@@ -18,7 +18,7 @@ class DeliveryPickingWzdLine(models.TransientModel):
     _name = "delivery.picking.wzd"
     _description = "Wzd to create delivery picking for same partner"
 
-    picking_type_id = fields.Many2one("stock.move", "Move")
+    picking_type_id = fields.Many2one("stock.picking.type", "Tipo")
     partner_id = fields.Many2one('res.partner', string="Delivery adress")
     line_ids = fields.Many2many("delivery.picking.wzd.line", string= "Lines")
 
