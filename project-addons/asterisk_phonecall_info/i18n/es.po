@@ -1,0 +1,120 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* asterisk_phonecall_info
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-27 16:00+0000\n"
+"PO-Revision-Date: 2020-05-27 16:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__asterisk_id
+msgid "Asterisk"
+msgstr ""
+
+#. module: asterisk_phonecall_info
+#: model:ir.model,name:asterisk_phonecall_info.model_asterisk_server
+msgid "Asterisk Servers"
+msgstr "Servidores Asterisk"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__campaign_id
+msgid "Campaing"
+msgstr "Campaña"
+
+#. module: asterisk_phonecall_info
+#: code:addons/asterisk_phonecall_info/models/asterisk_server.py:78
+#, python-format
+msgid "Can't get calling number from  Asterisk.\n"
+"Here is the error: '%s'"
+msgstr "No podemos recibir el número desde Asterisk.\n"
+"Error: '%s'"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model,name:asterisk_phonecall_info.model_phone_common
+msgid "Common methods for phone features"
+msgstr "Métodos comunes para funciones del teléfono"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__duration
+msgid "Duration"
+msgstr "Duración"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,help:asterisk_phonecall_info.field_crm_phonecall__duration
+msgid "Duration in minutes and seconds."
+msgstr "Duración en minutos y segundos."
+
+#. module: asterisk_phonecall_info
+#: code:addons/asterisk_phonecall_info/models/asterisk_server.py:68
+#, python-format
+msgid "Error creating crm.phonecall.\n"
+"Here is the error: '%s'"
+msgstr "Error creando el registro de llamada.\n"
+"Error: '%s'"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__extension
+msgid "Extension"
+msgstr "Extensión"
+
+#. module: asterisk_phonecall_info
+#: code:addons/asterisk_phonecall_info/models/phone_common.py:32
+#, python-format
+msgid "Incoming call"
+msgstr "Llamada entrante"
+
+#. module: asterisk_phonecall_info
+#: code:addons/asterisk_phonecall_info/models/phone_common.py:31
+#, python-format
+msgid "Incoming call from {}"
+msgstr "Llamada entrante desde {}"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__length
+msgid "Length"
+msgstr "Longitud"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__medium_id
+msgid "Medium"
+msgstr "Medio"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__notes
+msgid "Notes"
+msgstr "Notas"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__source_id
+msgid "Source"
+msgstr "Fuente"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__tag_ids
+msgid "Tags"
+msgstr "Etiquetas"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,help:asterisk_phonecall_info.field_crm_phonecall__medium_id
+msgid "This is the delivery method, e.g. Postcard, Email, or Banner Ad"
+msgstr "Éste es el método de entrega, por ejemplo, envío postal, Email, o el anuncio en un Bammer"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,help:asterisk_phonecall_info.field_crm_phonecall__source_id
+msgid "This is the link source, e.g. Search Engine, another domain,or name of email list"
+msgstr "Ésta es la fuente del link, por ejemplo, buscador, otro dominio, o nombre de lista de email"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model,name:asterisk_phonecall_info.model_crm_phonecall
+msgid "crm.phonecall"
+msgstr ""
+
