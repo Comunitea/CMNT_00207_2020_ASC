@@ -24,5 +24,6 @@
         "views/product_attribute.xml",
         "views/prestashop_backend.xml",
         "views/sale_order_state.xml",
+        "data/sale_exception.xml"
     ],
 }
