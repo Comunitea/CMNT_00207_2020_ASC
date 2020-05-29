@@ -1,6 +1,6 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import api, models, fields
+from odoo import api, models, fields, _
 from odoo.addons.queue_job.job import job, related_action
 
 
@@ -28,6 +28,29 @@ class SaleOrder(models.Model):
         return res
 
     @api.multi
+    def action_confirm(self):
+        return super(SaleOrder, self.with_context(bypass_risk=True)).action_confirm()
+
+    def check_risk_exception(self):
+        partner = self.partner_id.commercial_partner_id
+        exception_msg = ""
+        if partner.risk_exception:
+            exception_msg = _("Financial risk exceeded.\n")
+        elif partner.risk_sale_order_limit and (
+                (partner.risk_sale_order + self.amount_total) >
+                partner.risk_sale_order_limit):
+            exception_msg = _(
+                "This sale order exceeds the sales orders risk.\n")
+        elif partner.risk_sale_order_include and (
+                (partner.risk_total + self.amount_total) >
+                partner.credit_limit):
+            exception_msg = _(
+                "This sale order exceeds the financial risk.\n")
+        if exception_msg:
+            return True
+        return False
+
+    @api.multi
     def _action_confirm(self):
         res = super()._action_confirm()
         for order in self:
@@ -38,16 +61,7 @@ class SaleOrder(models.Model):
     def write(self, vals):
         res = super().write(vals)
         for order in self:
-            if vals.get("prestashop_state"):
-                state = order.prestashop_state
-                if state.trigger_cancel:
-                    order.invoice_ids.filtered(
-                        lambda r: r.state == "draft"
-                    ).action_cancel()
-                    if order.state == "done":
-                        order.action_unlock()
-                    order.action_cancel()
-                elif state.trigger_paid:
+                if state.trigger_paid:
                     order.ready_to_send = True
                     order.picking_ids.write({"ready_to_send": True})
         return res
