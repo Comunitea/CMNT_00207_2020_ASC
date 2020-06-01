@@ -61,6 +61,8 @@ class SaleOrder(models.Model):
     def write(self, vals):
         res = super().write(vals)
         for order in self:
+            if vals.get("prestashop_state"):
+                state = order.prestashop_state
                 if state.trigger_paid:
                     order.ready_to_send = True
                     order.picking_ids.write({"ready_to_send": True})
