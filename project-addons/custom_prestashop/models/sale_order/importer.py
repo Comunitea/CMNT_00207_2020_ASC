@@ -133,10 +133,8 @@ class ImportMapChild(Component):
                         and values[item]
                     ):
                         if float(values[item]) != prestashop_binding[item] and (
-                            prestashop_binding[item] - float(values[item])
-                            > 0.01
-                            or prestashop_binding[item] - float(values[item])
-                            < -0.01
+                            prestashop_binding[item] - float(values[item]) > 0.01
+                            or prestashop_binding[item] - float(values[item]) < -0.01
                         ):
                             final_vals[item] = values[item]
                     elif prestashop_binding._fields[item].type == "many2one":

@@ -14,11 +14,7 @@ class ProductTemplateImporter(Component):
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
-        if (
-            record.get("associations", {})
-            .get("product_bundle", {})
-            .get("product", {})
-        ):
+        if record.get("associations", {}).get("product_bundle", {}).get("product", {}):
             bundle_products = {}
             binder = self.binder_for("prestashop.product.template")
             product_lines = (
@@ -87,9 +83,7 @@ class ProductTemplateImporter(Component):
             images = [images[0]]
         for image in images:
             if image.get("id"):
-                delayable = self.env["prestashop.product.image"].with_delay(
-                    priority=10
-                )
+                delayable = self.env["prestashop.product.image"].with_delay(priority=10)
                 delayable.import_product_image(
                     self.backend_record, prestashop_record["id"], image["id"]
                 )

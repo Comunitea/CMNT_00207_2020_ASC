@@ -12,12 +12,8 @@ class PrestashopStandardPriceExporter(Component):
 
     def run(self, binding, **kwargs):
         """ Export the standard price of a product to PrestaShop """
-        vals = self.component(usage="backend.adapter").read(
-            binding.prestashop_id
-        )
+        vals = self.component(usage="backend.adapter").read(binding.prestashop_id)
         vals.pop("manufacturer_name")
         vals.pop("quantity")
         vals["wholesale_price"] = binding.standard_price
-        self.component(usage="backend.adapter").write(
-            binding.prestashop_id, vals
-        )
+        self.component(usage="backend.adapter").write(binding.prestashop_id, vals)

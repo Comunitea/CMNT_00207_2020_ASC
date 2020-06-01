@@ -4,7 +4,7 @@ from odoo.addons.component.core import Component
 
 
 class PrestashopTrackingExporter(Component):
-    _inherit = 'prestashop.stock.tracking.exporter'
+    _inherit = "prestashop.stock.tracking.exporter"
 
     def _get_tracking(self):
         trackings = []
@@ -12,6 +12,5 @@ class PrestashopTrackingExporter(Component):
             if picking.carrier_tracking_ref:
                 trackings.append(picking.carrier_tracking_ref)
             elif picking.delivery_picking_id.carrier_tracking_ref:
-                trackings.append(
-                    picking.delivery_picking_id.carrier_tracking_ref)
-        return ' '.join(trackings) if trackings else None
+                trackings.append(picking.delivery_picking_id.carrier_tracking_ref)
+        return " ".join(trackings) if trackings else None

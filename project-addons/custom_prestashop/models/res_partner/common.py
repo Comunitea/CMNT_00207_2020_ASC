@@ -8,9 +8,7 @@ class PrestashopResPartner(models.Model):
     _inherit = "prestashop.res.partner"
 
     @job(default_channel="root.prestashop")
-    def import_customers_since(
-        self, backend_record=None, since_date=None, **kwargs
-    ):
+    def import_customers_since(self, backend_record=None, since_date=None, **kwargs):
         """ Prepare the import of partners modified on PrestaShop """
         filters = {}
         if since_date:

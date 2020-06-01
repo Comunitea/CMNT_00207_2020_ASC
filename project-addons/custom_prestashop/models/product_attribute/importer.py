@@ -15,10 +15,7 @@ class ProductCombinationOptionImporter(Component):
         option_values = (
             record.get("associations", {})
             .get("product_option_values", {})
-            .get(
-                self.backend_record.get_version_ps_key("product_option_value"),
-                [],
-            )
+            .get(self.backend_record.get_version_ps_key("product_option_value"), [])
         )
         if not isinstance(option_values, list):
             option_values = [option_values]
@@ -36,9 +33,7 @@ class ProductCombinationOptionValueImporter(Component):
     def _import_dependencies(self):
         record = self.prestashop_record
         if record.get("id_product") != "0":
-            self._import_dependency(
-                record["id_product"], "prestashop.product.template"
-            )
+            self._import_dependency(record["id_product"], "prestashop.product.template")
 
 
 class ProductCombinationOptionValueMapper(Component):
@@ -47,9 +42,9 @@ class ProductCombinationOptionValueMapper(Component):
     @mapping
     def product_id(self, record):
         if record.get("id_product") != "0":
-            product = self.binder_for(
-                "prestashop.product.template"
-            ).to_internal(record["id_product"], unwrap=True)
+            product = self.binder_for("prestashop.product.template").to_internal(
+                record["id_product"], unwrap=True
+            )
             return {"product_id": product.product_variant_ids[0].id}
         return {}
 
