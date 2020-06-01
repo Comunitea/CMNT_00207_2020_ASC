@@ -12,13 +12,8 @@ class SaleOrder(models.Model):
 
     @api.onchange("payment_mode_id")
     def onchange_payment_mode_id(self):
-        if (
-            self.payment_mode_id
-            and self.payment_mode_id.defaullt_sale_invoice_policy
-        ):
-            self.invoice_policy = (
-                self.payment_mode_id.defaullt_sale_invoice_policy
-            )
+        if self.payment_mode_id and self.payment_mode_id.defaullt_sale_invoice_policy:
+            self.invoice_policy = self.payment_mode_id.defaullt_sale_invoice_policy
 
     @api.model
     def create(self, vals):
@@ -37,15 +32,14 @@ class SaleOrder(models.Model):
         if partner.risk_exception:
             exception_msg = _("Financial risk exceeded.\n")
         elif partner.risk_sale_order_limit and (
-                (partner.risk_sale_order + self.amount_total) >
-                partner.risk_sale_order_limit):
-            exception_msg = _(
-                "This sale order exceeds the sales orders risk.\n")
+            (partner.risk_sale_order + self.amount_total)
+            > partner.risk_sale_order_limit
+        ):
+            exception_msg = _("This sale order exceeds the sales orders risk.\n")
         elif partner.risk_sale_order_include and (
-                (partner.risk_total + self.amount_total) >
-                partner.credit_limit):
-            exception_msg = _(
-                "This sale order exceeds the financial risk.\n")
+            (partner.risk_total + self.amount_total) > partner.credit_limit
+        ):
+            exception_msg = _("This sale order exceeds the financial risk.\n")
         if exception_msg:
             return True
         return False
@@ -75,10 +69,7 @@ class PrestashopSaleOrder(models.Model):
     @api.multi
     def write(self, vals):
         can_edit = True
-        if (
-            "prestashop_order_line_ids" in vals
-            and vals["prestashop_order_line_ids"]
-        ):
+        if "prestashop_order_line_ids" in vals and vals["prestashop_order_line_ids"]:
             for picking in self.odoo_id.picking_ids:
                 if picking.state in ("assigned", "done"):
                     can_edit = False

@@ -22,10 +22,11 @@ class PrestashopStockPickingListener(Component):
     def on_tracking_number_added(self, record):
         res = super().on_tracking_number_added(record)
         sale_bind_ids = record.sale_id.prestashop_bind_ids
-        import pdb; pdb.set_trace()
         if not sale_bind_ids:
             # debemos hacer la exportación de super
-            sale_bind_ids = record.gropued_picking_ids.mapped('sale_id.prestashop_bind_ids')
+            sale_bind_ids = record.gropued_picking_ids.mapped(
+                "sale_id.prestashop_bind_ids"
+            )
             for binding in sale_bind_ids:
                 binding.with_delay().export_tracking_number()
         for binding in sale_bind_ids:
@@ -40,7 +41,9 @@ class PrestashopStockPickingListener(Component):
     def on_delivered(self, record):
         sale_bind_ids = record.sale_id.prestashop_bind_ids
         if not sale_bind_ids:
-            sale_bind_ids = record.gropued_picking_ids.mapped('sale_id.prestashop_bind_ids')
+            sale_bind_ids = record.gropued_picking_ids.mapped(
+                "sale_id.prestashop_bind_ids"
+            )
         for binding in sale_bind_ids:
             state = binding.backend_id.delivered_state
             binding.odoo_id.prestashop_state = state

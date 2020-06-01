@@ -11,7 +11,7 @@ class PrestashopBackend(models.Model):
 
     def import_attributes(self):
         for backend_record in self:
-            self.env[
-                "prestashop.product.combination.option"
-            ].with_delay().import_batch(backend_record)
+            self.env["prestashop.product.combination.option"].with_delay().import_batch(
+                backend_record
+            )
         return True

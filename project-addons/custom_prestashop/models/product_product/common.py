@@ -28,8 +28,7 @@ class ProductProduct(models.Model):
                     for line in current_bom.bom_line_ids:
                         if (
                             line.product_id not in bundle_products.keys()
-                            or line.product_qty
-                            != bundle_products[line.product_id]
+                            or line.product_qty != bundle_products[line.product_id]
                         ):
                             product_bom.write({"active": False})
                             create_bom = True
