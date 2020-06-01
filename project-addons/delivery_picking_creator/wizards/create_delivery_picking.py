@@ -55,7 +55,7 @@ class DeliveryPickingWzd(models.TransientModel):
 
     @api.multi
     def create_new_delivery_picking(self, picking_ids):
-        partner_id = picking_ids[0].parnter_id
+        partner_id = picking_ids[0].partner_id
         carrier_id = picking_ids[0].carrier_id
         delivery_ids = self.env["stock.picking"]
         ## creo un nuevo albarán
@@ -72,6 +72,7 @@ class DeliveryPickingWzd(models.TransientModel):
             vals["origin"] = origin
             picking_id = self.env["stock.picking"].create(vals)
             delivery_ids |= picking_id
+            partner_pick_ids.write({'delivery_picking_id': picking_id.id})
             move_lines = partner_pick_ids.mapped("move_lines").filtered(
                 lambda x: x.state == "done"
             )
@@ -89,7 +90,8 @@ class DeliveryPickingWzd(models.TransientModel):
             ("carrier_id", "=", carrier_id),
             ("picking_type_id.code", "=", "outgoing"),
             ("state", "=", "done"),
-            ("carrier_tracking_ref", "=", False)("delivery_picking_id", "=", False),
+            ("carrier_tracking_ref", "=", False),
+            ("delivery_picking_id", "=", False),
         ]
         picking_ids = self.env["stock.picking"].search(domain, order="date_done desc")
         return picking_ids
