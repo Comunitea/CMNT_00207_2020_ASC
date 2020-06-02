@@ -8,10 +8,7 @@
     "author": "Comunitea",
     "category": "Inventory",
     "depends": ["sale_stock"],
-    "data": [
-        "data/stock_picking_type.xml",
-        "wizards/create_delivery_picking.xml"
-    ],
+    "data": ["data/stock_picking_type.xml", "wizards/create_delivery_picking.xml"],
     "installable": True,
     "license": "AGPL-3",
 }

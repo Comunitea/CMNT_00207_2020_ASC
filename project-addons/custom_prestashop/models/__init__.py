@@ -12,3 +12,6 @@ from . import prestashop_backend
 from . import image
 from . import stock_picking
 from . import sale_order_state
+from . import product_image
+from . import product_category
+from . import stock_tracking
