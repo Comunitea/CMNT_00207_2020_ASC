@@ -110,6 +110,7 @@ def wsgi_xmlrpc(environ, start_response):
 
         params, method = xmlrpclib.loads(data)
         try:
+
             result = odoo.http.dispatch_rpc(service, method, params)
             response = xmlrpclib.dumps((result,), methodresponse=1, allow_none=False)
         except Exception as e:
@@ -117,7 +118,13 @@ def wsgi_xmlrpc(environ, start_response):
                 response = xmlrpc_handle_exception_string(e)
             else:
                 response = xmlrpc_handle_exception_int(e)
-
+        start_response("200 OK", [
+            ('Content-Type', 'text/xml'), ('Content-Length', str(len(response))),
+            ('Access-Control-Allow-Origin', '*'),
+            ('Access-Control-Allow-Methods', 'POST, GET, OPTIONS'),
+            ('Access-Control-Max-Age', 1000),
+            ('Access-Control-Allow-Headers', 'origin, x-csrftoken, content-type, accept'),
+        ])
         return werkzeug.wrappers.Response(
             response=response,
             mimetype='text/xml',
