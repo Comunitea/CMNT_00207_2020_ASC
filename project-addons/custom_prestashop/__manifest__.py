@@ -15,7 +15,8 @@
         "sales_team",
         "base_multi_image",
         "base_location",
-        "stock_custom"
+        "stock_custom",
+        "delivery_picking_creator",
     ],
     "data": [
         "views/account_payment_term.xml",
@@ -24,5 +25,6 @@
         "views/product_attribute.xml",
         "views/prestashop_backend.xml",
         "views/sale_order_state.xml",
+        "data/sale_exception.xml",
     ],
 }

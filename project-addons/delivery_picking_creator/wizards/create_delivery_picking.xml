@@ -8,6 +8,7 @@
                 <label for="partner_id" string="Partner"/>
                 <h2>
                     <field name="partner_id" readonly="1"/>
+                    <field name="carrier_id" readonly="1"/>
                     <field name="picking_type_id"  invisible="1" readonly="1"/>
                 </h2>
                 <group>

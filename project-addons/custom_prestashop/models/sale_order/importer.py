@@ -79,14 +79,14 @@ class SaleOrderImportMapper(Component):
     @mapping
     @only_create
     def name(self, record):
-        basename = record['reference']
+        basename = record["reference"]
         if not self._sale_order_exists(basename):
             return {"name": basename}
         i = 1
-        name = basename + '_%d' % (i)
+        name = basename + "_%d" % (i)
         while self._sale_order_exists(name):
             i += 1
-            name = basename + '_%d' % (i)
+            name = basename + "_%d" % (i)
         return {"name": name}
 
 
@@ -133,10 +133,8 @@ class ImportMapChild(Component):
                         and values[item]
                     ):
                         if float(values[item]) != prestashop_binding[item] and (
-                            prestashop_binding[item] - float(values[item])
-                            > 0.01
-                            or prestashop_binding[item] - float(values[item])
-                            < -0.01
+                            prestashop_binding[item] - float(values[item]) > 0.01
+                            or prestashop_binding[item] - float(values[item]) < -0.01
                         ):
                             final_vals[item] = values[item]
                     elif prestashop_binding._fields[item].type == "many2one":
