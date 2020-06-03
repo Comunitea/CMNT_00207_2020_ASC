@@ -22,13 +22,13 @@
                             </group>
                         </group>
 
-                        <group col="6" attrs="{'invisible': [('use_gt', '!=', True)]}">
+                        <group string="Changes +" col="6" attrs="{'invisible': [('use_gt', '!=', True)]}">
                             <field name="gt_sales"/>
                             <field name="gt_days"/>
                             <field name="gt_qty"/>
                         </group>
 
-                        <group col="6" attrs="{'invisible': [('use_lt', '!=', True)]}">
+                        <group string="Changes -" col="6" attrs="{'invisible': [('use_lt', '!=', True)]}">
                             <field name="lt_sales"/>
                             <field name="lt_days"/>
                             <field name="lt_qty"/>
