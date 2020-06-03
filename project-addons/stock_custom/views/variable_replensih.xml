@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_variable_replenish_form" model="ir.ui.view">
+        <field name="name">view_variable_replenish_form</field>
+        <field name="model">variable.replenish</field>
+        <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="sale_days"/>
+                                <field name="min_qty"/>
+                                <field name="max_qty"/>
+                            </group>
+                            <group>
+                                <field name="average_ratio"/>
+                                <field name="min_qty_ratio"/>
+                                <field name="use_gt"/>
+                                <field name="use_lt"/>
+                            </group>
+                        </group>
+
+                        <group col="6" attrs="{'invisible': [('use_gt', '!=', True)]}">
+                            <field name="gt_sales"/>
+                            <field name="gt_days"/>
+                            <field name="gt_qty"/>
+                        </group>
+
+                        <group col="6" attrs="{'invisible': [('use_lt', '!=', True)]}">
+                            <field name="lt_sales"/>
+                            <field name="lt_days"/>
+                            <field name="lt_qty"/>
+                        </group>
+                    </sheet>
+                </form>
+        </field>
+    </record>
+
+     <record id="view_variable_replenish_tree" model="ir.ui.view">
+            <field name="name">view_variable_replenish_tree</field>
+            <field name="model">variable.replenish</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="sale_days"/>
+                    <field name="min_qty"/>
+                    <field name="max_qty"/>
+                </tree>
+            </field>
+        </record>
+
+     <record id="action_variable_replenish" model="ir.actions.act_window">
+            <field name="name">Variable Replenish</field>
+            <field name="res_model">variable.replenish</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_variable_replenish_tree"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a variable replenish category
+              </p>
+            </field>
+        </record>
+
+     <menuitem
+            id="menu_variable_replenish"
+            action="action_variable_replenish"
+            name="Variable Replenish" parent="stock.menu_stock_inventory_control" sequence="09"/>
+</odoo>
