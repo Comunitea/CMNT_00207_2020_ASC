@@ -15,9 +15,10 @@
         'crm_phone',
         'crm_phonecall_planner',
         'crm_phonecall',
+        'asterisk_click2dial'
     ],
     'data': [
         #'security/ir.model.access.csv',
         'views/crm_phonecall_view.xml'
-    ],    
+    ],
 }
