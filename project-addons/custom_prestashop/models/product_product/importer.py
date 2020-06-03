@@ -37,21 +37,18 @@ class ProductCombinationImporter(Component):
                     ps_images = [ps_images[0]]
                 if "id" in ps_images[0]:
                     images = [
-                        binder.to_internal(x.get("id"), unwrap=True)
-                        for x in ps_images
+                        binder.to_internal(x.get("id"), unwrap=True) for x in ps_images
                     ]
                 else:
                     images = []
                 if images:
-                    product_binder = self.binder_for(
-                        "prestashop.product.combination"
-                    )
+                    product_binder = self.binder_for("prestashop.product.combination")
                     product_product = product_binder.to_internal(
                         combination["id"], unwrap=True
                     )
-                    product_product.with_context(
-                        connector_no_export=True
-                    ).write({"image_ids": [(6, 0, [x.id for x in images])]})
+                    product_product.with_context(connector_no_export=True).write(
+                        {"image_ids": [(6, 0, [x.id for x in images])]}
+                    )
             except PrestaShopWebServiceError:
                 # TODO: don't we track anything here? Maybe a checkpoint?
                 pass
