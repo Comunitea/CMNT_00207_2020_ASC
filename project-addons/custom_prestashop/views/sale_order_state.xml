@@ -9,7 +9,6 @@
             <xpath expr="//field[@name='name']/.." position="after">
                 <group>
                     <field name="trigger_paid"/>
-                    <field name="trigger_cancel"/>
                 </group>
             </xpath>
         </field>
