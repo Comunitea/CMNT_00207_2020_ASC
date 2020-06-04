@@ -114,6 +114,12 @@ class SaleOrderImportMapper(Component):
             name = basename + "_%d" % (i)
         return {"name": name}
 
+    def _map_child(self, map_record, from_attr, to_attr, model_name):
+        context = dict(self.env.context)
+        context['model_name'] = model_name
+        self.env.context = context
+        return super()._map_child(map_record, from_attr, to_attr, model_name)
+
 
 class ImportMapChild(Component):
     _name = "sale.order.line.map.child.import"
@@ -140,7 +146,7 @@ class ImportMapChild(Component):
                 values.pop("tax_id")
             prestashop_id = values["prestashop_id"]
             prestashop_binding = self.binder_for(
-                "prestashop.sale.order.line"
+                self.env.context['model_name']
             ).to_internal(prestashop_id)
             if prestashop_binding:
                 values.pop("prestashop_id")
