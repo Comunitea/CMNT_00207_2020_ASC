@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="stock_batch_picking_form">
+            <field name="name">stock.picking.batch.form.wac</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='use_oca_batch_validation']/.." position="after">
+                     <group>
+                         <field name="picking_type_id" readonly="1"/>
+                         <field name="partner_id" readonly="1"/>
+                         <field name="pick_state" widget="statusbar" statusbar_visible="assigned,done"/>
+                         <field name="carrier_weight" />
+                         <field name="carrier_packages" />
+                     </group>
+                 </xpath>
+            </field>
+    </record>
+
+</odoo>

@@ -20,9 +20,14 @@
 ##############################################################################
 
 from odoo import api, models, fields
-import logging
+from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
 
-_logger = logging.getLogger(__name__)
+class PickingTypeGroupCode(models.Model):
+    _inherit = 'picking.type.group.code'
+
+    batch_domain = fields.Char('Dominio para buscar batchs')
+    batch_group_fields = fields.Many2many('ir.model.fields', domain="[('model_id', '=', 287)]")
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -32,3 +37,55 @@ class StockPicking(models.Model):
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
         return res
+
+    def auto_assign_batch_id(self):
+        batch_domain = self.picking_type_id.group_code.batch_domain or "[('picking_type_id', '=', self.picking_type_id.id)]"
+
+        domain = eval(batch_domain)
+        domain += [('user_id', '=', False),
+                   ('state', '=', 'assigned'),
+                   ('user_id', '=', False)]
+        spb = self.env['stock.picking.batch']
+        batch_id = spb.search(domain)
+        if not batch_id:
+            new_batch_vals = {
+                'picking_type_id': self.picking_type_id.id,
+                'name': self.name,
+                'user_id': False,
+                'partner_id': self.partner_id.id,
+                'state': 'assigned',
+                'picking_ids': [(6, 0, self.ids)]
+            }
+            spb.create(new_batch_vals)
+        else:
+            self.batch_id = batch_id
+        return
+
+
+    @api.depends('ready_to_send', 'move_type', 'move_lines.state', 'move_lines.picking_id')
+    @api.one
+    def _compute_state(self):
+        super()._compute_state()
+        if self.app_integrated:# and not self.batch_id and self.state=='assigned':
+            self.check_apk_batch()
+
+    @api.multi
+    def check_apk_batch(self):
+        for pick in self:
+            if self.state == 'assigned' and not self.batch_id:
+                pick.auto_assign_batch_id()
+            # elif self.state not in ['done', 'assigned'] and self.batch_id:
+            #     if pick.batch_id.user_id:
+            #         raise ValidationError(
+            #             'No puedes cambiar el envío a almacén del albarán {} porque está en el batch {}'.format(
+            #                 pick.name, pick.batch_id.name))
+            #     batch_id = self.env['stock.picking.batch']
+            #     batch_id |= pick.batch_id
+            #     pick.batch_id = self.env['stock.picking.batch']
+            #     if not batch_id.picking_ids:
+            #         batch_id.unlink()
+
+    @api.multi
+    def write(self, vals):
+        return super().write(vals=vals)
+
