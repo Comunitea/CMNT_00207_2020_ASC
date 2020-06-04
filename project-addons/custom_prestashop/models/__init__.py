@@ -15,3 +15,4 @@ from . import sale_order_state
 from . import product_image
 from . import product_category
 from . import account_fiscal_position
+from . import stock_tracking
