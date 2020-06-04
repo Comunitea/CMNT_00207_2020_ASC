@@ -57,6 +57,31 @@ class SaleOrderImportMapper(Component):
     _map_child_fallback = "sale.order.line.map.child.import"
 
     @mapping
+    def fiscal_position_id(self, record):
+        order_lines = record.get('associations').get('order_rows').get('order_row')
+        if isinstance(order_lines, dict):
+            order_lines = [order_lines]
+        line_taxes = []
+        sale_line_adapter = self.component(
+            usage='backend.adapter',
+            model_name='prestashop.sale.order.line'
+        )
+        for line in order_lines:
+            line_data = sale_line_adapter.read(line['id'])
+            prestashop_tax_id = line_data.get('associations').get('taxes').get('tax').get('id')
+            if prestashop_tax_id not in line_taxes:
+                line_taxes.append(prestashop_tax_id)
+        fiscal_positions = self.env['account.fiscal.position']
+        for tax_id in line_taxes:
+            matched_fiscal_position = self.env['account.fiscal.position'].search([('prestashop_tax_ids', 'ilike', tax_id)])
+            fiscal_positions += matched_fiscal_position.filtered(lambda r: tax_id in r.prestashop_tax_ids.split(','))
+        if len(fiscal_positions) != 1:
+            raise Exception('Error al importar posicion fiscal para los impuestos {}'.format(line_taxes))
+        return {'fiscal_position_id': fiscal_positions.id}
+        pass
+        #
+
+    @mapping
     def payment(self, record):
         ps_payment_method = record["module"]
         if ps_payment_method == MODO_DIFERIDO:
@@ -89,6 +114,12 @@ class SaleOrderImportMapper(Component):
             name = basename + "_%d" % (i)
         return {"name": name}
 
+    def _map_child(self, map_record, from_attr, to_attr, model_name):
+        context = dict(self.env.context)
+        context['model_name'] = model_name
+        self.env.context = context
+        return super()._map_child(map_record, from_attr, to_attr, model_name)
+
 
 class ImportMapChild(Component):
     _name = "sale.order.line.map.child.import"
@@ -115,7 +146,7 @@ class ImportMapChild(Component):
                 values.pop("tax_id")
             prestashop_id = values["prestashop_id"]
             prestashop_binding = self.binder_for(
-                "prestashop.sale.order.line"
+                self.env.context['model_name']
             ).to_internal(prestashop_id)
             if prestashop_binding:
                 values.pop("prestashop_id")

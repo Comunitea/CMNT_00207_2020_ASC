@@ -9,13 +9,18 @@
     "category": "Inventory",
 
     "depends": ["stock",
+                "product",
                 "stock_removal_location_by_priority",
                 "stock_picking_report_valued",
                 "stock_picking_type_group", "warehouse_apk"],
     "data": [
+        'security/ir.model.access.csv',
+        'data/cron.xml',
         "views/stock_location.xml",
+        "views/product_view.xml",
         'views/stock_picking.xml',
-        'views/sale_order.xml'
+        'views/sale_order.xml',
+        'views/variable_replensih.xml',
     ],
     "installable": True,
     "license": "AGPL-3",

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- product.product inherit form view -->
+    <record id="product_form_view_replenish_type" model="ir.ui.view">
+        <field name="name">product.form.view.replenish.type</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="categ_id" position="after">
+                <field name="replenish_type"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- product.template inherit search view -->
+    <record id="product_search_view_replenish_type" model="ir.ui.view">
+        <field name="name">product.inherit.view.search</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view"/>
+        <field name="arch" type="xml">
+            <field name="categ_id" position="after">
+                <field name="replenish_type"/>
+            </field>
+
+            <filter name="activities_upcoming_all" position="after">
+                 <filter string="Replenish type" name="groupby_replenish" domain="[]" context="{'group_by': 'replenish_type'}"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
