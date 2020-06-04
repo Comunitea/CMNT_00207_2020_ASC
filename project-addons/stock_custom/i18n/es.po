@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-05 11:13+0000\n"
-"PO-Revision-Date: 2020-05-05 11:13+0000\n"
+"POT-Creation-Date: 2020-06-03 10:26+0000\n"
+"PO-Revision-Date: 2020-06-03 10:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,69 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__attachment_ids
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__average_ratio
+msgid "Average ratio"
+msgstr "Ratio media"
+
+#. module: stock_custom
 #: model:ir.model,name:stock_custom.model_res_partner
 msgid "Contact"
 msgstr "Contacto"
+
+#. module: stock_custom
+#: model_terms:ir.actions.act_window,help:stock_custom.action_variable_replenish
+msgid "Create a variable replenish category"
+msgstr "Crear una categoría de reposición variable"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: stock_custom
+#: model:ir.actions.server,name:stock_custom.ir_cron_product_variable_replenish_ir_actions_server
+#: model:ir.cron,cron_name:stock_custom.ir_cron_product_variable_replenish
+#: model:ir.cron,name:stock_custom.ir_cron_product_variable_replenish
+msgid "Get Product Variable replenish"
+msgstr "Obtener reabastecimiento variable"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__id
+msgid "ID"
+msgstr ""
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__gt_days
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__lt_days
+msgid "If days"
+msgstr "Si días venta"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__gt_qty
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__lt_qty
+msgid "If qty"
+msgstr "Si cantidad"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__gt_sales
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__lt_sales
+msgid "If sales"
+msgstr "Si ventas"
 
 #. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_stock_location__oldname
@@ -31,14 +91,95 @@ msgid "Inventory Locations"
 msgstr "Ubicaciones de inventario"
 
 #. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__max_qty
+msgid "Max quantity"
+msgstr "Cantidad máxima"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__min_qty_ratio
+msgid "Min qty ratio"
+msgstr "Cantidad mínima"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__min_qty
+msgid "Min quantity"
+msgstr "Cantidad mínima"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Not ready PDA"
+msgstr ""
+
+#. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_stock_picking__ready_to_send
+msgid "PDA Ready"
+msgstr ""
+
+#. module: stock_custom
+#: model:ir.model,name:stock_custom.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Ready PDA"
+msgstr ""
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_sale_order__ready_to_send
 msgid "Ready To Send"
 msgstr "Listo para enviar"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_product_product__replenish_type
+#: model_terms:ir.ui.view,arch_db:stock_custom.product_search_view_replenish_type
+msgid "Replenish type"
+msgstr "Tipo de reposición"
+
+#. module: stock_custom
+#: model:ir.model,name:stock_custom.model_sale_order
+msgid "Sale Order"
+msgstr "Pedido de venta"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__sale_days
+msgid "Sale days"
+msgstr "Días de venta"
 
 #. module: stock_custom
 #: model:ir.model,name:stock_custom.model_stock_picking
 msgid "Transfer"
 msgstr "Albarán"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__use_gt
+msgid "Use + changes"
+msgstr "Usar cambios +"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__use_lt
+msgid "Use - changes"
+msgstr "Usar cambios -"
 
 #. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_res_partner__valued_picking
@@ -47,7 +188,19 @@ msgid "Valued Picking"
 msgstr "Albarán valorado"
 
 #. module: stock_custom
+#: model:ir.actions.act_window,name:stock_custom.action_variable_replenish
+#: model:ir.ui.menu,name:stock_custom.menu_variable_replenish
+msgid "Variable Replenish"
+msgstr "Reposición variable"
+
+#. module: stock_custom
 #: model:ir.model.fields,help:stock_custom.field_res_partner__valued_picking
 #: model:ir.model.fields,help:stock_custom.field_res_users__valued_picking
 msgid "You can select which partners have valued pickings"
 msgstr "Puede seleccionar qué empresas tienen albarán valorado"
+
+#. module: stock_custom
+#: model:ir.model,name:stock_custom.model_variable_replenish
+msgid "variable.replenish"
+msgstr ""
+
