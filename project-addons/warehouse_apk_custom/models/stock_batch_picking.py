@@ -18,22 +18,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Warehouse Apk Custom',
-    'version': '12.0.0.0',
-    'summary': 'Customizations Wh APK A-SEC',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'warehouse_apk', 'stock_custom'
-    ],
-    'data': [
-        'views/stock_picking_type.xml',
-        'views/stock_picking_batch.xml',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
-}
+
+from odoo import api, models, fields
+import logging
+
+_logger = logging.getLogger(__name__)
+
+class StockPickingBatch(models.Model):
+    _inherit = 'stock.picking.batch'
+
+    carrier_weight = fields.Float()
+    carrier_packages = fields.Integer(default=1)
+    partner_id = fields.Many2one('res.partner', string="Empresa")
+
+    def return_fields(self, mode='tree'):
+        res = super().return_fields(mode=mode)
+        if mode == 'form':
+            res += ['carrier_weight', 'carrier_packages']
+        return res
