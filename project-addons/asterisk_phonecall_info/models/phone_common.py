@@ -55,6 +55,7 @@ class PhoneCommon(models.AbstractModel):
 
     @api.model
     def save_phonecall_record(self, data, number):
+        
         ## Agi data
         ##{'agi_type': 'SIP', 'agi_channel': 'SIP/101-00000065', 'agi_threadid': '139807535195904',
         ## 'agi_priority': '1', 'agi_dnid': '102', 'agi_extension': '102', 'agi_rdnis': 'unknown',
@@ -63,10 +64,14 @@ class PhoneCommon(models.AbstractModel):
         ##  'agi_callington': '0', 'agi_language': 'en', 'agi_callingtns': '0', 'agi_accountcode': '', 
         ##  'agi_calleridname': 'vicen', 'agi_enhanced': '0.0', 'agi_callingpres': '0', 'agi_callingani2': '0'}
 
+        logger.info('Saving call from number {} with data {}'.format(number, data))
+
         partner_id = self.env['phone.common'].get_record_from_phone_number(number)
+        
         #user_id = self.env['phone.common'].get_record_from_phone_number(data.get('agi_dnid'))
 
         if partner_id and partner_id[1]:
+            logger.info('Localiced partner: {}'.format(partner_id))
             crm_phonecall = self.env['crm.phonecall'].search([
                 ('asterisk_id', '=', data.get('agi_uniqueid'))
             ])            
