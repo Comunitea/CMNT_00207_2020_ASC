@@ -18,3 +18,24 @@ class AccountPaymentMode(models.Model):
 class PaymentModeBinder(Component):
     _inherit = "account.payment.mode.binder"
     _external_field = "prestashop_module"
+
+    def to_internal(self, external_id, unwrap=False, company=None):
+        if company is None:
+            company = self.backend_record.company_id
+        bindings = self.model
+        for language in self.backend_record.language_ids:
+            new_bindings = self.model.with_context(
+                active_test=False, lang=language.code
+            ).search(
+                [
+                    (self._external_field, "ilike", external_id),
+                    ("company_id", "=", company.id),
+                ]
+            )
+            bindings |= new_bindings.filtered(
+                lambda r: external_id in r.prestashop_module.split(",")
+            )
+        if not bindings:
+            return self.model.browse()
+        bindings.ensure_one()
+        return bindings
