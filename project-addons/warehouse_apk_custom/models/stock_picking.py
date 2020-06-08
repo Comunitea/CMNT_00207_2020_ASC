@@ -72,7 +72,7 @@ class StockPicking(models.Model):
     @api.multi
     def check_apk_batch(self):
         for pick in self:
-            if self.state == 'assigned' and not self.batch_id:
+            if pick.state == 'assigned' and not pick.batch_id:
                 pick.auto_assign_batch_id()
             # elif self.state not in ['done', 'assigned'] and self.batch_id:
             #     if pick.batch_id.user_id:
