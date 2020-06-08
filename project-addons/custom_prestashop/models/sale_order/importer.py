@@ -75,6 +75,10 @@ class SaleOrderImportMapper(Component):
         for tax_id in line_taxes:
             matched_fiscal_position = self.env['account.fiscal.position'].search([('prestashop_tax_ids', 'ilike', tax_id)])
             fiscal_positions += matched_fiscal_position.filtered(lambda r: tax_id in r.prestashop_tax_ids.split(','))
+        if len(fiscal_positions) > 1:
+            preferred_fiscal_positions = fiscal_positions.filtered(lambda r: self.backend_record in r.preferred_for_backend_ids)
+            if preferred_fiscal_positions:
+                fiscal_positions = preferred_fiscal_positions
         if len(fiscal_positions) != 1:
             raise Exception('Error al importar posicion fiscal para los impuestos {}'.format(line_taxes))
         return {'fiscal_position_id': fiscal_positions.id}
@@ -141,6 +145,8 @@ class ImportMapChild(Component):
 
         """
         res = []
+        prestashop_order_line_exists = []
+        imported_ids = []
         for values in items_values:
             if "tax_id" in values:
                 values.pop("tax_id")
@@ -149,6 +155,10 @@ class ImportMapChild(Component):
                 self.env.context['model_name']
             ).to_internal(prestashop_id)
             if prestashop_binding:
+                for line_record in prestashop_binding.prestashop_order_id.prestashop_order_line_ids:
+                    if line_record.id not in prestashop_order_line_exists:
+                        prestashop_order_line_exists.append(line_record.id)
+                imported_ids.append(prestashop_binding.id)
                 values.pop("prestashop_id")
                 final_vals = {}
                 for item in values.keys():
@@ -178,6 +188,8 @@ class ImportMapChild(Component):
                     res.append((1, prestashop_binding.id, final_vals))
             else:
                 res.append((0, 0, values))
+        for remove_id in set(prestashop_order_line_exists) - set(imported_ids):
+            res.append((2, remove_id))
         return res
 
 

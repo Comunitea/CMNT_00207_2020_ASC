@@ -8,3 +8,4 @@ class AccountFiscalPosition(models.Model):
 
     prestashop_tax_ids = fields.Char(help="comma separated ids of prestashop taxes"
     )
+    preferred_for_backend_ids = fields.Many2many('prestashop.backend')
