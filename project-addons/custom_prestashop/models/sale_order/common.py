@@ -63,8 +63,16 @@ class SaleOrder(models.Model):
         return res
 
 
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    applied_commission_amount = fields.Float()
+
+
 class PrestashopSaleOrder(models.Model):
     _inherit = "prestashop.sale.order"
+
+    commission_amount = fields.Float()
 
     @api.multi
     def write(self, vals):
