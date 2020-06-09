@@ -118,11 +118,45 @@ class SaleOrderImportMapper(Component):
             name = basename + "_%d" % (i)
         return {"name": name}
 
+    @mapping
+    def commission_amount(self, record):
+        commission_amount = record.get('associations', {}).get('payment_commissions', {}).get('payment_commission', {}).get('commission')
+        if commission_amount:
+            if self.backend_record.taxes_included:
+                return {'commission_amount': float(commission_amount)}
+            else:
+                fpos_id = self.fiscal_position_id(record)['fiscal_position_id']
+                fpos = self.env['account.fiscal.position'].browse(fpos_id)
+                tax = fpos.map_tax(self.backend_record.discount_product_id.taxes_id) if fpos else self.backend_record.discount_product_id.taxes_id
+                factor_tax = tax.price_include and (1 + tax.amount / 100) or 1.0
+                return {'commission_amount': float(commission_amount) / factor_tax}
+        return {}
+
     def _map_child(self, map_record, from_attr, to_attr, model_name):
+        binder = self.binder_for('prestashop.sale.order')
+        source = map_record.source
+        if callable(from_attr):
+            child_records = from_attr(self, source)
+        else:
+            child_records = source[from_attr]
+        exists = binder.to_internal(source['id'])
+        current_lines = []
+        remove_lines = []
+        if exists:
+            incoming_lines = [int(x['id']) for x in child_records]
+            if model_name == 'prestashop.sale.order.line':
+                current_lines = [x.prestashop_id for x in exists.prestashop_order_line_ids]
+            else:
+                current_lines = [x.prestashop_id for x in exists.prestashop_discount_line_ids]
+            remove_lines = list(set(current_lines) - set(incoming_lines))
         context = dict(self.env.context)
         context['model_name'] = model_name
         self.env.context = context
-        return super()._map_child(map_record, from_attr, to_attr, model_name)
+        res = super()._map_child(map_record, from_attr, to_attr, model_name)
+        if remove_lines:
+            for line in remove_lines:
+                res.append((2, line))
+        return res
 
 
 class ImportMapChild(Component):
@@ -145,8 +179,6 @@ class ImportMapChild(Component):
 
         """
         res = []
-        prestashop_order_line_exists = []
-        imported_ids = []
         for values in items_values:
             if "tax_id" in values:
                 values.pop("tax_id")
@@ -155,10 +187,6 @@ class ImportMapChild(Component):
                 self.env.context['model_name']
             ).to_internal(prestashop_id)
             if prestashop_binding:
-                for line_record in prestashop_binding.prestashop_order_id.prestashop_order_line_ids:
-                    if line_record.id not in prestashop_order_line_exists:
-                        prestashop_order_line_exists.append(line_record.id)
-                imported_ids.append(prestashop_binding.id)
                 values.pop("prestashop_id")
                 final_vals = {}
                 for item in values.keys():
@@ -188,8 +216,6 @@ class ImportMapChild(Component):
                     res.append((1, prestashop_binding.id, final_vals))
             else:
                 res.append((0, 0, values))
-        for remove_id in set(prestashop_order_line_exists) - set(imported_ids):
-            res.append((2, remove_id))
         return res
 
 
@@ -206,3 +232,27 @@ class SaleOrderImporter(Component):
             # we are in a cascaded import, it would stop the whole
             # synchronization and set the whole job to done
             return str(err)
+
+    def _after_import(self, binding):
+        res = super()._after_import(binding)
+        if binding.commission_amount:
+            discount_product = self.backend_record.discount_product_id
+            added_amount = False
+            for line in binding.odoo_id.order_line:
+                if line.product_id.id == discount_product.id:
+                    # Ya tiene un descuento, sumamos la cantidad
+                    added_amount = True
+                    if line.applied_commission_amount and line.applied_commission_amount != binding.commission_amount:
+                        line.price_unit = line.price_unit - line.applied_commission_amount + binding.commission_amount
+                        line.applied_commission_amount = binding.commission_amount
+                    if not line.applied_commission_amount:
+                        line.price_unit += binding.commission_amount
+            if not added_amount:
+                binding.odoo_id.write({'order_line': [(0, 0, {
+                    'commission_amount': binding.commission_amount,
+                    'product_id': discount_product.id,
+                    'name': discount_product.name,
+                    'price_unit': binding.commission_amount,
+                    'tax_id': [(6, 0, discount_product.taxes_id.ids)]
+                })]})
+        return res
