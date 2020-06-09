@@ -22,11 +22,23 @@ class SaleImportRule(Component):
         ps_payment_method = record["module"]
         mode_binder = self.binder_for("account.payment.mode")
         if ps_payment_method == MODO_DIFERIDO:
-            partner = record["id_customer"]
             partner_binder = self.binder_for("prestashop.res.partner")
-            payment_mode = partner_binder.to_internal(
-                partner, unwrap=True
-            ).customer_payment_mode_id
+            partner_id = record["id_customer"]
+            partner = partner_binder.to_internal(
+                partner_id, unwrap=True
+            )
+            if not partner:
+                partner_adapter = self.component(
+                    usage='backend.adapter',
+                    model_name='prestashop.res.partner'
+                )
+                partner_data = partner_adapter.read(partner_id)
+                if partner_data.get("f_pago") and partner_data.get("f_pago") in ["1", "2"]:
+                    payment_mode = self.env["account.payment.mode"].search(
+                        [("prestashop_name", "=", partner_data.get("f_pago"))]
+                    )
+            else:
+                payment_mode = partner.customer_payment_mode_id
             if not payment_mode:
                 payment_mode = mode_binder.to_internal(ps_payment_method)
         else:
