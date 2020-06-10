@@ -24,11 +24,11 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class ProductProduct(models.Model):
-    _inherit = 'product.product'
 
-    wh_code = fields.Char(string='Unique WH Code', compute="_compute_wh_code", store=True)
-    code_ignored = fields.Char(string="Codes to ignore as Serial")
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    wh_code = fields.Char(string='Unique WH Code')
 
     @api.multi
     @api.depends('default_code', 'barcode')
@@ -44,7 +44,13 @@ class ProductProduct(models.Model):
                     product.wh_code = '.%06d.'%bind_id.prestashop_id
                 else:
                     product.wh_code = '.9%05d.' %product.id
-            print ("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
+            print("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    code_ignored = fields.Char(string="Codes to ignore as Serial")
 
     def return_fields(self, mode='tree'):
         return ['id', 'display_name', 'default_code', 'list_price', 'qty_available', 'virtual_available', 'tracking', 'wh_code']

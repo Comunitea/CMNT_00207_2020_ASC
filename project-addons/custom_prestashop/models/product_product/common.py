@@ -1,11 +1,20 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import models
+from odoo import api, fields, models
 
 
 class ProductProduct(models.Model):
 
     _inherit = "product.product"
+    no_pack_product = fields.Boolean(compute='_compute_no_pack_product', store=True)
+
+    @api.depends('attribute_value_ids.product_id')
+    def _compute_no_pack_product(self):
+        for product in self:
+            if any(product.mapped('attribute_value_ids.product_id')):
+                product.no_product_pack = True
+            else:
+                product.no_product_pack = False
 
     def recompute_packs(self):
         for product in self:
