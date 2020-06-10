@@ -9,6 +9,8 @@ class ProductTemplate(models.Model):
 
     _inherit = "product.template"
 
+    prestashop_id = fields.Char()
+    
     @api.one
     def _set_standard_price(self):
         res = super()._set_standard_price()

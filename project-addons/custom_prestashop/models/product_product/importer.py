@@ -67,3 +67,7 @@ class ProductCombinationMapper(Component):
         )
         weight = main_weight + combination_weight
         return {"weight": weight}
+
+    @mapping
+    def barcode(self, record):
+        return {}
