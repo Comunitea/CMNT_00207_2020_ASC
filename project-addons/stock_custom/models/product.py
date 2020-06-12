@@ -84,7 +84,7 @@ class ProductProduct(models.Model):
                     max_qty = gt_change_qty
 
                 # COMPUTE ALGORITM MIN MAX
-                moves = self.get_moves_by_date(rt.sale_days)
+                moves = product.get_moves_by_date(rt.sale_days)
                 order_qtys = {}
                 total_sales = len(moves.mapped('sale_line_id.order_id'))
                 total_qty = sum(moves.mapped('sale_line_id.qty_delivered'))
