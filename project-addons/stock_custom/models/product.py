@@ -6,13 +6,18 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
+class ProductTemplate(models.Model):
+
+    _inherit = 'product.template'
+
+    replenish_type = fields.Many2one(
+        'variable.replenish', 'Replenish type')
+
+
 class ProductProduct(models.Model):
 
     _inherit = 'product.product'
 
-    replenish_type = fields.Many2one(
-        'variable.replenish', 'Replenish type')
-    
     @api.model
     def cron_variable_replenish(self):
         domain = [('replenish_type', '!=', False)]
@@ -34,30 +39,30 @@ class ProductProduct(models.Model):
         ]
         moves = self.env['stock.move'].search(domain)
         return moves
-    
+
     def get_lt_changes(self):
         self.ensure_one()
         res = False
         rt = self.replenish_type
         if not rt.use_lt or not (rt.lt_sales and rt.lt_days and rt.lt_qty):
             return res
-        
+
         moves = self.get_moves_by_date(rt.lt_days)
         total_sales = len(moves.mapped('sale_line_id.order_id'))
-        if total_sales <= rt_lt_sales:
+        if total_sales <= rt.lt_sales:
             res = rt.lt_qty
         return res
-    
+
     def get_gt_changes(self):
         self.ensure_one()
         res = False
         rt = self.replenish_type
         if not rt.use_gt or not (rt.gt_sales and rt.gt_days and rt.gt_qty):
             return res
-        
+
         moves = self.get_moves_by_date(rt.gt_days)
         total_sales = len(moves.mapped('sale_line_id.order_id'))
-        if total_sales >= rt_gt_sales:
+        if total_sales >= rt.gt_sales:
             res = rt.gt_qty
         return res
 
@@ -76,7 +81,7 @@ class ProductProduct(models.Model):
             if lt_change_qty:
                 min_qty = lt_change_qty
                 max_qty = lt_change_qty
-            
+
             if not lt_change_qty:
                 gt_change_qty = product.get_gt_changes()
                 if gt_change_qty:
@@ -98,10 +103,10 @@ class ProductProduct(models.Model):
                             if sale not in order_qtys:
                                 order_qtys[sale] = 0
                             order_qtys[sale] += move.sale_line_id.qty_delivered
-                
+
                 if not order_qtys:
                     continue
-                    
+
                 max_qty2 = sum(order_qtys.values())
                 min_qty2 = max_qty2 * rt.min_qty_ratio
 

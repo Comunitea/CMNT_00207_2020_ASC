@@ -22,11 +22,23 @@ class SaleImportRule(Component):
         ps_payment_method = record["module"]
         mode_binder = self.binder_for("account.payment.mode")
         if ps_payment_method == MODO_DIFERIDO:
-            partner = record["id_customer"]
             partner_binder = self.binder_for("prestashop.res.partner")
-            payment_mode = partner_binder.to_internal(
-                partner, unwrap=True
-            ).customer_payment_mode_id
+            partner_id = record["id_customer"]
+            partner = partner_binder.to_internal(
+                partner_id, unwrap=True
+            )
+            if not partner:
+                partner_adapter = self.component(
+                    usage='backend.adapter',
+                    model_name='prestashop.res.partner'
+                )
+                partner_data = partner_adapter.read(partner_id)
+                if partner_data.get("f_pago") and partner_data.get("f_pago") in ["1", "2"]:
+                    payment_mode = self.env["account.payment.mode"].search(
+                        [("prestashop_name", "=", partner_data.get("f_pago"))]
+                    )
+            else:
+                payment_mode = partner.customer_payment_mode_id
             if not payment_mode:
                 payment_mode = mode_binder.to_internal(ps_payment_method)
         else:
@@ -55,6 +67,35 @@ class SaleImportRule(Component):
 class SaleOrderImportMapper(Component):
     _inherit = "prestashop.sale.order.mapper"
     _map_child_fallback = "sale.order.line.map.child.import"
+
+    @mapping
+    def fiscal_position_id(self, record):
+        order_lines = record.get('associations').get('order_rows').get('order_row')
+        if isinstance(order_lines, dict):
+            order_lines = [order_lines]
+        line_taxes = []
+        sale_line_adapter = self.component(
+            usage='backend.adapter',
+            model_name='prestashop.sale.order.line'
+        )
+        for line in order_lines:
+            line_data = sale_line_adapter.read(line['id'])
+            prestashop_tax_id = line_data.get('associations').get('taxes').get('tax').get('id')
+            if prestashop_tax_id not in line_taxes:
+                line_taxes.append(prestashop_tax_id)
+        fiscal_positions = self.env['account.fiscal.position']
+        for tax_id in line_taxes:
+            matched_fiscal_position = self.env['account.fiscal.position'].search([('prestashop_tax_ids', 'ilike', tax_id)])
+            fiscal_positions += matched_fiscal_position.filtered(lambda r: tax_id in r.prestashop_tax_ids.split(','))
+        if len(fiscal_positions) > 1:
+            preferred_fiscal_positions = fiscal_positions.filtered(lambda r: self.backend_record in r.preferred_for_backend_ids)
+            if preferred_fiscal_positions:
+                fiscal_positions = preferred_fiscal_positions
+        if len(fiscal_positions) != 1:
+            raise Exception('Error al importar posicion fiscal para los impuestos {}'.format(line_taxes))
+        return {'fiscal_position_id': fiscal_positions.id}
+        pass
+        #
 
     @mapping
     def payment(self, record):
@@ -89,6 +130,46 @@ class SaleOrderImportMapper(Component):
             name = basename + "_%d" % (i)
         return {"name": name}
 
+    @mapping
+    def commission_amount(self, record):
+        commission_amount = record.get('associations', {}).get('payment_commissions', {}).get('payment_commission', {}).get('commission')
+        if commission_amount:
+            if self.backend_record.taxes_included:
+                return {'commission_amount': float(commission_amount)}
+            else:
+                fpos_id = self.fiscal_position_id(record)['fiscal_position_id']
+                fpos = self.env['account.fiscal.position'].browse(fpos_id)
+                tax = fpos.map_tax(self.backend_record.discount_product_id.taxes_id) if fpos else self.backend_record.discount_product_id.taxes_id
+                factor_tax = tax.price_include and (1 + tax.amount / 100) or 1.0
+                return {'commission_amount': float(commission_amount) / factor_tax}
+        return {}
+
+    def _map_child(self, map_record, from_attr, to_attr, model_name):
+        binder = self.binder_for('prestashop.sale.order')
+        source = map_record.source
+        if callable(from_attr):
+            child_records = from_attr(self, source)
+        else:
+            child_records = source[from_attr]
+        exists = binder.to_internal(source['id'])
+        current_lines = []
+        remove_lines = []
+        if exists:
+            incoming_lines = [int(x['id']) for x in child_records]
+            if model_name == 'prestashop.sale.order.line':
+                current_lines = [x.prestashop_id for x in exists.prestashop_order_line_ids]
+            else:
+                current_lines = [x.prestashop_id for x in exists.prestashop_discount_line_ids]
+            remove_lines = list(set(current_lines) - set(incoming_lines))
+        context = dict(self.env.context)
+        context['model_name'] = model_name
+        self.env.context = context
+        res = super()._map_child(map_record, from_attr, to_attr, model_name)
+        if remove_lines:
+            for line in remove_lines:
+                res.append((2, line))
+        return res
+
 
 class ImportMapChild(Component):
     _name = "sale.order.line.map.child.import"
@@ -115,7 +196,7 @@ class ImportMapChild(Component):
                 values.pop("tax_id")
             prestashop_id = values["prestashop_id"]
             prestashop_binding = self.binder_for(
-                "prestashop.sale.order.line"
+                self.env.context['model_name']
             ).to_internal(prestashop_id)
             if prestashop_binding:
                 values.pop("prestashop_id")
@@ -163,3 +244,27 @@ class SaleOrderImporter(Component):
             # we are in a cascaded import, it would stop the whole
             # synchronization and set the whole job to done
             return str(err)
+
+    def _after_import(self, binding):
+        res = super()._after_import(binding)
+        if binding.commission_amount:
+            discount_product = self.backend_record.discount_product_id
+            added_amount = False
+            for line in binding.odoo_id.order_line:
+                if line.product_id.id == discount_product.id:
+                    # Ya tiene un descuento, sumamos la cantidad
+                    added_amount = True
+                    if line.applied_commission_amount and line.applied_commission_amount != binding.commission_amount:
+                        line.price_unit = line.price_unit - line.applied_commission_amount + binding.commission_amount
+                        line.applied_commission_amount = binding.commission_amount
+                    if not line.applied_commission_amount:
+                        line.price_unit += binding.commission_amount
+            if not added_amount:
+                binding.odoo_id.write({'order_line': [(0, 0, {
+                    'commission_amount': binding.commission_amount,
+                    'product_id': discount_product.id,
+                    'name': discount_product.name,
+                    'price_unit': binding.commission_amount,
+                    'tax_id': [(6, 0, discount_product.taxes_id.ids)]
+                })]})
+        return res

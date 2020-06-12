@@ -25,6 +25,7 @@ class PrestashopModelBinder(Component):
         "prestashop.product.combination.option.value",
         "prestashop.sale.order",
         "prestashop.sale.order.line",
+        "prestashop.sale.order.line.discount",
         "prestashop.sale.order.state",
         "prestashop.delivery.carrier",
         "prestashop.refund",

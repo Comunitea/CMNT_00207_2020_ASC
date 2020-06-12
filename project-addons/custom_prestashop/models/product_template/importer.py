@@ -1,7 +1,7 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 
 
 class ProductTemplateImporter(Component):
@@ -101,3 +101,12 @@ class TemplateMapper(Component):
         taxes = self._get_tax_ids(record)
         if taxes:
             return {"taxes_id": [(6, 0, taxes.ids)]}
+
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        template_exists = self.env['product.template'].search(
+            [('prestashop_id', '=', record['id'])])
+        if template_exists:
+            return{'odoo_id': template_exists.id}
+        return {}

@@ -15,6 +15,9 @@ class SaleOrder(models.Model):
         if self.payment_mode_id and self.payment_mode_id.defaullt_sale_invoice_policy:
             self.invoice_policy = self.payment_mode_id.defaullt_sale_invoice_policy
 
+    def _create_delivery_line(self, carrier, price_unit):
+        return super(SaleOrder, self.with_context(purchase_price=price_unit))._create_delivery_line(carrier, price_unit)
+
     @api.model
     def create(self, vals):
         res = super().create(vals)
@@ -63,8 +66,22 @@ class SaleOrder(models.Model):
         return res
 
 
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    applied_commission_amount = fields.Float()
+
+    @api.model
+    def create(self, vals):
+        if self._context.get('purchase_price'):
+            vals['purchase_price'] = self._context.get('purchase_price')
+        return super().create(vals)
+
+
 class PrestashopSaleOrder(models.Model):
     _inherit = "prestashop.sale.order"
+
+    commission_amount = fields.Float()
 
     @api.multi
     def write(self, vals):
