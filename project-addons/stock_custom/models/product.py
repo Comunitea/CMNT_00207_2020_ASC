@@ -93,8 +93,9 @@ class ProductProduct(models.Model):
                 order_qtys = {}
                 total_sales = len(moves.mapped('sale_line_id.order_id'))
                 total_qty = sum(moves.mapped('sale_line_id.qty_delivered'))
-
-                average = (total_qty / total_sales) * rt.average_ratio
+                average = 0
+                if total_sales:
+                    average = (total_qty / total_sales) * rt.average_ratio
                 # Get qty by order where qty under average
                 for move in moves:
                     if move.product_uom_qty < average:
