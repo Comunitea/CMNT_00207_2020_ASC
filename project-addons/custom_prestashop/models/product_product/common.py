@@ -6,15 +6,15 @@ from odoo import api, fields, models
 class ProductProduct(models.Model):
 
     _inherit = "product.product"
-    no_pack_product = fields.Boolean(compute='_compute_no_pack_product', store=True)
+    pack_product = fields.Boolean(compute='_compute_pack_product', store=True)
 
     @api.depends('attribute_value_ids.product_id')
-    def _compute_no_pack_product(self):
+    def _compute_pack_product(self):
         for product in self:
             if any(product.mapped('attribute_value_ids.product_id')):
-                product.no_product_pack = True
+                product.product_pack = True
             else:
-                product.no_product_pack = False
+                product.product_pack = False
 
     def recompute_packs(self):
         for product in self:
