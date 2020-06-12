@@ -12,9 +12,9 @@ class ProductProduct(models.Model):
     def _compute_pack_product(self):
         for product in self:
             if any(product.mapped('attribute_value_ids.product_id')):
-                product.product_pack = True
+                product.pack_product = True
             else:
-                product.product_pack = False
+                product.pack_product = False
 
     def recompute_packs(self):
         for product in self:
