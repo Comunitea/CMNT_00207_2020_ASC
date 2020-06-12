@@ -62,7 +62,7 @@ class ProductProduct(models.Model):
 
         moves = self.get_moves_by_date(rt.gt_days)
         total_sales = len(moves.mapped('sale_line_id.order_id'))
-        if total_sales >= rt_gt_sales:
+        if total_sales >= rt.lt_sales:
             res = rt.gt_qty
         return res
 
