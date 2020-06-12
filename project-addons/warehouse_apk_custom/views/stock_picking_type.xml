@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_picking_type_form">
+            <field name="name">Operation Types Codes</field>
+            <field name="model">picking.type.group.code</field>
+            <field name="inherit_id" ref="stock_picking_type_group.view_picking_type_form"/>
+            <field name="arch" type="xml">
+                 <field name="default" position="after">
+                     <field name="batch_domain"/>
+                 </field>
+            </field>
+    </record>
+
+</odoo>

@@ -79,6 +79,7 @@ class AddressImportMapper(Component):
             return {"type": "invoice"}
         return {"type": "other"}
 
+    @only_create
     @mapping
     def parent_id(self, record):
         if (

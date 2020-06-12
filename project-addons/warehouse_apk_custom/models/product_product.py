@@ -24,23 +24,33 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class ProductProduct(models.Model):
-    _inherit = 'product.product'
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
 
     wh_code = fields.Char(string='Unique WH Code')
 
     @api.multi
-    @api.depends('prestashop_bind_ids')
+    @api.depends('default_code', 'barcode')
     def _compute_wh_code(self):
         for product in self:
-            product.wh_code = product.default_code
-            #
-            # bind_id = product.prestashop_bind_ids and product.prestashop_bind_ids[0]
-            # if bind_id:
-            #     product.wh_code = '.%05d.'%bind_id.prestashop_id
-            # else:
-            #     product.wh_code = '.9%04d.' %product.id
-            # print ("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
+            if product.barcode:
+                product.wh_code = product.barcode
+            elif product.default_code:
+                product.wh_code = product.default_code
+            else:
+                bind_id = product.prestashop_bind_ids and product.prestashop_bind_ids[0]
+                if bind_id:
+                    product.wh_code = '.%06d.'%bind_id.prestashop_id
+                else:
+                    product.wh_code = '.9%05d.' %product.id
+            print("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    code_ignored = fields.Char(string="Codes to ignore as Serial")
 
     def return_fields(self, mode='tree'):
         return ['id', 'display_name', 'default_code', 'list_price', 'qty_available', 'virtual_available', 'tracking', 'wh_code']

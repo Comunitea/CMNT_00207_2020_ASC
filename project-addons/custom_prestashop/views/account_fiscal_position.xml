@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- account.fiscal.position inherit form view -->
+    <record id="view_account_position_form" model="ir.ui.view">
+        <field name="name">account.fiscal.position.inherit.view.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <field name="auto_apply" position="before">
+                <field name="prestashop_tax_ids"/>
+                <field name="preferred_for_backend_ids"/>
+            </field>
+        </field>
+    </record>
+</odoo>
