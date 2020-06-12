@@ -20,7 +20,9 @@ class ProductProduct(models.Model):
 
     @api.model
     def cron_variable_replenish(self):
-        domain = [('replenish_type', '!=', False)]
+        domain = [
+            ('replenish_type', '!=', False), ('pack_product', '=', False),
+            ('type', '=', 'product')]
         products = self.search(domain)
         products.get_variable_replenish()
         return
