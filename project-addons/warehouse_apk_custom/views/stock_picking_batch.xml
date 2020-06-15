@@ -11,6 +11,7 @@
                          <field name="picking_type_id" readonly="1"/>
                          <field name="partner_id" readonly="1"/>
                          <field name="pick_state" widget="statusbar" statusbar_visible="assigned,done"/>
+                         <field name="carrier_id" />
                          <field name="carrier_weight" />
                          <field name="carrier_packages" />
                      </group>

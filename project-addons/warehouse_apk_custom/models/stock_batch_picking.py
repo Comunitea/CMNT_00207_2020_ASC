@@ -29,7 +29,14 @@ class StockPickingBatch(models.Model):
 
     carrier_weight = fields.Float()
     carrier_packages = fields.Integer(default=1)
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Empresa")
+    picking_ids = fields.One2many(
+        string='Pickings',
+        readonly=True,
+        states={'draft': [('readonly', False)], 'assigned': [('readonly', False)]},
+        help='List of picking managed by this batch.',
+    )
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
