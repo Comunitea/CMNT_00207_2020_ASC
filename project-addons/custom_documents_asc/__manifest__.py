@@ -12,11 +12,16 @@
     'license': 'AGPL-3',
     'depends': [
         'web',
-        'sale',
-        'purchase'
+        'sale_stock',
+        'purchase',
+        'rma_sale',
     ],
     'data': [
         'views/report_templates.xml',
-        'views/crm_team.xml'
+        'views/crm_team.xml',
+        'views/rma_report_templates.xml',
+        'views/purchase_order_templates.xml',
+        'views/report_invoice.xml',
+        'views/stock_picking_report_valued.xml'
     ],    
 }

@@ -5,9 +5,9 @@ from odoo.addons.crm.models import crm_stage
 
 
 class CrmTeam(models.Model):
-
     _inherit = 'crm.team'
 
     team_tag_line = fields.Char()
     team_name = fields.Char(string='Company Name')
-    team_logo = fields.Binary(rstring="Company Logo")
+    team_logo = fields.Binary(string="Company Logo")
+    css_class = fields.Selection([('Asec', 'A-Sec'),('Outlet', 'Outlet')], "Tipo de CSS")

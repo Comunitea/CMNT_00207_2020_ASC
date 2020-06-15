@@ -1,0 +1,99 @@
+.o_custom_header {
+    padding-top:80px;
+    padding-bottom: 10px;
+    background-color: #dcdfe4;
+    color: #23384d;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.Asec {
+    .header_color {
+        padding-top:80px;
+        padding-bottom: 10px;
+        background-color: #d44326;
+        color: #fafaf8;
+        font-size: 25px;
+        font-size-adjust: 1;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: bold;
+    }
+    table[name="invoice_line_table"] thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+    table[t-if="o.move_line_ids"] thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+    .o_main_table thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+    table.table.table-sm.mt48 thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+    table[t-if='&quot;o.move_line_ids and o.state==&apos;done&apos;&quot;'] thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+    table.table.table-condensed thead tr {
+        background-color: #d44326;
+        color: #f3f5f6;
+    }
+
+}
+.Outlet {
+    .header_color {
+        padding-top:80px;
+        padding-bottom: 10px;
+        background-color: #003f73;
+        color: #fafaf8;
+        font-size: 25px;
+        font-size-adjust: 1;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: bold;
+    }
+    table[name="invoice_line_table"] thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+    table[t-if="o.move_line_ids"] thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+    .o_main_table thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+    table.table.table-sm.mt48 thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+    table[t-if='&quot;o.move_line_ids and o.state==&apos;done&apos;&quot;'] thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+    table.table.table-condensed thead tr {
+        background-color: #003f73;
+        color: #f3f5f6;
+    }
+}
+
+.o_custom_footer {
+    padding-top:30px;
+    padding-bottom: 30px;
+    background-color: #dcdfe4;
+    text-align: left;
+    margin_left: 0px
+}
+
+
+table[name="invoice_line_table"] tbody tr:nth-child(even) {
+    background-color: #dcdfe4;
+}
