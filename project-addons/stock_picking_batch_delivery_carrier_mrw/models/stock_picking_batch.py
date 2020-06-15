@@ -162,10 +162,10 @@ class StockBatchPicking(models.Model):
             self.mrw_refund_quantity = pickings_total_value
             self.mrw_declared_value = pickings_total_value
             self.mrw_insurance_value = pickings_total_value
-            
+
     def create_client(self):
         session = Session()
-        session.verify = False       
+        session.verify = False
 
         try:
             transport = Transport(cache=SqliteCache(), session=session)
@@ -177,7 +177,6 @@ class StockBatchPicking(models.Model):
             client = Client(url, transport=transport, plugins=[history])
 
             if client:
-                print("client: {}".format(client))
                 return client, history
             else:
                 raise AccessError(_("Not possible to establish a client."))
@@ -197,9 +196,8 @@ class StockBatchPicking(models.Model):
             )
             return headers
         except Exception as e:
-            print("Error: {}".format(e))
             return False
-    
+
     def get_carrier_label(self, client, headers, numeroEnvio):
         EtiquetaEnvio = {
             'request': {
@@ -212,7 +210,7 @@ class StockBatchPicking(models.Model):
 
         label = client.service.EtiquetaEnvio(**EtiquetaEnvio, _soapheaders=[headers])
         return label
-                    
+
 
     def send_shipping(self):
         if self.carrier_id.code == 'MRW':
@@ -225,7 +223,7 @@ class StockBatchPicking(models.Model):
             if client:
 
                 try:
-                
+
                     headers = self.setMRWHeaders(client)
 
                     requestedPackages = []
@@ -311,19 +309,19 @@ class StockBatchPicking(models.Model):
                 if res['Estado'] == '0':
                     raise AccessError(_("Error message: {}".format(res['Mensaje'])))
                 elif res['Estado'] == '1':
-                    
+
                     self.write({
                         'delivery_status': 'R',
                         'tracking_code': res['NumeroEnvio'],
                         'shipment_reference': res['NumeroSolicitud']
-                    })                 
-                    
-                    try:                
+                    })
+
+                    try:
                         label = self.get_carrier_label(client, headers, res['NumeroEnvio'])
                     except Exception as e:
                         _logger.error(_('Connection error: {}, while trying to retrieve the label.'.format(e)))
                         return
-                    
+
                     if label['Estado'] == '1':
                         file_b64 = base64.b64encode(label['EtiquetaFile'])
                         attatchment = self.env['ir.attachment'].create({

@@ -43,7 +43,6 @@ class ProductTemplate(models.Model):
                     product.wh_code = '.%06d.'%bind_id.prestashop_id
                 else:
                     product.wh_code = '.9%05d.' %product.id
-            print("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
 
 
 class ProductProduct(models.Model):
