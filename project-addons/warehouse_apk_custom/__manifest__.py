@@ -32,6 +32,7 @@
     'data': [
         'views/stock_picking_type.xml',
         'views/stock_picking_batch.xml',
+        'views/stock_picking.xml',
     ],
     'installable': True,
     'auto_install': False,
