@@ -1,25 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <record id="base.paperformat_euro" model="report.paperformat">
         <field name="name">A4</field>
-        <field name="default" eval="True" />
+        <field name="default" eval="True"/>
         <field name="format">A4</field>
         <field name="orientation">Portrait</field>
         <field name="margin_top">40</field>
         <field name="margin_bottom">28</field>
         <field name="margin_left">10</field>
         <field name="margin_right">10</field>
-        <field name="header_line" eval="False" />
+        <field name="header_line" eval="False"/>
         <field name="header_spacing">39</field>
         <field name="dpi">90</field>
     </record>
 
-    <template id="report_purchaseorder_document" name="Custom Document Purchase Order A-sec" inherit_id="purchase.report_purchaseorder_document">
+    <template id="report_rma_order_line_document" name="Custom Document RMA A-sec"
+              inherit_id="rma.report_rma_order_line_document">
+        <xpath expr="//t[@t-set='doc']" position="after">
+            <t t-set="type" t-value="'RMA'"/>
+        </xpath>
+    </template>
+
+
+    <!--<template id="report_purchaseorder_document" name="Custom Document Purchase Order A-sec"
+              inherit_id="purchase.report_purchaseorder_document">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'purchase'"/>
         </xpath>
-    </template>
+        <xpath expr="//t[@t-set='address']" position="replace"/>
+        <xpath expr="//h2" position="before">
+            <div class="address row">
+                <div name="purchase_address" class="col-7">
+                    <p>
+                        <strong>PROVEEDOR</strong>
+                    </p>
+                    <address t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                        <span t-field="o.partner_id.vat"/>
+                    </div>
+                </div>
+                <div name="purchase_information" class="col-5">
+                    <div class="row">
+                        <div class="col-7 text-left">
+                            <span>Nº Pedido:</span>
+                        </div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.name"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 text-left">Fecha:</div>
+                        <div class="col-7 text-right">
+                            <span t-field="o.date_order"/>
+                        </div>
+                    </div>
+                    <div t-if="o.incoterm_id"
+                         class="row">
+                        <div class="col-7 text-left">Incoterm:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.incoterm_id"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//div[@class='page']/h2" position="replace"/>
+        <xpath expr="//div[@class='page']/h2" position="replace"/>
+        <xpath expr="//div[@class='page']/h2" position="replace"/>
+        <xpath expr="//div[@class='page']/h2" position="replace"/>
+        <xpath expr="//div[@id='informations']" position="replace"/>
+        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+            <table class="table table-sm o_main_table">
+                <thead>
+                    <tr>
+                        <th><strong>Description</strong></th>
+                        <th class="text-right"><strong>Qty</strong></th>
+                        <th class="text-right"><strong>Unit Price</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="line">
+                        <td>
+                            <span t-field="line.name"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.product_qty"/>
+                            <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.price_unit"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_total']" position="attributes">
+            <attribute name="style">background-color: #1176D9; color: #fafaf8;</attribute>
+        </xpath>
+    </template>-->
 
     <template id="report_picking" name="Custom Document Stock Picking A-sec" inherit_id="stock.report_picking">
         <xpath expr="//div[hasclass('page')]" position="after">
@@ -27,25 +108,188 @@
         </xpath>
     </template>
 
-    <template id="report_delivery_document" name="Custom Document Delivery Document A-sec" inherit_id="stock.report_delivery_document">
+    <template id="report_delivery_document" name="Custom Document Delivery Document A-sec"
+              inherit_id="stock.report_delivery_document">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'delivery'"/>
         </xpath>
     </template>
 
-    <template id="report_repairorder" name="Custom Document Repair Document A-sec" inherit_id="repair.report_repairorder">
+    <!-- entrega -->
+    <!--<template id="valued_report_picking" name="Custom Document Report Picking Valued"
+              inherit_id="stock_picking_report_valued.valued_report_picking">
+        <xpath expr="//t[@t-set='address']" position="replace"/>
+        <xpath expr="//div[@class='page']" position="before">
+            <div class="address row">
+                <div name="invoice_address" class="col-7">
+                    <address t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                        <span t-field="o.partner_id.vat"/>
+                    </div>
+                </div>
+
+                <div name="picking_information" class="col-5">
+                    <div class="row">
+                        <div class="col-7 text-left">
+                            <span>Albarán:</span>
+                        </div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.name"/>
+                        </div>
+                    </div>
+                    <div t-if="o.scheduled_date" class="row">
+                        <div class="col-5 text-left">Fecha:</div>
+                        <div class="col-7 text-right">
+                            <span t-field="o.scheduled_date"/>
+                        </div>
+                    </div>
+                    <div t-if="o.origin"
+                         class="row">
+                        <div class="col-7 text-left">Pedido:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.origin"/>
+                        </div>
+                    </div>
+                    <div t-if="o.weight"
+                         class="row">
+                        <div class="col-7 text-left">Peso:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.weight"/>
+                            <span t-field="o.weight_uom_id"/>
+                        </div>
+                    </div>
+                    <div t-if="o.invoice_ids" class="row">
+                        <div class="col-6 text-left">Factura:</div>
+                        <div class="col-6 text-right">
+                            <span t-field="o.invoice_ids"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//div[@class='page']/table[@class='table table-sm']" position="replace"/>
+        <xpath expr="//table[@class='table table-condensed mt32']" position="replace">
+            <t t-if="o.valued and o.sale_id and o.move_line_ids">
+                <div class="clearfix">
+                    <div id="total" class="row">
+                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <table class="table table-sm" style="page-break-inside: avoid;">
+                                <tr class="border-black o_subtotal" style="">
+                                    <td>
+                                        <strong>Subtotal</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="o.amount_untaxed"/>
+                                    </td>
+                                </tr>
+                                <tr style="">
+                                    <td>Taxes</td>
+                                    <td class="text-right o_price_total">
+                                        <span t-esc="o.amount_tax"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_total" style="background-color: #1176D9; color: #fafaf8;">
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="o.amount_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='clearfix']" position="after">
+            <t t-if="o.invoice_ids">
+                <br/>
+                <span style="color: #1176D9;">
+                    <b>Información sobre el pago</b>
+                </span>
+                <div class="row">
+                    <div class="col-3 text-left">Forma de pago:</div>
+                    <div class="col-3 text-right">
+                        <span t-field="o.invoice_ids.payment_mode_id"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 text-left">Vencimiento:</div>
+                    <div class="col-3 text-right">
+                        <span t-field="o.invoice_ids.date_due"/>
+                    </div>
+                </div>
+                <br/>
+                <span class="row">
+                    <div class="col-5" style="color: #1176D9;">
+                        <b>Impuesto</b>
+                    </div>
+                    <div class="col-7 border-bottom">
+                        <b>Cuentas</b>
+                    </div>
+                </span>
+                <div class="row">
+                    <div class="col-5">
+                        <table class="table table-sm" style="page-break-inside: avoid;">
+                            <t t-foreach="o.invoice_ids.amount_by_group" t-as="amount_by_group">
+                                <t t-if="len(o.invoice_ids.tax_line_ids) == 1 and o.invoice_ids.amount_untaxed == amount_by_group[2]">
+                                    <tr>
+                                        <td class="text-left">
+                                            <span>Tipo IVA:</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[0]"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">
+                                            <span>Importe IVA:</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[3]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                    <div class="col-7">
+                        <t t-foreach="o.invoice_ids.payment_mode_id.variable_journal_ids" t-as="cuenta">
+                            <div class="row">
+                                <div class="col-5 text-left">
+                                    <span t-field="cuenta.name"/>
+                                </div>
+                                <div class="col-7 text-right">
+                                    <span t-field="cuenta.bank_acc_number"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>-->
+
+    <template id="report_repairorder" name="Custom Document Repair Document A-sec"
+              inherit_id="repair.report_repairorder">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'repair'"/>
         </xpath>
     </template>
 
-    <template id="report_purchasequotation_document" name="Custom Document Quotation A-sec" inherit_id="purchase.report_purchasequotation_document">
+    <template id="report_purchasequotation_document" name="Custom Document Quotation A-sec"
+              inherit_id="purchase.report_purchasequotation_document">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'quotation'"/>
         </xpath>
     </template>
 
-    <template id="report_saleorder_document" name="Custom Document Sale Order A-sec" inherit_id="sale.report_saleorder_document">
+    <template id="report_saleorder_document" name="Custom Document Sale Order A-sec"
+              inherit_id="sale.report_saleorder_document">
         <xpath expr="//t[@t-set='doc']" position="after">
             <t t-if="is_pro_forma == True">
                 <t t-set="type" t-value="'proforma_invoice'"/>
@@ -56,38 +300,177 @@
         </xpath>
     </template>
 
-    <template id="report_invoice_document" name="Custom Document Sale Order ProForma A-sec" inherit_id="account.report_invoice_document">
+    <!--<template id="report_invoice_document" name="Custom Document Sale Order ProForma A-sec"
+              inherit_id="account.report_invoice_document">
+        <xpath expr="//t[@t-set='address']" position="replace"/>
+        <xpath expr="//h2" position="before">
+            <div class="address row">
+                <div name="invoice_address" class="col-7">
+                    <p>
+                        <strong>CLIENTE</strong>
+                    </p>
+                    <address t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                        <span t-field="o.partner_id.vat"/>
+                    </div>
+                </div>
+                <div name="invoice_information" class="col-5">
+                    <div class="row">
+                        <div class="col-7 text-left">
+                            <span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Invoice
+                            </span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+                            <span t-if="o.type == 'out_refund'">Credit Note</span>
+                            <span t-if="o.type == 'in_refund'">Vendor Credit Note</span>
+                            <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
+                        </div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.number"/>
+                        </div>
+                    </div>
+                    <div t-if="o.date_invoice" class="row">
+                        <div class="col-7 text-left">Fecha factura:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.date_invoice"/>
+                        </div>
+                    </div>
+                    <div t-if="o.origin"
+                         class="row">
+                        <div class="col-7 text-left">Pedido:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.origin"/>
+                        </div>
+                    </div>
+                    <div t-if="o.picking_ids" class="row">
+                        <div class="col-6 text-left">Albarán:</div>
+                        <div class="col-6 text-right">
+                            <span t-field="o.picking_ids"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//div[@id='informations']" position="replace"/>
+        <xpath expr="//p[@t-if='o.payment_term_id']" position="replace">
+            <br/>
+            <span style="color: #1176D9;">
+                <b>Información sobre el pago</b>
+            </span>
+            <div class="row">
+                <div class="col-3 text-left">Forma de pago:</div>
+                <div class="col-3 text-right">
+                    <span t-field="o.payment_mode_id"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3 text-left">Vencimiento:</div>
+                <div class="col-3 text-right">
+                    <span t-field="o.date_due"/>
+                </div>
+            </div>
+            <br/>
+            <span class="row">
+                <div class="col-5" style="color: #1176D9;">
+                    <b>Impuesto</b>
+                </div>
+                <div class="col-7  border-bottom">
+                    <b>Cuentas</b>
+                </div>
+            </span>
+            <div class="row">
+                <div class="col-5">
+                    <table class="table table-sm" style="page-break-inside: avoid;">
+                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                            <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
+                                <tr>
+                                    <td class="text-left">
+                                        <span>Tipo IVA:</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="amount_by_group[0]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">
+                                        <span>Importe IVA:</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="amount_by_group[3]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </table>
+                </div>
+                <div class="col-7">
+                    <t t-foreach="o.payment_mode_id.variable_journal_ids" t-as="cuenta">
+                        <div class="row">
+                            <div class="col-5 text-left">
+                                <span t-field="cuenta.name"/>
+                            </div>
+                            <div class="col-7 text-right">
+                                <span t-field="cuenta.bank_acc_number"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-set='o']" position="after">
+            <t t-set="type" t-value="'invoice'"/>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_total']" position="attributes">
+            <attribute name="style">background-color: #1176D9; color: #fafaf8;</attribute>
+        </xpath>
+    </template>-->
+
+    <template id="report_invoice_document_with_payments" name="Custom Document Sale Order ProForma A-sec"
+              inherit_id="account.report_invoice_document_with_payments">
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'invoice'"/>
         </xpath>
     </template>
 
-    <template id="report_invoice_document_with_payments" name="Custom Document Sale Order ProForma A-sec" inherit_id="account.report_invoice_document_with_payments">
-        <xpath expr="//t[@t-set='o']" position="after">
-            <t t-set="type" t-value="'invoice'"/>
+
+    <template id="asset_common" name="custom_documents_asc pdf assets" inherit_id="web.report_assets_common">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/custom_documents_asc/static/src/scss/custom_asec.scss"/>
         </xpath>
     </template>
 
-    <template id="external_layout_standard" name="Custom Document External Layout Standard" inherit_id="web.external_layout_standard">
+    <template id="external_layout_standard" name="Custom Document External Layout Standard"
+              inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('header')]" position="replace">
-            <div class="header">
+            <div t-attf-class="header {{'team_id' in o and o.team_id.css_class or 'Outlet'}}">
+
                 <div class="row">
-                    <div class="col-7" style="padding-top:80px; padding-bottom: 10px;  background-color: #e5e5e5; color: #23384d; text-transform: uppercase; text-align: center;font-weight: bold;">
+                    <div class="col-7  o_custom_header">
                         <div class="col-12" style="margin-top: 5px;">
                             <div class="col-4" style="float: left; text-align: right;">
-                                <img t-if="'team_id' in o and o.team_id.team_logo" t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;" alt="Logo"/>
-                                <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 40px;" alt="Logo"/>
+                                <img t-if="'team_id' in o and o.team_id.team_logo"
+                                     t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;"
+                                     alt="Logo"/>
+                                <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)"
+                                     style="max-height: 40px;" alt="Logo"/>
                             </div>
                             <div class="col-8" style="float: left; text-align: left;">
-                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
-                                <span t-elif="company.name" t-esc="company.name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name"
+                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                                <span t-elif="company.name" t-esc="company.name"
+                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
                             </div>
                             <div class="col-7 offset-1" style="float: left; text-align: left;">
-                                <small t-if="'team_id' in o and o.team_id.team_tag_line" t-esc="o.team_id.team_tag_line" style="float: left;text-align: left;margin-top: -1.5%;"/>
+                                <small t-if="'team_id' in o and o.team_id.team_tag_line"
+                                       t-esc="o.team_id.team_tag_line"
+                                       style="float: left;text-align: left;margin-top: -1.5%;"/>
                             </div>
                         </div>
                     </div>
-                    <div class="col-5" style="padding-top:80px; padding-bottom: 10px; background-color: #23384d; color: #fafaf8;font-size: 25px; font-size-adjust: 1; text-transform: uppercase; text-align: center;font-weight: bold;">
+                    <div class="col-5 header_color">
                         <span t-if="type == 'invoice'">Invoice</span>
                         <span t-if="type == 'sale_order'">Sales Order</span>
                         <span t-if="type == 'proforma_invoice'">PRO-FORMA Invoice</span>
@@ -96,7 +479,52 @@
                         <span t-if="type == 'repair'">Repair Order</span>
                         <span t-if="type == 'delivery'">Delivery</span>
                         <span t-if="type == 'purchase'">Purchase</span>
+                        <span t-if="type == 'RMA'">RMA</span>
                         <br t-else=""/>
+                    </div>
+
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_report_layout_standard')]" position="replace">
+            <div t-attf-class="article o_report_layout_standard {{'team_id' in o and o.team_id.css_class or 'Outlet'}}"
+                 t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+                 t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-call="web.address_layout"/>
+                <t t-raw="0"/>
+            </div>
+
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_standard_footer')]" position="replace">
+            <div class="footer o_standard_footer">
+                <div class="o_custom_footer">
+                    <div class="text-center">
+                        <ul class="list-inline mb4">
+                            <li t-if="company.email" class="list-inline-item">
+                                <b>Email:</b>
+                                <span t-field="company.email"/>
+                            </li>
+                            <li t-if="company.website" class="list-inline-item">
+                                <b>Web:</b>
+                                <span t-field="company.website"/>
+                            </li>
+                            <li t-if="company.phone" class="list-inline-item">
+                                <b>Phone:</b>
+                                <span t-field="company.phone"/>
+                            </li>
+                        </ul>
+                        <!--                    <div name="financial_infos">-->
+                        <!--                        <span t-field="company.report_footer"/>-->
+                        <!--                    </div>-->
+
+                        <!--                    <div t-if="report_type == 'pdf'" class="text-muted">-->
+                        <!--                        Page:-->
+                        <!--                        <span class="page"/>-->
+                        <!--                        /-->
+                        <!--                        <span class="topage"/>-->
+                        <!--                    </div>-->
                     </div>
                 </div>
             </div>
@@ -110,26 +538,38 @@
         <xpath expr="//div[hasclass('header')]" position="replace">
             <div class="header">
                 <div class="row">
-                    <div class="col-7" style="padding-top:80px; padding-bottom: 10px;  background-color: #e5e5e5; color: #23384d; text-transform: uppercase; text-align: center;font-weight: bold;">
+                    <div class="col-7"
+                         style="padding-top:80px; padding-bottom: 10px;  background-color: #e5e5e5; color: #23384d; text-transform: uppercase; text-align: center;font-weight: bold;">
                         <div class="col-12" style="margin-top: 5px;">
                             <div class="col-4" style="float: left; text-align: right;">
-                                <img t-if="'team_id' in o and o.team_id.team_logo" t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;" alt="Logo"/>
-                                <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 40px;" alt="Logo"/>
+                                <img t-if="'team_id' in o and o.team_id.team_logo"
+                                     t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;"
+                                     alt="Logo"/>
+                                <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)"
+                                     style="max-height: 40px;" alt="Logo"/>
                             </div>
                             <div class="col-8" style="float: left; text-align: left;">
-                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
-                                <span t-elif="company.name" t-esc="company.name" style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name"
+                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
+                                <span t-elif="company.name" t-esc="company.name"
+                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
                             </div>
                             <div class="col-7 offset-1" style="float: left; text-align: left;">
-                                <small t-if="'team_id' in o and o.team_id.team_tag_line" t-esc="o.team_id.team_tag_line" style="float: left;text-align: left;margin-top: -1.5%;"/>
+                                <small t-if="'team_id' in o and o.team_id.team_tag_line" t-esc="o.team_id.team_tag_line"
+                                       style="float: left;text-align: left;margin-top: -1.5%;"/>
                             </div>
                         </div>
                     </div>
-                    <div class="col-5" style="padding-top:80px; padding-bottom: 10px;  background-color: #23384d; color: #fafaf8;font-size: 25px; font-size-adjust: 1; text-transform: uppercase; text-align: center;font-weight: bold;">
+                    <div class="col-5"
+                         style="padding-top:80px; padding-bottom: 10px;  background-color: #23384d; color: #fafaf8;font-size: 25px; font-size-adjust: 1; text-transform: uppercase; text-align: center;font-weight: bold;">
                         <ul class="list-inline">
-                            <li class="list-inline-item"><span class="page"/></li>
+                            <li class="list-inline-item">
+                                <span class="page"/>
+                            </li>
                             <li class="list-inline-item">/</li>
-                            <li class="list-inline-item"><span class="topage"/></li>
+                            <li class="list-inline-item">
+                                <span class="topage"/>
+                            </li>
                         </ul>
                     </div>
                 </div>
