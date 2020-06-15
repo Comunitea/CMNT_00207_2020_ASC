@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="dhl_api_url" model="ir.config_parameter">
+            <field name="key">stock_picking_batch_delivery_carrier_dhl.api_url</field>
+            <field name="value">https://wsbexpress.dhl.com/rest/gbl/</field>
+        </record>
+
+        <record id="dhl_api_test_url" model="ir.config_parameter">
+            <field name="key">stock_picking_batch_delivery_carrier_dhl.api_test_url</field>
+            <field name="value">https://wsbexpress.dhl.com/rest/sndpt/</field>
+        </record>
+    </data>
+</openerp>
