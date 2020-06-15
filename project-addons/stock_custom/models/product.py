@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016 Comunitea - Javier Colmenero <javier@comunitea.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 from odoo import models, fields, api
@@ -20,7 +19,9 @@ class ProductProduct(models.Model):
 
     @api.model
     def cron_variable_replenish(self):
-        domain = [('replenish_type', '!=', False)]
+        domain = [
+            ('replenish_type', '!=', False), ('pack_product', '=', False),
+            ('type', '=', 'product')]
         products = self.search(domain)
         products.get_variable_replenish()
         return
@@ -49,7 +50,7 @@ class ProductProduct(models.Model):
 
         moves = self.get_moves_by_date(rt.lt_days)
         total_sales = len(moves.mapped('sale_line_id.order_id'))
-        if total_sales <= rt_lt_sales:
+        if total_sales <= rt.lt_sales:
             res = rt.lt_qty
         return res
 
@@ -62,7 +63,7 @@ class ProductProduct(models.Model):
 
         moves = self.get_moves_by_date(rt.gt_days)
         total_sales = len(moves.mapped('sale_line_id.order_id'))
-        if total_sales >= rt_gt_sales:
+        if total_sales >= rt.gt_sales:
             res = rt.gt_qty
         return res
 
@@ -89,12 +90,13 @@ class ProductProduct(models.Model):
                     max_qty = gt_change_qty
 
                 # COMPUTE ALGORITM MIN MAX
-                moves = self.get_moves_by_date(rt.sale_days)
+                moves = product.get_moves_by_date(rt.sale_days)
                 order_qtys = {}
                 total_sales = len(moves.mapped('sale_line_id.order_id'))
                 total_qty = sum(moves.mapped('sale_line_id.qty_delivered'))
-
-                average = (total_qty / total_sales) * rt.average_ratio
+                average = 0
+                if total_sales:
+                    average = (total_qty / total_sales) * rt.average_ratio
                 # Get qty by order where qty under average
                 for move in moves:
                     if move.product_uom_qty < average:

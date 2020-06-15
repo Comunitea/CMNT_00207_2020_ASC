@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- stock.picking Form View -->
+    <record id="stock_picking_batch_delivery_carrier_form" model="ir.ui.view">
+        <field name="name">stock.picking.batch.delivery.carrier.form</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="cancel_shipment" string="Cancel Shipping" type="object" 
+                    attrs="{'invisible': [
+                        '|', 
+                        ('shipment_reference', '=', ''), 
+                        ('state', '=', 'done')]}"/>
+
+                <button name="track_request" string="Track Shipping" type="object" 
+                    attrs="{'invisible': [ 
+                        ('shipment_reference', '=', '')
+                    ]}"/>
+
+                <button name="print_created_labels" string="Print Labels" type="object"
+                    attrs="{'invisible': [ 
+                        ('shipment_reference', '=', '')
+                    ]}"/>
+            </header>
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="carrier_id"/>
+                    <field name="carrier_code" invisible="1"/>
+                    <field name="shipment_reference"/>
+                    <field name="tracking_code"/>
+                    <field name="delivery_status"/>
+                    <field name="length"/>
+                    <field name="width"/>
+                    <field name="height"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_batch_delivery_carrier_base_delivery_account" model="ir.ui.view">
+        <field name="name">stock.picking.batch.delivery.carrier.base.delivery.account</field>
+        <field name="model">carrier.account</field>
+        <field name="inherit_id" ref="base_delivery_carrier_label.carrier_account_view_form"/>
+        <field name="arch" type="xml">
+            <field name="account" position="after">
+                <field name="delivery_carrier"/>
+            </field>
+        </field>
+    </record>
+
+
+</odoo>

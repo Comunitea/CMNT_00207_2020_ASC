@@ -13,7 +13,7 @@
             </form>
         </field>
     </record>
-    <record id="product_" model="ir.ui.view">
+    <record id="product_template_form_view" model="ir.ui.view">
         <field name="name">product.template.common.form.prc</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
@@ -30,18 +30,5 @@
             </group>
         </field>
     </record>
-
-    <record model="ir.cron" id="cron_compute_product_sales">
-        <field name="name">Compute product sales</field>
-        <field name="model_id" ref="model_product_template"/>
-        <field name="state">code</field>
-        <field name="code">model.compute_product_template_sales()</field>
-        <field name="active" eval="True"/>
-        <field name="user_id" ref="base.user_root"/>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-    </record>
-
 
 </odoo>

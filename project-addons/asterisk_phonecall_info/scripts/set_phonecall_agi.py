@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# -*- coding: utf-8 -*-
 #  Copyright 2010-2018 Akretion France
 #  @author: Alexis de Lattre <alexis.delattre@akretion.com>
 #
