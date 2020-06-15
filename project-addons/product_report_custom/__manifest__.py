@@ -10,7 +10,7 @@
     "depends": ["sale"],
     "data": [
         "views/product_product.xml",
-        "data/ir_cron.xml"
+        "data/ir_cron.xml",
         "security/ir.model.access.csv"
     ],
     "installable": True,
