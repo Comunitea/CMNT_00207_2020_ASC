@@ -19,7 +19,7 @@
 ##############################################################################
 
 from odoo import fields, models, api, _
-import requests 
+import requests
 import base64
 import urllib
 from requests.auth import HTTPBasicAuth
@@ -64,7 +64,7 @@ class StockBatchPicking(models.Model):
         headers = {
             'authorization': auth_basic,
             'content-type': "application/json",
-            'cache-control': "no-cache" 
+            'cache-control': "no-cache"
         }
 
         return headers
@@ -100,7 +100,7 @@ class StockBatchPicking(models.Model):
                 }
                 RequestedPackages.append(package_info)
                 cur_pack+=1
-                
+
             payload = {
                 "ShipmentRequest": {
                     "RequestedShipment": {
@@ -167,13 +167,10 @@ class StockBatchPicking(models.Model):
             }
 
             try:
-                print("TEST")
                 r = requests.request("POST", url, data=json.dumps(payload), headers=headers)
-                print(r)
             except requests.exceptions.RequestException as e:
                 raise UserError("Error: {}".format(e))
 
-            print(r.json())
             response = r.json()['ShipmentResponse']
 
             if r.json()['ShipmentResponse']:
@@ -200,14 +197,10 @@ class StockBatchPicking(models.Model):
                         'delivery_status': 'R',
                         'tracking_code': tracking_code
                     })
-                    print("actualziando tracking_code {}".format(tracking_code))
-                    print(self.tracking_code)
 
-            print(r)
-            print(r.text)
         res = super(StockBatchPicking, self).send_shipping()
 
-    
+
     def cancel_shipment(self):
         if self.carrier_id.code == 'DHL':
             headers = self.setHeaders()
@@ -237,7 +230,7 @@ class StockBatchPicking(models.Model):
                 r = requests.request("POST", url, data=json.dumps(payload), headers=headers)
             except requests.exceptions.RequestException as e:
                 raise UserError("Error: {}".format(e))
-            
+
             response = r.json()['DeleteResponse']
 
             if response['Response']:
@@ -296,14 +289,12 @@ class StockBatchPicking(models.Model):
             except requests.exceptions.RequestException as e:
                 raise UserError("Error: {}".format(e))
 
-            print(r)
-            print(r.text)
             response = r.json()['trackShipmentRequestResponse']
             awbinfoitem = response['trackingResponse']['TrackingResponse']['AWBInfo']['ArrayOfAWBInfoItem']
             if 'ShipmentInfo' in awbinfoitem:
                 self.delivery_status = shipment_info['ShipmentEvent']['ArrayOfShipmentEventItem']['ServiceEvent']['EventCode']
             else:
                 raise UserError("Error: {}".format(awbinfoitem['Status']['ActionStatus']))
-            
-            
+
+
         res = super(StockBatchPicking, self).track_request()
