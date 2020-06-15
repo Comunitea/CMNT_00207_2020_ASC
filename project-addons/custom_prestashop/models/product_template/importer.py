@@ -102,11 +102,15 @@ class TemplateMapper(Component):
         if taxes:
             return {"taxes_id": [(6, 0, taxes.ids)]}
 
+    @mapping
+    def prestashop_unique_id(self, record):
+        return {'prestashop_unique_id': record['id']}
+
     @only_create
     @mapping
     def odoo_id(self, record):
         template_exists = self.env['product.template'].search(
-            [('prestashop_id', '=', record['id'])])
+            [('prestashop_unique_id', '=', record['id'])])
         if template_exists:
             return{'odoo_id': template_exists.id}
         return {}
