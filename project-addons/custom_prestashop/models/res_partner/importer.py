@@ -82,9 +82,12 @@ class AddressImportMapper(Component):
     @only_create
     @mapping
     def parent_id(self, record):
+        binder = self.binder_for("prestashop.res.partner")
+        parent = binder.to_internal(record["id_customer"], unwrap=True)
         if (
             record.get("facturacion_defecto") == "1"
             and record.get("envio_defecto") == "1"
+            and not parent.prestashop_address_bind_ids
         ):
             return {}
         return super().parent_id(record)
@@ -98,7 +101,9 @@ class AddressImportMapper(Component):
         ):
             binder = self.binder_for("prestashop.res.partner")
             parent = binder.to_internal(record["id_customer"], unwrap=True)
-            return {"odoo_id": parent.id}
+            if not parent.prestashop_address_bind_ids:
+                return {"odoo_id": parent.id}
+
 
 
 # class AddressImporter(Component):
