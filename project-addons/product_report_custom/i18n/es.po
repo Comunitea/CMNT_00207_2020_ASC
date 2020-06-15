@@ -47,25 +47,25 @@ msgstr "# Ventas"
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_0
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_0
 msgid "Count sales 0"
-msgstr "# Ventas 0"
+msgstr "# Ventas 30 días"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_1
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_1
 msgid "Count sales 1"
-msgstr "# Ventas 1"
+msgstr "# Ventas 60 días"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_2
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_2
 msgid "Count sales 2"
-msgstr "# Ventas 2"
+msgstr "# Ventas 90 días"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_product__count_sales_3
 #: model:ir.model.fields,field_description:product_report_custom.field_product_template__count_sales_3
 msgid "Count sales 3"
-msgstr "# Ventas 3"
+msgstr "# Ventas 180 días"
 
 #. module: product_report_custom
 #: model:ir.model.fields,field_description:product_report_custom.field_product_alarm_days__create_uid
