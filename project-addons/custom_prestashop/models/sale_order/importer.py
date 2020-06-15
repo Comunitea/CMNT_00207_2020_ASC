@@ -259,12 +259,14 @@ class SaleOrderImporter(Component):
                         line.applied_commission_amount = binding.commission_amount
                     if not line.applied_commission_amount:
                         line.price_unit += binding.commission_amount
+                        line.applied_commission_amount = binding.commission_amount
             if not added_amount:
                 binding.odoo_id.write({'order_line': [(0, 0, {
                     'commission_amount': binding.commission_amount,
                     'product_id': discount_product.id,
                     'name': discount_product.name,
                     'price_unit': binding.commission_amount,
+                    'applied_commission_amount': binding.commission_amount,
                     'tax_id': [(6, 0, discount_product.taxes_id.ids)]
                 })]})
         return res
