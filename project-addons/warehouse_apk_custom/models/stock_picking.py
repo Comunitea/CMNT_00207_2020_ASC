@@ -35,7 +35,6 @@ class StockPicking(models.Model):
         domain="[('state', 'in', ('assigned', 'draft'))]",
     )
 
-
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
         if mode == 'form':
