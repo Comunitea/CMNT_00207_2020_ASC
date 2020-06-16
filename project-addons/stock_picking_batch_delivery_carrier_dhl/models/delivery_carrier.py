@@ -44,6 +44,7 @@ class CarrierAccount(models.Model):
         ('ECOM26_84CI_002', 'ECOM26_84CI_002'),
         ('ECOM26_84CI_003', 'ECOM26_84CI_003')
     ], default="ECOM26_84_001")
+    daily_picking = fields.Boolean(string="Daily Picking", default=True)
 
     @api.onchange('file_format')
     def onchange_file_format(self):

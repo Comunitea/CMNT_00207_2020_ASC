@@ -27,10 +27,12 @@
     'license': 'AGPL-3',
     'depends': [
         'cmnt_delivery_carrier_label',
-        'stock_picking_batch_extended'
+        'stock_picking_batch_extended',
+        'account_payment_mode'
     ],
     'data': [
-        'views/stock_picking_batch.xml'
+        'views/stock_picking_batch.xml',
+        'views/account_payment_mode.xml'
     ],
     'installable': True,
     'auto_install': False,

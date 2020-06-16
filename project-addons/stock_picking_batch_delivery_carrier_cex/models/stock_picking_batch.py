@@ -50,22 +50,17 @@ class StockBatchPicking(models.Model):
 
     _inherit = 'stock.picking.batch'
 
-    carrier_service = fields.Many2one('delivery.carrier.service')
-
     def send_shipping(self):
         if self.carrier_id.code == 'CEX':
 
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
+            if self.carrier_id.account_id.test_enviroment:
+                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(self.carrier_id.account_id.service_test_url)
+            else:
+                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(self.carrier_id.account_id.service_url)
 
-            url = (
-                self.carrier_id.account_id.test_enviroment
-                and "https://test.correosexpress.com/wspsc/apiRestGrabacionEnvio"
-                "/json/grabacionEnvio"
-                or "https://www.correosexpress.com/wpsc/apiRestGrabacionEnvio/"
-                "json/grabacionEnvio"
-            )
             username = self.carrier_id.account_id.account
             password = self.carrier_id.account_id.password
             data = self._get_cex_label_data()
@@ -116,7 +111,6 @@ class StockBatchPicking(models.Model):
                     _("CEX Error: %s %s") % (retorno or 999, message or "Webservice ERROR.")
                 )          
 
-            self.delivery_status = 'R'
             res = super(StockBatchPicking, self).send_shipping()
 
 
@@ -153,7 +147,7 @@ class StockBatchPicking(models.Model):
             raise UserError("Review partner data")
         if self.carrier_id.account_id.file_format not in ("PDF", "ZPL"):
             raise UserError("Format file not supported by cex")
-        if not self.carrier_service:
+        if not self.carrier_id.service_code:
             raise UserError("Set service to the picking")
         if not self.carrier_weight or self.carrier_weight == 0.0:
             raise UserError("Set weight to the picking")
@@ -196,7 +190,7 @@ class StockBatchPicking(models.Model):
             "alto": "",
             "largo": "",
             "ancho": "",
-            "producto": self.carrier_service.carrier_code,
+            "producto": self.carrier_id.service_code,
             "portes": "P",
             "reembolso": "",  # TODO cash_on_delivery
             "entrSabado": "",
@@ -216,9 +210,17 @@ class StockBatchPicking(models.Model):
         }
         return data
 
-    def track_request(self):
+
+class StockPicking(models.Model):
+
+    _inherit = 'stock.picking'
+
+    def check_shipment_status(self):
         if self.carrier_id.carrier_type == "cex":
-            url = "https://www.correosexpress.com/wpsc/apiRestSeguimientoEnvios/rest/seguimientoEnvios"
+            if self.carrier_id.account_id.test_enviroment:
+                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(self.carrier_id.account_id.service_test_url)
+            else:
+                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(self.carrier_id.account_id.service_url)
             username = self.carrier_id.account_id.account
             password = self.carrier_id.account_id.password
             vals = {
@@ -246,7 +248,7 @@ class StockBatchPicking(models.Model):
                         ].firstChild.data
                         == "12"
                     ):
-                        self.delivery_status = 'OK'
+                        self.delivered = True
                         break
             except (requests.exceptions.Timeout, requests.exceptions.ReadTimeout):
                 rjson = {
@@ -256,4 +258,4 @@ class StockBatchPicking(models.Model):
             except:
                 rjson = {"codigoRetorno": 999, "mensajeRetorno": "\n\n" + response.text}
         
-        res = super(StockBatchPicking, self).track_request()
+        res = super(StockPicking, self).check_shipment_status()
