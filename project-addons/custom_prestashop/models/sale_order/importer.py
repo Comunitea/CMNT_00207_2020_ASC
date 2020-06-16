@@ -237,6 +237,8 @@ class SaleOrderImporter(Component):
     def _has_to_skip(self):
         """ Sobreescribimos para traernos cualquier actualización sobre el pedido """
         rules = self.component(usage="sale.import.rule")
+        if self._get_binding() and not self._get_binding().payment_mode_id.can_edit and not self._get_binding().ready_to_send:
+            return True
         try:
             return rules.check(self.prestashop_record)
         except NothingToDoJob as err:
