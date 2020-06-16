@@ -42,108 +42,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = 'stock.picking.batch'
 
-    mrw_franchise_delivery = fields.Selection([
-        ('N', 'No'),
-        #('R', 'Pick up on franchise'),
-        ('E', 'Delivery on franchise'),
-        #('A', 'Pick up and delivery on franchise')
-    ], default='N')
-
-    mrw_service = fields.Selection([
-        ('0000', 'Urgente 10'),
-        ('0005', 'Urgente Hoy'),
-        ('0010', 'Promociones'),
-        ('0100', 'Urgente 12'),
-        ('0110', 'Urgente 14'),
-        ('0120', 'Urgente 22'),
-        ('0200', 'Urgente 19'),
-        ('0205', 'Urgente 19 Expedición'),
-        ('0210', 'Urgente 19 Más 40 Kilos'),
-        ('0220', 'Urgente 19 Portugal'),
-        ('0230', 'Bag 19'),
-        ('0235', 'Bag 14'),
-        ('0300', 'Económico'),
-        ('0310', 'Económico Más de 40 Kilos'),
-        ('0350', 'Económico Interinsular'),
-        ('0400', 'Express Documentos'),
-        ('0450', 'Express 2 Kilos'),
-        ('0480', 'Caja Express 3 Kilos'),
-        ('0490', 'Documentos 14'),
-        ('0800', 'Ecommerce'),
-        ('0810', 'Ecommerce Canje')
-    ])
-
-    mrw_frequency = fields.Selection([
-        ('1', 'Frequency 1'),
-        ('2', 'Frequency 2')
-    ])
-
-    mrw_saturday_delivery = fields.Selection([
-        ('S', 'Yes'),
-        ('N', 'No')
-    ], default='N')
-
-    mrw_830_delivery = fields.Selection([
-        ('S', 'Yes'),
-        ('N', 'No')
-    ], default='N')
-
-    mrw_delivery_hangle = fields.Selection([
-        ('N', 'No handle'),
-        ('O', 'Origin'),
-        ('D', 'Destination')
-    ], default='N')
-
-    mrw_delivery_return = fields.Selection([
-        ('N', 'No Return'),
-        ('O', 'Picking return, payment on origin'),
-        ('D', 'Picking return, payment on destination'),
-        ('S', 'Goods return')
-    ], default='N')
-
-    mrw_instant_notice = fields.Selection([
-        ('N', 'No'),
-        ('R', 'Instant notice on picking'),
-        ('E', 'Instante notice on delivery'),
-    ], default='N')
-
-    mrw_delivery_refund = fields.Selection([
-        ('N', 'No refundable'),
-        ('O', 'Comission in origin'),
-        ('D', 'Comission in destination')
-    ], default='N')
-
     mrw_refund_quantity = fields.Float('Refund amount')
-
-    mrw_goods_type = fields.Selection([
-        ('DOC', 'Documents'),
-        ('MCV', 'Samples with commercial value'),
-        ('MSV', 'Samples with no commercial value'),
-        ('ATV', 'High value'),
-        ('BTV', 'Low value')
-    ], string='Customs Duty')
-
-    mrw_declared_value = fields.Float('Declared value', help="Declared value for customs duty")
-
-    mrw_mail_notification = fields.Boolean('Notify client by mail')
-    mrw_phone_notification = fields.Boolean('Notify client by phone')
-
-    mrw_notice_type = fields.Selection([
-        ('1', 'Delivery'),
-        ('2', 'Tracking'),
-        ('3', 'Delivery on franchise'),
-        ('4', 'Alert before delivery'),
-        ('5', 'Alert after origin pick up')
-    ])
-
-    mrw_delivery_insurance = fields.Selection([
-        ('1', 'General Goods'),
-        ('2', 'Jewelry and valuable items'),
-        ('3', 'Living animals')
-    ])
-
-    mrw_insurance_value = fields.Float('Insuranced value')
-
 
     @api.multi
     def write(self, vals):
@@ -160,8 +59,6 @@ class StockBatchPicking(models.Model):
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
             self.mrw_refund_quantity = pickings_total_value
-            self.mrw_declared_value = pickings_total_value
-            self.mrw_insurance_value = pickings_total_value
 
     def create_client(self):
         session = Session()
@@ -171,9 +68,9 @@ class StockBatchPicking(models.Model):
             transport = Transport(cache=SqliteCache(), session=session)
             history = HistoryPlugin()
             if self.carrier_id.account_id.test_enviroment:
-                url = self.env['ir.config_parameter'].get_param("stock_picking_batch_delivery_carrier_mrw.sagec_test_url")
+                url = self.carrier_id.account_id.service_test_url
             else:
-                url = self.env['ir.config_parameter'].get_param("stock_picking_batch_delivery_carrier_mrw.sagec_url")
+                url = self.carrier_id.account_id.service_url
             client = Client(url, transport=transport, plugins=[history])
 
             if client:
@@ -225,38 +122,23 @@ class StockBatchPicking(models.Model):
                 try:
 
                     headers = self.setMRWHeaders(client)
-
-                    requestedPackages = []
-                    cur_pack = 1
-                    while cur_pack <= self.carrier_packages:
-                        package_info = {
-                            'BultoRequest': {
-                                'Alto': self.height,
-                                'Largo': self.length,
-                                'Ancho': self.width,
-                                'Peso': self.carrier_weight/self.carrier_packages,
-                                'NumeroBulto': "{}".format(cur_pack)
-                            }
-                        }
-                        requestedPackages.append(package_info)
-                        cur_pack+=1
-
+                    
                     notices = []
-                    if self.mrw_phone_notification:
+                    if self.carrier_id.account_id.mrw_phone_notification:
                         phone_notification = {
                             'NotificacionRequest': {
                                 'CanalNotificacion': '2',
-                                'TipoNotificacion': self.mrw_notice_type,
+                                'TipoNotificacion': self.carrier_id.account_id.mrw_notice_type,
                                 'MailSMS': self.partner_id.phone or self.partner_id.mobile
                             }
                         }
                         notices.append(phone_notification)
 
-                    if self.mrw_mail_notification:
+                    if self.carrier_id.account_id.mrw_mail_notification:
                         mail_notification = {
                             'NotificacionRequest': {
                                 'CanalNotificacion': '1',
-                                'TipoNotificacion': self.mrw_notice_type,
+                                'TipoNotificacion': self.carrier_id.account_id.mrw_notice_type,
                                 'MailSMS': self.partner_id.email
                             }
                         }
@@ -278,26 +160,19 @@ class StockBatchPicking(models.Model):
                             'DatosServicio': {
                                 'Fecha': datetime.now().strftime("%d/%m/%Y"), #self.date.strftime("%d/%m/%Y"),
                                 'Referencia': self.name,
-                                'CodigoServicio': self.mrw_service,
-                                'Frecuencia': self.mrw_frequency if self.mrw_service == '0005' else '',
-                                #'Bultos': requestedPackages,
+                                'CodigoServicio': self.carrier_id.service_code,
+                                'Frecuencia': self.carrier_id.account_id.mrw_frequency if self.carrier_id.service_code == '0005' else '',
                                 'NumeroBultos': self.carrier_packages,
                                 'Peso': round(self.carrier_weight),
-                                'EntregaSabado': self.mrw_saturday_delivery,
-                                'Entrega830': self.mrw_830_delivery,
-                                'EntregaPartirDe': '',
-                                'Gestion': self.mrw_delivery_hangle,
-                                'Retorno': self.mrw_delivery_return,
-                                'ConfirmacionInmediata': self.mrw_instant_notice,
-                                'Reembolso': self.mrw_delivery_return,
-                                'ImporteReembolso': self.mrw_refund_quantity if self.mrw_delivery_return != 'N' else '',
-                                'TipoMercancia': self.mrw_goods_type,
-                                'ValorDeclarado': self.mrw_declared_value if self.mrw_goods_type else '',
-                                'Notificaciones': notices,
-                                'SeguroOpcional': {
-                                    'CodigoNaturaleza': self.mrw_delivery_insurance if self.mrw_delivery_insurance else '',
-                                    'ValorAsegurado': self.mrw_insurance_value if self.mrw_delivery_insurance else ''
-                                }
+                                'EntregaSabado': self.carrier_id.account_id.mrw_saturday_delivery,
+                                'Entrega830': self.carrier_id.account_id.mrw_830_delivery,
+                                'Gestion': self.carrier_id.account_id.mrw_delivery_hangle,
+                                'Retorno': self.carrier_id.account_id.mrw_delivery_return,
+                                'ConfirmacionInmediata': self.carrier_id.account_id.mrw_instant_notice,
+                                'Reembolso': self.carrier_id.account_id.mrw_delivery_refund if self.payment_on_delivery else 'N',
+                                'ImporteReembolso': self.mrw_refund_quantity if self.carrier_id.account_id.mrw_delivery_refund != 'N' else '',
+                                'TipoMercancia': self.carrier_id.account_id.mrw_goods_type,
+                                'Notificaciones': notices
                             }
                         }
                     }
@@ -311,7 +186,6 @@ class StockBatchPicking(models.Model):
                 elif res['Estado'] == '1':
 
                     self.write({
-                        'delivery_status': 'R',
                         'tracking_code': res['NumeroEnvio'],
                         'shipment_reference': res['NumeroSolicitud']
                     })
@@ -345,3 +219,43 @@ class StockBatchPicking(models.Model):
                 raise AccessError(_("Not possible to establish a client."))
 
         res = super(StockBatchPicking, self).send_shipping()
+
+    
+class StockPicking(models.Model):
+
+    _inherit = 'stock.picking'
+    
+    def check_shipment_status(self):
+        if self.carrier_id.code == 'DHL':
+            if not self.carrier_id.account_id:
+                raise UserError("Delivery carrier has no account.")
+
+            client, history = self.batch_id.create_client()
+
+            if not client:
+                raise AccessError(_("Not possible to establish a client."))
+
+            try:
+                GetEnvios = {
+                    'login': self.carrier_id.account_id.mrw_tracking_user,
+                    'pass': self.carrier_id.account_id.mrw_tracking_password,
+                    'codigoIdioma': 3082,
+                    'tipoFiltro': 1,
+                    'valorFiltroDesde': self.carrier_tracking_ref,
+                    'tipoInformacion': 0,
+                    'codigoAbonado': self.carrier_id.account_id.mrw_account,
+                    'codigoFranquicia': self.carrier_id.account_id.mrw_franchise
+                }
+
+                res = client.service.GetEnvios(**GetEnvios)
+            except Exception as e:
+                raise AccessError(_("Access error message: {}".format(e)))
+
+            seguimiento = res['Seguimiento']['Abonado']['Seguimiento']
+            if seguimiento['Estado'] == '00':
+                self.delivered = True
+            else:
+                raise AccessError(_("Error: {}".format(res['MensajeSeguimiento'])))
+        
+        res = super(StockPicking, self).check_shipment_status()
+            
