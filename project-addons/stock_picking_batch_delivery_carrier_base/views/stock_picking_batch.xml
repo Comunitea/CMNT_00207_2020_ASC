@@ -7,17 +7,6 @@
         <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_form"/>
         <field name="arch" type="xml">
             <header position="inside">
-                <button name="cancel_shipment" string="Cancel Shipping" type="object" 
-                    attrs="{'invisible': [
-                        '|', 
-                        ('shipment_reference', '=', ''), 
-                        ('state', '=', 'done')]}"/>
-
-                <button name="track_request" string="Track Shipping" type="object" 
-                    attrs="{'invisible': [ 
-                        ('shipment_reference', '=', '')
-                    ]}"/>
-
                 <button name="print_created_labels" string="Print Labels" type="object"
                     attrs="{'invisible': [ 
                         ('shipment_reference', '=', '')
@@ -29,10 +18,7 @@
                     <field name="carrier_code" invisible="1"/>
                     <field name="shipment_reference"/>
                     <field name="tracking_code"/>
-                    <field name="delivery_status"/>
-                    <field name="length"/>
-                    <field name="width"/>
-                    <field name="height"/>
+                    <field name="payment_on_delivery" readonly="1"/>
                 </group>
             </xpath>
         </field>
@@ -45,9 +31,22 @@
         <field name="arch" type="xml">
             <field name="account" position="after">
                 <field name="delivery_carrier"/>
+                <field name="service_url"/>
+                <field name="service_test_url"/>
             </field>
         </field>
     </record>
+
+    <record id="stock_picking_batch_delivery_carrier_base_view_delivery_carrier_form" model="ir.ui.view">
+    <field name="name">stock.picking.batch.delivery.carrier.base.view.delivery.carrier.form</field>
+    <field name="model">delivery.carrier</field>
+    <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+    <field name="arch" type="xml">
+        <field name="code" position="after">
+            <field name="service_code"/>
+        </field>
+    </field>
+  </record>
 
 
 </odoo>

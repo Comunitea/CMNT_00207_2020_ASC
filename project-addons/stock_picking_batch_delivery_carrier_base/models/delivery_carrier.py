@@ -1,6 +1,6 @@
 ##############################################################################
 #    License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
-#    Copyright (C) 2019 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
+#    Copyright (C) 2020 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
 #    Vicente Ángel Gutiérrez <vicente@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -17,4 +17,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import stock_picking_batch, delivery_carrier, account_payment_mode
+
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError
+
+
+class DeliveryCarrier(models.Model):
+    _inherit = 'delivery.carrier'
+
+    service_code = fields.Char(string='Carrier service code')
+
+
+class CarrierAccount(models.Model):
+    _inherit = 'carrier.account'
+
+    service_url = fields.Char(string='Webservice URL')
+    service_test_url = fields.Char(string='Webservice TEST URL')
