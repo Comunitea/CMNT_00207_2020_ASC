@@ -30,13 +30,7 @@ class StockBatchPicking(models.Model):
     carrier_code = fields.Char(related="carrier_id.code")
     tracking_code = fields.Char('Tracking Code')
     shipment_reference = fields.Char('Shipment Reference')
-    payment_on_delivery = fields.Boolean('Payment on delivery', compute="_compute_payment_on_delivery")
-
-    @api.multi
-    def _compute_payment_on_delivery(self):
-        for batch in self:
-            if any(x.sale_id.payment_mode_id.payment_on_delivery for x in batch.picking_ids):
-                self.payment_on_delivery = True
+    payment_on_delivery = fields.Boolean('Payment on delivery')  
 
     @api.multi
     def write(self, vals):
@@ -99,6 +93,8 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
+    payment_on_delivery = fields.Boolean('Payment on delivery')
+
     @api.multi
     def send_to_shipper(self):
         if not self.batch_id:
@@ -106,6 +102,14 @@ class StockPicking(models.Model):
 
     def onchange_partner_id_or_carrier_id(self):
         return True
+
+    @api.model
+    def create(self, vals):
+        if vals.get('origin'):
+            sale_id = self.env['sale.order'].search([('name', '=', vals.get('origin'))])
+            if sale_id and sale_id.payment_mode_id.payment_on_delivery:
+                vals['payment_on_delivery'] = True
+        return super(StockPicking, self).create(vals)        
 
 
 class CarrierAccount(models.Model):

@@ -14,7 +14,6 @@
             </header>
             <xpath expr="//notebook" position="before">
                 <group>
-                    <field name="carrier_id"/>
                     <field name="carrier_code" invisible="1"/>
                     <field name="shipment_reference"/>
                     <field name="tracking_code"/>
