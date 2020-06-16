@@ -29,7 +29,6 @@
         'stock_picking_batch_delivery_carrier_base',
     ],
     'data': [
-        'data/ir_config_parameter.xml',
         'views/stock_picking_batch.xml'
     ],
     "external_dependencies": {
