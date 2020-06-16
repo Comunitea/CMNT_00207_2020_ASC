@@ -42,7 +42,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = 'stock.picking.batch'
 
-    mrw_refund_quantity = fields.Float('Refund amount')
+    mrw_pdo_quantity = fields.Float('PDO amount')
 
     @api.multi
     def write(self, vals):
@@ -58,7 +58,7 @@ class StockBatchPicking(models.Model):
             pickings_total_value = 0.0
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
-            self.mrw_refund_quantity = pickings_total_value
+            self.mrw_pdo_quantity = pickings_total_value
 
     def create_client(self):
         session = Session()
@@ -167,10 +167,9 @@ class StockBatchPicking(models.Model):
                                 'EntregaSabado': self.carrier_id.account_id.mrw_saturday_delivery,
                                 'Entrega830': self.carrier_id.account_id.mrw_830_delivery,
                                 'Gestion': self.carrier_id.account_id.mrw_delivery_hangle,
-                                'Retorno': self.carrier_id.account_id.mrw_delivery_return,
                                 'ConfirmacionInmediata': self.carrier_id.account_id.mrw_instant_notice,
-                                'Reembolso': self.carrier_id.account_id.mrw_delivery_refund if self.payment_on_delivery else 'N',
-                                'ImporteReembolso': self.mrw_refund_quantity if self.carrier_id.account_id.mrw_delivery_refund != 'N' else '',
+                                'Reembolso': self.carrier_id.account_id.mrw_delivery_pdo if self.payment_on_delivery else 'N',
+                                'ImporteReembolso': self.mrw_pdo_quantity if self.carrier_id.account_id.mrw_delivery_pdo != 'N' else '',
                                 'TipoMercancia': self.carrier_id.account_id.mrw_goods_type,
                                 'Notificaciones': notices
                             }

@@ -51,13 +51,7 @@ class CarrierAccount(models.Model):
         ('O', 'Origin'),
         ('D', 'Destination')
     ], default='N')
-    mrw_delivery_return = fields.Selection([
-        ('N', 'No Return'),
-        ('O', 'Picking return, payment on origin'),
-        ('D', 'Picking return, payment on destination'),
-        ('S', 'Goods return')
-    ], default='N')
-    mrw_delivery_refund = fields.Selection([
+    mrw_delivery_pdo = fields.Selection([
         ('N', 'No Return'),
         ('O', 'Payment on origin'),
         ('D', 'Payment on destination')
