@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form"/>
         <field name="arch" type="xml">
             <field name="tracking_code" position="after">
-                <field name="mrw_refund_quantity" attrs="{'invisible': [('carrier_code', '!=', 'MRW')]}"/>
+                <field name="mrw_pdo_quantity" attrs="{'invisible': [('carrier_code', '!=', 'MRW')]}"/>
             </field>
         </field>
     </record>
@@ -24,9 +24,8 @@
                 <field name="mrw_saturday_delivery" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_830_delivery" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_delivery_hangle" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
-                <field name="mrw_delivery_return" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_instant_notice" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
-                <field name="mrw_delivery_refund" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_delivery_pdo" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_goods_type" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_mail_notification" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
                 <field name="mrw_phone_notification" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
