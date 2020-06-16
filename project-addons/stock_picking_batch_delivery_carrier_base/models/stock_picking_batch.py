@@ -30,19 +30,13 @@ class StockBatchPicking(models.Model):
     carrier_code = fields.Char(related="carrier_id.code")
     tracking_code = fields.Char('Tracking Code')
     shipment_reference = fields.Char('Shipment Reference')
-    delivery_status = fields.Selection([
-        ('NR', 'No Requested Delivery'),
-        ('R', 'Delivery Requested'),
-        ('MD', 'Missed Delivery'),
-        ('OK', 'Delivered'),
-        ('PU', 'Shipment Pickup'),
-        ('RT', 'Returned to shipper')],
-        string='Delivery Status',
-        required=True,
-        default='NR')
-    length = fields.Float('Length', default=1.0)
-    width = fields.Float('Width', default=1.0)
-    height = fields.Float('Height', default=1.0)
+    payment_on_delivery = fields.Boolean('Payment on delivery', compute="_compute_payment_on_delivery")
+
+    @api.multi
+    def _compute_payment_on_delivery(self):
+        for batch in self:
+            if any(x.sale_id.payment_mode_id.payment_on_delivery for x in batch.picking_ids):
+                self.payment_on_delivery = True
 
     @api.multi
     def write(self, vals):
@@ -66,16 +60,13 @@ class StockBatchPicking(models.Model):
         return res
 
     def send_shipping(self):
-        self.check_delivery_addres()
-        return True
-    
-    def cancel_shipment(self):
+        self.check_delivery_address()
         return True
 
     def track_request(self):
         return True
     
-    def check_delivery_addres(self):
+    def check_delivery_address(self):
         if not self.partner_id.state_id:
             raise UserError("Partner id addres is not complete (State missing).")
         if not self.partner_id.country_id:
@@ -112,6 +103,9 @@ class StockPicking(models.Model):
     def send_to_shipper(self):
         if not self.batch_id:
             super().send_to_shipper()
+
+    def onchange_partner_id_or_carrier_id(self):
+        return True
 
 
 class CarrierAccount(models.Model):
