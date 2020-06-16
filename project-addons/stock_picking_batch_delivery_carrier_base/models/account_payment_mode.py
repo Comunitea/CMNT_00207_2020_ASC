@@ -17,26 +17,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Stock Picking Batch MRWConnector',
-    'version': '12.0.0.0.0',
-    'summary': 'MRW SAGEC Integration for Stock Picking Batches',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'stock_picking_batch_delivery_carrier_base',
-    ],
-    'data': [
-        'views/stock_picking_batch.xml'
-    ],
-    "external_dependencies": {
-        "python": [
-            "zeep"
-        ],
-    },
-    'installable': True,
-    'auto_install': False,
-    'application': False,
-}
+
+
+from odoo import models, fields
+
+
+class AccountPaymentMode(models.Model):
+    _inherit = 'account.payment.mode'
+
+    payment_on_delivery = fields.Boolean('POD')

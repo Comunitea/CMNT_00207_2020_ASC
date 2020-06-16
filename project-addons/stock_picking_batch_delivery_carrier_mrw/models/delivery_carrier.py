@@ -34,3 +34,56 @@ class CarrierAccount(models.Model):
     delivery_carrier = fields.Selection(selection_add=[('mrw', 'MRW')])
     mrw_account = fields.Char('MRW Client Code')
     mrw_franchise = fields.Char('MRW Franchise Code')
+    mrw_saturday_delivery = fields.Selection([
+        ('S', 'Yes'),
+        ('N', 'No')
+    ], default='N')
+    mrw_frequency = fields.Selection([
+        ('1', 'Frequency 1'),
+        ('2', 'Frequency 2')
+    ])
+    mrw_830_delivery = fields.Selection([
+        ('S', 'Yes'),
+        ('N', 'No')
+    ], default='N')
+    mrw_delivery_hangle = fields.Selection([
+        ('N', 'No handle'),
+        ('O', 'Origin'),
+        ('D', 'Destination')
+    ], default='N')
+    mrw_delivery_return = fields.Selection([
+        ('N', 'No Return'),
+        ('O', 'Picking return, payment on origin'),
+        ('D', 'Picking return, payment on destination'),
+        ('S', 'Goods return')
+    ], default='N')
+    mrw_delivery_refund = fields.Selection([
+        ('N', 'No Return'),
+        ('O', 'Payment on origin'),
+        ('D', 'Payment on destination')
+    ], default='N')
+    mrw_instant_notice = fields.Selection([
+        ('N', 'No'),
+        ('R', 'Instant notice on picking'),
+        ('E', 'Instante notice on delivery'),
+    ], default='N')
+    mrw_goods_type = fields.Selection([
+        ('DOC', 'Documents'),
+        ('MCV', 'Samples with commercial value'),
+        ('MSV', 'Samples with no commercial value'),
+        ('ATV', 'High value'),
+        ('BTV', 'Low value')
+    ], string='Customs Duty')
+    mrw_mail_notification = fields.Boolean('Notify client by mail')
+    mrw_phone_notification = fields.Boolean('Notify client by phone')
+    mrw_notice_type = fields.Selection([
+        ('1', 'Delivery'),
+        ('2', 'Tracking'),
+        ('3', 'Delivery on franchise'),
+        ('4', 'Alert before delivery'),
+        ('5', 'Alert after origin pick up')
+    ])
+    mrw_tracking_user = fields.Char('Tracking account')
+    mrw_tracking_password = fields.Char('Tracking account password')
+    mrw_tracking_service_url = fields.Char('Tracking service url')
+    mrw_tracking_service_test_url = fields.Char('Tracking service test url')
