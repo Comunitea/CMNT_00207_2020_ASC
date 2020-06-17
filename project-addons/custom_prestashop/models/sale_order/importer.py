@@ -236,6 +236,13 @@ class SaleOrderImporter(Component):
 
     def _has_to_skip(self):
         """ Sobreescribimos para traernos cualquier actualización sobre el pedido """
+        if self._get_binding():
+            ps_state_id = self.prestashop_record["current_state"]
+            state = self.binder_for("prestashop.sale.order.state").to_internal(
+                ps_state_id, unwrap=1
+            )
+            self._get_binding().prestashop_state = state.id
+
         rules = self.component(usage="sale.import.rule")
         if self._get_binding() and not self._get_binding().payment_mode_id.can_edit and not self._get_binding().ready_to_send:
             return True
