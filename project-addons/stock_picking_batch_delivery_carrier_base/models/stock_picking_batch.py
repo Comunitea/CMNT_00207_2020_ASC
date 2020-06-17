@@ -18,34 +18,35 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api, _
+from odoo import fields, models, api
 from odoo.exceptions import UserError
 from base64 import b64decode
 
+
 class StockBatchPicking(models.Model):
 
-    _inherit = 'stock.picking.batch'
+    _inherit = "stock.picking.batch"
 
-    carrier_id = fields.Many2one(comodel_name='delivery.carrier', string='Carrier')
+    carrier_id = fields.Many2one(
+        comodel_name="delivery.carrier", string="Carrier"
+    )
     carrier_code = fields.Char(related="carrier_id.code")
-    tracking_code = fields.Char('Tracking Code')
-    shipment_reference = fields.Char('Shipment Reference')
-    payment_on_delivery = fields.Boolean('Payment on delivery')  
+    tracking_code = fields.Char("Tracking Code")
+    shipment_reference = fields.Char("Shipment Reference")
+    payment_on_delivery = fields.Boolean("Payment on delivery")
 
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if vals.get('tracking_code', False):
+        if vals.get("tracking_code", False):
             self.onchange_tracking_code()
         return res
 
-    @api.onchange('tracking_code')
+    @api.onchange("tracking_code")
     def onchange_tracking_code(self):
         if self.tracking_code:
             for pick in self.picking_ids:
-                pick.write({
-                    'carrier_tracking_ref': self.tracking_code
-                })
+                pick.write({"carrier_tracking_ref": self.tracking_code})
 
     @api.multi
     def action_transfer(self):
@@ -59,30 +60,41 @@ class StockBatchPicking(models.Model):
 
     def track_request(self):
         return True
-    
+
     def check_delivery_address(self):
         if not self.partner_id.state_id:
-            raise UserError("Partner id addres is not complete (State missing).")
+            raise UserError(
+                "Partner id addres is not complete (State missing)."
+            )
         if not self.partner_id.country_id:
-            raise UserError("Partner id addres is not complete (Contry missing).")
+            raise UserError(
+                "Partner id addres is not complete (Contry missing)."
+            )
         if not self.partner_id.email:
-            raise UserError("Partner id addres is not complete (Email missing).")
+            raise UserError(
+                "Partner id addres is not complete (Email missing)."
+            )
         if not self.partner_id.zip:
-            raise UserError("Partner id addres is not complete (Zip code missing).")
+            raise UserError(
+                "Partner id addres is not complete (Zip code missing)."
+            )
         if not self.env.user.company_id.state_id:
-            raise UserError("Company id addres is not complete (State missing).")
+            raise UserError(
+                "Company id addres is not complete (State missing)."
+            )
         if not self.env.user.company_id.state_id:
-            raise UserError("Company id addres is not complete (State missing).")
+            raise UserError(
+                "Company id addres is not complete (State missing)."
+            )
 
     def print_created_labels(self):
         self.ensure_one()
-        
+
         if not self.carrier_id.account_id.printer:
-            raise UserError('Printer not defined')
-        labels =  self.env['ir.attachment'].search([
-            ('res_id', '=', self.id),
-            ('res_model', '=', self._name)
-        ])
+            raise UserError("Printer not defined")
+        labels = self.env["ir.attachment"].search(
+            [("res_id", "=", self.id), ("res_model", "=", self._name)]
+        )
         for label in labels:
             self.carrier_id.account_id.printer.print_document(
                 None, b64decode(label.datas), doc_format="raw"
@@ -91,29 +103,30 @@ class StockBatchPicking(models.Model):
 
 class StockPicking(models.Model):
 
-    _inherit = 'stock.picking'
+    _inherit = "stock.picking"
 
-    payment_on_delivery = fields.Boolean('Payment on delivery')
+    payment_on_delivery = fields.Boolean("Payment on delivery")
 
     @api.multi
     def send_to_shipper(self):
         if not self.batch_id:
-            super().send_to_shipper()
+            return super().send_to_shipper()
 
     def onchange_partner_id_or_carrier_id(self):
         return True
 
     @api.model
     def create(self, vals):
-        if vals.get('origin'):
-            sale_id = self.env['sale.order'].search([('name', '=', vals.get('origin'))])
+        if vals.get("origin"):
+            sale_id = self.env["sale.order"].search(
+                [("name", "=", vals.get("origin"))]
+            )
             if sale_id and sale_id.payment_mode_id.payment_on_delivery:
-                vals['payment_on_delivery'] = True
-        return super(StockPicking, self).create(vals)        
+                vals["payment_on_delivery"] = True
+        return super(StockPicking, self).create(vals)
 
 
 class CarrierAccount(models.Model):
-    _inherit = 'carrier.account'
+    _inherit = "carrier.account"
 
-    delivery_carrier = fields.Selection([('none', 'None')])
-    
+    delivery_carrier = fields.Selection([("none", "None")])
