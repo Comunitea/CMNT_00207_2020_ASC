@@ -18,43 +18,39 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api, _
+import logging
+import base64
+from datetime import datetime
+
+from requests import Session
+
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, UserError
 from zeep import Client
 from zeep.cache import SqliteCache
-from zeep.transports import Transport
-from zeep.wsse.username import UsernameToken
 from zeep.plugins import HistoryPlugin
-from lxml import etree
-import base64
-import urllib
-import ssl
-from requests import Session
-from requests.auth import HTTPBasicAuth
+from zeep.transports import Transport
 
-from odoo.exceptions import ValidationError, UserError, AccessError
+_logger = logging.getLogger(__name__)
 
-from datetime import datetime, timedelta
-import pytz
-
-import logging.config
 
 class StockBatchPicking(models.Model):
 
-    _inherit = 'stock.picking.batch'
+    _inherit = "stock.picking.batch"
 
-    mrw_pdo_quantity = fields.Float('PDO amount')
+    mrw_pdo_quantity = fields.Float("PDO amount")
 
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if self.carrier_id.code == 'MRW':
-            if vals.get('carrier_id', False):
+        if self.carrier_id.code == "MRW":
+            if vals.get("carrier_id", False):
                 self.onchange_carrier_id()
             return res
 
-    @api.onchange('carrier_id')
+    @api.onchange("carrier_id")
     def onchange_carrier_id(self):
-        if self.carrier_id.code == 'MRW':
+        if self.carrier_id.code == "MRW":
             pickings_total_value = 0.0
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
@@ -87,30 +83,31 @@ class StockBatchPicking(models.Model):
             headers = element_type(
                 CodigoFranquicia=self.carrier_id.account_id.mrw_franchise,
                 CodigoAbonado=self.carrier_id.account_id.mrw_account,
-                CodigoDepartamento='',
+                CodigoDepartamento="",
                 UserName=self.carrier_id.account_id.account,
-                Password=self.carrier_id.account_id.password
+                Password=self.carrier_id.account_id.password,
             )
             return headers
-        except Exception as e:
+        except Exception:
             return False
 
     def get_carrier_label(self, client, headers, numeroEnvio):
         EtiquetaEnvio = {
-            'request': {
-                'NumeroEnvio': numeroEnvio,
-                'SeparadorNumerosEnvio': '',
-                'ReportTopMargin': 1100,
-                'ReportLeftMargin': 650
+            "request": {
+                "NumeroEnvio": numeroEnvio,
+                "SeparadorNumerosEnvio": "",
+                "ReportTopMargin": 1100,
+                "ReportLeftMargin": 650,
             }
         }
 
-        label = client.service.EtiquetaEnvio(**EtiquetaEnvio, _soapheaders=[headers])
+        label = client.service.EtiquetaEnvio(
+            **EtiquetaEnvio, _soapheaders=[headers]
+        )
         return label
 
-
     def send_shipping(self):
-        if self.carrier_id.code == 'MRW':
+        if self.carrier_id.code == "MRW":
 
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
@@ -122,110 +119,147 @@ class StockBatchPicking(models.Model):
                 try:
 
                     headers = self.setMRWHeaders(client)
-                    
+
                     notices = []
                     if self.carrier_id.account_id.mrw_phone_notification:
                         phone_notification = {
-                            'NotificacionRequest': {
-                                'CanalNotificacion': '2',
-                                'TipoNotificacion': self.carrier_id.account_id.mrw_notice_type,
-                                'MailSMS': self.partner_id.phone or self.partner_id.mobile
+                            "NotificacionRequest": {
+                                "CanalNotificacion": "2",
+                                "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
+                                "MailSMS": self.partner_id.phone
+                                or self.partner_id.mobile,
                             }
                         }
                         notices.append(phone_notification)
 
                     if self.carrier_id.account_id.mrw_mail_notification:
                         mail_notification = {
-                            'NotificacionRequest': {
-                                'CanalNotificacion': '1',
-                                'TipoNotificacion': self.carrier_id.account_id.mrw_notice_type,
-                                'MailSMS': self.partner_id.email
+                            "NotificacionRequest": {
+                                "CanalNotificacion": "1",
+                                "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
+                                "MailSMS": self.partner_id.email,
                             }
                         }
                         notices.append(mail_notification)
 
                     TransmEnvio = {
-                        'request': {
-                            'DatosEntrega': {
-                                'Direccion': {
-                                    'Via': "{} {}".format(self.partner_id.street or "", self.partner_id.street2 or ""),
-                                    'CodigoPostal': self.partner_id.zip,
-                                    'Poblacion': self.partner_id.city,
-                                    'Provincia': self.partner_id.state_id.name
+                        "request": {
+                            "DatosEntrega": {
+                                "Direccion": {
+                                    "Via": "{} {}".format(
+                                        self.partner_id.street or "",
+                                        self.partner_id.street2 or "",
+                                    ),
+                                    "CodigoPostal": self.partner_id.zip,
+                                    "Poblacion": self.partner_id.city,
+                                    "Provincia": self.partner_id.state_id.name,
                                 },
-                                'Nif': self.partner_id.vat,
-                                'Nombre': self.partner_id.name,
-                                'Telefono': self.partner_id.phone or self.partner_id.phone or ''
+                                "Nif": self.partner_id.vat,
+                                "Nombre": self.partner_id.name,
+                                "Telefono": self.partner_id.phone
+                                or self.partner_id.phone
+                                or "",
                             },
-                            'DatosServicio': {
-                                'Fecha': datetime.now().strftime("%d/%m/%Y"), #self.date.strftime("%d/%m/%Y"),
-                                'Referencia': self.name,
-                                'CodigoServicio': self.carrier_id.service_code,
-                                'Frecuencia': self.carrier_id.account_id.mrw_frequency if self.carrier_id.service_code == '0005' else '',
-                                'NumeroBultos': self.carrier_packages,
-                                'Peso': round(self.carrier_weight),
-                                'EntregaSabado': self.carrier_id.account_id.mrw_saturday_delivery,
-                                'Entrega830': self.carrier_id.account_id.mrw_830_delivery,
-                                'Gestion': self.carrier_id.account_id.mrw_delivery_hangle,
-                                'ConfirmacionInmediata': self.carrier_id.account_id.mrw_instant_notice,
-                                'Reembolso': self.carrier_id.account_id.mrw_delivery_pdo if self.payment_on_delivery else 'N',
-                                'ImporteReembolso': self.mrw_pdo_quantity if self.carrier_id.account_id.mrw_delivery_pdo != 'N' else '',
-                                'TipoMercancia': self.carrier_id.account_id.mrw_goods_type,
-                                'Notificaciones': notices
-                            }
+                            "DatosServicio": {
+                                "Fecha": datetime.now().strftime(
+                                    "%d/%m/%Y"
+                                ),  # self.date.strftime("%d/%m/%Y"),
+                                "Referencia": self.name,
+                                "CodigoServicio": self.carrier_id.service_code,
+                                "Frecuencia": self.carrier_id.account_id.mrw_frequency
+                                if self.carrier_id.service_code == "0005"
+                                else "",
+                                "NumeroBultos": self.carrier_packages,
+                                "Peso": round(self.carrier_weight),
+                                "EntregaSabado": self.carrier_id.account_id.mrw_saturday_delivery,
+                                "Entrega830": self.carrier_id.account_id.mrw_830_delivery,
+                                "Gestion": self.carrier_id.account_id.mrw_delivery_hangle,
+                                "ConfirmacionInmediata": self.carrier_id.account_id.mrw_instant_notice,
+                                "Reembolso": self.carrier_id.account_id.mrw_delivery_pdo
+                                if self.payment_on_delivery
+                                else "N",
+                                "ImporteReembolso": self.mrw_pdo_quantity
+                                if self.carrier_id.account_id.mrw_delivery_pdo
+                                != "N"
+                                else "",
+                                "TipoMercancia": self.carrier_id.account_id.mrw_goods_type,
+                                "Notificaciones": notices,
+                            },
                         }
                     }
 
-                    res = client.service.TransmEnvio(**TransmEnvio, _soapheaders=[headers])
+                    res = client.service.TransmEnvio(
+                        **TransmEnvio, _soapheaders=[headers]
+                    )
                 except Exception as e:
-                    raise AccessError(_("Access error message: {}".format(e)))
+                    raise AccessError(_("Access error message: {}").format(e))
 
-                if res['Estado'] == '0':
-                    raise AccessError(_("Error message: {}".format(res['Mensaje'])))
-                elif res['Estado'] == '1':
+                if res["Estado"] == "0":
+                    raise AccessError(
+                        _("Error message: {}").format(res["Mensaje"])
+                    )
+                elif res["Estado"] == "1":
 
-                    self.write({
-                        'tracking_code': res['NumeroEnvio'],
-                        'shipment_reference': res['NumeroSolicitud']
-                    })
+                    self.write(
+                        {
+                            "tracking_code": res["NumeroEnvio"],
+                            "shipment_reference": res["NumeroSolicitud"],
+                        }
+                    )
 
                     try:
-                        label = self.get_carrier_label(client, headers, res['NumeroEnvio'])
+                        label = self.get_carrier_label(
+                            client, headers, res["NumeroEnvio"]
+                        )
                     except Exception as e:
-                        _logger.error(_('Connection error: {}, while trying to retrieve the label.'.format(e)))
+                        _logger.error(
+                            _(
+                                "Connection error: {}, while trying to retrieve the label."
+                            ).format(e)
+                        )
                         return
 
-                    if label['Estado'] == '1':
-                        file_b64 = base64.b64encode(label['EtiquetaFile'])
-                        attatchment = self.env['ir.attachment'].create({
-                            'name': "Label: {}".format(self.name),
-                            'type': 'binary',
-                            'datas': file_b64,
-                            'datas_fname': 'Label' + self.name + '.pdf',
-                            'store_fname': self.name,
-                            'res_model': self._name,
-                            'res_id': self.id,
-                            'mimetype': 'application/x-pdf'
-                        })
-                    elif label['Estado'] == '0':
-                        raise AccessError(_("Error while trying to retrieve the label: {}".format(label['Mensaje'])))
+                    if label["Estado"] == "1":
+                        file_b64 = base64.b64encode(label["EtiquetaFile"])
+                        self.env["ir.attachment"].create(
+                            {
+                                "name": "Label: {}".format(self.name),
+                                "type": "binary",
+                                "datas": file_b64,
+                                "datas_fname": "Label" + self.name + ".pdf",
+                                "store_fname": self.name,
+                                "res_model": self._name,
+                                "res_id": self.id,
+                                "mimetype": "application/x-pdf",
+                            }
+                        )
+                    elif label["Estado"] == "0":
+                        raise AccessError(
+                            _(
+                                "Error while trying to retrieve the label: {}"
+                            ).format(label["Mensaje"])
+                        )
                     else:
-                        raise AccessError(_("Error while trying to retrieve the label"))
+                        raise AccessError(
+                            _("Error while trying to retrieve the label")
+                        )
                 else:
-                    raise AccessError(_("Unknown error with the SOAP connection."))
+                    raise AccessError(
+                        _("Unknown error with the SOAP connection.")
+                    )
 
             else:
                 raise AccessError(_("Not possible to establish a client."))
 
         res = super(StockBatchPicking, self).send_shipping()
 
-    
+
 class StockPicking(models.Model):
 
-    _inherit = 'stock.picking'
-    
+    _inherit = "stock.picking"
+
     def check_shipment_status(self):
-        if self.carrier_id.code == 'DHL':
+        if self.carrier_id.code == "DHL":
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
@@ -236,25 +270,26 @@ class StockPicking(models.Model):
 
             try:
                 GetEnvios = {
-                    'login': self.carrier_id.account_id.mrw_tracking_user,
-                    'pass': self.carrier_id.account_id.mrw_tracking_password,
-                    'codigoIdioma': 3082,
-                    'tipoFiltro': 1,
-                    'valorFiltroDesde': self.carrier_tracking_ref,
-                    'tipoInformacion': 0,
-                    'codigoAbonado': self.carrier_id.account_id.mrw_account,
-                    'codigoFranquicia': self.carrier_id.account_id.mrw_franchise
+                    "login": self.carrier_id.account_id.mrw_tracking_user,
+                    "pass": self.carrier_id.account_id.mrw_tracking_password,
+                    "codigoIdioma": 3082,
+                    "tipoFiltro": 1,
+                    "valorFiltroDesde": self.carrier_tracking_ref,
+                    "tipoInformacion": 0,
+                    "codigoAbonado": self.carrier_id.account_id.mrw_account,
+                    "codigoFranquicia": self.carrier_id.account_id.mrw_franchise,
                 }
 
                 res = client.service.GetEnvios(**GetEnvios)
             except Exception as e:
-                raise AccessError(_("Access error message: {}".format(e)))
+                raise AccessError(_("Access error message: {}").format(e))
 
-            seguimiento = res['Seguimiento']['Abonado']['Seguimiento']
-            if seguimiento['Estado'] == '00':
+            seguimiento = res["Seguimiento"]["Abonado"]["Seguimiento"]
+            if seguimiento["Estado"] == "00":
                 self.delivered = True
             else:
-                raise AccessError(_("Error: {}".format(res['MensajeSeguimiento'])))
-        
-        res = super(StockPicking, self).check_shipment_status()
-            
+                raise AccessError(
+                    _("Error: {}".format(res["MensajeSeguimiento"]))
+                )
+
+        return super(StockPicking, self).check_shipment_status()
