@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-16 15:09+0000\n"
-"PO-Revision-Date: 2020-06-16 15:09+0000\n"
+"POT-Creation-Date: 2020-06-17 14:37+0000\n"
+"PO-Revision-Date: 2020-06-17 14:37+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Are you sure you want to remove the tracking info of this batch?"
+msgstr "¿Seguro que quieres eliminar la información de seguimiento de esta agrupación?"
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_carrier_account
@@ -42,6 +47,13 @@ msgid "Code"
 msgstr "Código"
 
 #. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:91
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:95
+#, python-format
+msgid "Company id addres is not complete (State missing)."
+msgstr "La dirección de la compañía no está completa (falta la provincia)."
+
+#. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__delivery_carrier
 msgid "Delivery Carrier"
 msgstr "Transportista"
@@ -67,6 +79,30 @@ msgid "POD"
 msgstr "Contrareembolso"
 
 #. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:79
+#, python-format
+msgid "Partner id addres is not complete (Country missing)."
+msgstr "La dirección del cliente no está completa (falta el país)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:83
+#, python-format
+msgid "Partner id addres is not complete (Email missing)."
+msgstr "La dirección del cliente no está completa (falta el email)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:75
+#, python-format
+msgid "Partner id addres is not complete (State missing)."
+msgstr "La dirección del cliente no está completa (falta la provincia)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:87
+#, python-format
+msgid "Partner id addres is not complete (Zip code missing)."
+msgstr "La dirección del cliente no está completa (falta el código postal)."
+
+#. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_account_payment_mode
 msgid "Payment Modes"
 msgstr "Modos de pago"
@@ -81,6 +117,16 @@ msgstr "Pago en destino"
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
 msgid "Print Labels"
 msgstr "Imprimir Etiquetas"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Remove Tracking"
+msgstr "Eliminar Tracking"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Request Shipping"
+msgstr "Solicitar Envío"
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__shipment_reference
@@ -106,4 +152,3 @@ msgstr "Webservice Test URL"
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__service_url
 msgid "Webservice URL"
 msgstr "Webservice URL"
-
