@@ -9,7 +9,18 @@
             <header position="inside">
                 <button name="print_created_labels" string="Print Labels" type="object"
                     attrs="{'invisible': [ 
-                        ('shipment_reference', '=', '')
+                        ('shipment_reference', '=', False)
+                    ]}"/>
+                <button name="send_shipping" string="Request Shipping" type="object"
+                    attrs="{'invisible': [ 
+                        '|', ('shipment_reference', '!=', False),
+                        ('tracking_code', '!=', False)
+                    ]}"/>
+                <button name="remove_tracking_info" string="Remove Tracking" type="object"
+                    confirm="Are you sure you want to remove the tracking info of this batch?"
+                    attrs="{'invisible': [
+                        '|',('shipment_reference', '=', False),
+                        ('tracking_code', '=', False)
                     ]}"/>
             </header>
             <xpath expr="//notebook" position="before">

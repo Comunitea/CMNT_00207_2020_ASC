@@ -49,8 +49,22 @@ class StockBatchPicking(models.Model):
                 pick.write({"carrier_tracking_ref": self.tracking_code})
 
     @api.multi
+    def remove_tracking_info(self):
+        for batch in self:
+            batch.update({
+                'tracking_code': False,
+                'shipment_reference': False
+            })
+
+            attatchment_id = self.env['ir.attachment'].search([
+                ('name', '=', "Label: {}".format(batch.name)),
+                ('res_id', '=', batch.id),
+                ('res_model', '=', self._name)
+            ]).unlink()
+
+    @api.multi
     def action_transfer(self):
-        self.send_shipping()
+        #self.send_shipping()
         res = super(StockBatchPicking, self).action_transfer()
         return res
 
