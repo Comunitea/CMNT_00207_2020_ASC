@@ -70,29 +70,61 @@ class StockBatchPicking(models.Model):
         return True
 
     def check_delivery_address(self):
+        if not self.partner_id.city:
+            raise UserError(
+                _("Partner address is not complete (City missing).")
+            )
+        if not self.partner_id.street:
+            raise UserError(
+                _("Partner address is not complete (Street missing).")
+            )
+        if not (self.partner_id.phone or self.partner_id.mobile):
+            raise UserError(
+                _("Partner address is not complete (Needs a phone or mobile phone).")
+            )
         if not self.partner_id.state_id:
             raise UserError(
-                _("Partner id addres is not complete (State missing).")
+                _("Partner address is not complete (State missing).")
             )
         if not self.partner_id.country_id:
             raise UserError(
-                _("Partner id addres is not complete (Country missing).")
+                _("Partner address is not complete (Country missing).")
             )
         if not self.partner_id.email:
             raise UserError(
-                _("Partner id addres is not complete (Email missing).")
+                _("Partner address is not complete (Email missing).")
             )
         if not self.partner_id.zip:
             raise UserError(
-                _("Partner id addres is not complete (Zip code missing).")
+                _("Partner address is not complete (Zip code missing).")
+            )
+        if not self.env.user.company_id.city:
+            raise UserError(
+                _("Company address is not complete (City missing).")
             )
         if not self.env.user.company_id.state_id:
             raise UserError(
-                _("Company id addres is not complete (State missing).")
+                _("Company address is not complete (State missing).")
             )
-        if not self.env.user.company_id.state_id:
+        if not self.env.user.company_id.country_id:
             raise UserError(
-                _("Company id addres is not complete (State missing).")
+                _("Company address is not complete (Country missing).")
+            )
+        if not self.env.user.company_id.email:
+            raise UserError(
+                _("Company address is not complete (Email missing).")
+            )
+        if not (self.env.user.company_id.phone or self.env.user.company_id.mobile):
+            raise UserError(
+                _("Company address is not complete (Needs a phone or mobile phone).")
+            )
+        if not self.env.user.company_id.zip:
+            raise UserError(
+                _("Company address is not complete (Zip code missing).")
+            )
+        if not self.env.user.company_id.street:
+            raise UserError(
+                _("Company address is not complete (Street missing).")
             )
 
     def print_created_labels(self):
