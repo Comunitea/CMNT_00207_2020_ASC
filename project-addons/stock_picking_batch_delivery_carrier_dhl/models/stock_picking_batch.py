@@ -239,27 +239,50 @@ class StockBatchPicking(models.Model):
                     self.tracking_code = response[
                         "ShipmentIdentificationNumber"
                     ]
+
                     if response["LabelImage"]:
-                        self.env["ir.attachment"].create(
-                            {
-                                "name": "Label: {}".format(self.name),
-                                "type": "binary",
-                                "datas": response["LabelImage"][0][
-                                    "GraphicImage"
-                                ],
-                                "datas_fname": "Label"
-                                + self.name
-                                + ".{}".format(
-                                    response["LabelImage"][0][
-                                        "LabelImageFormat"
-                                    ]
-                                ),
-                                "store_fname": self.name,
-                                "res_model": self._name,
-                                "res_id": self.id,
-                                "mimetype": "application/x-pdf",
-                            }
-                        )
+                        if self.carrier_id.account_id.file_format == "PDF":
+                            self.env["ir.attachment"].create(
+                                {
+                                    "name": "Label: {}".format(self.name),
+                                    "type": "binary",
+                                    "datas": response["LabelImage"][0][
+                                        "GraphicImage"
+                                    ],
+                                    "datas_fname": "Label"
+                                    + self.name
+                                    + ".{}".format(
+                                        response["LabelImage"][0][
+                                            "LabelImageFormat"
+                                        ]
+                                    ),
+                                    "store_fname": self.name,
+                                    "res_model": self._name,
+                                    "res_id": self.id,
+                                    "mimetype": "application/x-pdf",
+                                }
+                            )
+                        else:
+                            self.env["ir.attachment"].create(
+                                {
+                                    "name": "Label: {}".format(self.name),
+                                    "type": "binary",
+                                    "datas": response["LabelImage"][0][
+                                        "GraphicImage"
+                                    ],
+                                    "datas_fname": "Label"
+                                    + self.name
+                                    + ".{}".format(
+                                        response["LabelImage"][0][
+                                            "LabelImageFormat"
+                                        ]
+                                    ),
+                                    "store_fname": self.name,
+                                    "res_model": self._name,
+                                    "res_id": self.id,
+                                    "mimetype": "text/plain",
+                                }
+                            )
                     if response["PackagesResult"]:
                         shipment_reference = ""
                         for package in response["PackagesResult"][
