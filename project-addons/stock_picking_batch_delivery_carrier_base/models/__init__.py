@@ -17,4 +17,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import stock_picking_batch
+from . import stock_picking_batch, delivery_carrier, account_payment_mode

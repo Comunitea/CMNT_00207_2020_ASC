@@ -18,4 +18,11 @@
 #
 ##############################################################################
 
-from . import models
+
+from odoo import models, fields
+
+
+class AccountPaymentMode(models.Model):
+    _inherit = "account.payment.mode"
+
+    payment_on_delivery = fields.Boolean("POD")

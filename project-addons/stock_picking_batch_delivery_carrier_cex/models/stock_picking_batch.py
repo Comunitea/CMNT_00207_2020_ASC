@@ -18,9 +18,6 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError, UserError, AccessError
-
 import json
 import os
 import re
@@ -30,7 +27,7 @@ from xml.dom.minidom import parseString
 
 import requests
 
-from odoo import _, api, fields, models
+from odoo import _, models
 from odoo.exceptions import UserError
 from unidecode import unidecode
 
@@ -46,26 +43,27 @@ loader = genshi.template.TemplateLoader(
     os.path.join(os.path.dirname(__file__), "template"), auto_reload=True
 )
 
+
 class StockBatchPicking(models.Model):
 
-    _inherit = 'stock.picking.batch'
-
-    carrier_service = fields.Many2one('delivery.carrier.service')
+    _inherit = "stock.picking.batch"
 
     def send_shipping(self):
-        if self.carrier_id.code == 'CEX':
+        super(StockBatchPicking, self).send_shipping()
+        if self.carrier_id.code == "CEX":
 
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
+            if self.carrier_id.account_id.test_enviroment:
+                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(
+                    self.carrier_id.account_id.service_test_url
+                )
+            else:
+                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(
+                    self.carrier_id.account_id.service_url
+                )
 
-            url = (
-                self.carrier_id.account_id.test_enviroment
-                and "https://test.correosexpress.com/wspsc/apiRestGrabacionEnvio"
-                "/json/grabacionEnvio"
-                or "https://www.correosexpress.com/wpsc/apiRestGrabacionEnvio/"
-                "json/grabacionEnvio"
-            )
             username = self.carrier_id.account_id.account
             password = self.carrier_id.account_id.password
             data = self._get_cex_label_data()
@@ -79,8 +77,11 @@ class StockBatchPicking(models.Model):
                     "codigoRetorno": 999,
                     "mensajeRetorno": "\n\nEl servidor está tardando mucho en responder.",
                 }
-            except:
-                rjson = {"codigoRetorno": 999, "mensajeRetorno": "\n\n" + response.text}
+            except Exception:
+                rjson = {
+                    "codigoRetorno": 999,
+                    "mensajeRetorno": "\n\n" + response.text,
+                }
             retorno = rjson["codigoRetorno"]
             message = rjson["mensajeRetorno"]
 
@@ -88,37 +89,53 @@ class StockBatchPicking(models.Model):
                 self.tracking_code = rjson["datosResultado"]
                 if self.carrier_id.account_id.file_format == "PDF":
                     for label_result in rjson["etiqueta"]:
-                        attatchment = self.env['ir.attachment'].create({
-                            "name": self.name + "_" + self.tracking_code + ".pdf",
-                            'type': 'binary',
-                            'datas': b64decode(label_result["etiqueta1"]),
-                            'datas_fname': self.name + "_" + self.tracking_code + ".pdf",
-                            'store_fname': self.name,
-                            'res_model': self._name,
-                            'res_id': self.id,
-                            'mimetype': 'application/x-pdf'
-                        })
+                        self.env["ir.attachment"].create(
+                            {
+                                "name": self.name
+                                + "_"
+                                + self.tracking_code
+                                + ".pdf",
+                                "type": "binary",
+                                "datas": b64decode(label_result["etiqueta1"]),
+                                "datas_fname": self.name
+                                + "_"
+                                + self.tracking_code
+                                + ".pdf",
+                                "store_fname": self.name,
+                                "res_model": self._name,
+                                "res_id": self.id,
+                                "mimetype": "application/x-pdf",
+                            }
+                        )
                 else:
                     self.cex_result = rjson["etiqueta"][0]["etiqueta2"]
                     for label_result in rjson["etiqueta"]:
-                        attatchment = self.env['ir.attachment'].create({
-                            "name": self.name + "_" + self.tracking_code + ".pdf",
-                            'type': 'binary',
-                            'datas': b64encode(label_result["etiqueta2"].encode("utf-8")),
-                            'datas_fname': self.name + "_" + self.tracking_code + ".pdf",
-                            'store_fname': self.name,
-                            'res_model': self._name,
-                            'res_id': self.id,
-                            'mimetype': 'text/plain'
-                        })
+                        self.env["ir.attachment"].create(
+                            {
+                                "name": self.name
+                                + "_"
+                                + self.tracking_code
+                                + ".pdf",
+                                "type": "binary",
+                                "datas": b64encode(
+                                    label_result["etiqueta2"].encode("utf-8")
+                                ),
+                                "datas_fname": self.name
+                                + "_"
+                                + self.tracking_code
+                                + ".pdf",
+                                "store_fname": self.name,
+                                "res_model": self._name,
+                                "res_id": self.id,
+                                "mimetype": "text/plain",
+                            }
+                        )
+                self.print_created_labels()
             else:
                 raise UserError(
-                    _("CEX Error: %s %s") % (retorno or 999, message or "Webservice ERROR.")
-                )          
-
-            self.delivery_status = 'R'
-            res = super(StockBatchPicking, self).send_shipping()
-
+                    _("CEX Error: %s %s")
+                    % (retorno or 999, message or "Webservice ERROR.")
+                )
 
     def _get_cex_label_data(self):
         self.ensure_one()
@@ -149,11 +166,16 @@ class StockBatchPicking(models.Model):
             streets.append(unidecode(partner.street))
         if partner.street2:
             streets.append(unidecode(partner.street2))
-        if not streets or not partner.city or not partner.zip or not partner.zip:
+        if (
+            not streets
+            or not partner.city
+            or not partner.zip
+            or not partner.zip
+        ):
             raise UserError("Review partner data")
         if self.carrier_id.account_id.file_format not in ("PDF", "ZPL"):
             raise UserError("Format file not supported by cex")
-        if not self.carrier_service:
+        if not self.carrier_id.service_code:
             raise UserError("Set service to the picking")
         if not self.carrier_weight or self.carrier_weight == 0.0:
             raise UserError("Set weight to the picking")
@@ -196,7 +218,7 @@ class StockBatchPicking(models.Model):
             "alto": "",
             "largo": "",
             "ancho": "",
-            "producto": self.carrier_service.carrier_code,
+            "producto": self.carrier_id.service_code,
             "portes": "P",
             "reembolso": "",  # TODO cash_on_delivery
             "entrSabado": "",
@@ -207,7 +229,8 @@ class StockBatchPicking(models.Model):
             "password": "string",
             "listaInformacionAdicional": [
                 {
-                    "tipoEtiqueta": self.carrier_id.account_id.file_format == "PDF"
+                    "tipoEtiqueta": self.carrier_id.account_id.file_format
+                    == "PDF"
                     and "1"
                     or "2",
                     "etiquetaPDF": "",
@@ -216,9 +239,21 @@ class StockBatchPicking(models.Model):
         }
         return data
 
-    def track_request(self):
+
+class StockPicking(models.Model):
+
+    _inherit = "stock.picking"
+
+    def check_shipment_status(self):
         if self.carrier_id.carrier_type == "cex":
-            url = "https://www.correosexpress.com/wpsc/apiRestSeguimientoEnvios/rest/seguimientoEnvios"
+            if self.carrier_id.account_id.test_enviroment:
+                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(
+                    self.carrier_id.account_id.service_test_url
+                )
+            else:
+                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(
+                    self.carrier_id.account_id.service_url
+                )
             username = self.carrier_id.account_id.account
             password = self.carrier_id.account_id.password
             vals = {
@@ -246,14 +281,20 @@ class StockBatchPicking(models.Model):
                         ].firstChild.data
                         == "12"
                     ):
-                        self.delivery_status = 'OK'
+                        self.delivered = True
                         break
-            except (requests.exceptions.Timeout, requests.exceptions.ReadTimeout):
+            except (
+                requests.exceptions.Timeout,
+                requests.exceptions.ReadTimeout,
+            ):
                 rjson = {
                     "codigoRetorno": 999,
                     "mensajeRetorno": "\n\nEl servidor está tardando mucho en responder.",
                 }
             except:
-                rjson = {"codigoRetorno": 999, "mensajeRetorno": "\n\n" + response.text}
-        
-        res = super(StockBatchPicking, self).track_request()
+                rjson = {
+                    "codigoRetorno": 999,
+                    "mensajeRetorno": "\n\n" + response.text,
+                }
+
+        return super(StockPicking, self).check_shipment_status()

@@ -18,21 +18,19 @@
 #
 ##############################################################################
 {
-    'name': 'Stock Picking Batch Correos Express Connector',
-    'version': '12.0.0.0.0',
-    'summary': 'Correos Express Integration for Stock Picking Batches',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'stock_picking_batch_delivery_carrier_base',
-        'delivery_carrier_label_cex'
+    "name": "Stock Picking Batch Correos Express Connector",
+    "version": "12.0.0.0.0",
+    "summary": "Correos Express Integration for Stock Picking Batches",
+    "category": "Custom",
+    "author": "comunitea",
+    "website": "www.comunitea.com",
+    "license": "AGPL-3",
+    "depends": [
+        "stock_picking_batch_delivery_carrier_base",
+        "delivery_carrier_label_cex",
     ],
-    'data': [
-        'views/stock_picking_batch.xml'
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
+    "data": ["views/stock_picking_batch.xml"],
+    "installable": True,
+    "auto_install": False,
+    "application": False,
 }

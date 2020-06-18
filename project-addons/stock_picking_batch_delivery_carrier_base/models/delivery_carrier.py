@@ -18,4 +18,17 @@
 #
 ##############################################################################
 
-from . import models
+from odoo import fields, models
+
+
+class DeliveryCarrier(models.Model):
+    _inherit = "delivery.carrier"
+
+    service_code = fields.Char(string="Carrier service code")
+
+
+class CarrierAccount(models.Model):
+    _inherit = "carrier.account"
+
+    service_url = fields.Char(string="Webservice URL")
+    service_test_url = fields.Char(string="Webservice TEST URL")
