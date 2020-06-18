@@ -22,100 +22,155 @@ from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 from base64 import b64decode
 
+
 class StockBatchPicking(models.Model):
 
-    _inherit = 'stock.picking.batch'
+    _inherit = "stock.picking.batch"
 
-    carrier_id = fields.Many2one(comodel_name='delivery.carrier', string='Carrier')
+    carrier_id = fields.Many2one(
+        comodel_name="delivery.carrier", string="Carrier"
+    )
     carrier_code = fields.Char(related="carrier_id.code")
-    tracking_code = fields.Char('Tracking Code')
-    shipment_reference = fields.Char('Shipment Reference')
-    delivery_status = fields.Selection([
-        ('NR', 'No Requested Delivery'),
-        ('R', 'Delivery Requested'),
-        ('MD', 'Missed Delivery'),
-        ('OK', 'Delivered'),
-        ('PU', 'Shipment Pickup'),
-        ('RT', 'Returned to shipper')],
-        string='Delivery Status',
-        required=True,
-        default='NR')
-    length = fields.Float('Length', default=1.0)
-    width = fields.Float('Width', default=1.0)
-    height = fields.Float('Height', default=1.0)
+    tracking_code = fields.Char("Tracking Code")
+    shipment_reference = fields.Char("Shipment Reference")
+    payment_on_delivery = fields.Boolean("Payment on delivery")
 
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if vals.get('tracking_code', False):
+        if vals.get("tracking_code", False):
             self.onchange_tracking_code()
         return res
 
-    @api.onchange('tracking_code')
+    @api.onchange("tracking_code")
     def onchange_tracking_code(self):
         if self.tracking_code:
             for pick in self.picking_ids:
-                pick.write({
-                    'carrier_tracking_ref': self.tracking_code
-                })
+                pick.write({"carrier_tracking_ref": self.tracking_code})
 
     @api.multi
-    def action_transfer(self):
-        self.send_shipping()
-        res = super(StockBatchPicking, self).action_transfer()
-        return res
+    def remove_tracking_info(self):
+        for batch in self:
+            batch.update({
+                'tracking_code': False,
+                'shipment_reference': False
+            })
+
+            attatchment_id = self.env['ir.attachment'].search([
+                ('name', '=', "Label: {}".format(batch.name)),
+                ('res_id', '=', batch.id),
+                ('res_model', '=', self._name)
+            ]).unlink()
 
     def send_shipping(self):
-        self.check_delivery_addres()
-        return True
-    
-    def cancel_shipment(self):
+        self.check_delivery_address()
         return True
 
     def track_request(self):
         return True
-    
-    def check_delivery_addres(self):
+
+    def check_delivery_address(self):
+        if not self.partner_id.city:
+            raise UserError(
+                _("Partner address is not complete (City missing).")
+            )
+        if not self.partner_id.street:
+            raise UserError(
+                _("Partner address is not complete (Street missing).")
+            )
+        if not (self.partner_id.phone or self.partner_id.mobile):
+            raise UserError(
+                _("Partner address is not complete (Needs a phone or mobile phone).")
+            )
         if not self.partner_id.state_id:
-            raise UserError("Partner id addres is not complete (State missing).")
+            raise UserError(
+                _("Partner address is not complete (State missing).")
+            )
         if not self.partner_id.country_id:
-            raise UserError("Partner id addres is not complete (Contry missing).")
+            raise UserError(
+                _("Partner address is not complete (Country missing).")
+            )
         if not self.partner_id.email:
-            raise UserError("Partner id addres is not complete (Email missing).")
+            raise UserError(
+                _("Partner address is not complete (Email missing).")
+            )
         if not self.partner_id.zip:
-            raise UserError("Partner id addres is not complete (Zip code missing).")
+            raise UserError(
+                _("Partner address is not complete (Zip code missing).")
+            )
+        if not self.env.user.company_id.city:
+            raise UserError(
+                _("Company address is not complete (City missing).")
+            )
         if not self.env.user.company_id.state_id:
-            raise UserError("Company id addres is not complete (State missing).")
-        if not self.env.user.company_id.state_id:
-            raise UserError("Company id addres is not complete (State missing).")
+            raise UserError(
+                _("Company address is not complete (State missing).")
+            )
+        if not self.env.user.company_id.country_id:
+            raise UserError(
+                _("Company address is not complete (Country missing).")
+            )
+        if not self.env.user.company_id.email:
+            raise UserError(
+                _("Company address is not complete (Email missing).")
+            )
+        if not self.env.user.company_id.phone:
+            raise UserError(
+                _("Company address is not complete (Needs a phone).")
+            )
+        if not self.env.user.company_id.zip:
+            raise UserError(
+                _("Company address is not complete (Zip code missing).")
+            )
+        if not self.env.user.company_id.street:
+            raise UserError(
+                _("Company address is not complete (Street missing).")
+            )
 
     def print_created_labels(self):
         self.ensure_one()
-        
+
         if not self.carrier_id.account_id.printer:
-            raise UserError('Printer not defined')
-        labels =  self.env['ir.attachment'].search([
-            ('res_id', '=', self.id),
-            ('res_model', '=', self._name)
-        ])
+            return
+        labels = self.env["ir.attachment"].search(
+            [("res_id", "=", self.id), ("res_model", "=", self._name)]
+        )
         for label in labels:
+            if label.mimetype == 'application/x-pdf':
+                doc_format = 'pdf'
+            else:
+                doc_format = 'raw'
             self.carrier_id.account_id.printer.print_document(
-                None, b64decode(label.datas), doc_format="raw"
+                None, b64decode(label.datas), doc_format=doc_format
             )
 
 
 class StockPicking(models.Model):
 
-    _inherit = 'stock.picking'
+    _inherit = "stock.picking"
+
+    payment_on_delivery = fields.Boolean("Payment on delivery")
 
     @api.multi
     def send_to_shipper(self):
         if not self.batch_id:
-            super().send_to_shipper()
+            return super().send_to_shipper()
+
+    def onchange_partner_id_or_carrier_id(self):
+        return True
+
+    @api.model
+    def create(self, vals):
+        if vals.get("origin"):
+            sale_id = self.env["sale.order"].search(
+                [("name", "=", vals.get("origin"))]
+            )
+            if sale_id and sale_id.payment_mode_id.payment_on_delivery:
+                vals["payment_on_delivery"] = True
+        return super(StockPicking, self).create(vals)
 
 
 class CarrierAccount(models.Model):
-    _inherit = 'carrier.account'
+    _inherit = "carrier.account"
 
-    delivery_carrier = fields.Selection([('none', 'None')])
-    
+    delivery_carrier = fields.Selection([("none", "None")])

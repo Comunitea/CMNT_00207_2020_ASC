@@ -18,26 +18,17 @@
 #
 ##############################################################################
 {
-    'name': 'Stock Picking Batch MRWConnector',
-    'version': '12.0.0.0.0',
-    'summary': 'MRW SAGEC Integration for Stock Picking Batches',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'stock_picking_batch_delivery_carrier_base',
-    ],
-    'data': [
-        'data/ir_config_parameter.xml',
-        'views/stock_picking_batch.xml'
-    ],
-    "external_dependencies": {
-        "python": [
-            "zeep"
-        ],
-    },
-    'installable': True,
-    'auto_install': False,
-    'application': False,
+    "name": "Stock Picking Batch MRWConnector",
+    "version": "12.0.0.0.0",
+    "summary": "MRW SAGEC Integration for Stock Picking Batches",
+    "category": "Custom",
+    "author": "comunitea",
+    "website": "www.comunitea.com",
+    "license": "AGPL-3",
+    "depends": ["stock_picking_batch_delivery_carrier_base"],
+    "data": ["views/stock_picking_batch.xml"],
+    "external_dependencies": {"python": ["zeep"]},
+    "installable": True,
+    "auto_install": False,
+    "application": False,
 }

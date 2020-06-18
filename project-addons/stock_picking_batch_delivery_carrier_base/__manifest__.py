@@ -18,21 +18,20 @@
 #
 ##############################################################################
 {
-    'name': 'Stock Picking Batch Delivery Carrier Base',
-    'version': '12.0.0.0.0',
-    'summary': 'Base Module for stock picking batch deliveries',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'cmnt_delivery_carrier_label',
-        'stock_picking_batch_extended'
+    "name": "Stock Picking Batch Delivery Carrier Base",
+    "version": "12.0.0.0.0",
+    "summary": "Base Module for stock picking batch deliveries",
+    "category": "Custom",
+    "author": "comunitea",
+    "website": "www.comunitea.com",
+    "license": "AGPL-3",
+    "depends": [
+        "cmnt_delivery_carrier_label",
+        "warehouse_apk_custom",
+        "account_payment_mode",
     ],
-    'data': [
-        'views/stock_picking_batch.xml'
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
+    "data": ["views/stock_picking_batch.xml", "views/account_payment_mode.xml"],
+    "installable": True,
+    "auto_install": False,
+    "application": False,
 }

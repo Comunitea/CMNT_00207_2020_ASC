@@ -9,6 +9,8 @@
             <field name="variable_journal_ids" position="after">
                 <field name="prestashop_name"/>
                 <field name="prestashop_module"/>
+                <field name="can_edit"/>
+                <field name="check_risk"/>
                 <field name="defaullt_sale_invoice_policy"/>
             </field>
         </field>
