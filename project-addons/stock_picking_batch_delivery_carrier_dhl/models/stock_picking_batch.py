@@ -128,12 +128,7 @@ class StockBatchPicking(models.Model):
                         "PaymentInfo": "DAP",
                         "InternationalDetail": {
                             "Commodities": {
-                                "NumberOfPieces": 1.0,
                                 "Description": "{}".format(self.name.upper()),
-                                "CountryOfManufacture": "",
-                                "Quantity": "",
-                                "UnitPrice": "",
-                                "CustomsValue": 7.9,
                             },
                             "Content": "DOCUMENTS"
                             if self.partner_id.country_id.code == "ES"
