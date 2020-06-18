@@ -130,6 +130,7 @@ class StockBatchPicking(models.Model):
                                 "mimetype": "text/plain",
                             }
                         )
+                self.print_created_labels()
             else:
                 raise UserError(
                     _("CEX Error: %s %s")

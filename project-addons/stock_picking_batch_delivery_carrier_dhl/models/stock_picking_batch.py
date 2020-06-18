@@ -276,6 +276,7 @@ class StockBatchPicking(models.Model):
                                     "mimetype": "text/plain",
                                 }
                             )
+                        self.print_created_labels()
                     if response["PackagesResult"]:
                         shipment_reference = ""
                         for package in response["PackagesResult"][

@@ -234,6 +234,7 @@ class StockBatchPicking(models.Model):
                                 "mimetype": "application/x-pdf",
                             }
                         )
+                        self.print_created_labels()
                     elif label["Estado"] == "0":
                         raise AccessError(
                             _(
