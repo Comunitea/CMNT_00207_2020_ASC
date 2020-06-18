@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-17 14:37+0000\n"
-"PO-Revision-Date: 2020-06-17 14:37+0000\n"
+"POT-Creation-Date: 2020-06-18 08:46+0000\n"
+"PO-Revision-Date: 2020-06-18 08:46+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,11 +47,46 @@ msgid "Code"
 msgstr "Código"
 
 #. module: stock_picking_batch_delivery_carrier_base
-#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:91
-#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:95
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:103
 #, python-format
-msgid "Company id addres is not complete (State missing)."
+msgid "Company address is not complete (City missing)."
+msgstr "La dirección de la compañía no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:111
+#, python-format
+msgid "Company address is not complete (Country missing)."
+msgstr "La dirección de la compañía no está completa (falta el país)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:115
+#, python-format
+msgid "Company address is not complete (Email missing)."
+msgstr "La dirección de la compañía no está completa (falta el email)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:119
+#, python-format
+msgid "Company address is not complete (Needs a phone or mobile phone)."
+msgstr "La dirección de la compañía no está completa (falta un teléfono)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:107
+#, python-format
+msgid "Company address is not complete (State missing)."
 msgstr "La dirección de la compañía no está completa (falta la provincia)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:127
+#, python-format
+msgid "Company address is not complete (Street missing)."
+msgstr "La dirección de la compañía no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:123
+#, python-format
+msgid "Company address is not complete (Zip code missing)."
+msgstr "La dirección de la compañía no está completa (falta el código postal)."
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__delivery_carrier
@@ -79,27 +114,45 @@ msgid "POD"
 msgstr "Contrareembolso"
 
 #. module: stock_picking_batch_delivery_carrier_base
-#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:79
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:75
 #, python-format
-msgid "Partner id addres is not complete (Country missing)."
+msgid "Partner address is not complete (City missing)."
+msgstr "La dirección del cliente no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:91
+#, python-format
+msgid "Partner address is not complete (Country missing)."
 msgstr "La dirección del cliente no está completa (falta el país)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:95
+#, python-format
+msgid "Partner address is not complete (Email missing)."
+msgstr "La dirección del cliente no está completa (falta el email)."
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:83
 #, python-format
-msgid "Partner id addres is not complete (Email missing)."
-msgstr "La dirección del cliente no está completa (falta el email)."
-
-#. module: stock_picking_batch_delivery_carrier_base
-#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:75
-#, python-format
-msgid "Partner id addres is not complete (State missing)."
-msgstr "La dirección del cliente no está completa (falta la provincia)."
+msgid "Partner address is not complete (Needs a phone or mobile phone)."
+msgstr "La dirección del cliente no está completa (falta un teléfono o móvil)."
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:87
 #, python-format
-msgid "Partner id addres is not complete (Zip code missing)."
+msgid "Partner address is not complete (State missing)."
+msgstr "La dirección del cliente no está completa (falta la provincia postal)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:79
+#, python-format
+msgid "Partner address is not complete (Street missing)."
+msgstr "La dirección del cliente no está completa (falta la calle)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:99
+#, python-format
+msgid "Partner address is not complete (Zip code missing)."
 msgstr "La dirección del cliente no está completa (falta el código postal)."
 
 #. module: stock_picking_batch_delivery_carrier_base

@@ -49,6 +49,7 @@ class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
 
     def send_shipping(self):
+        super(StockBatchPicking, self).send_shipping()
         if self.carrier_id.code == "CEX":
 
             if not self.carrier_id.account_id:
@@ -134,8 +135,6 @@ class StockBatchPicking(models.Model):
                     _("CEX Error: %s %s")
                     % (retorno or 999, message or "Webservice ERROR.")
                 )
-
-            return super(StockBatchPicking, self).send_shipping()
 
     def _get_cex_label_data(self):
         self.ensure_one()

@@ -76,6 +76,7 @@ class StockBatchPicking(models.Model):
         return headers
 
     def send_shipping(self):
+        super(StockBatchPicking, self).send_shipping()
         if self.carrier_id.code == "DHL":
             headers = self.setHeaders()
 
@@ -141,7 +142,7 @@ class StockBatchPicking(models.Model):
                                     "PersonName": "{}".format(
                                         self.user_id.name.upper()
                                         if self.user_id
-                                        else "N/A"
+                                        else self.env.user.company_id.name.upper()
                                     ),
                                     "CompanyName": "{}".format(
                                         self.env.user.company_id.name.upper()
@@ -149,26 +150,23 @@ class StockBatchPicking(models.Model):
                                     "PhoneNumber": "{}".format(
                                         self.env.user.company_id.phone
                                         or self.env.user.company_id.mobile
-                                        or "N/A"
                                     ),
-                                    "EmailAddress": "{}".format(
-                                        self.env.user.company_id.email or "N/A"
-                                    ),
+                                    "EmailAddress": self.env.user.company_id.email,
                                 },
                                 "Address": {
                                     "StreetLines": "{}".format(
-                                        self.env.user.company_id.street or "N/A"
+                                        self.env.user.company_id.street
                                     ),
                                     "StreetLines2": "{}".format(
                                         self.env.user.company_id.street2
                                         or "N/A"
                                     ),
                                     "City": "{}".format(
-                                        self.env.user.company_id.state_id.name.upper()
-                                        or "N/A"
+                                        self.env.user.company_id.city.upper()
+                                        if self.env.user.company_id.city.upper()
+                                        else self.env.user.company_id.state_id.name.upper()
                                     ),
-                                    "PostalCode": self.env.user.company_id.zip
-                                    or "N/A",
+                                    "PostalCode": self.env.user.company_id.zip,
                                     "CountryCode": "{}".format(
                                         self.env.user.company_id.country_id.code
                                         or "ES"
@@ -183,31 +181,31 @@ class StockBatchPicking(models.Model):
                                     "CompanyName": "{}".format(
                                         self.partner_id.parent_id.name.upper()
                                         if self.partner_id.parent_id
-                                        else "N/A"
+                                        else self.partner_id.name.upper()
                                     ),
                                     "PhoneNumber": "{}".format(
                                         self.partner_id.phone
                                         or self.partner_id.mobile
-                                        or "N/A"
                                     ),
                                     "EmailAddress": "{}".format(
-                                        self.partner_id.email or "N/A"
+                                        self.partner_id.email
                                     ),
                                 },
                                 "Address": {
                                     "StreetLines": "{}".format(
-                                        self.partner_id.street or "N/A"
+                                        self.partner_id.street
                                     ),
                                     "StreetLines2": "{}".format(
                                         self.partner_id.street2 or "N/A"
                                     ),
                                     "City": "{}".format(
-                                        self.partner_id.state_id.name.upper()
-                                        or "N/A"
+                                        self.partner_id.city.upper()
+                                        if self.partner_id.city.upper()
+                                        else self.partner_id.state_id.name.upper()
                                     ),
-                                    "PostalCode": self.partner_id.zip or "N/A",
+                                    "PostalCode": self.partner_id.zip,
                                     "CountryCode": "{}".format(
-                                        self.partner_id.country_id.code or "ES"
+                                        self.partner_id.country_id.code
                                     ),
                                 },
                             },
@@ -289,8 +287,6 @@ class StockBatchPicking(models.Model):
                         self.write({"shipment_reference": shipment_reference})
             except requests.exceptions.RequestException as e:
                 raise UserError("Error: {}".format(e))
-
-        return super(StockBatchPicking, self).send_shipping()
 
 
 class StockPicking(models.Model):

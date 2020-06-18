@@ -107,6 +107,7 @@ class StockBatchPicking(models.Model):
         return label
 
     def send_shipping(self):
+        super(StockBatchPicking, self).send_shipping()
         if self.carrier_id.code == "MRW":
 
             if not self.carrier_id.account_id:
@@ -250,8 +251,6 @@ class StockBatchPicking(models.Model):
 
             else:
                 raise AccessError(_("Not possible to establish a client."))
-
-        res = super(StockBatchPicking, self).send_shipping()
 
 
 class StockPicking(models.Model):
