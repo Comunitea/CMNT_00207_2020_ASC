@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api
+from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 from base64 import b64decode
 
@@ -49,10 +49,18 @@ class StockBatchPicking(models.Model):
                 pick.write({"carrier_tracking_ref": self.tracking_code})
 
     @api.multi
-    def action_transfer(self):
-        self.send_shipping()
-        res = super(StockBatchPicking, self).action_transfer()
-        return res
+    def remove_tracking_info(self):
+        for batch in self:
+            batch.update({
+                'tracking_code': False,
+                'shipment_reference': False
+            })
+
+            attatchment_id = self.env['ir.attachment'].search([
+                ('name', '=', "Label: {}".format(batch.name)),
+                ('res_id', '=', batch.id),
+                ('res_model', '=', self._name)
+            ]).unlink()
 
     def send_shipping(self):
         self.check_delivery_address()
@@ -64,27 +72,27 @@ class StockBatchPicking(models.Model):
     def check_delivery_address(self):
         if not self.partner_id.state_id:
             raise UserError(
-                "Partner id addres is not complete (State missing)."
+                _("Partner id addres is not complete (State missing).")
             )
         if not self.partner_id.country_id:
             raise UserError(
-                "Partner id addres is not complete (Contry missing)."
+                _("Partner id addres is not complete (Country missing).")
             )
         if not self.partner_id.email:
             raise UserError(
-                "Partner id addres is not complete (Email missing)."
+                _("Partner id addres is not complete (Email missing).")
             )
         if not self.partner_id.zip:
             raise UserError(
-                "Partner id addres is not complete (Zip code missing)."
+                _("Partner id addres is not complete (Zip code missing).")
             )
         if not self.env.user.company_id.state_id:
             raise UserError(
-                "Company id addres is not complete (State missing)."
+                _("Company id addres is not complete (State missing).")
             )
         if not self.env.user.company_id.state_id:
             raise UserError(
-                "Company id addres is not complete (State missing)."
+                _("Company id addres is not complete (State missing).")
             )
 
     def print_created_labels(self):
