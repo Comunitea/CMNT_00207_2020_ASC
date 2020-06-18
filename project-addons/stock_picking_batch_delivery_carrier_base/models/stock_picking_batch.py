@@ -99,13 +99,17 @@ class StockBatchPicking(models.Model):
         self.ensure_one()
 
         if not self.carrier_id.account_id.printer:
-            raise UserError("Printer not defined")
+            return
         labels = self.env["ir.attachment"].search(
             [("res_id", "=", self.id), ("res_model", "=", self._name)]
         )
         for label in labels:
+            if label.mimetype == 'application/x-pdf':
+                doc_format = 'pdf'
+            else:
+                doc_format = 'raw'
             self.carrier_id.account_id.printer.print_document(
-                None, b64decode(label.datas), doc_format="raw"
+                None, b64decode(label.datas), doc_format=doc_format
             )
 
 
