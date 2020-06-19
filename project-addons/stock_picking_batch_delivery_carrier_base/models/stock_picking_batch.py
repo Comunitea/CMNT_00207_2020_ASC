@@ -34,6 +34,9 @@ class StockBatchPicking(models.Model):
     tracking_code = fields.Char("Tracking Code")
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
+    needs_signature = fields.Boolean(
+        related="carrier_id.needs_signature", readonly=True
+    )
 
     @api.multi
     def write(self, vals):

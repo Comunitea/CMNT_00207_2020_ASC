@@ -3,7 +3,6 @@
 from . import stock_location
 from . import res_partner
 from . import stock_picking
-from . import sale_order
 from . import variable_replenish
 from . import product
 from . import stock_production_lot
