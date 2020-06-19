@@ -17,3 +17,5 @@ class ResPartner(models.Model):
     risk_invoice_unpaid_include = fields.Boolean(default=True)
     risk_account_amount_include = fields.Boolean(default=True)
     risk_account_amount_unpaid_include = fields.Boolean(default=True)
+    risk_sale_order_include = fields.Boolean(default=True)
+    risk_invoice_unpaid_limit = fields.Float(default=0.01)
