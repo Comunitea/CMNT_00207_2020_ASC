@@ -59,5 +59,3 @@ class ProductProduct(models.Model):
         else:
             return {'id': False}
 
-
-

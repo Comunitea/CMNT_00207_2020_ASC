@@ -67,7 +67,7 @@ msgstr "La dirección de la compañía no está completa (falta el email)."
 #. module: stock_picking_batch_delivery_carrier_base
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:119
 #, python-format
-msgid "Company address is not complete (Needs a phone or mobile phone)."
+msgid "Company address is not complete (Needs a phone)."
 msgstr "La dirección de la compañía no está completa (falta un teléfono)."
 
 #. module: stock_picking_batch_delivery_carrier_base
@@ -141,7 +141,7 @@ msgstr "La dirección del cliente no está completa (falta un teléfono o móvil
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:87
 #, python-format
 msgid "Partner address is not complete (State missing)."
-msgstr "La dirección del cliente no está completa (falta la provincia postal)."
+msgstr "La dirección del cliente no está completa (falta la provincia)."
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:79

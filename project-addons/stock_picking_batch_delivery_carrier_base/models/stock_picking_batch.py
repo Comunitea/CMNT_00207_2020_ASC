@@ -114,9 +114,9 @@ class StockBatchPicking(models.Model):
             raise UserError(
                 _("Company address is not complete (Email missing).")
             )
-        if not (self.env.user.company_id.phone or self.env.user.company_id.mobile):
+        if not self.env.user.company_id.phone:
             raise UserError(
-                _("Company address is not complete (Needs a phone or mobile phone).")
+                _("Company address is not complete (Needs a phone).")
             )
         if not self.env.user.company_id.zip:
             raise UserError(
