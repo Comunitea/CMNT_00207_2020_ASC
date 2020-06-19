@@ -14,6 +14,8 @@ class ProductTemplateImporter(Component):
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
+        if record['tipo_pack'] == '0':
+            return
         if record.get("associations", {}).get("product_bundle", {}).get("product", {}):
             bundle_products = {}
             binder = self.binder_for("prestashop.product.template")
