@@ -86,20 +86,20 @@ class StockBatchPicking(models.Model):
             message = rjson["mensajeRetorno"]
 
             if retorno == 0:
-                self.tracking_code = rjson["datosResultado"]
+                self.carrier_tracking_ref = rjson["datosResultado"]
                 if self.carrier_id.account_id.file_format == "PDF":
                     for label_result in rjson["etiqueta"]:
                         self.env["ir.attachment"].create(
                             {
                                 "name": self.name
                                 + "_"
-                                + self.tracking_code
+                                + self.carrier_tracking_ref
                                 + ".pdf",
                                 "type": "binary",
                                 "datas": b64decode(label_result["etiqueta1"]),
                                 "datas_fname": self.name
                                 + "_"
-                                + self.tracking_code
+                                + self.carrier_tracking_ref
                                 + ".pdf",
                                 "store_fname": self.name,
                                 "res_model": self._name,
@@ -114,7 +114,7 @@ class StockBatchPicking(models.Model):
                             {
                                 "name": self.name
                                 + "_"
-                                + self.tracking_code
+                                + self.carrier_tracking_ref
                                 + ".pdf",
                                 "type": "binary",
                                 "datas": b64encode(
@@ -122,7 +122,7 @@ class StockBatchPicking(models.Model):
                                 ),
                                 "datas_fname": self.name
                                 + "_"
-                                + self.tracking_code
+                                + self.carrier_tracking_ref
                                 + ".pdf",
                                 "store_fname": self.name,
                                 "res_model": self._name,

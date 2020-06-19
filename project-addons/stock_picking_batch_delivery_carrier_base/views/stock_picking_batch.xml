@@ -14,20 +14,20 @@
                 <button name="send_shipping" string="Request Shipping" type="object"
                     attrs="{'invisible': [ 
                         '|', ('shipment_reference', '!=', False),
-                        ('tracking_code', '!=', False)
+                        ('carrier_tracking_ref', '!=', False)
                     ]}"/>
                 <button name="remove_tracking_info" string="Remove Tracking" type="object"
                     confirm="Are you sure you want to remove the tracking info of this batch?"
                     attrs="{'invisible': [
                         '|',('shipment_reference', '=', False),
-                        ('tracking_code', '=', False)
+                        ('carrier_tracking_ref', '=', False)
                     ]}"/>
             </header>
             <xpath expr="//notebook" position="before">
                 <group>
                     <field name="carrier_code" invisible="1"/>
+                    <field name="tracking_url" attrs="{'invisible': [('tracking_url', '=', False)]}"/>
                     <field name="shipment_reference"/>
-                    <field name="tracking_code"/>
                     <field name="payment_on_delivery" readonly="1"/>
                 </group>
             </xpath>
