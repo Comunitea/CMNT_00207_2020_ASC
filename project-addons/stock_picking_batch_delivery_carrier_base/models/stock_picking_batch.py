@@ -31,28 +31,34 @@ class StockBatchPicking(models.Model):
         comodel_name="delivery.carrier", string="Carrier"
     )
     carrier_code = fields.Char(related="carrier_id.code")
-    tracking_code = fields.Char("Tracking Code")
+    carrier_tracking_ref = fields.Char("Tracking Code")
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
+    tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
+
+    @api.depends('carrier_id', 'carrier_tracking_ref')
+    def _compute_tracking_url(self):
+        for batch in self:
+            batch.tracking_url = batch.carrier_id.get_tracking_link(batch) if batch.carrier_id and batch.carrier_tracking_ref else False
 
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if vals.get("tracking_code", False):
-            self.onchange_tracking_code()
+        if vals.get("carrier_tracking_ref", False):
+            self.onchange_carrier_tracking_ref()
         return res
 
-    @api.onchange("tracking_code")
-    def onchange_tracking_code(self):
-        if self.tracking_code:
+    @api.onchange("carrier_tracking_ref")
+    def onchange_carrier_tracking_ref(self):
+        if self.carrier_tracking_ref:
             for pick in self.picking_ids:
-                pick.write({"carrier_tracking_ref": self.tracking_code})
+                pick.write({"carrier_tracking_ref": self.carrier_tracking_ref})
 
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
             batch.update({
-                'tracking_code': False,
+                'carrier_tracking_ref': False,
                 'shipment_reference': False
             })
 
