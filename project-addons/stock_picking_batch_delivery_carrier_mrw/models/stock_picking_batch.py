@@ -203,7 +203,7 @@ class StockBatchPicking(models.Model):
 
                     self.write(
                         {
-                            "tracking_code": res["NumeroEnvio"],
+                            "carrier_tracking_ref": res["NumeroEnvio"],
                             "shipment_reference": res["NumeroSolicitud"],
                         }
                     )
