@@ -30,7 +30,7 @@
         "warehouse_apk_custom",
         "account_payment_mode",
     ],
-    "data": ["wizard/picking_sign_wizard.xml", "views/stock_picking_batch.xml", "views/account_payment_mode.xml"],
+    "data": ["wizard/picking_sign_wizard.xml", "views/stock_picking_batch.xml", "views/account_payment_mode.xml", 'views/sale.xml'],
     "installable": True,
     "auto_install": False,
     "application": False,

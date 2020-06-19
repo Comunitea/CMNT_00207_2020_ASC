@@ -47,6 +47,7 @@ class PrestashopStockPickingListener(Component):
         for binding in sale_bind_ids:
             state = binding.backend_id.delivered_state
             binding.odoo_id.prestashop_state = state
+            binding.odoo_id.delivered = True
             bind_state = state.prestashop_bind_ids.filtered(
                 lambda r: r.backend_id == binding.backend_id
             )
