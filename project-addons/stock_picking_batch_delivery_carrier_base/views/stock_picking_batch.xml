@@ -26,8 +26,8 @@
             <xpath expr="//notebook" position="before">
                 <group>
                     <field name="carrier_code" invisible="1"/>
-                    <field name="tracking_url" attrs="{'invisible': [('tracking_url', '=', False)]}"/>
                     <field name="shipment_reference"/>
+                    <field name="carrier_tracking_ref"/>
                     <field name="payment_on_delivery" readonly="1"/>
                 </group>
             </xpath>
