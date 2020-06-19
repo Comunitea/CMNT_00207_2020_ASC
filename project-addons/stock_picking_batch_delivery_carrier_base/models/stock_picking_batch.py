@@ -36,6 +36,12 @@ class StockBatchPicking(models.Model):
     payment_on_delivery = fields.Boolean("Payment on delivery")
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
 
+    @api.multi
+    def action_transfer(self):
+        res = super(StockBatchPicking, self).action_transfer()
+        self.send_shipping()
+        return res
+
     @api.depends('carrier_id', 'carrier_tracking_ref')
     def _compute_tracking_url(self):
         for batch in self:
