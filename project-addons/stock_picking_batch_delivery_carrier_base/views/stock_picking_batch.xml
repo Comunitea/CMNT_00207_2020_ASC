@@ -14,20 +14,21 @@
                 <button name="send_shipping" string="Request Shipping" type="object"
                     attrs="{'invisible': [
                         '|', ('shipment_reference', '!=', False),
-                        ('tracking_code', '!=', False)
+                        ('carrier_tracking_ref', '!=', False)
                     ]}"/>
                 <button name="remove_tracking_info" string="Remove Tracking" type="object"
                     confirm="Are you sure you want to remove the tracking info of this batch?"
                     attrs="{'invisible': [
                         '|',('shipment_reference', '=', False),
-                        ('tracking_code', '=', False)
+                        ('carrier_tracking_ref', '=', False)
                     ]}"/>
             </header>
             <xpath expr="//notebook" position="before">
                 <group>
                     <field name="carrier_code" invisible="1"/>
+                    <field name="failed_shipping" attrs="{'invisible': [('failed_shipping', '=', False)]}"/>
                     <field name="shipment_reference"/>
-                    <field name="tracking_code"/>
+                    <field name="carrier_tracking_ref"/>
                     <field name="payment_on_delivery" readonly="1"/>
                 </group>
             </xpath>
@@ -35,6 +36,30 @@
                 <field name="needs_signature" invisible="1"/>
                 <button name="%(picking_sign_wizard_action)d" type="action" string="Sign reception" attrs="{'invisible': [('needs_signature', '!=', True)]}"/>
             </button>
+        </field>
+    </record>
+
+    <!-- stock.picking.batch tree view -->
+    <record model="ir.ui.view" id="stock_batch_picking_delivery_carrier_base_tree">
+        <field name="name">stock.picking.batch.tree</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="failed_shipping"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- stock.picking.batch search view -->
+    <record id="stock_batch_picking_delivery_carrier_base_search" model="ir.ui.view">
+        <field name="name">batch.picking.search</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_search"/>
+        <field name="arch" type="xml">
+            <filter name="no_user_id" position="after">
+                <filter name="failed_shipping" string="Failed Shippings" domain="[('failed_shipping','=', True)]"/>
+            </filter>
         </field>
     </record>
 

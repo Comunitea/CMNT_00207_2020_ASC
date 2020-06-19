@@ -6,7 +6,7 @@
         <field name="model">stock.picking.batch</field>
         <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form"/>
         <field name="arch" type="xml">
-            <field name="tracking_code" position="after">
+            <field name="carrier_tracking_ref" position="after">
                 <field name="mrw_pdo_quantity" attrs="{'invisible': [('carrier_code', '!=', 'MRW')]}"/>
             </field>
         </field>

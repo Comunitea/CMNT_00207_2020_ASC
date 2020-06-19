@@ -28,6 +28,11 @@ class DeliveryCarrier(models.Model):
 
     carrier_type = fields.Selection(selection_add=[("dhl", "DHL Express")])
 
+    def dhl_get_tracking_link(self, picking):
+        return "https://www.dhl.es/es/express/seguimiento.html?AWB={}&brand=DHL".format(
+            picking.carrier_tracking_ref
+        )
+
 
 class CarrierAccount(models.Model):
     _inherit = "carrier.account"

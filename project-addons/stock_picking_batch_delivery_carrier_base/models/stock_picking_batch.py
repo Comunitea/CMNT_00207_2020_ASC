@@ -31,31 +31,48 @@ class StockBatchPicking(models.Model):
         comodel_name="delivery.carrier", string="Carrier"
     )
     carrier_code = fields.Char(related="carrier_id.code")
-    tracking_code = fields.Char("Tracking Code")
+    carrier_tracking_ref = fields.Char("Tracking Code")
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
     needs_signature = fields.Boolean(
         related="carrier_id.needs_signature", readonly=True
     )
+    tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
+    failed_shipping =  fields.Boolean("Failed Shipping", default=False)
+
+    @api.multi
+    def action_transfer(self):
+        res = super(StockBatchPicking, self).action_transfer()
+        try:
+            self.send_shipping()
+        except Exception:
+            self.failed_shipping == True
+        return res
+
+    @api.depends('carrier_id', 'carrier_tracking_ref')
+    def _compute_tracking_url(self):
+        for batch in self:
+            batch.tracking_url = batch.carrier_id.get_tracking_link(batch) if batch.carrier_id and batch.carrier_tracking_ref else False
 
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if vals.get("tracking_code", False):
-            self.onchange_tracking_code()
+        if vals.get("carrier_tracking_ref", False):
+            self.onchange_carrier_tracking_ref()
         return res
 
-    @api.onchange("tracking_code")
-    def onchange_tracking_code(self):
-        if self.tracking_code:
+    @api.onchange("carrier_tracking_ref")
+    def onchange_carrier_tracking_ref(self):
+        if self.carrier_tracking_ref:
+            self.failed_shipping == False
             for pick in self.picking_ids:
-                pick.write({"carrier_tracking_ref": self.tracking_code})
+                pick.write({"carrier_tracking_ref": self.carrier_tracking_ref})
 
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
             batch.update({
-                'tracking_code': False,
+                'carrier_tracking_ref': False,
                 'shipment_reference': False
             })
 
