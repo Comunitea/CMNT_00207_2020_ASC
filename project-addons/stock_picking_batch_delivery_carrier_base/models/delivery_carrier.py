@@ -25,6 +25,7 @@ class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
 
     service_code = fields.Char(string="Carrier service code")
+    needs_signature = fields.Boolean()
 
 
 class CarrierAccount(models.Model):

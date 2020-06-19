@@ -8,11 +8,11 @@
         <field name="arch" type="xml">
             <header position="inside">
                 <button name="print_created_labels" string="Print Labels" type="object"
-                    attrs="{'invisible': [ 
+                    attrs="{'invisible': [
                         ('shipment_reference', '=', False)
                     ]}"/>
                 <button name="send_shipping" string="Request Shipping" type="object"
-                    attrs="{'invisible': [ 
+                    attrs="{'invisible': [
                         '|', ('shipment_reference', '!=', False),
                         ('tracking_code', '!=', False)
                     ]}"/>
@@ -31,6 +31,10 @@
                     <field name="payment_on_delivery" readonly="1"/>
                 </group>
             </xpath>
+            <button name="cancel_picking" position="after">
+                <field name="needs_signature" invisible="1"/>
+                <button name="%(picking_sign_wizard_action)d" type="action" string="Sign reception" attrs="{'invisible': [('needs_signature', '!=', True)]}"/>
+            </button>
         </field>
     </record>
 
@@ -54,6 +58,9 @@
     <field name="arch" type="xml">
         <field name="code" position="after">
             <field name="service_code"/>
+        </field>
+        <field name="product_id" position="after">
+            <field name="needs_signature"/>
         </field>
     </field>
   </record>
