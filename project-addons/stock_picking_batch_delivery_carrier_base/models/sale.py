@@ -4,7 +4,7 @@ from odoo import fields, models
 
 
 class SaleOrder(models.Model):
-    inherit = 'sale.order'
+    _inherit = 'sale.order'
 
     needs_signature = fields.Boolean(
         related="carrier_id.needs_signature", readonly=True, store=True
