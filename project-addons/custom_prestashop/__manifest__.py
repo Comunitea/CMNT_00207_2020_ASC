@@ -17,6 +17,7 @@
         "base_location",
         "stock_custom",
         "delivery_picking_creator",
+        "sale_financial_risk"
     ],
     "data": [
         "views/account_payment_term.xml",
