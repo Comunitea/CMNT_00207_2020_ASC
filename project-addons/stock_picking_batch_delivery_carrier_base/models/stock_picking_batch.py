@@ -35,11 +35,15 @@ class StockBatchPicking(models.Model):
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
+    failed_shipping =  fields.Boolean("Failed Shipping", default=False)
 
     @api.multi
     def action_transfer(self):
         res = super(StockBatchPicking, self).action_transfer()
-        self.send_shipping()
+        try:
+            self.send_shipping()
+        except Exception:
+            self.failed_shipping == True
         return res
 
     @api.depends('carrier_id', 'carrier_tracking_ref')
@@ -57,6 +61,7 @@ class StockBatchPicking(models.Model):
     @api.onchange("carrier_tracking_ref")
     def onchange_carrier_tracking_ref(self):
         if self.carrier_tracking_ref:
+            self.failed_shipping == False
             for pick in self.picking_ids:
                 pick.write({"carrier_tracking_ref": self.carrier_tracking_ref})
 
