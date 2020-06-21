@@ -38,21 +38,27 @@ class StockBatchPicking(models.Model):
         related="carrier_id.needs_signature", readonly=True
     )
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
-    failed_shipping =  fields.Boolean("Failed Shipping", default=False)
+    failed_shipping = fields.Boolean("Failed Shipping", default=False)
 
     @api.multi
     def action_transfer(self):
         res = super(StockBatchPicking, self).action_transfer()
         try:
             self.send_shipping()
+            if self.env.user.printing_printer_id:
+                self.env.ref('stock.action_report_delivery').print_document(self.picking_ids)
         except Exception:
-            self.failed_shipping == True
+            self.failed_shipping = True
         return res
 
-    @api.depends('carrier_id', 'carrier_tracking_ref')
+    @api.depends("carrier_id", "carrier_tracking_ref")
     def _compute_tracking_url(self):
         for batch in self:
-            batch.tracking_url = batch.carrier_id.get_tracking_link(batch) if batch.carrier_id and batch.carrier_tracking_ref else False
+            batch.tracking_url = (
+                batch.carrier_id.get_tracking_link(batch)
+                if batch.carrier_id and batch.carrier_tracking_ref
+                else False
+            )
 
     @api.multi
     def write(self, vals):
@@ -71,16 +77,21 @@ class StockBatchPicking(models.Model):
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
-            batch.update({
-                'carrier_tracking_ref': False,
-                'shipment_reference': False
-            })
+            batch.update(
+                {"carrier_tracking_ref": False, "shipment_reference": False}
+            )
 
-            attatchment_id = self.env['ir.attachment'].search([
-                ('name', '=', "Label: {}".format(batch.name)),
-                ('res_id', '=', batch.id),
-                ('res_model', '=', self._name)
-            ]).unlink()
+            attatchment_id = (
+                self.env["ir.attachment"]
+                .search(
+                    [
+                        ("name", "=", "Label: {}".format(batch.name)),
+                        ("res_id", "=", batch.id),
+                        ("res_model", "=", self._name),
+                    ]
+                )
+                .unlink()
+            )
 
     def send_shipping(self):
         self.check_delivery_address()
@@ -100,7 +111,9 @@ class StockBatchPicking(models.Model):
             )
         if not (self.partner_id.phone or self.partner_id.mobile):
             raise UserError(
-                _("Partner address is not complete (Needs a phone or mobile phone).")
+                _(
+                    "Partner address is not complete (Needs a phone or mobile phone)."
+                )
             )
         if not self.partner_id.state_id:
             raise UserError(
@@ -156,10 +169,10 @@ class StockBatchPicking(models.Model):
             [("res_id", "=", self.id), ("res_model", "=", self._name)]
         )
         for label in labels:
-            if label.mimetype == 'application/x-pdf':
-                doc_format = 'pdf'
+            if label.mimetype == "application/x-pdf":
+                doc_format = "pdf"
             else:
-                doc_format = 'raw'
+                doc_format = "raw"
             self.carrier_id.account_id.printer.print_document(
                 None, b64decode(label.datas), doc_format=doc_format
             )
