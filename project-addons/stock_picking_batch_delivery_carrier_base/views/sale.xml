@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">sale.order.inherit.view.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_batch_picking" type="object" class="oe_stat_button" icon="fa-signature" attrs="{'invisible': [('batches_count', '=', 0)]}">
+                    <field name="batches_count" widget="statinfo" string="Agrupaciones de envío"/>
+                </button>
+            </div>
+
+        </field>
+    </record>
+
     <record id="action_orders_recogida" model="ir.actions.act_window">
         <field name="name">Sales Orders - Recogida</field>
         <field name="type">ir.actions.act_window</field>
@@ -9,13 +23,13 @@
         <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
         <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
         <field name="context">{}</field>
-        <field name="domain">[('needs_signature', '=', True), ('delivered', '=', True)]</field>
+        <field name="domain">[('needs_signature', '=', True), ('delivered', '!=', True), ('state', 'not in', ('draft', 'cancel'))]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create a new quotation, the first step of a new sale!
-            </p><p>
-                Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                Pedidos pendientes de recogida.
             </p>
         </field>
     </record>
+
+    <menuitem id="sale_order_recogida_menu_act" name="Recogidas" parent="sale.sale_order_menu" action="action_orders_recogida" sequence="99"/>
 </odoo>
