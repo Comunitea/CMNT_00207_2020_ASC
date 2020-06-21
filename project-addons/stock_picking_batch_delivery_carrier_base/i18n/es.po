@@ -205,3 +205,28 @@ msgstr "Webservice Test URL"
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__service_url
 msgid "Webservice URL"
 msgstr "Webservice URL"
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Sign reception"
+msgstr "Firmar recepción"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.actions.act_window,name:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_action
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Reception signature"
+msgstr "Firma recepción"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "or"
+msgstr "o"
