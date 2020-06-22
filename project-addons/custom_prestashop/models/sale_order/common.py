@@ -8,7 +8,6 @@ class SaleOrder(models.Model):
 
     _inherit = "sale.order"
 
-    ready_to_send = fields.Boolean()
     delivered = fields.Boolean()
 
     @api.onchange("payment_mode_id")

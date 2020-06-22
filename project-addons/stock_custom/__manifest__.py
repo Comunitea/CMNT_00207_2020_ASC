@@ -19,6 +19,7 @@
         "views/stock_location.xml",
         "views/product_view.xml",
         'views/stock_picking.xml',
+        'views/sale_order.xml',
         'views/variable_replensih.xml',
         'views/stock_production_lot.xml',
     ],
