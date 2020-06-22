@@ -7,7 +7,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     ready_to_send = fields.Boolean(string="PDA Ready", default=True)
-    pickup_signature = fields.Boolean()
+    pickup_signature = fields.Binary()
 
     @api.depends('ready_to_send', 'move_type', 'move_lines.state', 'move_lines.picking_id')
     @api.one
