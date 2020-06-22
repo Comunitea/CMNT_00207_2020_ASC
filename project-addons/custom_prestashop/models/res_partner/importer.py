@@ -128,9 +128,9 @@ class AddressImportMapper(Component):
         if record.get('facturacion_defecto') == '1':
             if record['company']:
                 name = record['company']
-            else:
-                parts = [record['firstname'], record['lastname']]
-                name = ' '.join(p.strip() for p in parts if p.strip())
+        if not name:
+            parts = [record['firstname'], record['lastname']]
+            name = ' '.join(p.strip() for p in parts if p.strip())
         return {'name': name}
 
 
