@@ -158,8 +158,11 @@ class StockBatchPicking(models.Model):
                                 "Nif": self.partner_id.vat,
                                 "Nombre": self.partner_id.name,
                                 "Telefono": self.partner_id.phone
-                                or self.partner_id.phone
+                                or self.partner_id.mobile
                                 or "",
+                                "Observaciones": "{}".format(
+                                    self.delivery_note
+                                ),
                             },
                             "DatosServicio": {
                                 "Fecha": datetime.now().strftime(
@@ -203,7 +206,7 @@ class StockBatchPicking(models.Model):
 
                     self.write(
                         {
-                            "tracking_code": res["NumeroEnvio"],
+                            "carrier_tracking_ref": res["NumeroEnvio"],
                             "shipment_reference": res["NumeroSolicitud"],
                         }
                     )

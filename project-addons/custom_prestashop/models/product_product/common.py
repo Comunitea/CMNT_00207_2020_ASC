@@ -70,3 +70,9 @@ class ProductProduct(models.Model):
                             ],
                         }
                     )
+
+    def _set_standard_price(self):
+        res = super()._set_standard_price()
+        for record in self.mapped('product_tmpl_id'):
+            self._event("on_standard_price_changed").notify(record)
+        return res
