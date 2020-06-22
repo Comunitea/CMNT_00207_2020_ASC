@@ -149,7 +149,7 @@ class StockBatchPicking(models.Model):
                                     ),
                                     "PhoneNumber": "{}".format(
                                         self.env.user.company_id.phone
-                                        or self.env.user.company_id.mobile
+                                        or ""
                                     ),
                                     "EmailAddress": self.env.user.company_id.email,
                                 },
@@ -160,6 +160,10 @@ class StockBatchPicking(models.Model):
                                     "StreetLines2": "{}".format(
                                         self.env.user.company_id.street2
                                         or "N/A"
+                                    ),
+                                    "StreetLines3": "{}".format(
+                                        self.delivery_note
+                                        or ""
                                     ),
                                     "City": "{}".format(
                                         self.env.user.company_id.city.upper()
@@ -229,7 +233,7 @@ class StockBatchPicking(models.Model):
                                 response["Notification"][0]["Message"]
                             )
                         )
-                    self.tracking_code = response[
+                    self.carrier_tracking_ref = response[
                         "ShipmentIdentificationNumber"
                     ]
 
@@ -332,13 +336,8 @@ class StockPicking(models.Model):
                                     ),  #'212f797bf00a4afa9654cea8449c9779'
                                 }
                             },
-                            "ReferenceQuery": {
-                                "ShipperAccountNumber": "{}".format(
-                                    self.carrier_id.account_id.dhl_account
-                                ),
-                                "ShipmentReferences": {
-                                    "ShipmentReference": self.carrier_tracking_ref
-                                },
+                            "AWBNumber": {
+                                "ArrayOfAWBNumberItem": self.carrier_tracking_ref
                             },
                             "LevelOfDetails": "LAST_CHECKPOINT_ONLY",
                         }
