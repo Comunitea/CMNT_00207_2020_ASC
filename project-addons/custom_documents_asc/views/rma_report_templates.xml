@@ -31,7 +31,7 @@
                         </div>-->
                     </div>
                     <div class="col-7">
-                        <strong t-if="doc.type=='customer'">CLIENTE:</strong>
+                        <strong t-if="doc.type=='customer'">Customer:</strong>
                         <strong t-if="doc.type=='supplier'">Supplier:</strong>
                         <div t-field="doc.partner_id"
                              t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div t-if="doc.move_ids" class="row">
-                            <div class="col-7 text-left">Fecha llegada:</div>
+                            <div class="col-7 text-left">Arrival date:</div>
                             <t t-foreach="doc.move_ids" t-as="move_id">
                                 <t t-if="move_id.location_id.name == 'Customers' and move_id.state != 'cancel'">
                                     <div class="col-5"><span t-esc="move_id.date.strftime('%d-%m-%Y')"/></div>
@@ -54,7 +54,7 @@
                             </t>
                         </div>
                         <div t-if="doc.move_ids" class="row">
-                            <div class="col-7 text-left">Fecha salida:</div>
+                            <div class="col-7 text-left">Departure date:</div>
                             <t t-foreach="doc.move_ids" t-as="move_id">
                                 <t t-if="move_id.location_dest_id.name == 'Customers' and move_id.state != 'cancel'">
                                     <div class="col-5"><span t-esc="move_id.date.strftime('%d-%m-%Y')"/></div>
@@ -62,7 +62,7 @@
                             </t>
                         </div>
                         <div t-if="doc.invoice_line_id" class="row">
-                            <div class="col-7 text-left">Factura origen:</div>
+                            <div class="col-7 text-left">Source invoice:</div>
                             <div class="col-5"><p t-field="doc.origin"/></div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                         <tr>
                             <th>Product</th>
                             <th class="text-right">Quantity</th>
-                            <th class="text-right">Nº de serie</th>
+                            <th class="text-right">Serial number</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@
     </template>
 
 
-    <template id="report_rma_order_line_xxx">
+    <template id="report_rma_order_line_custom">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="custom_documents_asc.report_rma_order_line_doc" t-lang="doc.partner_id.lang"/>
@@ -141,12 +141,12 @@
 
 
     <report
-            id="rma_order_line_report_xxx"
-            string="RMA"
+            id="rma_order_line_report_custom"
+            string="Albarán de RMA"
             model="rma.order.line"
             report_type="qweb-pdf"
-            file="custom_documents_asc.report_rma_order_line_xxx"
-            name="custom_documents_asc.report_rma_order_line_xxx"
+            file="custom_documents_asc.report_rma_order_line_custom"
+            name="custom_documents_asc.report_rma_order_line_custom"
     />
 
 </odoo>

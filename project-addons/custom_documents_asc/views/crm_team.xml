@@ -9,14 +9,20 @@
             <xpath expr="//notebook/page[last()]" position="after">
                 <page name="Documents Info" string="Documents Info">
                     <group>
-                        <field name="css_class"/>
-                        <field name="team_logo" widget="image"  class="oe_avatar"/>
-                        <field name="team_name"/>
-                        <field name="team_tag_line"/>
+                        <group>
+                            <field name="team_logo" widget="image" class="oe_avatar"/>
+                            <field name="team_name"/>
+                            <field name="team_tag_line"/>
+                            <field name="css_class"/>
+                        </group>
+                        <group>
+                            <field name="team_email"/>
+                            <field name="team_phone"/>
+                            <field name="team_website"/>
+                        </group>
                     </group>
                 </page>
             </xpath>
-
         </field>
     </record>
 

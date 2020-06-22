@@ -3,3 +3,6 @@
 from . import crm_team
 from . import stock_picking
 from . import rma_order_line
+from . import crm_class
+from . import invoice
+from . import ir_qweb_fields

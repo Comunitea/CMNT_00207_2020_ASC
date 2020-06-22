@@ -8,7 +8,7 @@
             <div class="address row">
                 <div name="invoice_address" class="col-7">
                     <address t-field="o.partner_id"
-                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                             t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True}'/>
                     <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
                         <span t-field="o.partner_id.vat"/>
                     </div>
@@ -16,36 +16,28 @@
 
                 <div name="picking_information" class="col-5">
                     <div class="row">
-                        <div class="col-7 text-left">
-                            <span>Albarán:</span>
+                        <div class="col-5 text-left">
+                            <span>Picking:</span>
                         </div>
-                        <div class="col-5 text-right">
+                        <div class="col-7 text-right">
                             <span t-field="o.name"/>
                         </div>
                     </div>
                     <div t-if="o.scheduled_date" class="row">
-                        <div class="col-5 text-left">Fecha:</div>
+                        <div class="col-5 text-left">Date:</div>
                         <div class="col-7 text-right">
-                            <span t-field="o.scheduled_date"/>
+                            <span t-esc="o.scheduled_date.strftime('%d-%m-%Y')"/>
                         </div>
                     </div>
                     <div t-if="o.origin"
                          class="row">
-                        <div class="col-7 text-left">Pedido:</div>
-                        <div class="col-5 text-right">
+                        <div class="col-5 text-left">Order:</div>
+                        <div class="col-7 text-right">
                             <span t-field="o.origin"/>
                         </div>
                     </div>
-                    <div t-if="o.weight"
-                         class="row">
-                        <div class="col-7 text-left">Peso:</div>
-                        <div class="col-5 text-right">
-                            <span t-field="o.weight"/>
-                            <span t-field="o.weight_uom_id"/>
-                        </div>
-                    </div>
                     <div t-if="o.invoice_ids" class="row">
-                        <div class="col-6 text-left">Factura:</div>
+                        <div class="col-6 text-left">Invoice:</div>
                         <div class="col-6 text-right">
                             <span t-field="o.invoice_ids"/>
                         </div>
@@ -62,7 +54,7 @@
                     <div id="total" class="row">
                         <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
                             <table class="table table-sm" style="page-break-inside: avoid;">
-                                <tr class="border-black o_subtotal" style="">
+                                <tr class="border-top-0" style="">
                                     <td>
                                         <strong>Subtotal</strong>
                                     </td>
@@ -93,38 +85,40 @@
         <xpath expr="//div[@class='clearfix']" position="after">
             <t t-if="o.invoice_ids">
                 <br/>
-                <span style="color: #1176D9;">
-                    <b>Información sobre el pago</b>
-                </span>
+                <div>
+                    <span style="color: #1176D9;">
+                        <b>Payment information</b>
+                    </span>
+                </div>
                 <div class="row">
-                    <div class="col-3 text-left">Forma de pago:</div>
+                    <div class="col-3 text-left">Method of payment:</div>
                     <div class="col-3 text-right">
                         <span t-field="o.invoice_ids.payment_mode_id"/>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 text-left">Vencimiento:</div>
+                    <div class="col-3 text-left">Due date:</div>
                     <div class="col-3 text-right">
                         <span t-field="o.invoice_ids.date_due"/>
                     </div>
                 </div>
                 <br/>
                 <span class="row">
-                    <div class="col-5" style="color: #1176D9;">
-                        <b>Impuesto</b>
-                    </div>
+                    <!--<div class="col-5" style="color: #1176D9;">
+                        <b>Tax</b>
+                    </div>-->
                     <div class="col-7 border-bottom">
-                        <b>Cuentas</b>
+                        <b>Accounts</b>
                     </div>
                 </span>
                 <div class="row">
-                    <div class="col-5">
+                    <!--<div class="col-5">
                         <table class="table table-sm" style="page-break-inside: avoid;">
                             <t t-foreach="o.invoice_ids.amount_by_group" t-as="amount_by_group">
                                 <t t-if="len(o.invoice_ids.tax_line_ids) == 1 and o.invoice_ids.amount_untaxed == amount_by_group[2]">
                                     <tr>
                                         <td class="text-left">
-                                            <span>Tipo IVA:</span>
+                                            <span>Tax type:</span>
                                         </td>
                                         <td class="text-right">
                                             <span t-esc="amount_by_group[0]"/>
@@ -132,7 +126,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-left">
-                                            <span>Importe IVA:</span>
+                                            <span>Tax amount:</span>
                                         </td>
                                         <td class="text-right">
                                             <span t-esc="amount_by_group[3]"/>
@@ -141,7 +135,7 @@
                                 </t>
                             </t>
                         </table>
-                    </div>
+                    </div>-->
                     <div class="col-7">
                         <t t-foreach="o.invoice_ids.payment_mode_id.variable_journal_ids" t-as="cuenta">
                             <div class="row">
@@ -156,6 +150,10 @@
                     </div>
                 </div>
             </t>
+            <br/>
+            <div>
+                <p>Comments: <span t-field="o.sale_id.note"/></p>
+            </div>
         </xpath>
     </template>
 

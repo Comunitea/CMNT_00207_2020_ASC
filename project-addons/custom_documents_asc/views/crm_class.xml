@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo noupdate="1">
+
+    <record id="css_class_colors_Asec" model="crm.class">
+        <field name="name">Asec</field>
+    </record>
+    <record id="css_class_colors_Outlet" model="crm.class">
+        <field name="name">Outlet</field>
+    </record>
+
+    <record id="view_crm_class" model="ir.ui.view">
+        <field name="name">view.crm.class</field>
+        <field name="model">crm.class</field>
+        <field name="arch" type="xml">
+            <form string="Css Company">
+                <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

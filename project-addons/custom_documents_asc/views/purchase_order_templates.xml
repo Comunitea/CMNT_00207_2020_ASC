@@ -11,7 +11,7 @@
             <div class="address row">
                 <div name="purchase_address" class="col-7">
                     <p>
-                        <strong>PROVEEDOR</strong>
+                        <strong>Supplier</strong>
                     </p>
                     <address t-field="o.partner_id"
                              t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
@@ -22,14 +22,14 @@
                 <div name="purchase_information" class="col-5">
                     <div class="row">
                         <div class="col-7 text-left">
-                            <span>Nº Pedido:</span>
+                            <span>Order number:</span>
                         </div>
                         <div class="col-5 text-right">
                             <span t-field="o.name"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5 text-left">Fecha:</div>
+                        <div class="col-5 text-left">Date:</div>
                         <div class="col-7 text-right">
                             <span t-field="o.date_order"/>
                         </div>
