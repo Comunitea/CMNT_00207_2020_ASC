@@ -169,9 +169,9 @@ class StockBatchPicking(models.Model):
                                     "%d/%m/%Y"
                                 ),  # self.date.strftime("%d/%m/%Y"),
                                 "Referencia": self.name,
-                                "CodigoServicio": self.carrier_id.service_code,
+                                "CodigoServicio": self.carrier_id.service_code.carrier_code,
                                 "Frecuencia": self.carrier_id.account_id.mrw_frequency
-                                if self.carrier_id.service_code == "0005"
+                                if self.carrier_id.service_code.carrier_code == "0005"
                                 else "",
                                 "NumeroBultos": self.carrier_packages,
                                 "Peso": round(self.carrier_weight),
