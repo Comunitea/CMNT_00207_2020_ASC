@@ -8,7 +8,6 @@
         <field name="arch" type="xml">
             <field name="auto_apply" position="before">
                 <field name="prestashop_tax_ids"/>
-                <field name="preferred_for_backend_ids"/>
                 <field name="recargo_equivalencia"/>
             </field>
         </field>

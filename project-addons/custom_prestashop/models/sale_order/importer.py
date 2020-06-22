@@ -92,13 +92,11 @@ class SaleOrderImportMapper(Component):
                 lambda r: tax_id in r.prestashop_tax_ids.split(",")
             )
         if len(fiscal_positions) > 1:
-            if record.get('associations').get('recargos_equivalencia'):
-                preferred_fiscal_positions = fiscal_positions.filtered(
-                    lambda r: self.backend_record in r.preferred_for_backend_ids and r.recargo_equivalencia
+            if record.get('associations').get('recargos_equivalencia').get('recargo_equivalencia'):
+                preferred_fiscal_positions = fiscal_positions.filtered(lambda r: r.recargo_equivalencia
                 )
             else:
-                preferred_fiscal_positions = fiscal_positions.filtered(
-                    lambda r: self.backend_record in r.preferred_for_backend_ids
+                preferred_fiscal_positions = fiscal_positions.filtered(lambda r: not  r.recargo_equivalencia
                 )
             if preferred_fiscal_positions:
                 fiscal_positions = preferred_fiscal_positions
@@ -109,8 +107,6 @@ class SaleOrderImportMapper(Component):
                 )
             )
         return {"fiscal_position_id": fiscal_positions.id}
-        pass
-        #
 
     @mapping
     def payment(self, record):
@@ -172,10 +168,15 @@ class SaleOrderImportMapper(Component):
                 }
         return {}
 
-    @mapping
-    def notes(self, record):
-        if record.get('messages'):
-            return
+    # @mapping
+    # def notes(self, record):
+    #     messages = (
+    #         record.get("associations").get("messages").get("message")
+    #     )
+    #     if isinstance(messages, dict):
+    #         messages = [messages]
+    #     if messages:
+    #         return {'note': '\n'.join([x.get('message') for x in messages])}
 
     def _map_child(self, map_record, from_attr, to_attr, model_name):
         binder = self.binder_for("prestashop.sale.order")
