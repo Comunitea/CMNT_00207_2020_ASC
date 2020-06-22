@@ -18,18 +18,28 @@
 #
 ##############################################################################
 
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
 
-    service_code = fields.Char(string="Carrier service code")
-    needs_signature = fields.Boolean()
-
+    service_code = fields.Many2one(
+        'delivery.carrier.service',
+        string="Carrier service code",
+    )
+    needs_signature = fields.Boolean()       
 
 class CarrierAccount(models.Model):
     _inherit = "carrier.account"
 
     service_url = fields.Char(string="Webservice URL")
     service_test_url = fields.Char(string="Webservice TEST URL")
+    carrier_services = fields.One2many('delivery.carrier.service', 'account_id')
+
+
+class DeliveryCarrierService(models.Model):
+
+    _inherit = 'delivery.carrier.service'
+
+    account_id = fields.Many2one('carrier.account')

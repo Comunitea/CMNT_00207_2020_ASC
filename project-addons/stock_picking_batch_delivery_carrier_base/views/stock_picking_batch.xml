@@ -72,6 +72,12 @@
                 <field name="delivery_carrier"/>
                 <field name="service_url"/>
                 <field name="service_test_url"/>
+                <field name="carrier_services">
+                    <tree editable="top">
+                        <field name="name"/>
+                        <field name="carrier_code"/>
+                    </tree>
+                </field>
             </field>
         </field>
     </record>
@@ -82,7 +88,7 @@
     <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
     <field name="arch" type="xml">
         <field name="code" position="after">
-            <field name="service_code"/>
+            <field name="service_code" domain="[('account_id','=', account_id)]"/>
         </field>
         <field name="product_id" position="after">
             <field name="needs_signature"/>
