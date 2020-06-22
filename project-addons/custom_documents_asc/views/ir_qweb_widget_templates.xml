@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="contact" inherit_id="base.contact">
+        <xpath expr="//address/div[@itemprop='address']" position="after">
+            <div t-if="vat and 'vat' in fields">
+                <i t-if="not options.get('no_marker')" title="NIF"/>
+                <span class="o_force_ltr" itemprop="vat" t-esc="vat"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
+
