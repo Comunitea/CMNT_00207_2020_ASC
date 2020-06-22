@@ -71,8 +71,16 @@ class ProductProduct(models.Model):
                         }
                     )
 
-    def _set_standard_price(self):
-        res = super()._set_standard_price()
-        for record in self.mapped('product_tmpl_id'):
-            self._event("on_standard_price_changed").notify(record)
+    def create(self, vals):
+        res = super().create(vals)
+        if vals.get('standard_price'):
+            for record in self.mapped('product_tmpl_id'):
+                self.env['product.template']._event("on_standard_price_changed").notify(record)
+        return res
+
+    def write(self, vals):
+        res = super().write(vals)
+        if vals.get('standard_price'):
+            for record in self.mapped('product_tmpl_id'):
+                self.env['product.template']._event("on_standard_price_changed").notify(record)
         return res
