@@ -160,7 +160,7 @@ class SaleOrderImportMapper(Component):
                     if fpos
                     else self.backend_record.discount_product_id.taxes_id
                 )
-                factor_tax = tax.price_include and (1 + tax.amount / 100) or 1.0
+                factor_tax = not tax.price_include and (1 + tax.amount / 100) or 1.0
                 return {
                     "commission_amount": float(commission_amount) / factor_tax
                 }
