@@ -211,7 +211,7 @@ class StockBatchPicking(models.Model):
             "contacOtrs": "",
             "telefOtrs": "",
             "emailOtrs": "",
-            "observac": "",
+            "observac": self.delivery_note or "",
             "numBultos": number_of_packages or 1,
             "kilos": "%.3f" % (self.carrier_weight or 1),
             "volumen": "",

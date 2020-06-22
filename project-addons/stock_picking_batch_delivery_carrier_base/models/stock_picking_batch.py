@@ -39,6 +39,15 @@ class StockBatchPicking(models.Model):
     )
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
     failed_shipping = fields.Boolean("Failed Shipping", default=False)
+    delivery_note = fields.Char(compute="_compute_delivery_note")
+
+    @api.depends("sale_ids")
+    def _compute_delivery_note(self):
+        for batch in self:
+            delivery_note = ""
+            for sale in batch.sale_ids:
+                delivery_note += "{} ".format(sale.note)
+            batch.delivery_note = delivery_note[:45]
 
     @api.multi
     def action_transfer(self):
