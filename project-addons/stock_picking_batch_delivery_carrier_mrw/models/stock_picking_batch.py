@@ -158,8 +158,11 @@ class StockBatchPicking(models.Model):
                                 "Nif": self.partner_id.vat,
                                 "Nombre": self.partner_id.name,
                                 "Telefono": self.partner_id.phone
-                                or self.partner_id.phone
+                                or self.partner_id.mobile
                                 or "",
+                                "Observaciones": "{}".format(
+                                    self.delivery_note
+                                ),
                             },
                             "DatosServicio": {
                                 "Fecha": datetime.now().strftime(

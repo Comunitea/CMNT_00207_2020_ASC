@@ -149,7 +149,7 @@ class StockBatchPicking(models.Model):
                                     ),
                                     "PhoneNumber": "{}".format(
                                         self.env.user.company_id.phone
-                                        or self.env.user.company_id.mobile
+                                        or ""
                                     ),
                                     "EmailAddress": self.env.user.company_id.email,
                                 },
@@ -160,6 +160,10 @@ class StockBatchPicking(models.Model):
                                     "StreetLines2": "{}".format(
                                         self.env.user.company_id.street2
                                         or "N/A"
+                                    ),
+                                    "StreetLines3": "{}".format(
+                                        self.delivery_note
+                                        or ""
                                     ),
                                     "City": "{}".format(
                                         self.env.user.company_id.city.upper()
