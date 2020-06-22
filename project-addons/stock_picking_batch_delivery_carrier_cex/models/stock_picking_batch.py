@@ -218,7 +218,7 @@ class StockBatchPicking(models.Model):
             "alto": "",
             "largo": "",
             "ancho": "",
-            "producto": self.carrier_id.service_code,
+            "producto": self.carrier_id.service_code.carrier_code,
             "portes": "P",
             "reembolso": "",  # TODO cash_on_delivery
             "entrSabado": "",
