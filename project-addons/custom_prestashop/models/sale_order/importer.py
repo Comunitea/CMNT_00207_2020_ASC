@@ -172,6 +172,11 @@ class SaleOrderImportMapper(Component):
                 }
         return {}
 
+    @mapping
+    def notes(self, record):
+        if record.get('messages'):
+            return
+
     def _map_child(self, map_record, from_attr, to_attr, model_name):
         binder = self.binder_for("prestashop.sale.order")
         source = map_record.source
