@@ -134,48 +134,28 @@ class AddressImportMapper(Component):
         return {'name': name}
 
 
-# class AddressImporter(Component):
-#     _inherit = "prestashop.address.importer"
+class AddressImporter(Component):
+    _inherit = 'prestashop.address.importer'
 
-#     def _after_import(self, binding):
-#         record = self.prestashop_record
-#         vat_number = None
-#         if record["vat_number"]:
-#             vat_number = record["vat_number"].replace(".", "").replace(" ", "")
-#         # TODO move to custom localization module
-#         elif not record["vat_number"] and record.get("dni"):
-#             vat_number = (
-#                 record["dni"].replace(".", "").replace(" ", "").replace("-", "")
-#             )
-#         write_binding = binding.parent_id or binding
-#         if vat_number:
-#             if self._check_vat(vat_number, write_binding.country_id):
-#                 write_binding.write({"vat": vat_number})
-#             else:
-#                 msg = _("Please, check the VAT number: %s") % vat_number
-#                 self.backend_record.add_checkpoint(write_binding, message=msg)
-
-#     def _check_vat(self, vat_number, partner_country):
-#         if self.env.context.get("company_id"):
-#             company = self.env["res.company"].browse(
-#                 self.env.context["company_id"]
-#             )
-#         else:
-#             company = self.env.user.company_id
-#         if company.vat_check_vies:
-#             # force full VIES online check
-#             check_func = self.env["res.partner"].vies_vat_check
-#         else:
-#             # quick and partial off-line checksum validation
-#             check_func = self.env["res.partner"].simple_vat_check
-#         # check with country code as prefix of the TIN
-#         vat_country, vat_number_ = self.env["res.partner"]._split_vat(
-#             vat_number
-#         )
-#         if not check_func(vat_country, vat_number_):
-#             # if fails, check with country code from country
-#             country_code = partner_country.code
-#             if country_code:
-#                 if not check_func(country_code.lower(), vat_number):
-#                     return False
-#         return True
+    def _after_import(self, binding):
+        record = self.prestashop_record
+        vat_number = None
+        if record['facturacion_defecto']:
+            if record['vat_number']:
+                vat_number = record['vat_number'].replace('.', '').replace(' ', '')
+            # TODO move to custom localization module
+            elif not record['vat_number'] and record.get('dni'):
+                vat_number = record['dni'].replace('.', '').replace(
+                    ' ', '').replace('-', '')
+            if vat_number:
+                if self._check_vat(vat_number, binding.odoo_id.country_id):
+                    if binding.parent_id:
+                        binding.parent_id.write({'vat': vat_number})
+                    else:
+                        binding.write({'vat': vat_number})
+                else:
+                    msg = _('Please, check the VAT number: %s') % vat_number
+                    self.backend_record.add_checkpoint(
+                        binding.parent_id,
+                        message=msg,
+                    )
