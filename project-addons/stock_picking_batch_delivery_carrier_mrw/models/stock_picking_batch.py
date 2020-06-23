@@ -169,9 +169,9 @@ class StockBatchPicking(models.Model):
                                     "%d/%m/%Y"
                                 ),  # self.date.strftime("%d/%m/%Y"),
                                 "Referencia": self.name,
-                                "CodigoServicio": self.carrier_id.service_code.carrier_code,
+                                "CodigoServicio": self.carrier_code.carrier_code,
                                 "Frecuencia": self.carrier_id.account_id.mrw_frequency
-                                if self.carrier_id.service_code.carrier_code == "0005"
+                                if self.carrier_code.carrier_code == "0005"
                                 else "",
                                 "NumeroBultos": self.carrier_packages,
                                 "Peso": round(self.carrier_weight),
@@ -255,6 +255,14 @@ class StockBatchPicking(models.Model):
 
             else:
                 raise AccessError(_("Not possible to establish a client."))
+
+    def check_delivery_address(self):
+        super(StockBatchPicking, self).check_delivery_address()
+        if self.carrier_id.code == "MRW":
+            if not self.partner_id.state_id:
+                raise UserError(
+                    _("Partner address is not complete (State missing).")
+                )
 
 
 class StockPicking(models.Model):
