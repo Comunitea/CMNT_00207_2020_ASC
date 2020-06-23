@@ -73,7 +73,7 @@ class ProductProduct(models.Model):
 
     def create(self, vals):
         res = super().create(vals)
-        if vals.get('standard_price'):
+        if vals and vals.get('standard_price'):
             for record in self.mapped('product_tmpl_id'):
                 self.env['product.template']._event("on_standard_price_changed").notify(record)
         return res
