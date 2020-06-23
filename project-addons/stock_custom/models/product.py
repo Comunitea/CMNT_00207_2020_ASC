@@ -98,17 +98,14 @@ class ProductProduct(models.Model):
                 average = 0
                 if total_sales:
                     average = (total_qty / total_sales) * rt.average_ratio
-                # Get qty by order where qty under average
-                for move in moves:
-                    if move.product_uom_qty < average:
-                        if move.sale_line_id.qty_delivered:
-                            sale = move.sale_line_id.order_id
-                            if sale not in order_qtys:
-                                order_qtys[sale] = 0
-                            order_qtys[sale] += move.sale_line_id.qty_delivered
-
-                if not order_qtys:
-                    continue
+                    # Get qty by order where qty under average
+                    for move in moves:
+                        if move.product_uom_qty < average:
+                            if move.sale_line_id.qty_delivered:
+                                sale = move.sale_line_id.order_id
+                                if sale not in order_qtys:
+                                    order_qtys[sale] = 0
+                                order_qtys[sale] += move.sale_line_id.qty_delivered
 
                 max_qty2 = sum(order_qtys.values())
                 min_qty2 = max_qty2 * rt.min_qty_ratio
