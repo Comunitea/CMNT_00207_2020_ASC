@@ -1,0 +1,137 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_picking_batch_delivery_carrier_dhl
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-16 15:10+0000\n"
+"PO-Revision-Date: 2020-06-16 15:10+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_dhl.model_carrier_account
+msgid "Base account datas"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_dhl.model_stock_picking_batch
+msgid "Batch Picking"
+msgstr "Agrupación de albaranes"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_delivery_carrier__carrier_type
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_prestashop_delivery_carrier__carrier_type
+msgid "Carrier Type"
+msgstr "Tipo transportista"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,delivery_carrier:0
+#: selection:delivery.carrier,carrier_type:0
+msgid "Correos Express"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_carrier_account__dhl_account
+msgid "DHL Account"
+msgstr "Cuenta DHL"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,delivery_carrier:0
+#: selection:delivery.carrier,carrier_type:0
+msgid "DHL Express"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_carrier_account__daily_picking
+msgid "Daily Picking"
+msgstr "Recogida Diaria"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_carrier_account__delivery_carrier
+msgid "Delivery Carrier"
+msgstr "Transportista"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_dhl.model_delivery_carrier
+msgid "Delivery Methods"
+msgstr "Método de envío"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_carrier_account__dhl_label_template
+msgid "Dhl Label Template"
+msgstr "Plantilla Etiqueta DHL"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_84CI_001"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_84CI_002"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_84CI_003"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_84_001"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_84_A4_001"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM26_A6_002"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM_A4_RU_002"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,dhl_label_template:0
+msgid "ECOM_TC_A4"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,delivery_carrier:0
+#: selection:delivery.carrier,carrier_type:0
+msgid "MRW"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: selection:carrier.account,delivery_carrier:0
+msgid "None"
+msgstr "Ninguno"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_dhl.field_stock_picking_batch__request_date
+msgid "Requested Date"
+msgstr "Fecha de solicitud"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: code:addons/stock_picking_batch_delivery_carrier_dhl/models/delivery_carrier.py:54
+#, python-format
+msgid "The carrier DHL only admits PDF or ZPL format."
+msgstr "El transportista DHL sólo admite los formatos: PDF o ZPL"
+
+#. module: stock_picking_batch_delivery_carrier_dhl
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_dhl.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+

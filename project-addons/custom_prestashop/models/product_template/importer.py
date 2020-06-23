@@ -14,6 +14,8 @@ class ProductTemplateImporter(Component):
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
+        if record['tipo_pack'] == '0':
+            return
         if record.get("associations", {}).get("product_bundle", {}).get("product", {}):
             bundle_products = {}
             binder = self.binder_for("prestashop.product.template")
@@ -102,11 +104,15 @@ class TemplateMapper(Component):
         if taxes:
             return {"taxes_id": [(6, 0, taxes.ids)]}
 
+    @mapping
+    def prestashop_unique_id(self, record):
+        return {'prestashop_unique_id': record['id']}
+
     @only_create
     @mapping
     def odoo_id(self, record):
         template_exists = self.env['product.template'].search(
-            [('prestashop_id', '=', record['id'])])
+            [('prestashop_unique_id', '=', record['id'])])
         if template_exists:
             return{'odoo_id': template_exists.id}
         return {}

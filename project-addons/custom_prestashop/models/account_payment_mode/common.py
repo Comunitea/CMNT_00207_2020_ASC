@@ -10,6 +10,8 @@ class AccountPaymentMode(models.Model):
 
     prestashop_name = fields.Char()
     prestashop_module = fields.Char()
+    can_edit = fields.Boolean()
+    check_risk = fields.Boolean()
     defaullt_sale_invoice_policy = fields.Selection(
         [("order", "Ordered quantities"), ("delivery", "Delivered quantities")]
     )

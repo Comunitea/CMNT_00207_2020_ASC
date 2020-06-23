@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #    License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 #    Copyright (C) 2019 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
@@ -44,7 +43,6 @@ class ProductTemplate(models.Model):
                     product.wh_code = '.%06d.'%bind_id.prestashop_id
                 else:
                     product.wh_code = '.9%05d.' %product.id
-            print("Wh code para el producto {}: {}".format(product.default_code, product.wh_code))
 
 
 class ProductProduct(models.Model):
@@ -60,6 +58,4 @@ class ProductProduct(models.Model):
             return {'id': field.id, 'name': field.apk_name, 'default_code': field.default_code, 'barcode': field.barcode, 'wh_code': field.wh_code}
         else:
             return {'id': False}
-
-
 

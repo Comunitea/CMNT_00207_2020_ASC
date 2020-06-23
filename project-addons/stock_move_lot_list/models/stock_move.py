@@ -127,7 +127,6 @@ class StockMove(models.Model):
             "name"
         ) + self.move_line_ids.mapped("lot_name")
         list_lot_ids = [x for x in list_lot_ids if x not in move_lot_names]
-        print(list_lot_ids)
         if list_lot_ids:
             lot_ids = self.env["stock.production.lot"]
             for name in list_lot_ids:

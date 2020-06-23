@@ -53,10 +53,10 @@ class ProductTemplate(models.Model):
                 )
 
         for template in self:
-            str = "{}".format(template["count_sales_0"])
+            month_str = "{}".format(template["count_sales_0"])
             for i in range(1, 4):
-                str = "{}/{}".format(str, template["count_sales_{}".format(i)])
-                template.count_sales = str
+                month_str = "{}/{}".format(month_str, template["count_sales_{}".format(i)])
+                template.count_sales = month_str
 
     @api.multi
     def _compute_product_template_sale_alarm(self):
@@ -111,8 +111,8 @@ class ProductProduct(models.Model):
         res = {}
         max_month = 0
         for i in range(0, 4):
-            str = "{}".format(i)
-            month = count.get("count_sales_{}".format(i), default[str])
+            month_str = "{}".format(i)
+            month = count.get("count_sales_{}".format(i), default[month_str])
             max_month = max(max_month, month)
             start = next_date + relativedelta(day=1, months=-month)
             start_date = fields.Date.to_string(start)
@@ -121,7 +121,7 @@ class ProductProduct(models.Model):
                 ("order_id.date_order", ">", start_date),
                 ("product_id", "in", self.ids),
             ]
-            res[str] = dict(
+            res[month_str] = dict(
                 (item["product_id"][0], item[field_to_count])
                 for item in self.env["sale.order.line"].read_group(
                     domain, ["product_id", field_to_count], ["product_id"]
@@ -130,19 +130,19 @@ class ProductProduct(models.Model):
 
         for product in self:
             for i in range(0, 4):
-                str = "{}".format(i)
-                if res[str] and res[str].get(product.id, False):
-                    product["count_sales_{}".format(str)] = \
-                        res[str][product.id]
+                month_str = "{}".format(i)
+                if res[month_str] and res[month_str].get(product.id, False):
+                    product["count_sales_{}".format(month_str)] = \
+                        res[month_str][product.id]
                 else:
-                    product["count_sales_{}".format(str)] = 0
+                    product["count_sales_{}".format(month_str)] = 0
                 if not i:
-                    str = "{}".format(product["count_sales_{}".format(str)])
+                    month_str = "{}".format(product["count_sales_{}".format(month_str)])
                 else:
-                    str = "{}/{}".format(
-                        str, product["count_sales_{}".format(str)]
+                    month_str = "{}/{}".format(
+                        month_str, product["count_sales_{}".format(month_str)]
                     )
-                product.count_sales = str
+                product.count_sales = month_str
 
     @api.multi
     def _compute_product_sale_alarm(self):

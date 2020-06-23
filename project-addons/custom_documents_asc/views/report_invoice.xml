@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_invoice_document" name="Custom Document Sale Order ProForma A-sec"
+              inherit_id="account.report_invoice_document">
+        <xpath expr="//t[@t-set='address']" position="replace"/>
+
+        <xpath expr="//table[@name='invoice_line_table']/thead/tr/th[@class='text-left']" position="replace">
+            <th class="text-center">
+                <span>Description</span>
+            </th>
+        </xpath>
+        <xpath expr="//p[@t-if='o.reference']" position="replace"/>
+        <xpath expr="//h2" position="before">
+            <div class="address row">
+                <div name="invoice_address" class="col-7">
+                    <p>
+                        <strong>Customer</strong>
+                    </p>
+                    <address t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True}'/>
+                    <!--<div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>:
+                        <span t-field="o.partner_id.vat"/>
+                    </div>-->
+                </div>
+                <div name="invoice_information" class="col-5">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Invoice
+                            </span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+                            <span t-if="o.type == 'out_refund'">Credit Note</span>
+                            <span t-if="o.type == 'in_refund'">Vendor Credit Note</span>
+                            <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span t-field="o.number"/>
+                        </div>
+                    </div>
+                    <div t-if="o.date_invoice" class="row">
+                        <div class="col-7 text-left">Invoice date:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.date_invoice"/>
+                        </div>
+                    </div>
+                    <div t-if="o.origin"
+                         class="row">
+                        <div class="col-7 text-left">Order:</div>
+                        <div class="col-5 text-right">
+                            <span t-field="o.origin"/>
+                        </div>
+                    </div>
+                    <div t-if="o.picking_ids" class="row">
+                        <div class="col-6 text-left">Picking:</div>
+                        <div class="col-6 text-right">
+                            <span t-field="o.picking_ids"/>
+                        </div>
+                    </div>
+                    <div t-if="o.comment" class="row">
+                        <div class="col-4 text-left">Comments:</div>
+                        <div class="col-8 text-right">
+                            <span t-field="o.comment"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//p[@name='comment']" position="replace"/>
+        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//div[@id='informations']" position="replace"/>
+        <xpath expr="//p[@t-if='o.payment_term_id']" position="replace">
+            <br/>
+            <div>
+                <span style="color: #1176D9;">
+                    <b>Payment information</b>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col-3 text-left">Payment method:</div>
+                <div class="col-3 text-left">
+                    <span t-field="o.payment_mode_id"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3 text-left">Due date:</div>
+                <div class="col-3 text-left">
+                    <t t-if="o.expiration_dates_str"><span t-field="o.expiration_dates_str"/></t>
+                    <t t-else=""><span t-field="o.date_due"/></t>
+                </div>
+            </div>
+            <br/>
+            <span class="row">
+                <!--<div class="col-5" style="color: #1176D9;">
+                    <b>Tax</b>
+                </div>-->
+                <div class="col-7  border-bottom">
+                    <b>Accounts</b>
+                </div>
+            </span>
+            <div class="row">
+                <!--<div class="col-5">
+                    <table class="table table-sm" style="page-break-inside: avoid;">
+                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                            <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
+                                <tr>
+                                    <td class="text-left">
+                                        <span>Tax type:</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="amount_by_group[0]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">
+                                        <span>Tax amount:</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="amount_by_group[3]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </table>
+                </div>-->
+                <div class="col-7">
+                    <t t-foreach="o.payment_mode_id.variable_journal_ids" t-as="cuenta">
+                        <div class="row">
+                            <div class="col-5 text-left">
+                                <span t-field="cuenta.name"/>
+                            </div>
+                            <div class="col-7 text-left">
+                                <span t-field="cuenta.bank_acc_number"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-set='o']" position="after">
+            <t t-set="type" t-value="'invoice'"/>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_total']" position="attributes">
+            <attribute name="style">background-color: #1176D9; color: #fafaf8;</attribute>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_subtotal']" position="attributes">
+            <attribute name="class">border-top-0</attribute>
+        </xpath>
+
+    </template>
+
+</odoo>

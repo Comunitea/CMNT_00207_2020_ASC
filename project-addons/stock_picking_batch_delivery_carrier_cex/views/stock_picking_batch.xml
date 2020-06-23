@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="stock_picking_batch_delivery_carrier_cex_carrier_account" model="ir.ui.view">
+        <field name="name">stock.picking.batch.delivery.carrier.cex</field>
+        <field name="model">carrier.account</field>
+        <field name="inherit_id" ref="delivery_carrier_label_cex.carrier_account_view_form"/>
+        <field name="arch" type="xml">
+            <field name="cex_codRte" position="attributes">
+                <attribute name="attrs">{'invisible': [('delivery_carrier', '!=', 'cex')]}</attribute>
+            </field>
+            <field name="cex_solicitante" position="attributes">
+                <attribute name="attrs">{'invisible': [('delivery_carrier', '!=', 'cex')]}</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>

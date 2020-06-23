@@ -1,0 +1,232 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_picking_batch_delivery_carrier_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-18 08:46+0000\n"
+"PO-Revision-Date: 2020-06-18 08:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Are you sure you want to remove the tracking info of this batch?"
+msgstr "¿Seguro que quieres eliminar la información de seguimiento de esta agrupación?"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_carrier_account
+msgid "Base account datas"
+msgstr ""
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_stock_picking_batch
+msgid "Batch Picking"
+msgstr "Agrupación de albaranes"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__carrier_id
+msgid "Carrier"
+msgstr "Transportista"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_delivery_carrier__service_code
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_prestashop_delivery_carrier__service_code
+msgid "Carrier service code"
+msgstr "Servicio"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__carrier_code
+msgid "Code"
+msgstr "Código"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:103
+#, python-format
+msgid "Company address is not complete (City missing)."
+msgstr "La dirección de la compañía no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:111
+#, python-format
+msgid "Company address is not complete (Country missing)."
+msgstr "La dirección de la compañía no está completa (falta el país)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:115
+#, python-format
+msgid "Company address is not complete (Email missing)."
+msgstr "La dirección de la compañía no está completa (falta el email)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:119
+#, python-format
+msgid "Company address is not complete (Needs a phone)."
+msgstr "La dirección de la compañía no está completa (falta un teléfono)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:107
+#, python-format
+msgid "Company address is not complete (State missing)."
+msgstr "La dirección de la compañía no está completa (falta la provincia)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:127
+#, python-format
+msgid "Company address is not complete (Street missing)."
+msgstr "La dirección de la compañía no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:123
+#, python-format
+msgid "Company address is not complete (Zip code missing)."
+msgstr "La dirección de la compañía no está completa (falta el código postal)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__delivery_carrier
+msgid "Delivery Carrier"
+msgstr "Transportista"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,help:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__carrier_code
+msgid "Delivery Method Code (according to carrier)"
+msgstr "Código del método de envío (de acuerdo con el transportista)"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_delivery_carrier
+msgid "Delivery Methods"
+msgstr "Método de envío"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: selection:carrier.account,delivery_carrier:0
+msgid "None"
+msgstr "Ninguno"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_account_payment_mode__payment_on_delivery
+msgid "POD"
+msgstr "Contrareembolso"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:75
+#, python-format
+msgid "Partner address is not complete (City missing)."
+msgstr "La dirección del cliente no está completa (falta la ciudad)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:91
+#, python-format
+msgid "Partner address is not complete (Country missing)."
+msgstr "La dirección del cliente no está completa (falta el país)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:95
+#, python-format
+msgid "Partner address is not complete (Email missing)."
+msgstr "La dirección del cliente no está completa (falta el email)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:83
+#, python-format
+msgid "Partner address is not complete (Needs a phone or mobile phone)."
+msgstr "La dirección del cliente no está completa (falta un teléfono o móvil)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:87
+#, python-format
+msgid "Partner address is not complete (State missing)."
+msgstr "La dirección del cliente no está completa (falta la provincia)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:79
+#, python-format
+msgid "Partner address is not complete (Street missing)."
+msgstr "La dirección del cliente no está completa (falta la calle)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:99
+#, python-format
+msgid "Partner address is not complete (Zip code missing)."
+msgstr "La dirección del cliente no está completa (falta el código postal)."
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_account_payment_mode
+msgid "Payment Modes"
+msgstr "Modos de pago"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking__payment_on_delivery
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__payment_on_delivery
+msgid "Payment on delivery"
+msgstr "Pago en destino"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Print Labels"
+msgstr "Imprimir Etiquetas"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Remove Tracking"
+msgstr "Eliminar Tracking"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Request Shipping"
+msgstr "Solicitar Envío"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__shipment_reference
+msgid "Shipment Reference"
+msgstr "Referencia de envío"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__tracking_code
+msgid "Tracking Code"
+msgstr "Código de tracking"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model,name:stock_picking_batch_delivery_carrier_base.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__service_test_url
+msgid "Webservice TEST URL"
+msgstr "Webservice Test URL"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_carrier_account__service_url
+msgid "Webservice URL"
+msgstr "Webservice URL"
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form
+msgid "Sign reception"
+msgstr "Firmar recepción"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model:ir.actions.act_window,name:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_action
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Reception signature"
+msgstr "Firma recepción"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: stock_picking_batch_delivery_carrier_base
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch_delivery_carrier_base.picking_sign_wizard_form
+msgid "or"
+msgstr "o"

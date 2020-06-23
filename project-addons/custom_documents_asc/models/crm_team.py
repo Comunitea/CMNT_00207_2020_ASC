@@ -11,3 +11,7 @@ class CrmTeam(models.Model):
     team_tag_line = fields.Char()
     team_name = fields.Char(string='Company Name')
     team_logo = fields.Binary(rstring="Company Logo")
+    team_email = fields.Char(string='Email')
+    team_phone = fields.Char(string='Phone')
+    team_website = fields.Char(string='Web')
+    css_class = fields.Many2one('crm.class')
