@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #    License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 #    Copyright (C) 2019 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
@@ -32,6 +31,10 @@ class PickingTypeGroupCode(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    batch_id = fields.Many2one(
+        domain="[('state', 'in', ('assigned', 'draft'))]",
+    )
+
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
         if mode == 'form':
@@ -39,11 +42,11 @@ class StockPicking(models.Model):
         return res
 
     def auto_assign_batch_id(self):
+        if self.batch_id:
+            raise ValidationError ('El albarán {} ya está en el lote {}'.format(self.name, self.batch_id.name))
         batch_domain = self.picking_type_id.group_code.batch_domain or "[('picking_type_id', '=', self.picking_type_id.id)]"
-
         domain = eval(batch_domain)
-        domain += [('user_id', '=', False),
-                   ('state', '=', 'assigned'),
+        domain += [('state', 'in', ['assigned', 'draft']),
                    ('user_id', '=', False)]
         spb = self.env['stock.picking.batch']
         batch_id = spb.search(domain)
@@ -53,12 +56,14 @@ class StockPicking(models.Model):
                 'name': self.name,
                 'user_id': False,
                 'partner_id': self.partner_id.id,
-                'state': 'assigned',
+                'carrier_id': self.carrier_id.id,
+                'state': 'draft',
                 'picking_ids': [(6, 0, self.ids)]
             }
-            spb.create(new_batch_vals)
+            batch_id = spb.create(new_batch_vals)
         else:
-            self.batch_id = batch_id
+            self.write({'batch_id': batch_id.id})
+        batch_id.assign_order_moves()
         return
 
 

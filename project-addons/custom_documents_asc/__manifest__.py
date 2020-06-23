@@ -11,12 +11,29 @@
     'website': 'www.comunitea.com',
     'license': 'AGPL-3',
     'depends': [
+        'base',
         'web',
-        'sale',
-        'purchase'
+        'sale_stock',
+        'purchase',
+        'rma_sale',
+        'stock_picking_report_valued',
+        'crm_claim',
+        'product',
+        'stock',
+        'stock_available_unreserved',
     ],
     'data': [
         'views/report_templates.xml',
-        'views/crm_team.xml'
+        'views/crm_team.xml',
+        'views/ir_qweb_widget_templates.xml',
+        'views/rma_report_templates.xml',
+        'views/purchase_order_templates.xml',
+        'views/report_invoice.xml',
+        'views/stock_picking_report_valued.xml',
+        'views/crm_class.xml',
+        'security/ir.model.access.csv',
+        'views/stock_picking_report_valued_custom.xml',
+        'views/purchase_order.xml',
+        'views/res_partner.xml',
     ],    
 }

@@ -59,6 +59,24 @@ class PartnerImportMapper(Component):
                 )
             return {"team_id": crm_team.id}
 
+    @mapping
+    def name(self, record):
+        name = None
+        adapter = self.component(usage='backend.adapter', model_name='prestashop.address')
+        address_ids = adapter.search(filters={'filter[id_customer]': '%d' % (int(record['id']),)})
+        for address_id in address_ids:
+            address = adapter.read(address_id)
+            if address.get('facturacion_defecto') == '1':
+                if address['company']:
+                    name = address['company']
+                else:
+                    parts = [address['firstname'], address['lastname']]
+                    name = ' '.join(p.strip() for p in parts if p.strip())
+        if not name:
+            parts = [record['firstname'], record['lastname']]
+            name = ' '.join(p.strip() for p in parts if p.strip())
+        return {'name': name}
+
 
 class AddressImportMapper(Component):
     _inherit = "prestashop.address.mappper"
@@ -104,6 +122,16 @@ class AddressImportMapper(Component):
             if not parent.prestashop_address_bind_ids:
                 return {"odoo_id": parent.id}
 
+    @mapping
+    def name(self, record):
+        name = ''
+        if record.get('facturacion_defecto') == '1':
+            if record['company']:
+                name = record['company']
+        if not name:
+            parts = [record['firstname'], record['lastname']]
+            name = ' '.join(p.strip() for p in parts if p.strip())
+        return {'name': name}
 
 
 # class AddressImporter(Component):

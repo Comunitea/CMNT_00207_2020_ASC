@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- stock.picking Form View -->
+    <record id="stock_picking_batch_delivery_carrier_mrw_form" model="ir.ui.view">
+        <field name="name">stock.picking.batch.delivery.carrier.mrw</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_tracking_ref" position="after">
+                <field name="mrw_pdo_quantity" attrs="{'invisible': [('carrier_code', '!=', 'MRW')]}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="cmnt_delivery_carrier_mrw_carrier_account" model="ir.ui.view">
+        <field name="name">cmnt.delivery.carrier.dhl.carrier.account</field>
+        <field name="model">carrier.account</field>
+        <field name="inherit_id" ref="base_delivery_carrier_label.carrier_account_view_form"/>
+        <field name="arch" type="xml">
+            <field name="account" position="after">
+                <field name="mrw_account" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_franchise" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_frequency" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_saturday_delivery" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_830_delivery" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_delivery_hangle" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_instant_notice" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_delivery_pdo" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_goods_type" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_mail_notification" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_phone_notification" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_notice_type" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <separator attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <h3 attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}">Tracking Service</h3>
+                <field name="mrw_tracking_service_url" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_tracking_service_test_url" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_tracking_user" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+                <field name="mrw_tracking_password" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

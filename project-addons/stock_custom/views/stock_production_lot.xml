@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="stock_production_lot_form_custom" model="ir.ui.view">
+        <field name="name">stock.production.lot.form</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                    <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_deactivate_and_rename" model="ir.actions.server">
+        <field name="name">Archivar</field>
+        <field name="model_id" ref="stock.model_stock_production_lot"/>
+        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>
+        <field name="state">code</field>
+        <field name="code">records.deactivate_and_rename_lot()</field>
+    </record>
+
+</odoo>

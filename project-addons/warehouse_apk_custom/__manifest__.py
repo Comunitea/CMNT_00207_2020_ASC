@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #    License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 #    Copyright (C) 2019 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
@@ -27,11 +26,12 @@
     'website': 'www.comunitea.com',
     'license': 'AGPL-3',
     'depends': [
-        'warehouse_apk', 'stock_custom', "stock_picking_batch", "stock_picking_batch_extended", "stock_picking_complete_info"
+        'warehouse_apk'
     ],
     'data': [
         'views/stock_picking_type.xml',
         'views/stock_picking_batch.xml',
+        'views/stock_picking.xml',
     ],
     'installable': True,
     'auto_install': False,
