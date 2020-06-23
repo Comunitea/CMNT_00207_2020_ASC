@@ -140,7 +140,7 @@ class AddressImporter(Component):
     def _after_import(self, binding):
         record = self.prestashop_record
         vat_number = None
-        if record['facturacion_defecto']:
+        if record.get("facturacion_defecto") == "1":
             if record['vat_number']:
                 vat_number = record['vat_number'].replace('.', '').replace(' ', '')
             # TODO move to custom localization module
