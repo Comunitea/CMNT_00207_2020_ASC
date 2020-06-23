@@ -156,6 +156,6 @@ class AddressImporter(Component):
                 else:
                     msg = _('Please, check the VAT number: %s') % vat_number
                     self.backend_record.add_checkpoint(
-                        binding.parent_id,
+                        binding.parent_id or binding,
                         message=msg,
                     )
