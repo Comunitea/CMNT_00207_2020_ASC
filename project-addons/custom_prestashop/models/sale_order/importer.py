@@ -168,15 +168,15 @@ class SaleOrderImportMapper(Component):
                 }
         return {}
 
-    # @mapping
-    # def notes(self, record):
-    #     messages = (
-    #         record.get("associations").get("messages").get("message")
-    #     )
-    #     if isinstance(messages, dict):
-    #         messages = [messages]
-    #     if messages:
-    #         return {'note': '\n'.join([x.get('message') for x in messages])}
+    @mapping
+    def notes(self, record):
+        messages = (
+            record.get("associations").get("messages").get("message")
+        )
+        if isinstance(messages, dict):
+            messages = [messages]
+        if messages:
+            return {'note': '\n'.join([x.get('message') for x in messages])}
 
     def _map_child(self, map_record, from_attr, to_attr, model_name):
         binder = self.binder_for("prestashop.sale.order")
