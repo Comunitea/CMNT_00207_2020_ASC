@@ -30,8 +30,13 @@ class StockBatchPicking(models.Model):
     carrier_id = fields.Many2one(
         comodel_name="delivery.carrier", string="Carrier"
     )
-    carrier_code = fields.Char(related="carrier_id.code")
+    carrier_code = fields.Many2one(
+        'delivery.carrier.service',
+        string="Carrier service code",
+        default=lambda self: self.carrier_id.service_code.carrier_code
+    )
     carrier_tracking_ref = fields.Char("Tracking Code")
+    carrier_account_id = fields.Many2one('carrier.account', related="carrier_id.account_id")
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
     needs_signature = fields.Boolean(
@@ -47,6 +52,8 @@ class StockBatchPicking(models.Model):
             delivery_note = ""
             for sale in batch.sale_ids:
                 delivery_note += "{} ".format(sale.note)
+            if delivery_note.strip() == "":
+                delivery_note = "N/A"
             batch.delivery_note = delivery_note[:45]
 
     @api.multi
@@ -124,10 +131,6 @@ class StockBatchPicking(models.Model):
                     "Partner address is not complete (Needs a phone or mobile phone)."
                 )
             )
-        if not self.partner_id.state_id:
-            raise UserError(
-                _("Partner address is not complete (State missing).")
-            )
         if not self.partner_id.country_id:
             raise UserError(
                 _("Partner address is not complete (Country missing).")
@@ -139,34 +142,6 @@ class StockBatchPicking(models.Model):
         if not self.partner_id.zip:
             raise UserError(
                 _("Partner address is not complete (Zip code missing).")
-            )
-        if not self.env.user.company_id.city:
-            raise UserError(
-                _("Company address is not complete (City missing).")
-            )
-        if not self.env.user.company_id.state_id:
-            raise UserError(
-                _("Company address is not complete (State missing).")
-            )
-        if not self.env.user.company_id.country_id:
-            raise UserError(
-                _("Company address is not complete (Country missing).")
-            )
-        if not self.env.user.company_id.email:
-            raise UserError(
-                _("Company address is not complete (Email missing).")
-            )
-        if not self.env.user.company_id.phone:
-            raise UserError(
-                _("Company address is not complete (Needs a phone).")
-            )
-        if not self.env.user.company_id.zip:
-            raise UserError(
-                _("Company address is not complete (Zip code missing).")
-            )
-        if not self.env.user.company_id.street:
-            raise UserError(
-                _("Company address is not complete (Street missing).")
             )
 
     def print_created_labels(self):

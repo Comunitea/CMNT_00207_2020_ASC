@@ -163,12 +163,10 @@ class StockBatchPicking(models.Model):
                                     ),
                                     "StreetLines3": "{}".format(
                                         self.delivery_note
-                                        or ""
+                                        or "N/A"
                                     ),
                                     "City": "{}".format(
                                         self.env.user.company_id.city.upper()
-                                        if self.env.user.company_id.city.upper()
-                                        else self.env.user.company_id.state_id.name.upper()
                                     ),
                                     "PostalCode": self.env.user.company_id.zip,
                                     "CountryCode": "{}".format(
@@ -204,8 +202,6 @@ class StockBatchPicking(models.Model):
                                     ),
                                     "City": "{}".format(
                                         self.partner_id.city.upper()
-                                        if self.partner_id.city.upper()
-                                        else self.partner_id.state_id.name.upper()
                                     ),
                                     "PostalCode": self.partner_id.zip,
                                     "CountryCode": "{}".format(
@@ -292,6 +288,38 @@ class StockBatchPicking(models.Model):
                         self.write({"shipment_reference": shipment_reference})
             except requests.exceptions.RequestException as e:
                 raise UserError("Error: {}".format(e))
+
+    def check_delivery_address(self):
+        super(StockBatchPicking, self).check_delivery_address()
+        if self.carrier_id.code == "DHL":
+            if not self.env.user.company_id.city:
+                raise UserError(
+                    _("Company address is not complete (City missing).")
+                )
+            if not self.env.user.company_id.state_id:
+                raise UserError(
+                    _("Company address is not complete (State missing).")
+                )
+            if not self.env.user.company_id.country_id:
+                raise UserError(
+                    _("Company address is not complete (Country missing).")
+                )
+            if not self.env.user.company_id.email:
+                raise UserError(
+                    _("Company address is not complete (Email missing).")
+                )
+            if not self.env.user.company_id.phone:
+                raise UserError(
+                    _("Company address is not complete (Needs a phone).")
+                )
+            if not self.env.user.company_id.zip:
+                raise UserError(
+                    _("Company address is not complete (Zip code missing).")
+                )
+            if not self.env.user.company_id.street:
+                raise UserError(
+                    _("Company address is not complete (Street missing).")
+                )
 
 
 class StockPicking(models.Model):
