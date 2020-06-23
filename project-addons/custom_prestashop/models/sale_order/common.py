@@ -31,6 +31,8 @@ class SaleOrder(models.Model):
         return super(SaleOrder, self.with_context(bypass_risk=True)).action_confirm()
 
     def check_risk_exception(self):
+        if not self.payment_mode_id.check_risk:
+            return False
         partner = self.partner_id.commercial_partner_id
         exception_msg = ""
         if partner.risk_exception:
