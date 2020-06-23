@@ -218,7 +218,7 @@ class StockBatchPicking(models.Model):
             "alto": "",
             "largo": "",
             "ancho": "",
-            "producto": self.carrier_id.service_code.carrier_code,
+            "producto": self.carrier_code.carrier_code,
             "portes": "P",
             "reembolso": "",  # TODO cash_on_delivery
             "entrSabado": "",
@@ -238,6 +238,30 @@ class StockBatchPicking(models.Model):
             ],
         }
         return data
+
+    def check_delivery_address(self):
+        super(StockBatchPicking, self).check_delivery_address()
+        if self.carrier_id.code == "CEX":
+            if not self.env.user.company_id.city:
+                raise UserError(
+                    _("Company address is not complete (City missing).")
+                )
+            if not self.env.user.company_id.email:
+                raise UserError(
+                    _("Company address is not complete (Email missing).")
+                )
+            if not self.env.user.company_id.phone:
+                raise UserError(
+                    _("Company address is not complete (Needs a phone).")
+                )
+            if not self.env.user.company_id.zip:
+                raise UserError(
+                    _("Company address is not complete (Zip code missing).")
+                )
+            if not self.env.user.company_id.street:
+                raise UserError(
+                    _("Company address is not complete (Street missing).")
+                )
 
 
 class StockPicking(models.Model):
