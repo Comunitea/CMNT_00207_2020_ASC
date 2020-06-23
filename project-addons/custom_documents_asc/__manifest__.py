@@ -20,6 +20,7 @@
         'crm_claim',
         'product',
         'stock',
+        'stock_available_unreserved',
     ],
     'data': [
         'views/report_templates.xml',
@@ -32,5 +33,7 @@
         'views/crm_class.xml',
         'security/ir.model.access.csv',
         'views/stock_picking_report_valued_custom.xml',
+        'views/purchase_order.xml',
+        'views/res_partner.xml',
     ],    
 }
