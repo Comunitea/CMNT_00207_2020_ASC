@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-24 15:02+0000\n"
-"PO-Revision-Date: 2020-06-24 15:02+0000\n"
+"POT-Creation-Date: 2020-06-24 15:03+0000\n"
+"PO-Revision-Date: 2020-06-24 15:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,36 +18,34 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<b>Accounts</b>"
-msgstr "<b>Cuentas</b>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "<b>Email:</b>"
-msgstr "<b>Email:</b>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "<b>Phone:</b>"
-msgstr "<b>Teléfono:</b>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "<b>Web:</b>"
-msgstr "<b>Web:</b>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<span style=\"color: #1176D9;\">\n"
 "                    <b>Payment information</b>\n"
 "                </span>"
-msgstr "<span style=\"color: #1176D9;\">\n"
-"                    <b>Información de pago</b>\n"
-"                </span>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<span>Description</span>"
-msgstr "<span>Descripción</span>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -57,32 +55,32 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "<span>Nº RMA:</span>"
-msgstr "<span>Nº RMA:</span>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<span>Order number:</span>"
-msgstr "<span>Nº Pedido</span>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "<span>Picking:</span>"
-msgstr "<span>Albarán:</span>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<strong>Customer</strong>"
-msgstr "<strong>Cliente</strong>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Description</strong>"
-msgstr "<strong>Descripción</strong>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Qty</strong>"
-msgstr "<strong>Cant</strong>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -92,7 +90,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Supplier</strong>"
-msgstr "Proveedor"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -102,7 +100,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Unit Price</strong>"
-msgstr "<strong>Precio Unidad</strong>"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.actions.report,name:custom_documents_asc.rma_order_line_report_custom
@@ -112,17 +110,17 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Arrival date:"
-msgstr "Fecha llegada:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__attachment_ids
 msgid "Attachments"
-msgstr "Adjuntos"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Cancelled Invoice"
-msgstr "Factura cancelada"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -132,7 +130,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_name
 msgid "Company Name"
-msgstr "Nombre de la compañía"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__name
@@ -142,22 +140,22 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_res_partner
 msgid "Contact"
-msgstr "Contacto"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__create_uid
 msgid "Created by"
-msgstr "Creado por"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__create_date
 msgid "Created on"
-msgstr "Creado el"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Credit Note"
-msgstr "Rectificativa"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__css_class
@@ -172,48 +170,48 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Customer:"
-msgstr "Cliente:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "Date:"
-msgstr "Fecha:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Delivery"
-msgstr "Entrega"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Departure date:"
-msgstr "Fecha salida:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Description"
-msgstr "Descripción"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__display_name
 msgid "Display Name"
-msgstr "Nombre mostrado"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.crm_team_view_form_custom_documents_data
 msgid "Documents Info"
-msgstr "Información para Documentos"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Draft Invoice"
-msgstr "Factura borrador"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Due date:"
-msgstr "Vencimiento:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,help:custom_documents_asc.field_prestashop_address__invoice_mail
@@ -227,7 +225,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_email
 msgid "Email"
-msgstr "Correo electrónico"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__id
@@ -244,7 +242,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Invoice"
-msgstr "Factura"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_prestashop_address__invoice_mail
@@ -258,27 +256,27 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Invoice date:"
-msgstr "Fecha factura"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "Invoice:"
-msgstr "Factura"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class____last_update
 msgid "Last Modified on"
-msgstr "Última modificación en"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__write_uid
 msgid "Last Updated by"
-msgstr "Última actualización por"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_class__write_date
 msgid "Last Updated on"
-msgstr "Última actualización el"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
@@ -295,37 +293,37 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "Order:"
-msgstr "Pedido"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "PRO-FORMA Invoice"
-msgstr "Factura PRO-FORMA"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Payment method:"
-msgstr "Método de pago:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_phone
 msgid "Phone"
-msgstr "Teléfono"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Picking"
-msgstr "Albarán"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Picking:"
-msgstr "Albarán:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Product"
-msgstr "Producto"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_purchase_order_line__product_max_qty
@@ -340,37 +338,37 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Purchase"
-msgstr "Compra"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_purchase_order_line
 msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_purchase_order_line__product_qty_multiple
 msgid "Qty Multiple"
-msgstr "Ctdad múltiple"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Quantity"
-msgstr "Cantidad"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_purchase_order_line__product_qty_available_not_res
 msgid "Quantity On Hand Unreserved"
-msgstr "Cantidad A Mano No Reservada"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Quotation"
-msgstr "Presupuesto"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_ir_qweb_field_contact
 msgid "Qweb Field Contact"
-msgstr "Campo Qweb de Contacto"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_rma_order_line
@@ -381,23 +379,23 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Repair Order"
-msgstr "Orden de reparación"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_crm_team
 msgid "Sales Channels"
-msgstr "Canales de Ventas"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 msgid "Sales Order"
-msgstr "Pedido de venta"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_rma_order_line__team_id
 #: model:ir.model.fields,field_description:custom_documents_asc.field_stock_picking__team_id
 msgid "Sales Team"
-msgstr "Equipo de ventas"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_stock_picking__scheduled_date_report
@@ -407,47 +405,47 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Serial number"
-msgstr "Nº de serie"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Source invoice:"
-msgstr "Factura origen"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Supplier:"
-msgstr "Proveedor:"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "Taxes"
-msgstr "Impuestos"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_logo
 msgid "Team Logo"
-msgstr "Logo Equipo"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_tag_line
 msgid "Team Tag Line"
-msgstr "Eslogan"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
 msgid "Term and conditions"
-msgstr "Términos y condiciones"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,help:custom_documents_asc.field_purchase_order_line__product_qty_multiple
 msgid "The procurement quantity will be rounded up to this multiple.  If it is 0, the exact quantity will be used."
-msgstr "La cantidad a abastecer se redondeará a este múltiplo. Si es 0, se utilizará la cantidad exacta."
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_stock_picking
 msgid "Transfer"
-msgstr "Albarán"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_prestashop_address__valued_picking
@@ -456,17 +454,17 @@ msgstr "Albarán"
 #: model:ir.model.fields,field_description:custom_documents_asc.field_res_partner__valued_picking
 #: model:ir.model.fields,field_description:custom_documents_asc.field_res_users__valued_picking
 msgid "Valued Picking"
-msgstr "Albarán valorado"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Vendor Bill"
-msgstr "Factura de proveedor"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "Vendor Credit Note"
-msgstr "Factura rectificativa de proveedor"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,field_description:custom_documents_asc.field_crm_team__team_website
@@ -476,12 +474,12 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.model.fields,help:custom_documents_asc.field_purchase_order_line__product_min_qty
 msgid "When the virtual stock goes below the Min Quantity specified for this field, Odoo generates a procurement to bring the forecasted quantity to the Max Quantity."
-msgstr "Cuando el stock virtual esté por debajo de la cantidad mínima especificada en este campo, Odoo generará un abastecimiento para llevar la cantidad prevista a la cantidad máxima."
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,help:custom_documents_asc.field_purchase_order_line__product_max_qty
 msgid "When the virtual stock goes below the Min Quantity, Odoo generates a procurement to bring the forecasted quantity to the Quantity specified as Max Quantity."
-msgstr "Cuando el stock virtual esté por debajo de la cantidad, Odoo generará un abastecimiento para llevar la cantidad prevista a la cantidad especificada como aquí como máxima."
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model.fields,help:custom_documents_asc.field_prestashop_address__valued_picking
@@ -490,7 +488,7 @@ msgstr "Cuando el stock virtual esté por debajo de la cantidad, Odoo generará 
 #: model:ir.model.fields,help:custom_documents_asc.field_res_partner__valued_picking
 #: model:ir.model.fields,help:custom_documents_asc.field_res_users__valued_picking
 msgid "You can select which partners have valued pickings"
-msgstr "Puede seleccionar qué empresas tienen albarán valorado"
+msgstr ""
 
 #. module: custom_documents_asc
 #: model:ir.model,name:custom_documents_asc.model_crm_class
