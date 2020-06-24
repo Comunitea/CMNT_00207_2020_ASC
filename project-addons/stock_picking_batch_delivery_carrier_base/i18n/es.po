@@ -44,7 +44,7 @@ msgstr "Servicio"
 #. module: stock_picking_batch_delivery_carrier_base
 #: model:ir.model.fields,field_description:stock_picking_batch_delivery_carrier_base.field_stock_picking_batch__carrier_code
 msgid "Code"
-msgstr "Código"
+msgstr "Servicio"
 
 #. module: stock_picking_batch_delivery_carrier_base
 #: code:addons/stock_picking_batch_delivery_carrier_base/models/stock_picking_batch.py:103
