@@ -106,6 +106,9 @@
                     </div>
                 </div>
             </t>
+            <p t-if="o.comment" name="comment">
+                <span t-field="o.comment"/>
+            </p>
         </xpath>
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'invoice'"/>

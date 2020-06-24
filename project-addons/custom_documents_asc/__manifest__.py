@@ -21,6 +21,8 @@
         'product',
         'stock',
         'stock_available_unreserved',
+        'account_due_dates_str',
+        'stock_picking_batch_delivery_carrier_base'
     ],
     'data': [
         'views/report_templates.xml',

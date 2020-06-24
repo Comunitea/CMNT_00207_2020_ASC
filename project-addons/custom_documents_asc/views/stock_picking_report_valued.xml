@@ -45,7 +45,7 @@
         </xpath>
         <xpath expr="//h2" position="replace"/>
         <xpath expr="//div[@class='page']/table[@class='table table-sm']" position="replace"/>
-        <xpath expr="//table[@class='table table-condensed mt32']" position="replace">
+        <xpath expr="//table[@class='table table-condensed mt32']/.." position="replace">
             <t t-if="o.valued and o.sale_id and o.move_line_ids">
                 <div class="clearfix">
                     <div id="total" class="row">
@@ -78,12 +78,24 @@
                     </div>
                 </div>
             </t>
-        </xpath>
-        <xpath expr="//div[@class='clearfix']" position="after">
             <br/>
-            <div>
-                <p>Comments: <span t-field="o.sale_id.note"/></p>
+            <div class="row">
+                <div class="col-12">
+                    <p>Comments: <span t-field="o.sale_id.note"/></p>
+                </div>
             </div>
+            <t t-if="o.pickup_signature">
+                <div class="row">
+                    <div class="col-2">
+                        <img t-att-src="image_data_uri(o.pickup_signature)" style="max-width: 250px;"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="width: 250px;" class="text-center">
+                        <span>Firma recogida.</span>
+                    </div>
+                </div>
+            </t>
         </xpath>
     </template>
 
