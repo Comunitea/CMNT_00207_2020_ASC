@@ -8,7 +8,10 @@
     font-weight: bold;
 }
 
-
+.table th,
+.table td {
+    border: none !important;
+}
 .Asec {
     .header_color {
         padding-top:40px;
@@ -22,6 +25,7 @@
         font-weight: bold;
     }
     table[name="invoice_line_table"] thead tr {
+        border-top: none;
         background-color: #d44326;
         color: #f3f5f6;
     }
@@ -90,7 +94,8 @@
     padding-bottom: 30px;
     background-color: #dcdfe4;
     text-align: left;
-    margin_left: 0px
+    margin-left: 0px;
+    width: 100% !important;
 }
 
 

@@ -6,8 +6,8 @@
         <field name="default" eval="True"/>
         <field name="format">A4</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">40</field>
-        <field name="margin_bottom">28</field>
+        <field name="margin_top">39</field>
+        <field name="margin_bottom">20</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
         <field name="header_line" eval="False"/>
@@ -83,7 +83,12 @@
         <xpath expr="//div[hasclass('header')]" position="replace">
             <div t-attf-class="header {{'team_id' in o and o.team_id.css_class.name or 'Outlet'}}">
 
-                <div class="row">
+                <style>
+                    .container {
+                        padding: 0 !important;
+                    }
+                </style>
+                <div class="row" style="margin-left: 0 !important; margin-right: 0 !important;">
                     <div class="col-7  o_custom_header">
                         <div class="col-12" style="margin-top: 5px;">
                             <div class="col-4" style="float: left; text-align: right;">
@@ -122,7 +127,6 @@
                 </div>
             </div>
         </xpath>
-
         <xpath expr="//div[hasclass('o_report_layout_standard')]" position="replace">
             <div t-attf-class="article o_report_layout_standard {{'team_id' in o and o.team_id.css_class.name or 'Outlet'}}"
                  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
@@ -134,11 +138,16 @@
 
         <xpath expr="//div[hasclass('o_standard_footer')]" position="replace">
             <div class="footer o_standard_footer">
+                <style>
+                    .container {
+                        padding: 0 !important;
+                    }
+                </style>
                 <div class="o_custom_footer">
                     <div class="text-center">
                         <ul class="list-inline mb4">
                             <li  class="list-inline-item">
-                                <t t-if="o.team_id">
+                                <t t-if="'team_id' in o and o.team_id">
                                     <b>Email:</b>
                                     <span t-field="o.team_id.team_email"/>
                                 </t>
@@ -148,7 +157,7 @@
                                 </t>
                             </li>
                             <li class="list-inline-item">
-                                <t t-if="o.team_id">
+                                <t t-if="'team_id' in o and o.team_id">
                                     <b>Web:</b>
                                     <span t-field="o.team_id.team_website"/>
                                 </t>
@@ -158,7 +167,7 @@
                                 </t>
                             </li>
                             <li  class="list-inline-item">
-                                <t t-if="o.team_id">
+                                <t t-if="'team_id' in o and o.team_id">
                                     <b>Phone:</b>
                                     <span t-field="o.team_id.team_phone"/>
                                 </t>
@@ -195,7 +204,7 @@
     <template id="internal_layout" name="Custom Document Internal Layout" inherit_id="web.internal_layout">
         <xpath expr="//div[hasclass('header')]" position="replace">
             <div class="header">
-                <div class="row">
+                <div class="row" style="margin-left: 0 !important; margin-right: 0 !important;">
                     <div class="col-7"
                          style="padding-top:80px; padding-bottom: 10px;  background-color: #e5e5e5; color: #23384d; text-transform: uppercase; text-align: center;font-weight: bold;">
                         <div class="col-12" style="margin-top: 5px;">
