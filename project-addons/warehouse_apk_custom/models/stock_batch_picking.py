@@ -28,7 +28,7 @@ class StockPickingBatch(models.Model):
 
     carrier_weight = fields.Float()
     carrier_packages = fields.Integer(default=1)
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Empresa")
     picking_ids = fields.One2many(
         string='Pickings',
