@@ -49,11 +49,14 @@
     </record>
 
      <record id="action_stock_fixed_putaway_strat_tree_pp" model="ir.actions.act_window">
-            <field name="name">Ubicaciones predeterminadas</field>
-            <field name="res_model">stock.fixed.putaway.strat</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
+        <field name="name">Ubicaciones predeterminadas</field>
+        <field name="res_model">stock.fixed.putaway.strat</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+     </record>
 
-
+     <menuitem
+        action="action_stock_fixed_putaway_strat_tree_pp"
+        id="menu_stock_fixed_putaway_strat_tree_pp"
+        parent="stock.menu_warehouse_report" sequence="900"/>
 </odoo>

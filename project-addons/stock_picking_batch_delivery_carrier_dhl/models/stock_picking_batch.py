@@ -188,9 +188,12 @@ class StockBatchPicking(models.Model):
                                     "PhoneNumber": "{}".format(
                                         self.partner_id.phone
                                         or self.partner_id.mobile
+                                        or self.partner_id.commercial_partner_id.phone
+                                        or self.partner_id.commercial_partner_id.mobile
                                     ),
                                     "EmailAddress": "{}".format(
                                         self.partner_id.email
+                                        or self.partner_id.commercial_partner_id.email
                                     ),
                                 },
                                 "Address": {
