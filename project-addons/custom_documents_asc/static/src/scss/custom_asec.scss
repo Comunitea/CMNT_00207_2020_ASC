@@ -90,12 +90,20 @@
 }
 
 .o_custom_footer {
-    padding-top:30px;
-    padding-bottom: 30px;
-    background-color: #dcdfe4;
-    text-align: left;
-    margin-left: 0px;
     width: 100% !important;
+    .tienda {
+        padding-top:10px;
+        padding-bottom: 10px;
+        text-align: center;
+        margin-left: 0px;
+        background-color: #dcdfe4;
+    }
+    .report_footer {
+        padding-top:10px;
+        padding-bottom: 10px;
+        text-align: center;
+        margin-left: 0px;
+    }
 }
 
 
