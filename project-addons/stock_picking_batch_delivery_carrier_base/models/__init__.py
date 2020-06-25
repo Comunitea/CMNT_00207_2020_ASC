@@ -21,3 +21,4 @@ from . import stock_picking_batch
 from . import delivery_carrier
 from . import account_payment_mode
 from . import sale
+from . import stock_picking

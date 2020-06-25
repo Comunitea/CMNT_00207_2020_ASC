@@ -6,3 +6,6 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     invoice_mail = fields.Char(string='Invoice E-mail', help='E-mail used to send the partner invoices.')
+    valued_picking = fields.Boolean(
+        default=False
+    )

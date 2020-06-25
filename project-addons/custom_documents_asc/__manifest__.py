@@ -21,6 +21,8 @@
         'product',
         'stock',
         'stock_available_unreserved',
+        'account_due_dates_str',
+        'stock_picking_batch_delivery_carrier_base'
     ],
     'data': [
         'views/report_templates.xml',
@@ -32,8 +34,7 @@
         'views/stock_picking_report_valued.xml',
         'views/crm_class.xml',
         'security/ir.model.access.csv',
-        'views/stock_picking_report_valued_custom.xml',
         'views/purchase_order.xml',
         'views/res_partner.xml',
-    ],    
+    ],
 }

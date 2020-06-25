@@ -34,33 +34,27 @@
                             <span t-if="o.type == 'in_refund'">Vendor Credit Note</span>
                             <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
                         </div>
-                        <div class="col-6 text-right">
+                        <div class="col-6 text-left">
                             <span t-field="o.number"/>
                         </div>
                     </div>
                     <div t-if="o.date_invoice" class="row">
-                        <div class="col-7 text-left">Invoice date:</div>
-                        <div class="col-5 text-right">
+                        <div class="col-6 text-left">Invoice date:</div>
+                        <div class="col-6 text-left">
                             <span t-field="o.date_invoice"/>
                         </div>
                     </div>
                     <div t-if="o.origin"
                          class="row">
-                        <div class="col-7 text-left">Order:</div>
-                        <div class="col-5 text-right">
+                        <div class="col-6 text-left">Order:</div>
+                        <div class="col-6 text-left">
                             <span t-field="o.origin"/>
                         </div>
                     </div>
                     <div t-if="o.picking_ids" class="row">
                         <div class="col-6 text-left">Picking:</div>
-                        <div class="col-6 text-right">
+                        <div class="col-6 text-left">
                             <span t-field="o.picking_ids"/>
-                        </div>
-                    </div>
-                    <div t-if="o.comment" class="row">
-                        <div class="col-4 text-left">Comments:</div>
-                        <div class="col-8 text-right">
-                            <span t-field="o.comment"/>
                         </div>
                     </div>
                 </div>
@@ -91,52 +85,30 @@
                 </div>
             </div>
             <br/>
-            <span class="row">
-                <!--<div class="col-5" style="color: #1176D9;">
-                    <b>Tax</b>
-                </div>-->
-                <div class="col-7  border-bottom">
-                    <b>Accounts</b>
+            <t t-if="o.payment_mode_id.variable_journal_ids">
+                <div class="row">
+                    <div class="col-7  border-bottom">
+                        <b>Accounts</b>
+                    </div>
                 </div>
-            </span>
-            <div class="row">
-                <!--<div class="col-5">
-                    <table class="table table-sm" style="page-break-inside: avoid;">
-                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
-                            <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
-                                <tr>
-                                    <td class="text-left">
-                                        <span>Tax type:</span>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="amount_by_group[0]"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-left">
-                                        <span>Tax amount:</span>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="amount_by_group[3]"/>
-                                    </td>
-                                </tr>
-                            </t>
+                <div class="row">
+                    <div class="col-7">
+                        <t t-foreach="o.payment_mode_id.variable_journal_ids" t-as="cuenta">
+                            <div class="row">
+                                <div class="col-5 text-left">
+                                    <span t-field="cuenta.name"/>
+                                </div>
+                                <div class="col-7 text-left">
+                                    <span t-field="cuenta.bank_acc_number"/>
+                                </div>
+                            </div>
                         </t>
-                    </table>
-                </div>-->
-                <div class="col-7">
-                    <t t-foreach="o.payment_mode_id.variable_journal_ids" t-as="cuenta">
-                        <div class="row">
-                            <div class="col-5 text-left">
-                                <span t-field="cuenta.name"/>
-                            </div>
-                            <div class="col-7 text-left">
-                                <span t-field="cuenta.bank_acc_number"/>
-                            </div>
-                        </div>
-                    </t>
+                    </div>
                 </div>
-            </div>
+            </t>
+            <p t-if="o.comment" name="comment">
+                <span t-field="o.comment"/>
+            </p>
         </xpath>
         <xpath expr="//t[@t-set='o']" position="after">
             <t t-set="type" t-value="'invoice'"/>
@@ -146,6 +118,12 @@
         </xpath>
         <xpath expr="//tr[@class='border-black o_subtotal']" position="attributes">
             <attribute name="class">border-top-0</attribute>
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']/tbody/t[@t-foreach='o.invoice_line_ids']/tr/t/td[6]"
+               position="replace">
+            <td t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                <span t-esc="', '.join(map(lambda x: str(x.name), line.invoice_line_tax_ids))"/>
+            </td>
         </xpath>
 
     </template>
