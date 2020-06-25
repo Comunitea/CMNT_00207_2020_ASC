@@ -128,7 +128,9 @@ class StockBatchPicking(models.Model):
                                 "CanalNotificacion": "2",
                                 "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
                                 "MailSMS": self.partner_id.phone
-                                or self.partner_id.mobile,
+                                or self.partner_id.mobile
+                                or self.partner_id.commercial_partner_id.phone
+                                or self.partner_id.commercial_partner_id.mobile,
                             }
                         }
                         notices.append(phone_notification)
@@ -138,7 +140,8 @@ class StockBatchPicking(models.Model):
                             "NotificacionRequest": {
                                 "CanalNotificacion": "1",
                                 "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
-                                "MailSMS": self.partner_id.email,
+                                "MailSMS": self.partner_id.email
+                                or self.partner_id.commercial_partner_id.email,
                             }
                         }
                         notices.append(mail_notification)
@@ -159,6 +162,8 @@ class StockBatchPicking(models.Model):
                                 "Nombre": self.partner_id.name,
                                 "Telefono": self.partner_id.phone
                                 or self.partner_id.mobile
+                                or self.partner_id.commercial_partner_id.phone
+                                or self.partner_id.commercial_partner_id.mobile
                                 or "",
                                 "Observaciones": "{}".format(
                                     self.delivery_note

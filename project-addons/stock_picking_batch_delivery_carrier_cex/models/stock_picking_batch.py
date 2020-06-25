@@ -142,7 +142,7 @@ class StockBatchPicking(models.Model):
 
         partner = self.partner_id
         number_of_packages = self.carrier_packages or 1
-        phone = partner.mobile or partner.phone or ""
+        phone = partner.mobile or partner.phone or partner.commercial_partner_id.mobile or partner.commercial_partner_id.phone or ""
         listaBultos = []
         for i in range(0, number_of_packages):
             listaBultos.append(
@@ -207,7 +207,7 @@ class StockBatchPicking(models.Model):
             "codPosIntDest": "",
             "contacDest": partner.name[:40] or "",
             "telefDest": phone[:15],
-            "emailDest": partner.email and partner.email[:75] or "",
+            "emailDest": partner.email and partner.email[:75] or partner.commercial_partner.email and partner.commercial_partner.email[:75] or "",
             "contacOtrs": "",
             "telefOtrs": "",
             "emailOtrs": "",
