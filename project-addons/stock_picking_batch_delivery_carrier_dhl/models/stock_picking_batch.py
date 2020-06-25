@@ -111,11 +111,7 @@ class StockBatchPicking(models.Model):
                             "DropOffType": "REGULAR_PICKUP"
                             if self.carrier_id.account_id.daily_picking
                             else "REQUEST_COURIER",
-                            "ServiceType": "N"
-                            if self.partner_id.country_id.code == "ES"
-                            else "U"
-                            if self.partner_id.country_id.intrastat
-                            else "P",
+                            "ServiceType": self.service_code.carrier_code,
                             "Account": "{}".format(
                                 self.carrier_id.account_id.dhl_account
                             ),
