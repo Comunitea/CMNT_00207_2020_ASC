@@ -20,14 +20,14 @@
 
 from odoo import api, models, fields
 import logging
-
+from odoo.exceptions import ValidationError
 _logger = logging.getLogger(__name__)
 
 class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
 
-    carrier_weight = fields.Float()
-    carrier_packages = fields.Integer(default=1)
+    carrier_weight = fields.Float(default=0.00)
+    carrier_packages = fields.Integer(default=0)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Empresa")
     picking_ids = fields.One2many(
@@ -36,6 +36,20 @@ class StockPickingBatch(models.Model):
         states={'draft': [('readonly', False)], 'assigned': [('readonly', False)]},
         help='List of picking managed by this batch.',
     )
+
+    @api.model
+    def button_validate_apk(self, vals):
+        batch_id = self.browse(vals.get('id', False))
+        if not batch_id:
+            raise ValidationError("No se ha encontrado el albarán ")
+        if batch_id.picking_type_id.group_code:
+
+            g_code = batch_id.picking_type_id.group_code
+            if g_code.need_weight and batch_id.carrier_weight == 0.00:
+                raise ValidationError("Rellena el peso del albarán")
+            if g_code.need_package and batch_id.carrier_packages == 0:
+                raise ValidationError("Rellena el número de bultos")
+        return super().button_validate_apk(vals)
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
