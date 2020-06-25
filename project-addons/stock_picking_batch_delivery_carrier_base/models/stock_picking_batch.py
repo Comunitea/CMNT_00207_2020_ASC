@@ -30,7 +30,7 @@ class StockBatchPicking(models.Model):
     carrier_id = fields.Many2one(
         comodel_name="delivery.carrier", string="Carrier"
     )
-    carrier_code = fields.Many2one(
+    service_code = fields.Many2one(
         'delivery.carrier.service',
         string="Carrier service code"
     )
@@ -52,13 +52,13 @@ class StockBatchPicking(models.Model):
                 [("id", "=", vals.get("carrier_id"))]
             )
             if carrier_id and carrier_id.service_code:
-                vals["carrier_code"] = carrier_id.service_code.id
+                vals["service_code"] = carrier_id.service_code.id
         return super(StockBatchPicking, self).create(vals)
 
     @api.onchange('carrier_id')
     def _onchange_carrier_id(self):
         if self.carrier_id:
-            self.carrier_code = self.carrier_id.service_code
+            self.service_code = self.carrier_id.service_code
 
     @api.depends("sale_ids")
     def _compute_delivery_note(self):

@@ -175,7 +175,7 @@ class StockBatchPicking(models.Model):
             raise UserError("Review partner data")
         if self.carrier_id.account_id.file_format not in ("PDF", "ZPL"):
             raise UserError("Format file not supported by cex")
-        if not self.carrier_id.service_code:
+        if not self.service_code:
             raise UserError("Set service to the picking")
         if not self.carrier_weight or self.carrier_weight == 0.0:
             raise UserError("Set weight to the picking")
@@ -207,7 +207,7 @@ class StockBatchPicking(models.Model):
             "codPosIntDest": "",
             "contacDest": partner.name[:40] or "",
             "telefDest": phone[:15],
-            "emailDest": partner.email and partner.email[:75] or partner.commercial_partner.email and partner.commercial_partner.email[:75] or "",
+            "emailDest": partner.email and partner.email[:75] or partner.commercial_partner_id.email and partner.commercial_partner_id.email[:75] or "",
             "contacOtrs": "",
             "telefOtrs": "",
             "emailOtrs": "",
@@ -218,7 +218,7 @@ class StockBatchPicking(models.Model):
             "alto": "",
             "largo": "",
             "ancho": "",
-            "producto": self.carrier_code.carrier_code,
+            "producto": self.service_code.carrier_code,
             "portes": "P",
             "reembolso": "",  # TODO cash_on_delivery
             "entrSabado": "",

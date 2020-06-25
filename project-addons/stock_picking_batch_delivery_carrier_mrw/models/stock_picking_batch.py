@@ -39,6 +39,7 @@ class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
 
     mrw_pdo_quantity = fields.Float("PDO amount")
+    carrier_code = fields.Char(related="carrier_id.code")
 
     @api.multi
     def write(self, vals):
@@ -174,9 +175,9 @@ class StockBatchPicking(models.Model):
                                     "%d/%m/%Y"
                                 ),  # self.date.strftime("%d/%m/%Y"),
                                 "Referencia": self.name,
-                                "CodigoServicio": self.carrier_code.carrier_code,
+                                "CodigoServicio": self.service_code.carrier_code,
                                 "Frecuencia": self.carrier_id.account_id.mrw_frequency
-                                if self.carrier_code.carrier_code == "0005"
+                                if self.service_code.carrier_code == "0005"
                                 else "",
                                 "NumeroBultos": self.carrier_packages,
                                 "Peso": round(self.carrier_weight),
