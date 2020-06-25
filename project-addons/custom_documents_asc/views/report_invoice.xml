@@ -80,29 +80,26 @@
             <div class="row">
                 <div class="col-3 text-left">Due date:</div>
                 <div class="col-3 text-left">
-                    <t t-if="o.expiration_dates_str"><span t-field="o.expiration_dates_str"/></t>
-                    <t t-else=""><span t-field="o.date_due"/></t>
+                    <t t-if="o.expiration_dates_str">
+                        <span t-field="o.expiration_dates_str"/>
+                    </t>
+                    <t t-else="">
+                        <span t-field="o.date_due"/>
+                    </t>
                 </div>
             </div>
             <br/>
-            <t t-if="o.payment_mode_id.variable_journal_ids">
+            <t t-if="o.team_id.team_accounts">
                 <div class="row">
-                    <div class="col-7  border-bottom">
-                        <b>Accounts</b>
+                    <div class="col-7">
+                        <span style="color: #1176D9;">
+                            <b>Accounts</b>
+                        </span>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-7">
-                        <t t-foreach="o.payment_mode_id.variable_journal_ids" t-as="cuenta">
-                            <div class="row">
-                                <div class="col-5 text-left">
-                                    <span t-field="cuenta.name"/>
-                                </div>
-                                <div class="col-7 text-left">
-                                    <span t-field="cuenta.bank_acc_number"/>
-                                </div>
-                            </div>
-                        </t>
+                    <div class="col-12">
+                        <span t-field="o.team_id.team_accounts"/>
                     </div>
                 </div>
             </t>
