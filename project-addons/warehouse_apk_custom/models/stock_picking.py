@@ -27,6 +27,8 @@ class PickingTypeGroupCode(models.Model):
 
     batch_domain = fields.Char('Dominio para buscar batchs')
     batch_group_fields = fields.Many2many('ir.model.fields', domain="[('model_id', '=', 287)]")
+    need_package = fields.Boolean('Paquetes', help="Si está marcado no permite validar con paquetes a 0")
+    need_weight = fields.Boolean('Peso', help="Si está marcdo no permite validar con peso a 0.00")
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

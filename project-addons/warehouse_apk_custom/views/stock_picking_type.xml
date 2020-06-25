@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                  <field name="default" position="after">
                      <field name="batch_domain"/>
+                     <field name="need_package"/>
+                     <field name="need_weight"/>
                  </field>
             </field>
     </record>
