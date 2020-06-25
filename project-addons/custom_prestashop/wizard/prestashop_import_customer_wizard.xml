@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="prestashop_import_customer_form" model="ir.ui.view">
+        <field name="name">prestashop.import.customer.form</field>
+        <field name="model">prestashop.import.customer</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Import customer">
+                <group>
+                    <field name="prestashop_id"/>
+                </group>
+                <footer>
+                    <button name="import_customer" string="Confirm" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Import customer"
+                res_model="prestashop.import.customer"
+                src_model="prestashop.backend"
+                view_mode="form"
+                target="new"
+                id="prestashop_import_customer_action"/>
+
+</odoo>
