@@ -15,3 +15,4 @@ class CrmTeam(models.Model):
     team_phone = fields.Char(string='Phone')
     team_website = fields.Char(string='Web')
     css_class = fields.Many2one('crm.class')
+    team_accounts = fields.Text(string='Accounts')
