@@ -39,6 +39,7 @@ class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
 
     mrw_pdo_quantity = fields.Float("PDO amount")
+    carrier_code = fields.Char(related="carrier_id.code")
 
     @api.multi
     def write(self, vals):
@@ -128,7 +129,9 @@ class StockBatchPicking(models.Model):
                                 "CanalNotificacion": "2",
                                 "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
                                 "MailSMS": self.partner_id.phone
-                                or self.partner_id.mobile,
+                                or self.partner_id.mobile
+                                or self.partner_id.commercial_partner_id.phone
+                                or self.partner_id.commercial_partner_id.mobile,
                             }
                         }
                         notices.append(phone_notification)
@@ -138,7 +141,8 @@ class StockBatchPicking(models.Model):
                             "NotificacionRequest": {
                                 "CanalNotificacion": "1",
                                 "TipoNotificacion": self.carrier_id.account_id.mrw_notice_type,
-                                "MailSMS": self.partner_id.email,
+                                "MailSMS": self.partner_id.email
+                                or self.partner_id.commercial_partner_id.email,
                             }
                         }
                         notices.append(mail_notification)
@@ -159,6 +163,8 @@ class StockBatchPicking(models.Model):
                                 "Nombre": self.partner_id.name,
                                 "Telefono": self.partner_id.phone
                                 or self.partner_id.mobile
+                                or self.partner_id.commercial_partner_id.phone
+                                or self.partner_id.commercial_partner_id.mobile
                                 or "",
                                 "Observaciones": "{}".format(
                                     self.delivery_note
@@ -169,9 +175,9 @@ class StockBatchPicking(models.Model):
                                     "%d/%m/%Y"
                                 ),  # self.date.strftime("%d/%m/%Y"),
                                 "Referencia": self.name,
-                                "CodigoServicio": self.carrier_code.carrier_code,
+                                "CodigoServicio": self.service_code.carrier_code,
                                 "Frecuencia": self.carrier_id.account_id.mrw_frequency
-                                if self.carrier_code.carrier_code == "0005"
+                                if self.service_code.carrier_code == "0005"
                                 else "",
                                 "NumeroBultos": self.carrier_packages,
                                 "Peso": round(self.carrier_weight),

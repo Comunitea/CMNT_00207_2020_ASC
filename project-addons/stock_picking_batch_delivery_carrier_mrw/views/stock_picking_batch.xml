@@ -7,7 +7,9 @@
         <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form"/>
         <field name="arch" type="xml">
             <field name="carrier_tracking_ref" position="after">
-                <field name="mrw_pdo_quantity" attrs="{'invisible': [('carrier_code', '!=', 'MRW')]}"/>
+                <field name="carrier_code" invisible="1"/>
+                <field name="mrw_pdo_quantity"
+                    attrs="{'invisible': ['|', ('carrier_code', '!=', 'MRW'),('payment_on_delivery', '=', False)]}"/>
             </field>
         </field>
     </record>

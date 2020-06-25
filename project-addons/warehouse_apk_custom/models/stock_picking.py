@@ -49,7 +49,8 @@ class StockPicking(models.Model):
         batch_domain = self.picking_type_id.group_code.batch_domain or "[('picking_type_id', '=', self.picking_type_id.id)]"
         domain = eval(batch_domain)
         domain += [('state', 'in', ['assigned', 'draft']),
-                   ('user_id', '=', False)]
+                   ('user_id', '=', False),
+                   ('payment_on_delivery', '=', self.payment_on_delivery)]
         spb = self.env['stock.picking.batch']
         batch_id = spb.search(domain)
         if not batch_id:
@@ -60,7 +61,8 @@ class StockPicking(models.Model):
                 'partner_id': self.partner_id.id,
                 'carrier_id': self.carrier_id.id,
                 'state': 'draft',
-                'picking_ids': [(6, 0, self.ids)]
+                'picking_ids': [(6, 0, self.ids)],
+                'payment_on_delivery': self.payment_on_delivery
             }
             batch_id = spb.create(new_batch_vals)
         else:

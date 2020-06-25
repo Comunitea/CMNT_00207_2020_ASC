@@ -30,10 +30,9 @@ class StockBatchPicking(models.Model):
     carrier_id = fields.Many2one(
         comodel_name="delivery.carrier", string="Carrier"
     )
-    carrier_code = fields.Many2one(
+    service_code = fields.Many2one(
         'delivery.carrier.service',
-        string="Carrier service code",
-        default=lambda self: self.carrier_id.service_code.carrier_code
+        string="Carrier service code"
     )
     carrier_tracking_ref = fields.Char("Tracking Code")
     carrier_account_id = fields.Many2one('carrier.account', related="carrier_id.account_id")
@@ -45,6 +44,21 @@ class StockBatchPicking(models.Model):
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
     failed_shipping = fields.Boolean("Failed Shipping", default=False)
     delivery_note = fields.Char(compute="_compute_delivery_note")
+
+    @api.model
+    def create(self, vals):
+        if vals.get("carrier_id"):
+            carrier_id = self.env["delivery.carrier"].search(
+                [("id", "=", vals.get("carrier_id"))]
+            )
+            if carrier_id and carrier_id.service_code:
+                vals["service_code"] = carrier_id.service_code.id
+        return super(StockBatchPicking, self).create(vals)
+
+    @api.onchange('carrier_id')
+    def _onchange_carrier_id(self):
+        if self.carrier_id:
+            self.service_code = self.carrier_id.service_code
 
     @api.depends("sale_ids")
     def _compute_delivery_note(self):
@@ -125,7 +139,10 @@ class StockBatchPicking(models.Model):
             raise UserError(
                 _("Partner address is not complete (Street missing).")
             )
-        if not (self.partner_id.phone or self.partner_id.mobile):
+        if not (
+            self.partner_id.phone or self.partner_id.mobile or 
+            self.partner_id.commercial_partner_id.phone or 
+            self.partner_id.commercial_partner_id.mobile):
             raise UserError(
                 _(
                     "Partner address is not complete (Needs a phone or mobile phone)."
@@ -135,7 +152,7 @@ class StockBatchPicking(models.Model):
             raise UserError(
                 _("Partner address is not complete (Country missing).")
             )
-        if not self.partner_id.email:
+        if not (self.partner_id.email or self.partner_id.commercial_partner_id.email):
             raise UserError(
                 _("Partner address is not complete (Email missing).")
             )

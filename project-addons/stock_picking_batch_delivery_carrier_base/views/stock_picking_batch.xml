@@ -26,7 +26,7 @@
             <xpath expr="//notebook" position="before">
                 <group>
                     <field name="carrier_account_id" invisible="1"/>
-                    <field name="carrier_code" domain="[('account_id','=', carrier_account_id)]"/>
+                    <field name="service_code" domain="[('account_id','=', carrier_account_id)]"/>
                     <field name="failed_shipping" attrs="{'invisible': [('failed_shipping', '=', False)]}"/>
                     <field name="shipment_reference"/>
                     <field name="carrier_tracking_ref"/>
