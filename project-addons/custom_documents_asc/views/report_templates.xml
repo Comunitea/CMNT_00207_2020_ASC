@@ -51,18 +51,6 @@
         </xpath>
     </template>
 
-    <template id="report_saleorder_document" name="Custom Document Sale Order A-sec"
-              inherit_id="sale.report_saleorder_document">
-        <xpath expr="//t[@t-set='doc']" position="after">
-            <t t-if="is_pro_forma == True">
-                <t t-set="type" t-value="'proforma_invoice'"/>
-            </t>
-            <t t-else="">
-                <t t-set="type" t-value="'sale_order'"/>
-            </t>
-        </xpath>
-    </template>
-
 
     <template id="report_invoice_document_with_payments" name="Custom Document Sale Order ProForma A-sec"
               inherit_id="account.report_invoice_document_with_payments">
