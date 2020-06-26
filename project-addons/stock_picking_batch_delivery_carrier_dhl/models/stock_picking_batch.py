@@ -18,6 +18,7 @@
 #
 ##############################################################################
 
+import logging
 import base64
 import json
 import random
@@ -28,10 +29,12 @@ from datetime import datetime, timedelta
 import requests
 import urllib3
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+_logger = logging.getLogger(__name__)
 
 
 class StockBatchPicking(models.Model):
@@ -51,7 +54,7 @@ class StockBatchPicking(models.Model):
                 time.strftime("%z", time.gmtime())[:3],
                 time.strftime("%z", time.gmtime())[3:],
             )
-            self.request_date = "{}{}".format(picking_time, k)
+            delivery.request_date = "{}{}".format(picking_time, k)
 
     request_date = fields.Char(
         "Requested Date", compute="compute_resquest_date"
@@ -325,7 +328,7 @@ class StockPicking(models.Model):
 
     _inherit = "stock.picking"
 
-    def get_message_reference(stringLength=8):
+    def get_message_reference(self, stringLength=8):
         lettersAndDigits = string.ascii_letters + string.digits
         return "".join(
             (random.choice(lettersAndDigits) for i in range(stringLength))
@@ -336,7 +339,10 @@ class StockPicking(models.Model):
             headers = self.batch_id.setHeaders()
 
             if not self.carrier_id.account_id:
-                raise UserError("Delivery carrier has no account.")
+                _logger.error(
+                    _("Delivery carrier has no account.")
+                )
+                return
 
             if self.carrier_id.account_id.test_enviroment:
                 url = "{}TrackingRequest".format(
@@ -377,21 +383,26 @@ class StockPicking(models.Model):
                     "POST", url, data=json.dumps(payload), headers=headers
                 )
             except requests.exceptions.RequestException as e:
-                raise UserError("Error: {}".format(e))
+                _logger.error(
+                    _("Access error message: {}").format(e)
+                )
+                return
 
             response = r.json()["trackShipmentRequestResponse"]
             awbinfoitem = response["trackingResponse"]["TrackingResponse"][
                 "AWBInfo"
             ]["ArrayOfAWBInfoItem"]
             if "ShipmentInfo" in awbinfoitem:
-                delivery_status = shipment_info["ShipmentEvent"][
-                    "ArrayOfShipmentEventItem"
-                ]["ServiceEvent"]["EventCode"]
-                if delivery_status == "OK":
-                    self.delivered = True
+                if "ShipmentEvent" in awbinfoitem['ShipmentInfo']:
+                    delivery_status = awbinfoitem['ShipmentInfo']["ShipmentEvent"][
+                        "ArrayOfShipmentEventItem"
+                    ]["ServiceEvent"]["EventCode"]
+                    if delivery_status == "OK":
+                        self.delivered = True
             else:
-                raise UserError(
-                    "Error: {}".format(awbinfoitem["Status"]["ActionStatus"])
+                _logger.error(
+                    _("Access error message: {}").format(awbinfoitem["Status"]["ActionStatus"])
                 )
-
-        return super(StockPicking, self).check_shipment_status()
+                return
+        else:
+            return super().check_shipment_status()

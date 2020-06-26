@@ -107,9 +107,13 @@ class StockBatchPicking(models.Model):
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
+            batch.failed_shipping == False
             batch.update(
                 {"carrier_tracking_ref": False, "shipment_reference": False}
             )
+
+            for pick in batch.picking_ids:
+                pick.write({"carrier_tracking_ref": False})
 
             attatchment_id = (
                 self.env["ir.attachment"]

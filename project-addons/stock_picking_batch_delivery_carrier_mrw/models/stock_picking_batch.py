@@ -276,14 +276,20 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def check_shipment_status(self):
-        if self.carrier_id.code == "DHL":
+        if self.carrier_id.code == "MRW":
             if not self.carrier_id.account_id:
-                raise UserError("Delivery carrier has no account.")
+                _logger.error(
+                    _("Delivery carrier has no account.")
+                )
+                return
 
             client, history = self.batch_id.create_client()
 
             if not client:
-                raise AccessError(_("Not possible to establish a client."))
+                _logger.error(
+                    _("Not possible to establish a client.")
+                )
+                return
 
             try:
                 GetEnvios = {
@@ -299,7 +305,10 @@ class StockPicking(models.Model):
 
                 res = client.service.GetEnvios(**GetEnvios)
             except Exception as e:
-                raise AccessError(_("Access error message: {}").format(e))
+                _logger.error(
+                    _("Access error message: {}").format(e)
+                )
+                return
 
             seguimiento = res["Seguimiento"]["Abonado"]["Seguimiento"]
             if seguimiento["Estado"] == "00":
@@ -308,5 +317,6 @@ class StockPicking(models.Model):
                 raise AccessError(
                     _("Error: {}".format(res["MensajeSeguimiento"]))
                 )
-
-        return super(StockPicking, self).check_shipment_status()
+                return
+        else:
+            return super().check_shipment_status()
