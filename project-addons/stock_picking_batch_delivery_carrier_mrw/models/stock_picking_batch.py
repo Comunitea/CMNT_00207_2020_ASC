@@ -57,6 +57,26 @@ class StockBatchPicking(models.Model):
                 pickings_total_value += pick.amount_total
             self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace('.',',')
 
+    def create_tracking_client(self):
+        session = Session()
+        session.verify = False
+
+        try:
+            transport = Transport(cache=SqliteCache(), session=session)
+            history = HistoryPlugin()
+            if self.carrier_id.account_id.test_enviroment:
+                url = self.carrier_id.account_id.mrw_tracking_service_test_url
+            else:
+                url = self.carrier_id.account_id.mrw_tracking_service_url
+            client = Client(url, transport=transport, plugins=[history])
+
+            if client:
+                return client, history
+            else:
+                raise AccessError(_("Not possible to establish a client."))
+        except Exception as e:
+            raise AccessError(_("Access error message: {}".format(e)))
+
     def create_client(self):
         session = Session()
         session.verify = False
@@ -283,7 +303,7 @@ class StockPicking(models.Model):
                 )
                 return
 
-            client, history = self.batch_id.create_client()
+            client, history = self.batch_id.create_tracking_client()
 
             if not client:
                 _logger.error(
@@ -310,12 +330,13 @@ class StockPicking(models.Model):
                 )
                 return
 
-            seguimiento = res["Seguimiento"]["Abonado"]["Seguimiento"]
-            if seguimiento["Estado"] == "00":
-                self.delivered = True
+            if "SeguimientoAbonado" in res["Seguimiento"]["Abonado"]:
+                seguimiento = res["Seguimiento"]["Abonado"]["SeguimientoAbonado"]["Seguimiento"]
+                if seguimiento["Estado"] == "00":
+                    self.delivered = True
             else:
-                raise AccessError(
-                    _("Error: {}".format(res["MensajeSeguimiento"]))
+                _logger.error(
+                    _("Error: {}").format(res["MensajeSeguimiento"])
                 )
                 return
         else:
