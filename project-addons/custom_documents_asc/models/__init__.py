@@ -7,3 +7,4 @@ from . import crm_class
 from . import ir_qweb_fields
 from . import res_partner, purchase_order_line
 from . import account_invoice
+from . import sale_order
