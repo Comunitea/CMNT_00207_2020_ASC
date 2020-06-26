@@ -38,7 +38,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    mrw_pdo_quantity = fields.Float("PDO amount")
+    mrw_pdo_quantity = fields.Char("PDO amount")
     carrier_code = fields.Char(related="carrier_id.code")
 
     @api.multi
@@ -55,7 +55,7 @@ class StockBatchPicking(models.Model):
             pickings_total_value = 0.0
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
-            self.mrw_pdo_quantity = pickings_total_value
+            self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace('.',',')
 
     def create_client(self):
         session = Session()
