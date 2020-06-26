@@ -17,6 +17,13 @@ msgstr ""
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+msgid "<span style=\"color: #1176D9;\">\n"
+"                            <b>Accounts</b>\n"
+"                        </span>"
+msgstr ""
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<b>Accounts</b>"
 msgstr ""
 
@@ -50,7 +57,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
 msgid "<span>Firma recogida.</span>"
-msgstr ""
+msgstr "Signature collected"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
@@ -105,7 +112,7 @@ msgstr ""
 #. module: custom_documents_asc
 #: model:ir.actions.report,name:custom_documents_asc.rma_order_line_report_custom
 msgid "Albarán de RMA"
-msgstr ""
+msgstr "RMA Deliverynote"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_rma_order_line_doc
