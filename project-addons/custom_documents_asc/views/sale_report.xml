@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-set='doc']" position="after">
+            <t t-if="is_pro_forma == True">
+                <t t-set="type" t-value="'proforma_invoice'"/>
+            </t>
+            <t t-else="">
+                <t t-set="type" t-value="'sale_order'"/>
+            </t>
+        </xpath>
+        <xpath expr="//t[@t-set='address']" position="replace"/>
+        <xpath expr="//t[@t-set='information_block']" position="replace"/>
+        <xpath expr="//h2" position="before">
+            <div class="address row">
+                <div name="invoice_address" class="col-7">
+                    <p>
+                        <strong>Customer</strong>
+                    </p>
+                    <address t-field="doc.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True}'/>
+                    <!--<div t-if="doc.partner_id.vat" class="mt16"><t t-esc="doc.company_id.country_id.vat_label or 'TIN'"/>:
+                        <span t-field="doc.partner_id.vat"/>
+                    </div>-->
+                </div>
+                <div name="invoice_information" class="col-5">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <span>
+                                Pro-forma:
+                            </span>
+                        </div>
+                        <div class="col-6 text-left">
+                            <span t-field="doc.name"/>
+                        </div>
+                    </div>
+                    <div t-if="doc.confirmation_date" class="row">
+                        <div class="col-6 text-left">date:</div>
+                        <div class="col-6 text-left">
+                            <span t-field="doc.confirmation_date"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//div[@id='informations']" position="replace"/>
+        <xpath expr="//table[@class='table table-sm o_main_table']/tbody/t[@t-foreach='doc.order_line']/tr/t[1]/td[5]"
+               position="replace">
+                <td class="text-right">
+                    <span t-esc="', '.join(map(lambda x: (x.name), line.tax_id))"/>
+                </td>
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']/tbody/t[@t-foreach='doc.order_line']/tr/t[1]/td[5]"
+               position="replace">
+                <td class="text-right">
+                    <span t-esc="', '.join(map(lambda x: (x.name), line.tax_id))"/>
+                </td>
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']/tbody/t[@t-foreach='doc.order_line']/tr/t[1]/td[1]"
+               position="before">
+                <td class="text-left">
+                    <span t-field="line.product_id.default_code"/>
+                </td>
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']/thead/tr/th[1]"
+               position="before">
+               <th class="text-left">Ref.</th>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_subtotal']" position="attributes">
+            <attribute name="class">border-top-0</attribute>
+        </xpath>
+        <xpath expr="//tr[@class='border-black o_total']" position="attributes">
+            <attribute name="style">background-color: #1176D9; color: #fafaf8;</attribute>
+        </xpath>
+        <xpath expr="//div[@t-if='doc.signature']" position="after">
+            <t t-if="doc.team_id.team_accounts">
+                <div class="row">
+                    <div class="col-7">
+                        <span style="color: #1176D9;">
+                            <b>Accounts</b>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <span t-field="doc.team_id.team_accounts"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

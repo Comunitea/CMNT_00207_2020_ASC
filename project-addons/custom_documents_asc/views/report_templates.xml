@@ -51,18 +51,6 @@
         </xpath>
     </template>
 
-    <template id="report_saleorder_document" name="Custom Document Sale Order A-sec"
-              inherit_id="sale.report_saleorder_document">
-        <xpath expr="//t[@t-set='doc']" position="after">
-            <t t-if="is_pro_forma == True">
-                <t t-set="type" t-value="'proforma_invoice'"/>
-            </t>
-            <t t-else="">
-                <t t-set="type" t-value="'sale_order'"/>
-            </t>
-        </xpath>
-    </template>
-
 
     <template id="report_invoice_document_with_payments" name="Custom Document Sale Order ProForma A-sec"
               inherit_id="account.report_invoice_document_with_payments">
@@ -85,29 +73,18 @@
 
                 <style>
                     .container {
-                        padding: 0 !important;
+                    padding: 0 !important;
                     }
                 </style>
                 <div class="row" style="margin-left: 0 !important; margin-right: 0 !important;">
                     <div class="col-7  o_custom_header">
                         <div class="col-12" style="margin-top: 5px;">
-                            <div class="col-4" style="float: left; text-align: center;">
+                            <div class="col-12" style="float: left; text-align: center;">
                                 <img t-if="'team_id' in o and o.team_id.team_logo"
                                      t-att-src="image_data_uri(o.team_id.team_logo)" style="max-height: 40px;"
                                      alt="Logo"/>
                                 <img t-elif="company.logo" t-att-src="image_data_uri(company.logo)"
                                      style="max-height: 40px;" alt="Logo"/>
-                            </div>
-                            <div class="col-8" style="float: right; text-align: center;">
-                                <span t-if="'team_id' in o and o.team_id.team_name" t-esc="o.team_id.team_name"
-                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
-                                <span t-elif="company.name" t-esc="company.name"
-                                      style="font-size: 20px;letter-spacing: 3.2px; margin-left: 1%;"/>
-                            </div>
-                            <div class="col-7 offset-1" style="float: right; text-align: center;">
-                                <small t-if="'team_id' in o and o.team_id.team_tag_line"
-                                       t-esc="o.team_id.team_tag_line"
-                                       style="float: left;text-align: left;margin-top: -1.5%;"/>
                             </div>
                         </div>
                     </div>
@@ -140,48 +117,52 @@
             <div class="footer o_standard_footer">
                 <style>
                     .container {
-                        padding: 0 !important;
+                    padding: 0 !important;
                     }
                 </style>
                 <div class="o_custom_footer">
                     <div class="text-center">
-                        <ul class="list-inline mb4">
-                            <li  class="list-inline-item">
-                                <t t-if="'team_id' in o and o.team_id">
-                                    <b>Email:</b>
-                                    <span t-field="o.team_id.team_email"/>
-                                </t>
-                                <t t-else="company.email">
-                                    <b>Email:</b>
-                                    <span t-field="company.email"/>
-                                </t>
-                            </li>
-                            <li class="list-inline-item">
-                                <t t-if="'team_id' in o and o.team_id">
-                                    <b>Web:</b>
-                                    <span t-field="o.team_id.team_website"/>
-                                </t>
-                                <t t-else="company.website">
-                                    <b>Web:</b>
-                                    <span t-field="company.website"/>
-                                </t>
-                            </li>
-                            <li  class="list-inline-item">
-                                <t t-if="'team_id' in o and o.team_id">
-                                    <b>Phone:</b>
-                                    <span t-field="o.team_id.team_phone"/>
-                                </t>
-                                <t t-else="company.phone">
-                                    <b>Phone:</b>
-                                    <span t-field="company.phone"/>
-                                </t>
-                            </li>
-                        </ul>
-                        <ul class="list-inline mb4">
-                            <li t-if="company.report_footer" class="list-inline-item small">
-                                <span t-field="company.report_footer"/>
-                            </li>
-                        </ul>
+                        <div class="tienda">
+                            <ul class="list-inline mb4">
+                                <li class="list-inline-item">
+                                    <t t-if="'team_id' in o and o.team_id">
+                                        <b>Email:</b>
+                                        <span t-field="o.team_id.team_email"/>
+                                    </t>
+                                    <t t-else="company.email">
+                                        <b>Email:</b>
+                                        <span t-field="company.email"/>
+                                    </t>
+                                </li>
+                                <li class="list-inline-item">
+                                    <t t-if="'team_id' in o and o.team_id">
+                                        <b>Web:</b>
+                                        <span t-field="o.team_id.team_website"/>
+                                    </t>
+                                    <t t-else="company.website">
+                                        <b>Web:</b>
+                                        <span t-field="company.website"/>
+                                    </t>
+                                </li>
+                                <li class="list-inline-item">
+                                    <t t-if="'team_id' in o and o.team_id">
+                                        <b>Phone:</b>
+                                        <span t-field="o.team_id.team_phone"/>
+                                    </t>
+                                    <t t-else="company.phone">
+                                        <b>Phone:</b>
+                                        <span t-field="company.phone"/>
+                                    </t>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="report_footer">
+                            <ul t-if="company.report_footer" class="list-inline mb4">
+                                <li class="list-inline-item small">
+                                    <span t-field="company.report_footer"/>
+                                </li>
+                            </ul>
+                        </div>
                         <!--<div name="financial_infos">
                             <span t-field="company.report_footer"/>
                         </div>

@@ -325,6 +325,7 @@ class SaleOrderImporter(Component):
                         line.applied_commission_amount = (
                             binding.commission_amount
                         )
+                    break
             if not added_amount:
                 taxes = discount_product.taxes_id
                 taxes_ids = taxes.ids

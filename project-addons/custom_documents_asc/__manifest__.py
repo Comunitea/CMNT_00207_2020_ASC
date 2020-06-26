@@ -36,5 +36,6 @@
         'security/ir.model.access.csv',
         'views/purchase_order.xml',
         'views/res_partner.xml',
+        'views/sale_report.xml'
     ],
 }

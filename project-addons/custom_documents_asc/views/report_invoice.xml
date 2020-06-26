@@ -123,6 +123,16 @@
             </td>
         </xpath>
 
+        <xpath expr="//table[@class='table table-sm o_main_table']/tbody/t[@t-foreach='o.invoice_line_ids']/tr/t/td[1]"
+               position="before">
+                <td class="text-left">
+                    <span t-field="line.product_id.default_code" t-if="line.product_id"/>
+                </td>
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']/thead/tr/th[1]"
+               position="before">
+               <th class="text-left">Ref.</th>
+        </xpath>
     </template>
 
 </odoo>
