@@ -59,6 +59,17 @@ class StockBatchPicking(models.Model):
     def _onchange_carrier_id(self):
         if self.carrier_id:
             self.service_code = self.carrier_id.service_code
+            for pick in self.picking_ids:
+                pick.write({
+                    "carrier_id": self.carrier_id.id,
+                    "carrier_service": self.carrier_id.service_code.id
+                })
+
+    @api.onchange('service_code')
+    def _onchange_service_code(self):
+        if self.service_code:
+            for pick in self.picking_ids:
+                pick.write({"carrier_service": self.service_code.id})
 
     @api.depends("sale_ids")
     def _compute_delivery_note(self):
@@ -107,9 +118,13 @@ class StockBatchPicking(models.Model):
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
+            batch.failed_shipping == False
             batch.update(
                 {"carrier_tracking_ref": False, "shipment_reference": False}
             )
+
+            for pick in batch.picking_ids:
+                pick.write({"carrier_tracking_ref": False})
 
             attatchment_id = (
                 self.env["ir.attachment"]

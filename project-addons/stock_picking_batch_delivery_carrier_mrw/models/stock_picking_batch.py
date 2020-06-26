@@ -38,7 +38,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    mrw_pdo_quantity = fields.Float("PDO amount")
+    mrw_pdo_quantity = fields.Char("PDO amount")
     carrier_code = fields.Char(related="carrier_id.code")
 
     @api.multi
@@ -55,7 +55,27 @@ class StockBatchPicking(models.Model):
             pickings_total_value = 0.0
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
-            self.mrw_pdo_quantity = pickings_total_value
+            self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace('.',',')
+
+    def create_tracking_client(self):
+        session = Session()
+        session.verify = False
+
+        try:
+            transport = Transport(cache=SqliteCache(), session=session)
+            history = HistoryPlugin()
+            if self.carrier_id.account_id.test_enviroment:
+                url = self.carrier_id.account_id.mrw_tracking_service_test_url
+            else:
+                url = self.carrier_id.account_id.mrw_tracking_service_url
+            client = Client(url, transport=transport, plugins=[history])
+
+            if client:
+                return client, history
+            else:
+                raise AccessError(_("Not possible to establish a client."))
+        except Exception as e:
+            raise AccessError(_("Access error message: {}".format(e)))
 
     def create_client(self):
         session = Session()
@@ -276,14 +296,20 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def check_shipment_status(self):
-        if self.carrier_id.code == "DHL":
+        if self.carrier_id.code == "MRW":
             if not self.carrier_id.account_id:
-                raise UserError("Delivery carrier has no account.")
+                _logger.error(
+                    _("Delivery carrier has no account.")
+                )
+                return
 
-            client, history = self.batch_id.create_client()
+            client, history = self.batch_id.create_tracking_client()
 
             if not client:
-                raise AccessError(_("Not possible to establish a client."))
+                _logger.error(
+                    _("Not possible to establish a client.")
+                )
+                return
 
             try:
                 GetEnvios = {
@@ -299,14 +325,19 @@ class StockPicking(models.Model):
 
                 res = client.service.GetEnvios(**GetEnvios)
             except Exception as e:
-                raise AccessError(_("Access error message: {}").format(e))
-
-            seguimiento = res["Seguimiento"]["Abonado"]["Seguimiento"]
-            if seguimiento["Estado"] == "00":
-                self.delivered = True
-            else:
-                raise AccessError(
-                    _("Error: {}".format(res["MensajeSeguimiento"]))
+                _logger.error(
+                    _("Access error message: {}").format(e)
                 )
+                return
 
-        return super(StockPicking, self).check_shipment_status()
+            if "SeguimientoAbonado" in res["Seguimiento"]["Abonado"]:
+                seguimiento = res["Seguimiento"]["Abonado"]["SeguimientoAbonado"]["Seguimiento"]
+                if seguimiento["Estado"] == "00":
+                    self.delivered = True
+            else:
+                _logger.error(
+                    _("Error: {}").format(res["MensajeSeguimiento"])
+                )
+                return
+        else:
+            return super().check_shipment_status()

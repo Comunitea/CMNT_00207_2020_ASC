@@ -269,7 +269,7 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def check_shipment_status(self):
-        if self.carrier_id.carrier_type == "cex":
+        if self.carrier_id.code == "CEX":
             if self.carrier_id.account_id.test_enviroment:
                 url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(
                     self.carrier_id.account_id.service_test_url
@@ -320,5 +320,5 @@ class StockPicking(models.Model):
                     "codigoRetorno": 999,
                     "mensajeRetorno": "\n\n" + response.text,
                 }
-
-        return super(StockPicking, self).check_shipment_status()
+        else:
+            return super().check_shipment_status()
