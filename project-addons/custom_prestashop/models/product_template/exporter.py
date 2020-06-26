@@ -1,7 +1,6 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.addons.component.core import Component
-from odoo.addons.queue_job.exception import FailedJobError
 
 
 class PrestashopStandardPriceExporter(Component):
@@ -12,10 +11,17 @@ class PrestashopStandardPriceExporter(Component):
 
     def run(self, binding, **kwargs):
         """ Export the standard price of a product to PrestaShop """
-        vals = self.component(usage="backend.adapter").read(binding.prestashop_id)
-        no_pack_variants = [x for x in binding.odoo_id.product_variant_ids if not x.pack_product]
+        return True
+        no_pack_variants = [
+            x for x in binding.odoo_id.product_variant_ids if not x.pack_product
+        ]
         if len(no_pack_variants) != 1:
-            raise Exception('Different base variants for prestashop product {}'.format(binding.prestashop_id))
+            raise Exception(
+                "Different base variants for prestashop product {}".format(
+                    binding.prestashop_id
+                )
+            )
+        vals = self.component(usage="backend.adapter").read(binding.prestashop_id)
         vals.pop("manufacturer_name")
         vals.pop("quantity")
         vals["wholesale_price"] = no_pack_variants[0].standard_price
