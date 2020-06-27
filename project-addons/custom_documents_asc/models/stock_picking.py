@@ -7,7 +7,7 @@ class Picking(models.Model):
     _inherit = 'stock.picking'
 
     mail_sended = fields.Boolean()
-    team_id = fields.Many2one(related='sale_id.team_id')
+    team_id = fields.Many2one(related='sale_id.team_id', store=True)
     scheduled_date_report = fields.Date(compute='_compute_scheduled_date_report')
 
     def _compute_scheduled_date_report(self):
