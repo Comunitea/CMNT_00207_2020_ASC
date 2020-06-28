@@ -14,7 +14,7 @@ class ProductTemplateImporter(Component):
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
-        if record['tipo_pack'] == '0':
+        if record['type']['value'] == 'simple' or record['tipo_pack'] == '1':
             if binding.bom_ids.filtered(lambda r: not r.product_id):
                 # en el pasado fue un pack, eliminamos lista de materiales
                 binding.bom_ids.filtered(lambda r: not r.product_id).unlink()
