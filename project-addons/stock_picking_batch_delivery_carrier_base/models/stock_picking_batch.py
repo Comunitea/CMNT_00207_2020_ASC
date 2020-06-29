@@ -81,15 +81,16 @@ class StockBatchPicking(models.Model):
                 delivery_note = "N/A"
             batch.delivery_note = delivery_note[:45]
 
-    @api.multi
-    def action_transfer(self):
-        res = super(StockBatchPicking, self).action_transfer()
+    @api.model
+    def button_validate_apk(self, vals):
+        batch_id = self.browse(vals.get('id', False))
+        res = super(StockBatchPicking, self).button_validate_apk(vals)
         try:
-            self.send_shipping()
+            batch_id.send_shipping()
             if self.env.user.printing_printer_id:
-                self.env.ref('stock.action_report_delivery').print_document(self.picking_ids)
+                self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids)
         except Exception:
-            self.failed_shipping = True
+            batch_id.failed_shipping = True
         return res
 
     @api.depends("carrier_id", "carrier_tracking_ref")
@@ -155,8 +156,8 @@ class StockBatchPicking(models.Model):
                 _("Partner address is not complete (Street missing).")
             )
         if not (
-            self.partner_id.phone or self.partner_id.mobile or 
-            self.partner_id.commercial_partner_id.phone or 
+            self.partner_id.phone or self.partner_id.mobile or
+            self.partner_id.commercial_partner_id.phone or
             self.partner_id.commercial_partner_id.mobile):
             raise UserError(
                 _(
