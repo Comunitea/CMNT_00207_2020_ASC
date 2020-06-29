@@ -26,6 +26,7 @@ _logger = logging.getLogger(__name__)
 class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
     _order = "name asc"
+
     carrier_weight = fields.Float(default=1)
     carrier_packages = fields.Integer(default=1)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', ondelete='cascade')
@@ -36,6 +37,8 @@ class StockPickingBatch(models.Model):
         states={'draft': [('readonly', False)], 'assigned': [('readonly', False)]},
         help='List of picking managed by this batch.',
     )
+    team_id = fields.Many2one('crm.team')
+
 
     @api.model
     def button_validate_apk(self, vals):
@@ -43,7 +46,6 @@ class StockPickingBatch(models.Model):
         if not batch_id:
             raise ValidationError("No se ha encontrado el albarán ")
         if batch_id.picking_type_id.group_code:
-
             g_code = batch_id.picking_type_id.group_code
             if g_code.need_weight and batch_id.carrier_weight == 0.00:
                 raise ValidationError("Rellena el peso del albarán")
@@ -53,6 +55,7 @@ class StockPickingBatch(models.Model):
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
+        #res += ['carrier_id', 'team_id']
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
         return res
