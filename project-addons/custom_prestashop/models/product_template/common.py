@@ -27,6 +27,7 @@ class PrestashopProductTemplateListener(Component):
     def on_standard_price_changed(self, record):
         for binding in record.prestashop_bind_ids:
             binding.with_delay().export_standard_price()
+    out_of_stock = fields.Selection(default='2')
 
 
 class PrestashopProductTemplate(models.Model):

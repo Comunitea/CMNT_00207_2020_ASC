@@ -81,7 +81,7 @@
             <br/>
             <div class="row">
                 <div class="col-12">
-                    <p>Comments: <span t-field="o.sale_id.note"/></p>
+                    <p>Comments: <span t-field="o.note or o.sale_id.note"/></p>
                 </div>
             </div>
             <t t-if="o.pickup_signature">

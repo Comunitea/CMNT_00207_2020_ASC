@@ -15,4 +15,3 @@ class PurchaseOrderLine(models.Model):
     def _compute_product_qty_available_not_res(self):
         for line in self:
             line.product_qty_available_not_res = line.product_id.qty_available_not_res
-

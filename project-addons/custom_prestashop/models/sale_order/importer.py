@@ -176,7 +176,7 @@ class SaleOrderImportMapper(Component):
         if isinstance(messages, dict):
             messages = [messages]
         if messages:
-            return {'note': '\n'.join([x.get('message') for x in messages])}
+            return {'note': '\n'.join([x.get('message') for x in messages if x['private'] == '0'])}
 
     def _map_child(self, map_record, from_attr, to_attr, model_name):
         binder = self.binder_for("prestashop.sale.order")
