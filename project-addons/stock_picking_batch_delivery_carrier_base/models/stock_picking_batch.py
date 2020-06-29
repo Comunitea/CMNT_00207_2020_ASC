@@ -88,8 +88,8 @@ class StockBatchPicking(models.Model):
         try:
             batch_id.send_shipping()
             self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
-        except Exception as e:
-            print(e)
+
+        except Exception:
             batch_id.failed_shipping = True
         return res
 
