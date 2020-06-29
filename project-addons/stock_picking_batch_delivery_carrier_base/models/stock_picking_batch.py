@@ -87,8 +87,7 @@ class StockBatchPicking(models.Model):
         res = super(StockBatchPicking, self).button_validate_apk(vals)
         try:
             batch_id.send_shipping()
-            if self.env.user.printing_printer_id:
-                self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids)
+            self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
         except Exception:
             batch_id.failed_shipping = True
         return res
