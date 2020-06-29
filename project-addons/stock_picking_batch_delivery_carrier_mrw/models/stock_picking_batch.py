@@ -175,7 +175,12 @@ class StockBatchPicking(models.Model):
                                         self.partner_id.street or "",
                                         self.partner_id.street2 or "",
                                     ),
-                                    "CodigoPostal": self.partner_id.zip,
+                                    "CodigoPostal": self.partner_id.zip[:4]
+                                    if self.partner_id.country_id.code == 'PT'
+                                    else self.partner_id.zip.zfill(5)
+                                    if self.partner_id.country_id.code == 'AD'
+                                    else
+                                    self.partner_id.zip,
                                     "Poblacion": self.partner_id.city,
                                     "Provincia": self.partner_id.state_id.name,
                                 },
@@ -209,10 +214,12 @@ class StockBatchPicking(models.Model):
                                 if self.payment_on_delivery
                                 else "N",
                                 "ImporteReembolso": self.mrw_pdo_quantity
-                                if self.carrier_id.account_id.mrw_delivery_pdo
-                                != "N"
+                                if self.carrier_id.account_id.mrw_delivery_pdo != "N"
+                                and self.payment_on_delivery
                                 else "",
-                                "TipoMercancia": self.carrier_id.account_id.mrw_goods_type,
+                                "TipoMercancia": self.carrier_id.account_id.mrw_goods_type
+                                if self.partner_id.country_id.code != 'ES'
+                                else "",
                                 "Notificaciones": notices,
                             },
                         }
