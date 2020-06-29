@@ -34,6 +34,7 @@
         'views/stock_picking_report_valued.xml',
         'views/crm_class.xml',
         'security/ir.model.access.csv',
+        'views/stock.xml',
         'views/purchase_order.xml',
         'views/res_partner.xml',
         'views/sale_report.xml'

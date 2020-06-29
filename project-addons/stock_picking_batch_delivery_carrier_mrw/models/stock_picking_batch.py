@@ -175,7 +175,7 @@ class StockBatchPicking(models.Model):
                                         self.partner_id.street or "",
                                         self.partner_id.street2 or "",
                                     ),
-                                    "CodigoPostal": self.partner_id.zip[:4]
+                                    "CodigoPostal": self.partner_id.zip.replace(' ', '')[:4]
                                     if self.partner_id.country_id.code == 'PT'
                                     else self.partner_id.zip.zfill(5)
                                     if self.partner_id.country_id.code == 'AD'
