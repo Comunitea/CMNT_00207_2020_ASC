@@ -25,9 +25,9 @@ _logger = logging.getLogger(__name__)
 
 class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
-
-    carrier_weight = fields.Float(default=0.00)
-    carrier_packages = fields.Integer(default=0)
+    _order = "name asc"
+    carrier_weight = fields.Float(default=1)
+    carrier_packages = fields.Integer(default=1)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Empresa")
     picking_ids = fields.One2many(
