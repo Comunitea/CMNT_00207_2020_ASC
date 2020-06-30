@@ -14,7 +14,10 @@ class Contact(models.AbstractModel):
         opf = options and options.get('fields') or ["name", "address", "phone", "mobile", "email"]
         opsep = options and options.get('separator') or "\n"
         value = value.sudo().with_context(show_address=True)
-        name_get = value.commercial_partner_id.name_get()[0][1]
+        if options.get('commercial_data'):
+            name_get = value.commercial_partner_id.name_get()[0][1]
+        else:
+            name_get = value.name_get()[0][1]
 
         val = {
             'name': name_get.split("\n")[0],
