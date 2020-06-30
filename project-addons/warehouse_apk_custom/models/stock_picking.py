@@ -30,6 +30,7 @@ class PickingTypeGroupCode(models.Model):
     need_package = fields.Boolean('Paquetes', help="Si está marcado no permite validar con paquetes a 0")
     need_weight = fields.Boolean('Peso', help="Si está marcdo no permite validar con peso a 0.00")
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -39,9 +40,18 @@ class StockPicking(models.Model):
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
+        res += ['carrier_id', 'team_id']
+
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
         return res
+
+    @api.multi
+    def cron_auto_assign_batch_id(self):
+
+        domain = [('picking_type_id.group_code.app_integrated', '=', True), ('batch_id', '=', False), ('state', '=', 'assigned')]
+        for pick in self.env['stock.picking'].search(domain):
+            pick.auto_assign_batch_id()
 
     def auto_assign_batch_id(self):
         if self.batch_id:
@@ -60,6 +70,7 @@ class StockPicking(models.Model):
                 'user_id': False,
                 'partner_id': self.partner_id.id,
                 'carrier_id': self.carrier_id.id,
+                'team_id': self.team_id.id,
                 'state': 'draft',
                 'picking_ids': [(6, 0, self.ids)],
                 'payment_on_delivery': self.payment_on_delivery
@@ -70,20 +81,11 @@ class StockPicking(models.Model):
         batch_id.assign_order_moves()
         return
 
-
-    @api.depends('ready_to_send', 'move_type', 'move_lines.state', 'move_lines.picking_id')
-    @api.one
-    def _compute_state(self):
-        super()._compute_state()
-        if self.app_integrated:# and not self.batch_id and self.state=='assigned':
-            self.check_apk_batch()
-
     @api.multi
     def check_apk_batch(self):
-        for pick in self:
-            if pick.state == 'assigned' and not pick.batch_id:
-                #pick.auto_assign_batch_id()
-                pass
+        domain = [('state', '=', 'assigned'), ('picking_tyupe_id.app_integrated', '=', True), ('batch_id', '=', False)]
+        for pick in self.search(domain):
+            pick.auto_assign_batch_id
             # elif self.state not in ['done', 'assigned'] and self.batch_id:
             #     if pick.batch_id.user_id:
             #         raise ValidationError(
