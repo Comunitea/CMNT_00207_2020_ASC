@@ -85,8 +85,9 @@ class StockBatchPicking(models.Model):
     def button_validate_apk(self, vals):
         batch_id = self.browse(vals.get('id', False))
         res = super(StockBatchPicking, self).button_validate_apk(vals)
-        batch_id.send_shipping()
-        self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
+        if batch_id.picking_type_id.code == 'outgoing':
+            self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
+            batch_id.send_shipping()
         return res
 
     @api.depends("carrier_id", "carrier_tracking_ref")
