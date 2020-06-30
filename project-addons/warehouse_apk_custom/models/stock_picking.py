@@ -48,7 +48,6 @@ class StockPicking(models.Model):
 
     @api.multi
     def cron_auto_assign_batch_id(self):
-
         domain = [('picking_type_id.group_code.app_integrated', '=', True), ('batch_id', '=', False), ('state', '=', 'assigned')]
         for pick in self.env['stock.picking'].search(domain):
             pick.auto_assign_batch_id()
@@ -73,7 +72,8 @@ class StockPicking(models.Model):
                 'team_id': self.team_id.id,
                 'state': 'draft',
                 'picking_ids': [(6, 0, self.ids)],
-                'payment_on_delivery': self.payment_on_delivery
+                'payment_on_delivery': self.payment_on_delivery,
+
             }
             batch_id = spb.create(new_batch_vals)
         else:
@@ -83,7 +83,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def check_apk_batch(self):
-        domain = [('state', '=', 'assigned'), ('picking_tyupe_id.app_integrated', '=', True), ('batch_id', '=', False)]
+        domain = [('state', '=', 'assigned'), ('picking_type_id.app_integrated', '=', True), ('batch_id', '=', False)]
         for pick in self.search(domain):
             pick.auto_assign_batch_id
             # elif self.state not in ['done', 'assigned'] and self.batch_id:

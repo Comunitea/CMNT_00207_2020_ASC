@@ -33,6 +33,8 @@
         'views/stock_picking_batch.xml',
         'views/stock_picking.xml',
         'views/product_view.xml',
+        'views/crm_team.xml',
+        'views/delivery_carrier.xml',
     ],
     'installable': True,
     'auto_install': False,

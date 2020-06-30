@@ -15,3 +15,26 @@ class InfoApk(models.AbstractModel):
         return product_id
 
 
+class CrmTeam(models.Model):
+    _name = 'crm.team'
+    _inherit = ['info.apk', 'crm.team']
+
+    wh_code = fields.Char('Wh code')
+
+    def m2o_dict(self, field):
+        if field:
+            return {'id': field.id, 'name': field.wh_code}
+        else:
+            return {'id': False}
+
+class DeliveryCarrier(models.Model):
+    _name = 'delivery.carrier'
+    _inherit = ['info.apk', 'delivery.carrier']
+
+    wh_code = fields.Char('Wh code')
+
+    def m2o_dict(self, field):
+        if field:
+            return {'id': field.id, 'name': field.wh_code}
+        else:
+            return {'id': False}
