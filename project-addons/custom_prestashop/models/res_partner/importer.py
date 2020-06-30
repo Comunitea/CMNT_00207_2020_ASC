@@ -148,6 +148,8 @@ class AddressImporter(Component):
                 vat_number = record['dni'].replace('.', '').replace(
                     ' ', '').replace('-', '')
             if vat_number:
+                if vat_number[:2] != binding.odoo_id.country_id.code:
+                    vat_number = binding.odoo_id.country_id.code + vat_number
                 if self._check_vat(vat_number, binding.odoo_id.country_id):
                     if binding.parent_id:
                         binding.parent_id.write({'vat': vat_number})
