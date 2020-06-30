@@ -44,14 +44,6 @@ class AccountInvoice(models.Model):
                                 ValidationError(_("Any invoice found with last"
                                                   " number %s.") % last_seq)
 
-    @api.multi
-    def _send_invoice_to_sii(self):
-        invoices = self.filtered(lambda x: x.state in
-                                 ['open', 'in_payment', 'paid'] and
-                                 x.sii_send_failed)
-        invoices.write({'sii_send_failed': False})
-        return super()._send_invoice_to_sii()
-
     @api.model
     def _prepare_refund(self, invoice, date_invoice=None,
                         date=None, description=None, journal_id=None):
