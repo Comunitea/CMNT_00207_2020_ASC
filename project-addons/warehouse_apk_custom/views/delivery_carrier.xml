@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_team_wwh_apk_custom" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.wh_apk_custom</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+
+            <field name="company_id" position="before">
+                <field name="wh_code"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

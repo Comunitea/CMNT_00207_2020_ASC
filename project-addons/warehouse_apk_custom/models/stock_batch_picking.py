@@ -55,7 +55,7 @@ class StockPickingBatch(models.Model):
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
-        #res += ['carrier_id', 'team_id']
+        res += ['carrier_id', 'team_id']
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
         return res
