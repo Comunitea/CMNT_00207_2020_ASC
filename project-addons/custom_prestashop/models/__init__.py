@@ -17,3 +17,4 @@ from . import product_category
 from . import account_fiscal_position
 from . import stock_tracking
 from . import delivery_carrier
+from . import automatic_workflow_job
