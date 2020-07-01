@@ -100,7 +100,7 @@ class StockBatchPicking(models.Model):
             while cur_pack <= self.carrier_packages:
                 package_info = {
                     "@number": "{}".format(cur_pack),
-                    "Weight": self.carrier_weight / self.carrier_packages,
+                    "Weight": round(self.carrier_weight / self.carrier_packages, 2),
                     "Dimensions": {"Length": 1.0, "Width": 1.0, "Height": 1.0},
                     "CustomerReferences": "{}".format(self.name.upper()),
                 }

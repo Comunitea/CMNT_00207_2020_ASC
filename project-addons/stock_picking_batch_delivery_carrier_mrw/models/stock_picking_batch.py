@@ -323,7 +323,7 @@ class StockPicking(models.Model):
                     "login": self.carrier_id.account_id.mrw_tracking_user,
                     "pass": self.carrier_id.account_id.mrw_tracking_password,
                     "codigoIdioma": 3082,
-                    "tipoFiltro": 1,
+                    "tipoFiltro": 0,
                     "valorFiltroDesde": self.carrier_tracking_ref,
                     "tipoInformacion": 0,
                     "codigoAbonado": self.carrier_id.account_id.mrw_account,
@@ -336,9 +336,8 @@ class StockPicking(models.Model):
                     _("Access error message: {}").format(e)
                 )
                 return
-
-            if "SeguimientoAbonado" in res["Seguimiento"]["Abonado"]:
-                seguimiento = res["Seguimiento"]["Abonado"]["SeguimientoAbonado"]["Seguimiento"]
+            if "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]:
+                seguimiento = res["Seguimiento"]["Abonado"][0]["SeguimientoAbonado"]["Seguimiento"][0]
                 if seguimiento["Estado"] == "00":
                     self.delivered = True
             else:
