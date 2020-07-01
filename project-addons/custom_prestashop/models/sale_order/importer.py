@@ -282,7 +282,8 @@ class SaleOrderImporter(Component):
                 ps_state_id, unwrap=1
             )
             self._get_binding().prestashop_state = state.id
-
+        if self._get_binding().prestashop_state.trigger_cancel:
+            return True
         rules = self.component(usage="sale.import.rule")
         if (
             self._get_binding()

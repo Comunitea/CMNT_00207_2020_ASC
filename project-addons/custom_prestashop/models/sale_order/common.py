@@ -33,6 +33,8 @@ class SaleOrder(models.Model):
     def check_risk_exception(self):
         if not self.payment_mode_id.check_risk:
             return False
+        if self.state == 'cancel':
+            return False
         partner = self.partner_id.commercial_partner_id
         exception_msg = ""
         if partner.risk_exception:
