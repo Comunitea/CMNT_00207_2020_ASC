@@ -19,5 +19,16 @@
                  </xpath>
             </field>
     </record>
+    <record model="ir.ui.view" id="stock_picking_batch_tree">
+         <field name="name">stock.picking.batch.tree.wac</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="carrier_id"/>
+                    <field name="team_id"/>
+                </field>
+            </field>
+    </record>
 
 </odoo>

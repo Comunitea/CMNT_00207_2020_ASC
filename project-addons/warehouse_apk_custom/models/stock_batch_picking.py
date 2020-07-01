@@ -39,6 +39,10 @@ class StockPickingBatch(models.Model):
     )
     team_id = fields.Many2one('crm.team')
 
+    @api.model
+    def get_wh_code_filter(self):
+        wh_code_ids = ['', 'draft', 'waiting', 'confirmed', 'assigned', 'done', 'cancel']
+        return wh_code_ids
 
     @api.model
     def button_validate_apk(self, vals):
@@ -58,4 +62,25 @@ class StockPickingBatch(models.Model):
         res += ['carrier_id', 'team_id']
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
+        return res
+
+    def get_model_object(self, values={}):
+
+        res = super().get_model_object(values=values)
+        picking_id = self
+        if values.get('view', 'tree') == 'tree':
+            return res
+        if picking_id:
+            picking_id.state == 'in_progress'
+            picking_id.user_id = self.env.user
+        if not picking_id:
+            domain = values.get('domain', [])
+            limit = values.get('limit', 1)
+            move_id = self.search(domain, limit)
+            if not picking_id or len(picking_id) != 1:
+                return res
+        values = {'domain': self.get_move_domain_for_picking(values.get('filter_moves', 'Todos'), picking_id)}
+        res['move_lines'] = self.env['stock.move'].get_model_object(values)
+        #print ("------------------------------Move lines")
+        #pprint.PrettyPrinter(indent=2).pprint(res['move_lines'])
         return res
