@@ -14,6 +14,14 @@ class InfoApk(models.AbstractModel):
             raise ValueError ('Se han encontrado varios productos para este código {}'.format(code))
         return product_id
 
+    @api.model
+    def get_wh_code_filter(self):
+        wh_code_ids = ['']
+        for obj in self.search([]):
+            wh_code_ids += [obj.wh_code]
+        print ('\n.....................\nCanlculando filteros: {}'.format(wh_code_ids))
+        return wh_code_ids
+
 
 class CrmTeam(models.Model):
     _name = 'crm.team'
@@ -26,6 +34,8 @@ class CrmTeam(models.Model):
             return {'id': field.id, 'name': field.wh_code}
         else:
             return {'id': False}
+
+
 
 class DeliveryCarrier(models.Model):
     _name = 'delivery.carrier'

@@ -8,7 +8,7 @@
         <field name="state">code</field>
         <field name="code">
             for pick in records:
-            pick.auto_assign_batch_id()
+            pick.cron_auto_assign_batch_id()
         </field>
     </record>
 </odoo>
