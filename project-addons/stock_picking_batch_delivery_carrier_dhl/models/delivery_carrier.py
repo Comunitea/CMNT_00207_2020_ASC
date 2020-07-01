@@ -50,8 +50,9 @@ class CarrierAccount(models.Model):
             ("ECOM26_A6_002", "ECOM26_A6_002"),
             ("ECOM26_84CI_002", "ECOM26_84CI_002"),
             ("ECOM26_84CI_003", "ECOM26_84CI_003"),
+            ("ECOM26_64_001", "ECOM26_64_001"),
         ],
-        default="ECOM26_84_001",
+        default="ECOM26_64_001",
     )
     daily_picking = fields.Boolean(string="Daily Picking", default=True)
 
