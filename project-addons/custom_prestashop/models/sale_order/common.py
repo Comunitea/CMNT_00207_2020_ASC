@@ -11,6 +11,10 @@ class SaleOrder(models.Model):
 
     delivered = fields.Boolean()
 
+    @api.multi
+    def action_cancel(self):
+        return super(self.with_context(bypass_risk=True), SaleOrder).action_cancel()
+
     @api.onchange("payment_mode_id")
     def onchange_payment_mode_id(self):
         if self.payment_mode_id and self.payment_mode_id.defaullt_sale_invoice_policy:
