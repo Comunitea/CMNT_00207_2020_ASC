@@ -95,7 +95,14 @@ class ProductProduct(models.Model):
                 total_sales = len(moves.mapped('sale_line_id.order_id'))
                 total_qty = sum(moves.mapped('sale_line_id.qty_delivered'))
                 average = 0
-                if total_sales:
+
+                last_month_moves = product.get_moves_by_date(30)
+                total_month_sales = len(last_month_moves.mapped(
+                    'sale_line_id.order_id'))
+
+                # MENOS DE DOS VENTAS ÚLTIMOS 30 DÍAS IMPLICA COGER EL MIN/MAX
+                # POR DEFECTO, QUE PUEDE HABE CAMBIADO
+                if total_sales and total_month_sales > 2:
                     average = (total_qty / total_sales) * rt.average_ratio
                     # Get qty by order where qty under average
                     for move in moves:
