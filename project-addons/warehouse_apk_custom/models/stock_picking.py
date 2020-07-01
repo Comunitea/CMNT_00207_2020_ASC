@@ -49,7 +49,7 @@ class StockPicking(models.Model):
         return res
 
     def get_autoassign_pick_domain(self):
-        domain = ['|', ('picking_type_id.group_code.app_integrated', '=', False),
+        domain = ['|', ('picking_type_id.group_code.need_ready_to_send', '=', False),
                   '&', ('picking_type_id.group_code.app_integrated', '=', True), ('ready_to_send', '=', True),
                    ('batch_id', '=', False),
                    ('state', '=', 'assigned')]
@@ -59,9 +59,19 @@ class StockPicking(models.Model):
         batch_domain = self.picking_type_id.group_code.batch_domain or "[('picking_type_id', '=', self.picking_type_id.id)]"
         domain = eval(batch_domain)
         domain += [('state', 'in', ['assigned', 'draft']),
-                   ('user_id', '=', False),
-                   ('payment_on_delivery', '=', self.payment_on_delivery)]
+                   ('user_id', '=', False)]
         return domain
+
+    @api.multi
+    def action_auto_assign_batch_id(self):
+
+        domain = self.get_autoassign_pick_domain()
+        if self:
+            if len(self) == 1:
+                domain += [('id', '=', self.id)]
+            else:
+                domain += [('id', 'in', self.ids)]
+        self.env['stock.picking'].search(domain).auto_assign_batch_id()
 
     @api.multi
     def cron_auto_assign_batch_id(self):
@@ -82,20 +92,20 @@ class StockPicking(models.Model):
                 'payment_on_delivery': self.payment_on_delivery,
             }
 
+    @api.multi
     def auto_assign_batch_id(self):
 
-        if self.batch_id:
-            raise ValidationError ('El albarán {} ya está en el lote {}'.format(self.name, self.batch_id.name))
-        domain = self.get_autoassign_batch_domain()
-        spb = self.env['stock.picking.batch']
-        batch_id = spb.search(domain)
-        if not batch_id:
-            batch_id = spb.create(self.get_new_batch_values())
+        for pick in self:
+            if pick.batch_id:
+                raise ValidationError ('El albarán {} ya está en el lote {}'.format(pick.name, pick.batch_id.name))
+            batch_id = self.env['stock.picking.batch'].search(pick.get_autoassign_batch_domain())
+            if not batch_id:
+                batch_id = self.env['stock.picking.batch'].create(pick.get_new_batch_values())
 
-        if batch_id:
-            self.write({'batch_id': batch_id.id})
-            batch_id.assign_order_moves()
-            _logger.info('Se mete en el batch {} el albarán {}'.format(batch_id.name, self.name))
+            if batch_id:
+                pick.write({'batch_id': batch_id.id})
+                batch_id.assign_order_moves()
+                _logger.info('Se mete en el batch {} el albarán {}'.format(batch_id.name, pick.name))
         return
 
     @api.multi

@@ -2,6 +2,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import fields, models, api
 
+class PickingTypeGroup(models.Model):
+    _inherit ="picking.type.group.code"
+
+    need_ready_to_send = fields.Boolean(string="Need PDA Ready", default=False, help="Si está marcado el alabrán necesitará una autorización para enviarse")
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -39,8 +44,7 @@ class StockPicking(models.Model):
                 self.state = relevant_move_state
             if (relevant_move_state == 'partially_available' or relevant_move_state == 'assigned') \
                     and not self.ready_to_send \
-                    and self.picking_type_id.code == 'outgoing' \
-                    and self.picking_type_id.group_code.app_integrated:
+                    and self.picking_type_id.group_code.need_ready_to_send:
                 self.state = 'waiting'
 
     @api.multi
