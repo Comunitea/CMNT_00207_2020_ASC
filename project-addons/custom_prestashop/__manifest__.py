@@ -27,6 +27,7 @@
         "views/sale_order_state.xml",
         "views/account_fiscal_position.xml",
         "data/sale_exception.xml",
+        "data/ir_cron.xml",
         "wizard/prestashop_import_customer_wizard.xml",
     ],
 }
