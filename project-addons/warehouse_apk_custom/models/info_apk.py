@@ -31,7 +31,7 @@ class CrmTeam(models.Model):
 
     def m2o_dict(self, field):
         if field:
-            return {'id': field.id, 'name': field.wh_code}
+            return {'id': field.id, 'name': field.name, 'wh_code': field.wh_code or field.name[:1]}
         else:
             return {'id': False}
 
@@ -45,6 +45,6 @@ class DeliveryCarrier(models.Model):
 
     def m2o_dict(self, field):
         if field:
-            return {'id': field.id, 'name': field.wh_code}
+            return {'id': field.id, 'name': field.name, 'wh_code': field.wh_code or field.code[:1]}
         else:
             return {'id': False}
