@@ -7,6 +7,15 @@ class ProductProduct(models.Model):
 
     _inherit = "product.product"
     pack_product = fields.Boolean(compute='_compute_pack_product', store=True)
+    need_export_stock = fields.Boolean()
+
+    @api.multi
+    def update_prestashop_qty(self):
+        if self._context.get('cron_compute'):
+            self.write({'need_export_stock': True})
+        else:
+            self.write({'need_export_stock': False})
+            return super().update_prestashop_qty()
 
     @api.depends('attribute_value_ids.product_id')
     def _compute_pack_product(self):
