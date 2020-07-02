@@ -5,9 +5,9 @@
             <field name="model">picking.type.group.code</field>
             <field name="inherit_id" ref="stock_picking_type_group.view_picking_type_form"/>
             <field name="arch" type="xml">
-                 <field name="default" position="after">
-                     <field name="need_ready_to_send"/>
-                 </field>
+                <field name="default" position="after">
+                    <field name="need_ready_to_send"/>
+                </field>
             </field>
     </record>
 
@@ -18,7 +18,11 @@
         <field name="arch" type="xml">
             <field name="origin" position="after">
                 <field name="ready_to_send" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="team_id"/>
             </field>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='state']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
