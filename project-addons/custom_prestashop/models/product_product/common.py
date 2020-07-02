@@ -12,10 +12,10 @@ class ProductProduct(models.Model):
     @api.multi
     def update_prestashop_qty(self):
         if self._context.get('cron_compute'):
-            self.write({'need_export_stock': True})
-        else:
             self.write({'need_export_stock': False})
             return super().update_prestashop_qty()
+        else:
+            self.write({'need_export_stock': True})
 
     @api.depends('attribute_value_ids.product_id')
     def _compute_pack_product(self):
