@@ -27,8 +27,8 @@ class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
     _order = "name asc"
 
-    carrier_weight = fields.Float(default=1)
-    carrier_packages = fields.Integer(default=1)
+    carrier_weight = fields.Float(default=0)
+    carrier_packages = fields.Integer(default=0)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Empresa")
     picking_ids = fields.One2many(
@@ -46,6 +46,7 @@ class StockPickingBatch(models.Model):
 
     @api.model
     def button_validate_apk(self, vals):
+
         batch_id = self.browse(vals.get('id', False))
         if not batch_id:
             raise ValidationError("No se ha encontrado el albarán ")

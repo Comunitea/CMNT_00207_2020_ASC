@@ -26,7 +26,8 @@
     'website': 'www.comunitea.com',
     'license': 'AGPL-3',
     'depends': [
-        'warehouse_apk'
+        'warehouse_apk',
+        'stock_custom'
     ],
     'data': [
         'views/stock_picking_type.xml',

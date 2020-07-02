@@ -9,7 +9,7 @@
             <header position="inside">
                 <button name="print_created_labels" string="Print Labels" type="object"
                     attrs="{'invisible': [
-                        ('shipment_reference', '=', False)
+                        ('carrier_tracking_ref', '=', False)
                     ]}"/>
                 <button name="send_shipping" string="Request Shipping" type="object"
                     attrs="{'invisible': [

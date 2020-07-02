@@ -17,6 +17,13 @@
                          <field name="carrier_packages" />
                      </group>
                  </xpath>
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='state']" position="after">
+                    <field name="wh_location" string="Ubicación"/>
+                    <field name="apk_order" string="Orden"/>
+                </xpath>
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='state']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
             </field>
     </record>
     <record model="ir.ui.view" id="stock_picking_batch_tree">

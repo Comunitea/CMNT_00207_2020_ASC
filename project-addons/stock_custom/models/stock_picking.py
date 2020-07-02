@@ -12,6 +12,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     ready_to_send = fields.Boolean(string="PDA Ready", default=False)
+    team_id = fields.Many2one('crm.team')
 
     @api.depends('ready_to_send', 'move_type', 'move_lines.state', 'move_lines.picking_id')
     @api.one
