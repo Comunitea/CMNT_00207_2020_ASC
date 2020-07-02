@@ -190,6 +190,7 @@ class SaleOrderImportMapper(Component):
         remove_lines = []
         if exists:
             incoming_lines = [int(x["id"]) for x in child_records]
+            line_binder = self.binder_for(model_name)
             if model_name == "prestashop.sale.order.line":
                 current_lines = [
                     x.prestashop_id for x in exists.prestashop_order_line_ids
@@ -205,7 +206,7 @@ class SaleOrderImportMapper(Component):
         res = super()._map_child(map_record, from_attr, to_attr, model_name)
         if remove_lines:
             for line in remove_lines:
-                res.append((2, line))
+                res.append((2, line_binder.to_internal(line).id))
         return res
 
 
@@ -281,7 +282,7 @@ class SaleOrderImporter(Component):
             state = self.binder_for("prestashop.sale.order.state").to_internal(
                 ps_state_id, unwrap=1
             )
-            self._get_binding().prestashop_state = state.id
+            self._get_binding().with_context(bypass_risk=True).prestashop_state = state.id
         if self._get_binding().prestashop_state.trigger_cancel:
             return True
         rules = self.component(usage="sale.import.rule")

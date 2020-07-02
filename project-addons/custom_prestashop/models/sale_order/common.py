@@ -143,3 +143,13 @@ class PrestashopSaleOrder(models.Model):
         next_check_datetime = now_fmt - timedelta(seconds=10)
         backend.import_orders_since = next_check_datetime
         return True
+
+
+class PrestashopSaleOrderLine(models.Model):
+    _inherit = 'prestashop.sale.order.line'
+
+    @api.multi
+    def unlink(self):
+        if self.odoo_id:
+            self.odoo_id.unlink()
+        return super().unlink()
