@@ -20,6 +20,7 @@
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='state']" position="after">
                     <field name="wh_location" string="Ubicación"/>
                     <field name="apk_order" string="Orden"/>
+                    <!--field name="try_validate" string="Validado desde PDA"/-->
                 </xpath>
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='state']" position="attributes">
                     <attribute name="invisible">0</attribute>
@@ -37,5 +38,27 @@
                 </field>
             </field>
     </record>
+    <record id="stock_batch_picking_delivery_carrier_base_search" model="ir.ui.view">
+        <field name="name">batch.picking.search</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_search"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="carrier_id"/>
+            </field>
+            <filter name="no_user_id" position="after">
+                <separator/>
+                <filter name="failed_validation" string="Error de validación" domain ="[('try_validate', '=', True), ('state', '!=', 'done')]"/>
 
+            </filter>
+            <filter name="user_id" position="before">
+                <filter name="type_id" string="Tipo" context="{'group_by':'picking_type_id'}"/>
+                <filter name="carrier_id" string="Transportista" context="{'group_by':'carrier_id'}"/>
+                <filter name="team_id" string="Venta" context="{'group_by':'team_id'}"/>
+            </filter>
+
+
+
+        </field>
+    </record>
 </odoo>

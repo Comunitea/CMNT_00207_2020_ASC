@@ -18,7 +18,10 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import api, models, fields, modules
+from contextlib import closing
+
+
 import logging
 from odoo.exceptions import ValidationError
 _logger = logging.getLogger(__name__)
@@ -38,18 +41,36 @@ class StockPickingBatch(models.Model):
         help='List of picking managed by this batch.',
     )
     team_id = fields.Many2one('crm.team')
+    try_validate = fields.Boolean('Validación desde PDA', default=False)
+
 
     @api.model
     def get_wh_code_filter(self):
         wh_code_ids = ['', 'draft', 'waiting', 'confirmed', 'assigned', 'done', 'cancel']
         return wh_code_ids
 
+    def mark_as_pda_validate(self):
+        with api.Environment.manage():
+            registry = modules.registry.Registry(
+                self.env.cr.dbname
+            )
+            with closing(registry.cursor()) as cr:
+                try:
+                    sql ="update stock_picking_batch set try_validate = true where id = {}".format(self.id)
+                    cr.execute(sql)
+                except:
+                    cr.rollback()
+                    raise
+                else:
+                    # Despite what pylint says, this a perfectly valid
+                    # commit (in a new cursor). Disable the warning.
+                    cr.commit()  # pylint: disable=invalid-commit
     @api.model
     def button_validate_apk(self, vals):
-
         batch_id = self.browse(vals.get('id', False))
         if not batch_id:
             raise ValidationError("No se ha encontrado el albarán ")
+        batch_id.mark_as_pda_validate()
         if batch_id.picking_type_id.group_code:
             g_code = batch_id.picking_type_id.group_code
             if g_code.need_weight and batch_id.carrier_weight == 0.00:
@@ -60,7 +81,7 @@ class StockPickingBatch(models.Model):
 
     def return_fields(self, mode='tree'):
         res = super().return_fields(mode=mode)
-        res += ['carrier_id', 'team_id']
+        res += ['carrier_id', 'team_id', 'try_validate']
         if mode == 'form':
             res += ['carrier_weight', 'carrier_packages']
         return res
@@ -71,8 +92,8 @@ class StockPickingBatch(models.Model):
         picking_id = self
         if values.get('view', 'tree') == 'tree':
             return res
-        if picking_id:
-            picking_id.state == 'in_progress'
+        if picking_id.state == 'draft':
+            picking_id.state = 'in_progress'
             picking_id.user_id = self.env.user
         if not picking_id:
             domain = values.get('domain', [])
