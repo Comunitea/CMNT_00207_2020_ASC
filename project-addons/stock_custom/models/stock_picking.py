@@ -61,6 +61,6 @@ class StockPicking(models.Model):
     def check_assign_all(self):
         """ Try to assign confirmed pickings """
         domain = [('picking_type_id.code', '=', 'outgoing'),
-                  ('state', '=', ['assigned', 'partially_available', 'waiting'])]
+                  ('state', '=', ['confirmed', 'partially_available', 'waiting'])]
         picking_ids = self.env['stock.move'].search(domain, order='date_expected').mapped('picking_id')
         picking_ids.action_assign()
