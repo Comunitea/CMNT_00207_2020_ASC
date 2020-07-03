@@ -141,6 +141,9 @@ class AddressImporter(Component):
         record = self.prestashop_record
         vat_number = None
         if record.get("facturacion_defecto") == "1":
+            sii_simplified = True
+            if binding.odoo_id.country_id in (self.env.ref('base.es'), self.env.ref('base.pt')):
+                sii_simplified = False
             if record['vat_number']:
                 vat_number = record['vat_number'].replace('.', '').replace(' ', '')
             # TODO move to custom localization module
@@ -151,13 +154,16 @@ class AddressImporter(Component):
                 if vat_number[:2] != binding.odoo_id.country_id.code:
                     vat_number = binding.odoo_id.country_id.code + vat_number
                 if self._check_vat(vat_number, binding.odoo_id.country_id):
-                    if binding.parent_id:
-                        binding.parent_id.write({'vat': vat_number})
-                    else:
-                        binding.write({'vat': vat_number})
+                    sii_simplified = False
                 else:
                     msg = _('Please, check the VAT number: %s') % vat_number
                     self.backend_record.add_checkpoint(
                         binding.parent_id or binding,
                         message=msg,
                     )
+                    vat_number = None
+            if sii_simplified:
+                    if binding.parent_id:
+                        binding.parent_id.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
+                    else:
+                        binding.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})

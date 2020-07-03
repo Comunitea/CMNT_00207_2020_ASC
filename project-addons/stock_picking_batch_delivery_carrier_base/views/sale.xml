@@ -15,12 +15,28 @@
         </field>
     </record>
 
+    <record id="recogidas_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.view.tree</field>
+        <field name="model">sale.order</field>
+        <field name="sequence">9999</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="needs_signature" invisible="1"/>
+                <field name="delivered" invisible="1"/>
+                <field name="state" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="action_orders_recogida" model="ir.actions.act_window">
         <field name="name">Sales Orders - Recogida</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="view_id" ref="recogidas_view_tree"/>
         <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
         <field name="context">{}</field>
         <field name="domain">[('needs_signature', '=', True), ('delivered', '!=', True), ('state', 'not in', ('draft', 'cancel'))]</field>
