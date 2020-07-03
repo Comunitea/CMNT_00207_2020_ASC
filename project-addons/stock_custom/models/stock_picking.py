@@ -53,3 +53,14 @@ class StockPicking(models.Model):
         backorder = super()._create_backorder(backorder_moves=backorder_moves)
         backorder.write({'move_type': 'one'})
         return backorder
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.model
+    def check_assign_all(self):
+        """ Try to assign confirmed pickings """
+        domain = [('picking_type_id.code', '=', 'outgoing'),
+                  ('state', '=', ['assigned', 'partially_available', 'waiting'])]
+        picking_ids = self.env['stock.move'].search(domain, order='date_expected').mapped('picking_id')
+        picking_ids.action_assign()
