@@ -9,7 +9,7 @@ class InfoApk(models.AbstractModel):
 
     def get_apk_product(self, code):
         product_domain = [('wh_code', '=', code)]
-        product_id = self.env['product.product'].search(product_domain).filtered(lambda x: not x._is_phantom_bom())
+        product_id = self.env['product.product'].search(product_domain).filtered(lambda x: x.default_on)
         if len(product_id)>1:
             raise ValueError ('Se han encontrado varios productos para este código {}'.format(code))
         return product_id

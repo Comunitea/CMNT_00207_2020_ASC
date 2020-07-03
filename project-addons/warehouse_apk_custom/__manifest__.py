@@ -27,7 +27,8 @@
     'license': 'AGPL-3',
     'depends': [
         'warehouse_apk',
-        'stock_custom'
+        'stock_custom',
+        'stock_picking_batch_extended'
     ],
     'data': [
         'views/stock_picking_type.xml',
