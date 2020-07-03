@@ -15,12 +15,17 @@ class InfoApk(models.AbstractModel):
         return product_id
 
     @api.model
-    def get_wh_code_filter(self):
-        wh_code_ids = ['']
-        for obj in self.search([]):
-            wh_code_ids += [obj.wh_code]
-        print ('\n.....................\nCanlculando filteros: {}'.format(wh_code_ids))
-        return wh_code_ids
+    def get_wh_code_filter(self, values):
+        field = values.get('field', False)
+        if not field:
+            return
+        res = []
+        if self.fields_get()[field]['type'] == 'selection':
+            res = self.get_selection_dict_values(field)
+        if self.fields_get()[field]['type'] == 'many2one':
+            res = self.get_many2one_dict_values(field)
+        print("GET_WH_CODE_FILTER para {} con values: {}: Devuelvo {}".format(self._name, values, res))
+        return res
 
 
 class CrmTeam(models.Model):
@@ -45,6 +50,6 @@ class DeliveryCarrier(models.Model):
 
     def m2o_dict(self, field):
         if field:
-            return {'id': field.id, 'name': field.name, 'wh_code': field.wh_code or field.code[:1]}
+            return {'id': field.id, 'name': field.name, 'wh_code': field.wh_code or field.code and field.code[:1]}
         else:
             return {'id': False}

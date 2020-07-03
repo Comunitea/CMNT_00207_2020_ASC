@@ -91,6 +91,7 @@ class StockPicking(models.Model):
                 'state': 'draft',
                 'picking_ids': [(6, 0, self.ids)],
                 'payment_on_delivery': self.payment_on_delivery,
+                'notes' : '{}: {}'.format(self.name, self.note)
             }
 
     @api.multi
@@ -102,7 +103,8 @@ class StockPicking(models.Model):
             batch_id = self.env['stock.picking.batch'].search(pick.get_autoassign_batch_domain())
             if not batch_id:
                 batch_id = self.env['stock.picking.batch'].create(pick.get_new_batch_values())
-
+            else:
+                batch_id.notes = "{} // {}: {}".format(batch_id.notes, pick.name, pick.note)
             if batch_id:
                 pick.write({'batch_id': batch_id.id})
                 batch_id.assign_order_moves()
