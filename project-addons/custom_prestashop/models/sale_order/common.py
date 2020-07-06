@@ -96,7 +96,8 @@ class PrestashopSaleOrder(models.Model):
                 if picking.state in ("assigned", "done"):
                     can_edit = False
             if not can_edit:
-                raise Exception("No se puede editar el pedido.")
+                vals.pop('prestashop_order_line_ids')
+                return super().write(vals)
             self.odoo_id.picking_ids.filtered(
                 lambda r: r.state == "confirmed"
             ).action_cancel()
