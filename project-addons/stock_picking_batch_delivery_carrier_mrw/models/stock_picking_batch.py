@@ -33,6 +33,9 @@ from zeep.transports import Transport
 
 _logger = logging.getLogger(__name__)
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class StockBatchPicking(models.Model):
 
@@ -338,10 +341,12 @@ class StockPicking(models.Model):
                     _("Access error message: {}").format(e)
                 )
                 return
-            if "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]:
-                seguimiento = res["Seguimiento"]["Abonado"][0]["SeguimientoAbonado"]["Seguimiento"][0]
-                if seguimiento["Estado"] == "00":
-                    self.delivered = True
+            if res["Seguimiento"]["Abonado"] and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]:
+                for seguimiento in res["Seguimiento"]["Abonado"][0]["SeguimientoAbonado"]["Seguimiento"]:
+                    if seguimiento["Estado"] == "00":
+                        self.delivered = True
+                        break
+
             else:
                 _logger.error(
                     _("Error: {}").format(res["MensajeSeguimiento"])

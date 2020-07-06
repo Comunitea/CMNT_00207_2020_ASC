@@ -294,8 +294,8 @@ class StockPicking(models.Model):
                     timeout=5000,
                     headers={"Content-Type": "text/xml; charset=utf-8"},
                 )
-                xml_start = response.content.decode().find("<")
-                result_xml = parseString(response.content.decode()[xml_start:])
+                xml_start = response.content.decode('iso-8859-1').find("<")
+                result_xml = parseString(response.content.decode('iso-8859-1')[xml_start:])
                 state_nodes = result_xml.getElementsByTagName("EstadoEnvios")
                 for state_node in state_nodes:
                     if (
