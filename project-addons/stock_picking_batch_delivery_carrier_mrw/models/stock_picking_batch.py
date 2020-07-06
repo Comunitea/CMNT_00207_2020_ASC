@@ -307,8 +307,6 @@ class StockPicking(models.Model):
 
     def check_shipment_status(self):
         if self.carrier_id.code == "MRW":
-            # Return nothing while solving the problem with TLSv1.1
-            return
             if not self.carrier_id.account_id:
                 _logger.error(
                     _("Delivery carrier has no account.")
