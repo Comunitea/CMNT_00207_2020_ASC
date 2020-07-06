@@ -42,12 +42,8 @@ class StockPickingBatch(models.Model):
     )
     team_id = fields.Many2one('crm.team')
     try_validate = fields.Boolean('Validación desde PDA', default=False)
-
-
-    @api.model
-    def get_wh_code_filter(self):
-        wh_code_ids = ['', 'draft', 'waiting', 'confirmed', 'assigned', 'done', 'cancel']
-        return wh_code_ids
+    need_package = fields.Boolean(related="picking_type_id.group_code.need_package")
+    need_weight = fields.Boolean(related="picking_type_id.group_code.need_weight")
 
     def mark_as_pda_validate(self):
         with api.Environment.manage():
@@ -83,7 +79,7 @@ class StockPickingBatch(models.Model):
         res = super().return_fields(mode=mode)
         res += ['carrier_id', 'team_id', 'try_validate']
         if mode == 'form':
-            res += ['carrier_weight', 'carrier_packages']
+            res += ['carrier_weight', 'carrier_packages', 'need_package', 'need_weight']
         return res
 
     def get_model_object(self, values={}):
@@ -106,3 +102,21 @@ class StockPickingBatch(models.Model):
         #print ("------------------------------Move lines")
         #pprint.PrettyPrinter(indent=2).pprint(res['move_lines'])
         return res
+
+    @api.model
+    def get_picking_list(self, values):
+        domain = values.get('domain', [])
+        filter_values = values.get('filter_values', {})
+        ## AÑADO DOMINIO POR STATE
+        filter_crm_team = filter_values.get('filter_crm_team', '')
+        if filter_crm_team:
+            print ("Buscando en {}".format(filter_crm_team))
+            team_ids = self.env['crm.team'].search_read([('wh_code', 'in', filter_crm_team)], ['id'])
+            domain += [('batch_id.team_id', 'in', [x['id'] for x in team_ids])]
+        filter_delivery_carrier = filter_values.get('filter_delivery_carrier', '')
+        if filter_delivery_carrier:
+            print("Buscando en {}".format(filter_delivery_carrier))
+            team_ids = self.env['delivery.carrier'].search_read([('wh_code', 'in', filter_delivery_carrier)], ['id'])
+            domain += [('batch_id.carrier_id', 'in', [x['id'] for x in team_ids])]
+        values['domain'] = domain
+        return super().get_picking_list(values)
