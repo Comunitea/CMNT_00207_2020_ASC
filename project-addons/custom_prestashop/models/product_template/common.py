@@ -11,6 +11,10 @@ class ProductTemplate(models.Model):
 
     prestashop_unique_id = fields.Char()
 
+    _sql_constraints = [
+        ('prestashop_unique_id', 'UNIQUE(prestashop_unique_id)', 'Prestashop id should be unique.')
+    ]
+
     @api.one
     def _set_standard_price(self):
         res = super()._set_standard_price()

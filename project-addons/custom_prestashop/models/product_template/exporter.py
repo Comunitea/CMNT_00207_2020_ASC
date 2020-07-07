@@ -26,3 +26,14 @@ class PrestashopStandardPriceExporter(Component):
         vals.pop("quantity")
         vals["wholesale_price"] = no_pack_variants[0].standard_price
         self.component(usage="backend.adapter").write(binding.prestashop_id, vals)
+
+
+class ProductInventoryExporter(Component):
+    _inherit = 'prestashop.product.template.inventory.exporter'
+
+    def get_filter(self, template):
+        binder = self.binder_for()
+        prestashop_id = binder.to_external(template)
+        return {
+            'filter[id_product]': prestashop_id
+        }
