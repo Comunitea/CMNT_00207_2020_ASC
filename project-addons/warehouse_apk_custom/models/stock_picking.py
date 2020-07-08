@@ -132,3 +132,7 @@ class StockPicking(models.Model):
             if sale_id and sale_id.note:
                 vals["note"] = sale_id.note
         return super(StockPicking, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        return super().write(vals=vals)
