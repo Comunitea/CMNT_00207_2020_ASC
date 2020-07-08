@@ -16,3 +16,14 @@ class StockProductionLot(models.Model):
                 'name': '{}__{}'.format('Archived', lot.name)
             })
 
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        return super(StockProductionLot, self).name_search(
+            name.upper(), args=args, operator=operator, limit=limit,
+        )
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name'):
+            vals['name'] = vals.get('name').upper()
+        return super(StockProductionLot, self).create(vals)
