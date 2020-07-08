@@ -123,8 +123,12 @@ class StockPicking(models.Model):
             pick.auto_assign_batch_id()
             print('Asigno {} a {}'. format(pick.name, pick.batch_id.name))
 
-
-    @api.multi
-    def write(self, vals):
-        return super().write(vals=vals)
-
+    @api.model
+    def create(self, vals):
+        if vals.get("origin"):
+            sale_id = self.env["sale.order"].search(
+                [("name", "=", vals.get("origin"))]
+            )
+            if sale_id and sale_id.note:
+                vals["note"] = sale_id.note
+        return super(StockPicking, self).create(vals)
