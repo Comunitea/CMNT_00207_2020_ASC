@@ -162,8 +162,7 @@ class AddressImporter(Component):
                         message=msg,
                     )
                     vat_number = None
-            if sii_simplified:
-                    if binding.parent_id:
-                        binding.parent_id.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
-                    else:
-                        binding.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
+            if binding.parent_id:
+                binding.parent_id.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
+            else:
+                binding.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
