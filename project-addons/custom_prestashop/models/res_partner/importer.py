@@ -125,13 +125,19 @@ class AddressImportMapper(Component):
     @mapping
     def name(self, record):
         name = ''
-        if record.get('facturacion_defecto') == '1':
-            if record['company']:
-                name = record['company']
-        if not name:
-            parts = [record['firstname'], record['lastname']]
-            name = ' '.join(p.strip() for p in parts if p.strip())
-        return {'name': name}
+        binder = self.binder_for("prestashop.res.partner")
+        parent = binder.to_internal(record["id_customer"], unwrap=True)
+        address_binder = self.binder_for("prestashop.address")
+        record = address_binder.to_internal(record["id"], unwrap=True)
+        if not parent or not record or parent != record:
+            if record.get('facturacion_defecto') == '1':
+                if record['company']:
+                    name = record['company']
+            if not name:
+                parts = [record['firstname'], record['lastname']]
+                name = ' '.join(p.strip() for p in parts if p.strip())
+            return {'name': name}
+        return {}
 
 
 class AddressImporter(Component):
