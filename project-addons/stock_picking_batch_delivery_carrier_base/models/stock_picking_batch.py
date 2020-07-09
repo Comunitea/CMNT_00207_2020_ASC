@@ -87,7 +87,11 @@ class StockBatchPicking(models.Model):
         res = super(StockBatchPicking, self).button_validate_apk(vals)
         if batch_id.picking_type_id.code == 'outgoing':
             self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
-            batch_id.send_shipping()
+            try:
+                batch_id.send_shipping()
+                batch_id.failed_shipping = False
+            except Exception:
+                batch_id.failed_shipping = True
         return res
 
     @api.depends("carrier_id", "carrier_tracking_ref")
@@ -137,12 +141,7 @@ class StockBatchPicking(models.Model):
             )
 
     def send_shipping(self):
-        try:
-            self.check_delivery_address()
-            self.failed_shipping = False
-        except Exception:
-            self.failed_shipping = True
-        return True
+        self.check_delivery_address()
 
     def track_request(self):
         return True
