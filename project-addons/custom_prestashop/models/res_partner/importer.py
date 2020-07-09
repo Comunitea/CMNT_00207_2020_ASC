@@ -128,8 +128,8 @@ class AddressImportMapper(Component):
         binder = self.binder_for("prestashop.res.partner")
         parent = binder.to_internal(record["id_customer"], unwrap=True)
         address_binder = self.binder_for("prestashop.address")
-        record = address_binder.to_internal(record["id"], unwrap=True)
-        if not parent or not record or parent != record:
+        address_record = address_binder.to_internal(record["id"], unwrap=True)
+        if not parent or not address_record or parent != address_record:
             if record.get('facturacion_defecto') == '1':
                 if record['company']:
                     name = record['company']
