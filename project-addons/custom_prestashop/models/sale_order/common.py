@@ -3,6 +3,7 @@
 from odoo import api, models, fields, _
 from odoo.addons.queue_job.job import job, related_action
 from datetime import timedelta
+from odoo.addons.component.core import Component
 
 
 class SaleOrder(models.Model):
@@ -154,3 +155,16 @@ class PrestashopSaleOrderLine(models.Model):
         if self.odoo_id:
             self.odoo_id.unlink()
         return super().unlink()
+
+
+class SaleOrderOnChange(Component):
+
+    _inherit = 'ecommerce.onchange.manager.sale.order'
+
+    order_onchange_fields = [
+        'partner_id',
+        'partner_shipping_id',
+        'payment_mode_id',
+        'workflow_process_id',
+        'carrier_id'
+    ]
