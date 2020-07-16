@@ -77,6 +77,24 @@ class PartnerImportMapper(Component):
             name = ' '.join(p.strip() for p in parts if p.strip())
         return {'name': name}
 
+    @mapping
+    def address_data(self, record):
+        res = {}
+        adapter = self.component(usage='backend.adapter', model_name='prestashop.address')
+        address_ids = adapter.search(filters={'filter[id_customer]': '%d' % (int(record['id']),)})
+        for address_id in address_ids:
+            address = adapter.read(address_id)
+            if address.get('facturacion_defecto') == '1':
+                res['street'] = address['address1']
+                res['street2'] = address['address2']
+                res['city'] = address['city']
+                res['zip'] = address['postcode']
+                if address.get('id_country'):
+                    binder = self.binder_for('prestashop.res.country')
+                    country = binder.to_internal(address['id_country'], unwrap=True)
+                    res['country_id'] = country.id
+        return res
+
 
 class AddressImportMapper(Component):
     _inherit = "prestashop.address.mappper"
