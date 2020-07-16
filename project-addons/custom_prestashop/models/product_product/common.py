@@ -100,7 +100,7 @@ class ProductProduct(models.Model):
                         min_qty = pack_quantity
                     if min_qty == 0:
                         break
-                prod.qty_available_not_res = min_qty
+                prod.qty_available_not_res = int(min_qty)
         return res
 
     def create(self, vals):
