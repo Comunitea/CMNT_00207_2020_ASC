@@ -22,6 +22,14 @@ class ProductTemplate(models.Model):
             self._event("on_standard_price_changed").notify(record)
         return res
 
+    @api.depends('product_variant_ids.qty_available_not_res')
+    def _compute_product_available_not_res(self):
+        for tmpl in self:
+            if isinstance(tmpl.id, models.NewId):
+                continue
+            no_pack_variants = tmpl.product_variant_ids.filtered(lambda r: not r.pack_product)
+            tmpl.qty_available_not_res = sum([x.qty_available_not_res for x in no_pack_variants])
+            
 
 class PrestashopProductTemplateListener(Component):
     _name = "prestashop.product.template.listener"

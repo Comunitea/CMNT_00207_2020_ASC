@@ -13,6 +13,10 @@ class ProductProduct(models.Model):
     def update_prestashop_qty(self):
         if self._context.get('cron_compute'):
             self.write({'need_export_stock': False})
+            for prod in self:
+                if prod.used_in_bom_count:
+                    boms = self.env['mrp.bom'].search([('bom_line_ids.product_id', '=', prod.id)])
+                    self = self + boms.mapped('product_tmpl_id.product_variant_ids') + boms.mapped('product_id')
             return super().update_prestashop_qty()
         else:
             self.write({'need_export_stock': True})
@@ -20,7 +24,7 @@ class ProductProduct(models.Model):
     @api.depends('attribute_value_ids.product_id')
     def _compute_pack_product(self):
         for product in self:
-            if any(product.mapped('attribute_value_ids.product_id')):
+            if any(product.mapped('attribute_value_ids.product_id')) or self.env['mrp.bom']._bom_find(product=product):
                 product.pack_product = True
             else:
                 product.pack_product = False
@@ -79,6 +83,25 @@ class ProductProduct(models.Model):
                             ],
                         }
                     )
+
+    @api.multi
+    def _compute_qty_available_not_reserved(self):
+        pack_prods = self.filtered(lambda r: r.pack_product)
+        not_pack_prods = self.filtered(lambda r: not r.pack_product)
+        res = super(ProductProduct, not_pack_prods)._compute_qty_available_not_reserved()
+        for prod in pack_prods:
+            bom = self.env['mrp.bom']._bom_find(product=prod)
+            min_qty = 9999999999999
+            if bom and bom.type == 'phantom':
+                for line in bom.bom_line_ids:
+                    available = line.product_id.qty_available_not_res
+                    pack_quantity = available / line.product_qty
+                    if pack_quantity < min_qty:
+                        min_qty = pack_quantity
+                    if min_qty == 0:
+                        break
+                prod.qty_available_not_res = min_qty
+        return res
 
     def create(self, vals):
         res = super().create(vals)
