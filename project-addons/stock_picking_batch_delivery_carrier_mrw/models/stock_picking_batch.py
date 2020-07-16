@@ -296,9 +296,13 @@ class StockBatchPicking(models.Model):
         super(StockBatchPicking, self).check_delivery_address()
         if self.carrier_id.code == "MRW":
             if not self.partner_id.state_id:
-                raise UserError(
-                    _("Partner address is not complete (State missing).")
-                )
+                state_id = self.get_state_id(self.partner_id)
+                if not state_id:
+                    raise UserError(
+                        _("Partner address is not complete (State missing).")
+                    )
+                else:
+                    self.partner_id.state_id = state_id['state_id']
 
 
 class StockPicking(models.Model):

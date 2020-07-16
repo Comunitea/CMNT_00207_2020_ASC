@@ -194,6 +194,33 @@ class StockBatchPicking(models.Model):
                 None, b64decode(label.datas), doc_format=doc_format
             )
 
+    def get_state_id(self, partner_id):
+        if partner_id.country_id and partner_id.zip:
+            city_zip = self.env["res.city.zip"].search(
+                [
+                    ("name", "=", partner_id.zip),
+                    ("city_id.country_id", "=", partner_id.country_id.id),
+                ], limit=1
+            )
+            if not city_zip:
+                # Portugal
+                city_zip = self.env["res.city.zip"].search(
+                    [
+                        ("name", "=", partner_id.zip.replace(' ', '-')),
+                        ("city_id.country_id", "=", partner_id.country_id.id),
+                    ], limit=1
+                )
+                if not city_zip:
+                    # Portugal 2
+                    city_zip = self.env["res.city.zip"].search(
+                        [
+                            ("name", "=", partner_id.zip[:4] + '-' + partner_id.zip[4:]),
+                            ("city_id.country_id", "=", partner_id.country_id.id),
+                        ], limit=1
+                    )
+            if city_zip:
+                return {"state_id": city_zip.city_id.state_id.id}
+
 
 class StockPicking(models.Model):
 
