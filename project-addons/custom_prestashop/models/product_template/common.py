@@ -28,8 +28,13 @@ class ProductTemplate(models.Model):
             if isinstance(tmpl.id, models.NewId):
                 continue
             no_pack_variants = tmpl.product_variant_ids.filtered(lambda r: not r.pack_product)
-            tmpl.qty_available_not_res = sum([x.qty_available_not_res for x in no_pack_variants])
-            
+            if no_pack_variants:
+                tmpl.qty_available_not_res = sum([x.qty_available_not_res for x in no_pack_variants])
+            else:
+                tmpl.qty_available_not_res = sum(
+                    tmpl.mapped('product_variant_ids.qty_available_not_res')
+                )
+
 
 class PrestashopProductTemplateListener(Component):
     _name = "prestashop.product.template.listener"
