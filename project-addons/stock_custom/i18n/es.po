@@ -26,6 +26,16 @@ msgid "Average ratio"
 msgstr "Ratio media"
 
 #. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Ready to send"
+msgstr "Marcar listo para enviar"
+
+#. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Not ready to send"
+msgstr "Desmarcar listo para enviar"
+
+#. module: stock_custom
 #: model:ir.model,name:stock_custom.model_res_partner
 msgid "Contact"
 msgstr "Contacto"

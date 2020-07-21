@@ -10,4 +10,4 @@ class SaleOrder(models.Model):
 
     def toggle_ready_to_send(self):
         for order in self:
-            order.write({"ready_to_send": not order.ready_to_send})
+            order.with_context(manual_ready_to_send=True).write({"ready_to_send": not order.ready_to_send})

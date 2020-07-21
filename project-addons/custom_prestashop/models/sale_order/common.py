@@ -4,6 +4,7 @@ from odoo import api, models, fields, _
 from odoo.addons.queue_job.job import job, related_action
 from datetime import timedelta
 from odoo.addons.component.core import Component
+from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrder(models.Model):
@@ -72,9 +73,16 @@ class SaleOrder(models.Model):
                 if state.trigger_paid and not order.manual_ready_to_send:
                     order.ready_to_send = True
                     order.picking_ids.write({"ready_to_send": True})
-            if vals.get("ready_to_send"):
+            if 'ready_to_send' in vals and self._context.get('manual_ready_to_send'):
                 order.picking_ids.write({"ready_to_send": vals["ready_to_send"]})
-                order.write({"manual_ready_to_send"})
+                if not vals['ready_to_send']:
+                    batch_pickings = order.mapped('picking_ids.batch_id')
+                    for batch in batch_pickings:
+                        if batch.user_id:
+                            raise UserError('El albarán {} ya se está procesando, no se puede desmarcar'.format(batch.name))
+                        else:
+                            batch.unlink()
+                order.write({"manual_ready_to_send": True})
         return res
 
 
