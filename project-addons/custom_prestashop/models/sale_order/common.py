@@ -80,8 +80,6 @@ class SaleOrder(models.Model):
                     for batch in batch_pickings:
                         if batch.user_id:
                             raise UserError('El albarán {} ya se está procesando, no se puede desmarcar'.format(batch.name))
-                        else:
-                            batch.unlink()
                 order.write({"manual_ready_to_send": True})
         return res
 
