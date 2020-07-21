@@ -129,18 +129,18 @@ class StockPickingBatch(models.Model):
     def regenerate_batch_notes(self):
         batches = self.env["stock.picking.batch"].search([])
         for batch_id in batches:
-            notes = ""
+            notes = False
             for pick in batch_id.picking_ids:
-                if pick.note:
+                if pick.note and notes:
                     notes = "{} // {}: {}".format(notes, pick.name, pick.note)
+                elif pick.note and not notes:
+                    notes = "{}: {}".format(pick.name, pick.note)
                 else:
                     sale_id = self.env["sale.order"].search(
                         [("name", "=", pick.origin)]
                     )
-                    if sale_id and sale_id.note:
+                    if sale_id and sale_id.note and notes:
                         notes = "{} // {}: {}".format(notes, pick.name, sale_id.note)
-
-            if notes == "":
-                batch_id.notes = False
-            else:
-                batch_id.notes = notes
+                    elif sale_id and sale_id.note and not notes:
+                        notes = "{}: {}".format(notes, pick.name, sale_id.note)
+            batch_id.notes = notes
