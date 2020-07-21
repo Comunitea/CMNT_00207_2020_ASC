@@ -95,9 +95,6 @@ class StockPickingBatch(models.Model):
             picking_id.state = "in_progress"
             picking_id.user_id = self.env.user
         if not picking_id:
-            domain = values.get("domain", [])
-            limit = values.get("limit", 1)
-            move_id = self.search(domain, limit)
             if not picking_id or len(picking_id) != 1:
                 return res
         values = {

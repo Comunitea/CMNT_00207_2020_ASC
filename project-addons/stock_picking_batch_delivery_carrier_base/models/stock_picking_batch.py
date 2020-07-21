@@ -54,18 +54,6 @@ class StockBatchPicking(models.Model):
                 vals["service_code"] = carrier_id.service_code.id
         return super(StockBatchPicking, self).create(vals)
 
-    @api.onchange("carrier_id")
-    def _onchange_carrier_id(self):
-        if self.carrier_id:
-            self.service_code = self.carrier_id.service_code
-            for pick in self.picking_ids:
-                pick.write(
-                    {
-                        "carrier_id": self.carrier_id.id,
-                        "carrier_service": self.carrier_id.service_code.id,
-                    }
-                )
-
     @api.onchange("service_code")
     def _onchange_service_code(self):
         if self.service_code:
@@ -109,37 +97,39 @@ class StockBatchPicking(models.Model):
     @api.multi
     def write(self, vals):
         res = super().write(vals)
+        if vals.get('carrier_id'):
+            for batch in self:
+                if batch.carrier_id:
+                    batch.service_code = batch.carrier_id.service_code
+                    for pick in batch.picking_ids:
+                        pick.write(
+                            {
+                                "carrier_id": batch.carrier_id.id,
+                                "carrier_service": batch.carrier_id.service_code.id,
+                            }
+                        )
         if vals.get("carrier_tracking_ref", False):
-            self.onchange_carrier_tracking_ref()
+            for batch in self:
+                if batch.carrier_tracking_ref:
+                    for pick in batch.picking_ids:
+                        pick.write({"carrier_tracking_ref": batch.carrier_tracking_ref})
         return res
-
-    @api.onchange("carrier_tracking_ref")
-    def onchange_carrier_tracking_ref(self):
-        if self.carrier_tracking_ref:
-            self.failed_shipping == False
-            for pick in self.picking_ids:
-                pick.write({"carrier_tracking_ref": self.carrier_tracking_ref})
 
     @api.multi
     def remove_tracking_info(self):
         for batch in self:
-            batch.failed_shipping == False
             batch.update({"carrier_tracking_ref": False, "shipment_reference": False})
 
             for pick in batch.picking_ids:
                 pick.write({"carrier_tracking_ref": False})
 
-            attatchment_id = (
-                self.env["ir.attachment"]
-                .search(
-                    [
-                        ("name", "=", "Label: {}".format(batch.name)),
-                        ("res_id", "=", batch.id),
-                        ("res_model", "=", self._name),
-                    ]
-                )
-                .unlink()
-            )
+            self.env["ir.attachment"].search(
+                [
+                    ("name", "=", "Label: {}".format(batch.name)),
+                    ("res_id", "=", batch.id),
+                    ("res_model", "=", self._name),
+                ]
+            ).unlink()
 
     def send_shipping(self):
         self.check_delivery_address()
