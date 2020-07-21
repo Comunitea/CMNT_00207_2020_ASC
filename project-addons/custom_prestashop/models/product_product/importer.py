@@ -74,15 +74,12 @@ class ProductCombinationMapper(Component):
 
     @mapping
     def specific_price(self, record):
-        product = self.binder_for(
-            'prestashop.product.combination').to_internal(
-            record['id'], unwrap=True
+        product = self.binder_for("prestashop.product.combination").to_internal(
+            record["id"], unwrap=True
         )
-        product_template = self.binder_for(
-            'prestashop.product.template').to_internal(record['id_product'])
+        product_template = self.binder_for("prestashop.product.template").to_internal(
+            record["id_product"]
+        )
         tax = product.product_tmpl_id.taxes_id[:1] or self._get_tax_ids(record)
-        impact = float(self._apply_taxes(tax, float(record['price'] or '0.0')))
-        return {
-            'list_price': product_template.list_price,
-            'impact_price': impact
-        }
+        impact = float(self._apply_taxes(tax, float(record["price"] or "0.0")))
+        return {"list_price": product_template.list_price, "impact_price": impact}

@@ -17,55 +17,61 @@ class SaleOrderLine(models.Model):
         digits=dp.get_precision("Product Unit of Measure"),
         required=True,
         default=0.0,
-        copy=False
+        copy=False,
     )
-    advise_deposit_mail = fields.Boolean("Advise deposit mail", default=False, copy=False)
+    advise_deposit_mail = fields.Boolean(
+        "Advise deposit mail", default=False, copy=False
+    )
     deposit_move_ids = fields.One2many(
         "stock.move", "deposit_line_id", string="Deposit Stock Moves"
     )
 
     @api.onchange("route_id")
     def _onchange_route_id_set_deposit(self):
-        deposit_route = any(x.location_src_id.usage=='internal' and x.location_id.deposit_location for x in self.route_id.rule_ids)
+        deposit_route = any(
+            x.location_src_id.usage == "internal" and x.location_id.deposit_location
+            for x in self.route_id.rule_ids
+        )
         self.deposit = self.route_id and deposit_route
 
     @api.multi
     def _prepare_procurement_values(self, group_id=False):
-        values = super(SaleOrderLine, self)._prepare_procurement_values(
-            group_id
-        )
+        values = super(SaleOrderLine, self)._prepare_procurement_values(group_id)
         if self.deposit:
             values.update(deposit_line_id=self.id)
         return values
 
     def compute_str_lots(self):
-        str = ''
-        if self.product_id.tracking != 'none':
-            lot_ids = self.get_line_quants().mapped('lot_id')
+        str = ""
+        if self.product_id.tracking != "none":
+            lot_ids = self.get_line_quants().mapped("lot_id")
             if lot_ids:
-                str = 'Serie: {}'.format(lot_ids[0].name)
+                str = "Serie: {}".format(lot_ids[0].name)
                 for lot in lot_ids[1:]:
-                    str = format('{}, {}'.format(str, lot.name))
+                    str = format("{}, {}".format(str, lot.name))
         return str
-        
+
     def get_line_quants(self):
-        Quants = self.env['stock.quant']
-        domain = [('move_id.deposit_line_id', '=', self.id), ('state', '=', 'done')]
-        lot_ids = self.env['stock.move.line'].search_read(domain, ['lot_id'])
+        Quants = self.env["stock.quant"]
+        domain = [("move_id.deposit_line_id", "=", self.id), ("state", "=", "done")]
+        lot_ids = self.env["stock.move.line"].search_read(domain, ["lot_id"])
         if lot_ids:
-            q_domain = [('lot_id', 'in', [x['lot_id'][0] for x in lot_ids]), ('location_id.deposit_location', '=', True)]
+            q_domain = [
+                ("lot_id", "in", [x["lot_id"][0] for x in lot_ids]),
+                ("location_id.deposit_location", "=", True),
+            ]
             Quants = Quants.search(q_domain)
         return Quants
-        
+
     def _compute_qty_in_deposit(self):
         # Al filtrar por tipo de albarán is_deposit puedo mover mercancia
         # a/desde deposito sin que influya en la cantidad en deposito a
         # la hora tenerla en cuenta
-        for line in self.filtered('deposit'):
+        for line in self.filtered("deposit"):
             qty = 0.00
-            move_to_check = line.deposit_move_ids.\
-                filtered(lambda x: x.state == 'done' and
-                         x.picking_type_id.is_deposit)
+            move_to_check = line.deposit_move_ids.filtered(
+                lambda x: x.state == "done" and x.picking_type_id.is_deposit
+            )
             if move_to_check:
                 for move in move_to_check:
                     if move.location_dest_id.deposit_location:
@@ -76,18 +82,18 @@ class SaleOrderLine(models.Model):
                         qty -= move.product_uom._compute_quantity(
                             move.quantity_done, line.product_uom
                         )
-                print (qty)
+                print(qty)
                 line.qty_in_deposit = qty
 
-
     def action_show_deposit_lots(self):
-        if self.product_id.tracking != 'none':
+        if self.product_id.tracking != "none":
             quant_ids = self.get_line_quants()
             if quant_ids:
-                action = self.env.ref('stock.location_open_quants').read()[0]
-                action['domain'] = [('id', 'in', quant_ids.ids)]
-                action['context'] = dict(self.env.context)
+                action = self.env.ref("stock.location_open_quants").read()[0]
+                action["domain"] = [("id", "in", quant_ids.ids)]
+                action["context"] = dict(self.env.context)
                 return action
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -95,9 +101,7 @@ class SaleOrder(models.Model):
     deposit_count = fields.Integer(
         string="# of Deposits", compute="_compute_deposit_count"
     )
-    deposit_ids = fields.One2many(
-        "sale.order.line", compute="_compute_deposit_ids"
-    )
+    deposit_ids = fields.One2many("sale.order.line", compute="_compute_deposit_ids")
     deposit_date = fields.Date("Date Dep.")
 
     def compute_deposit_domain(self):
@@ -138,18 +142,15 @@ class SaleOrder(models.Model):
     @api.multi
     def action_open_deposit(self):
         self.ensure_one()
-        action = self.env.ref(
-            "stock_deposit_custom.act_sale_order_2_deposit"
-        ).read()[0]
+        action = self.env.ref("stock_deposit_custom.act_sale_order_2_deposit").read()[0]
         action["domain"] = self.compute_deposit_domain()
         return action
 
     def compute_send_advise_domain(self):
-        to_date = self._context.get('to_date',  fields.Date.from_string(fields.Date.today()))
-        domain = [
-                    ("deposit", "=", True),
-                    ("deposit_date", "=", to_date),
-                ]
+        to_date = self._context.get(
+            "to_date", fields.Date.from_string(fields.Date.today())
+        )
+        domain = [("deposit", "=", True), ("deposit_date", "=", to_date)]
         return domain
 
     @api.model
@@ -157,8 +158,12 @@ class SaleOrder(models.Model):
         # Busco ventas con líneas de depósitos
         deposit_ids = self.env["sale.order"]
 
-        order_lines =  self.env["sale.order.line"].search(self.compute_send_advise_domain()).filtered(lambda x: x.qty_in_deposit > 0)
-        so_ids = order_lines.mapped('order_id')
+        order_lines = (
+            self.env["sale.order.line"]
+            .search(self.compute_send_advise_domain())
+            .filtered(lambda x: x.qty_in_deposit > 0)
+        )
+        so_ids = order_lines.mapped("order_id")
         if not so_ids:
             return
         # Busco el albarán asociado a la venta/depósito
@@ -167,8 +172,7 @@ class SaleOrder(models.Model):
         # marcado como no depósito
         for so in so_ids:
             pickings = so.mapped("picking_ids").filtered(
-                lambda x: x.state in ("done", "sale")
-                and x.picking_type_id.is_deposit
+                lambda x: x.state in ("done", "sale") and x.picking_type_id.is_deposit
             )
             if pickings:
                 deposit_ids |= so
@@ -189,9 +193,7 @@ class SaleOrder(models.Model):
                     "mark_so_as_sent": True,
                 }
             )
-            composer_id = (
-                self.env["mail.compose.message"].with_context(ctx).create({})
-            )
+            composer_id = self.env["mail.compose.message"].with_context(ctx).create({})
             values = composer_id.onchange_template_id(
                 template.id, "comment", deposit.name, deposit.id
             )["value"]

@@ -24,6 +24,4 @@ from odoo import fields, models
 class CarrierAccount(models.Model):
     _inherit = "carrier.account"
 
-    delivery_carrier = fields.Selection(
-        selection_add=[("cex", "Correos Express")]
-    )
+    delivery_carrier = fields.Selection(selection_add=[("cex", "Correos Express")])

@@ -12,7 +12,7 @@
         "views/stock_move.xml",
         "views/stock_picking_type.xml",
         "views/stock_location.xml",
-        "wizards/create_lot_wzd.xml"
+        "wizards/create_lot_wzd.xml",
     ],
     "installable": True,
     "license": "AGPL-3",

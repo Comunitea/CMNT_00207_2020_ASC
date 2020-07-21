@@ -5,6 +5,6 @@ from odoo import api, models, fields
 
 class RmaOrderLine(models.Model):
 
-    _inherit = 'rma.order.line'
+    _inherit = "rma.order.line"
 
-    team_id = fields.Many2one(related='invoice_id.team_id')
+    team_id = fields.Many2one(related="invoice_id.team_id")

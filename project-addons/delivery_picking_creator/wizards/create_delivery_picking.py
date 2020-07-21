@@ -72,7 +72,7 @@ class DeliveryPickingWzd(models.TransientModel):
             vals["origin"] = origin
             picking_id = self.env["stock.picking"].create(vals)
             delivery_ids |= picking_id
-            partner_pick_ids.write({'delivery_picking_id': picking_id.id})
+            partner_pick_ids.write({"delivery_picking_id": picking_id.id})
             move_lines = partner_pick_ids.mapped("move_lines").filtered(
                 lambda x: x.state == "done"
             )

@@ -7,7 +7,7 @@ from odoo import models, fields
 class StockLocation(models.Model):
     _inherit = "stock.location"
 
-    deposit_location = fields.Boolean('Customer deposit', default=False)
+    deposit_location = fields.Boolean("Customer deposit", default=False)
 
     def should_bypass_reservation(self):
         # Las ubicaciones de depóstio nunca deberían de saltarse el

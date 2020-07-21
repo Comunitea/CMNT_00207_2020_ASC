@@ -7,38 +7,38 @@ from dateutil.relativedelta import relativedelta
 
 class ProductTemplate(models.Model):
 
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
-    replenish_type = fields.Many2one(
-        'variable.replenish', 'Replenish type')
+    replenish_type = fields.Many2one("variable.replenish", "Replenish type")
 
 
 class ProductProduct(models.Model):
 
-    _inherit = 'product.product'
+    _inherit = "product.product"
 
     @api.model
     def cron_variable_replenish(self):
         domain = [
-            ('replenish_type', '!=', False), ('pack_product', '=', False),
-            ('type', '=', 'product')]
+            ("replenish_type", "!=", False),
+            ("pack_product", "=", False),
+            ("type", "=", "product"),
+        ]
         products = self.search(domain)
         products.get_variable_replenish()
         return
 
     def get_moves_by_date(self, days_ago):
         self.ensure_one()
-        current_date = datetime.now().strftime('%Y-%m-%d')
-        date_ago = (datetime.now() - relativedelta(days=days_ago)).\
-            strftime('%Y-%m-%d')
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
         domain = [
-            ('product_id', '=', self.id),
-            ('picking_id.date_done', '>=', date_ago),
-            ('picking_id.date_done', '<=', current_date),
-            ('picking_id.state', 'in', ['done']),
-            ('sale_line_id', '!=', False),
+            ("product_id", "=", self.id),
+            ("picking_id.date_done", ">=", date_ago),
+            ("picking_id.date_done", "<=", current_date),
+            ("picking_id.state", "in", ["done"]),
+            ("sale_line_id", "!=", False),
         ]
-        moves = self.env['stock.move'].search(domain)
+        moves = self.env["stock.move"].search(domain)
         return moves
 
     def get_lt_changes(self):
@@ -49,7 +49,7 @@ class ProductProduct(models.Model):
             return res
 
         moves = self.get_moves_by_date(rt.lt_days)
-        total_sales = len(moves.mapped('sale_line_id.order_id'))
+        total_sales = len(moves.mapped("sale_line_id.order_id"))
         if total_sales <= rt.lt_sales:
             res = rt.lt_qty
         return res
@@ -62,7 +62,7 @@ class ProductProduct(models.Model):
             return res
 
         moves = self.get_moves_by_date(rt.gt_days)
-        total_sales = len(moves.mapped('sale_line_id.order_id'))
+        total_sales = len(moves.mapped("sale_line_id.order_id"))
         if total_sales >= rt.gt_sales:
             res = rt.gt_qty
         return res
@@ -92,13 +92,14 @@ class ProductProduct(models.Model):
                 # COMPUTE ALGORITM MIN MAX
                 moves = product.get_moves_by_date(rt.sale_days)
                 order_qtys = {}
-                total_sales = len(moves.mapped('sale_line_id.order_id'))
-                total_qty = sum(moves.mapped('sale_line_id.qty_delivered'))
+                total_sales = len(moves.mapped("sale_line_id.order_id"))
+                total_qty = sum(moves.mapped("sale_line_id.qty_delivered"))
                 average = 0
 
                 last_month_moves = product.get_moves_by_date(30)
-                total_month_sales = len(last_month_moves.mapped(
-                    'sale_line_id.order_id'))
+                total_month_sales = len(
+                    last_month_moves.mapped("sale_line_id.order_id")
+                )
 
                 # MENOS DE DOS VENTAS ÚLTIMOS 30 DÍAS IMPLICA COGER EL MIN/MAX
                 # POR DEFECTO, QUE PUEDE HABE CAMBIADO
@@ -119,12 +120,12 @@ class ProductProduct(models.Model):
             # UPDATE REPLENISH RULES
             if max_qty and min_qty:
                 vals = {
-                    'product_min_qty': max(min_qty, min_qty2),
-                    'product_max_qty': max(max_qty, max_qty2)
+                    "product_min_qty": max(min_qty, min_qty2),
+                    "product_max_qty": max(max_qty, max_qty2),
                 }
                 if product.orderpoint_ids:
                     product.orderpoint_ids.write(vals)
                 else:
-                    swo = self.env['stock.warehouse.orderpoint']
+                    swo = self.env["stock.warehouse.orderpoint"]
                     vals.update(product_id=product.id)
                     swo.create(vals)

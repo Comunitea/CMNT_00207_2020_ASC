@@ -27,15 +27,14 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    carrier_id = fields.Many2one(
-        comodel_name="delivery.carrier", string="Carrier"
-    )
+    carrier_id = fields.Many2one(comodel_name="delivery.carrier", string="Carrier")
     service_code = fields.Many2one(
-        'delivery.carrier.service',
-        string="Carrier service code"
+        "delivery.carrier.service", string="Carrier service code"
     )
     carrier_tracking_ref = fields.Char("Tracking Code")
-    carrier_account_id = fields.Many2one('carrier.account', related="carrier_id.account_id")
+    carrier_account_id = fields.Many2one(
+        "carrier.account", related="carrier_id.account_id"
+    )
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
     needs_signature = fields.Boolean(
@@ -55,17 +54,19 @@ class StockBatchPicking(models.Model):
                 vals["service_code"] = carrier_id.service_code.id
         return super(StockBatchPicking, self).create(vals)
 
-    @api.onchange('carrier_id')
+    @api.onchange("carrier_id")
     def _onchange_carrier_id(self):
         if self.carrier_id:
             self.service_code = self.carrier_id.service_code
             for pick in self.picking_ids:
-                pick.write({
-                    "carrier_id": self.carrier_id.id,
-                    "carrier_service": self.carrier_id.service_code.id
-                })
+                pick.write(
+                    {
+                        "carrier_id": self.carrier_id.id,
+                        "carrier_service": self.carrier_id.service_code.id,
+                    }
+                )
 
-    @api.onchange('service_code')
+    @api.onchange("service_code")
     def _onchange_service_code(self):
         if self.service_code:
             for pick in self.picking_ids:
@@ -83,10 +84,12 @@ class StockBatchPicking(models.Model):
 
     @api.model
     def button_validate_apk(self, vals):
-        batch_id = self.browse(vals.get('id', False))
+        batch_id = self.browse(vals.get("id", False))
         res = super(StockBatchPicking, self).button_validate_apk(vals)
-        if batch_id.picking_type_id.code == 'outgoing':
-            self.env.ref('stock.action_report_delivery').print_document(batch_id.picking_ids._ids)
+        if batch_id.picking_type_id.code == "outgoing":
+            self.env.ref("stock.action_report_delivery").print_document(
+                batch_id.picking_ids._ids
+            )
             try:
                 batch_id.send_shipping()
                 batch_id.failed_shipping = False
@@ -121,9 +124,7 @@ class StockBatchPicking(models.Model):
     def remove_tracking_info(self):
         for batch in self:
             batch.failed_shipping == False
-            batch.update(
-                {"carrier_tracking_ref": False, "shipment_reference": False}
-            )
+            batch.update({"carrier_tracking_ref": False, "shipment_reference": False})
 
             for pick in batch.picking_ids:
                 pick.write({"carrier_tracking_ref": False})
@@ -148,34 +149,24 @@ class StockBatchPicking(models.Model):
 
     def check_delivery_address(self):
         if not self.partner_id.city:
-            raise UserError(
-                _("Partner address is not complete (City missing).")
-            )
+            raise UserError(_("Partner address is not complete (City missing)."))
         if not self.partner_id.street:
-            raise UserError(
-                _("Partner address is not complete (Street missing).")
-            )
+            raise UserError(_("Partner address is not complete (Street missing)."))
         if not (
-            self.partner_id.phone or self.partner_id.mobile or
-            self.partner_id.commercial_partner_id.phone or
-            self.partner_id.commercial_partner_id.mobile):
+            self.partner_id.phone
+            or self.partner_id.mobile
+            or self.partner_id.commercial_partner_id.phone
+            or self.partner_id.commercial_partner_id.mobile
+        ):
             raise UserError(
-                _(
-                    "Partner address is not complete (Needs a phone or mobile phone)."
-                )
+                _("Partner address is not complete (Needs a phone or mobile phone).")
             )
         if not self.partner_id.country_id:
-            raise UserError(
-                _("Partner address is not complete (Country missing).")
-            )
+            raise UserError(_("Partner address is not complete (Country missing)."))
         if not (self.partner_id.email or self.partner_id.commercial_partner_id.email):
-            raise UserError(
-                _("Partner address is not complete (Email missing).")
-            )
+            raise UserError(_("Partner address is not complete (Email missing)."))
         if not self.partner_id.zip:
-            raise UserError(
-                _("Partner address is not complete (Zip code missing).")
-            )
+            raise UserError(_("Partner address is not complete (Zip code missing)."))
 
     def print_created_labels(self):
         self.ensure_one()
@@ -200,23 +191,30 @@ class StockBatchPicking(models.Model):
                 [
                     ("name", "=", partner_id.zip),
                     ("city_id.country_id", "=", partner_id.country_id.id),
-                ], limit=1
+                ],
+                limit=1,
             )
             if not city_zip:
                 # Portugal
                 city_zip = self.env["res.city.zip"].search(
                     [
-                        ("name", "=", partner_id.zip.replace(' ', '-')),
+                        ("name", "=", partner_id.zip.replace(" ", "-")),
                         ("city_id.country_id", "=", partner_id.country_id.id),
-                    ], limit=1
+                    ],
+                    limit=1,
                 )
                 if not city_zip:
                     # Portugal 2
                     city_zip = self.env["res.city.zip"].search(
                         [
-                            ("name", "=", partner_id.zip[:4] + '-' + partner_id.zip[4:]),
+                            (
+                                "name",
+                                "=",
+                                partner_id.zip[:4] + "-" + partner_id.zip[4:],
+                            ),
                             ("city_id.country_id", "=", partner_id.country_id.id),
-                        ], limit=1
+                        ],
+                        limit=1,
                     )
             if city_zip:
                 return {"state_id": city_zip.city_id.state_id.id}
@@ -239,9 +237,7 @@ class StockPicking(models.Model):
     @api.model
     def create(self, vals):
         if vals.get("origin"):
-            sale_id = self.env["sale.order"].search(
-                [("name", "=", vals.get("origin"))]
-            )
+            sale_id = self.env["sale.order"].search([("name", "=", vals.get("origin"))])
             if sale_id and sale_id.payment_mode_id.payment_on_delivery:
                 vals["payment_on_delivery"] = True
         return super(StockPicking, self).create(vals)

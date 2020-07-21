@@ -5,10 +5,10 @@ from odoo import models
 
 class AutomaticWorkflowJob(models.Model):
 
-    _inherit = 'automatic.workflow.job'
+    _inherit = "automatic.workflow.job"
     _description = (
-        'Scheduler that will play automatically the validation of'
-        ' invoices, pickings...'
+        "Scheduler that will play automatically the validation of"
+        " invoices, pickings..."
     )
 
     def _do_validate_invoice(self, invoice):

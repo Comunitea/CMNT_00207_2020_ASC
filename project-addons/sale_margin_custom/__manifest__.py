@@ -8,11 +8,7 @@
     "author": "Comunitea",
     "category": "Sales",
     "depends": ["sale_margin"],
-    "data": [
-        "views/sale_order.xml",
-        "views/res_partner.xml",
-
-    ],
+    "data": ["views/sale_order.xml", "views/res_partner.xml"],
     "installable": True,
     "license": "AGPL-3",
 }

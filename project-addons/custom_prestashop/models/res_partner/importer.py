@@ -62,37 +62,45 @@ class PartnerImportMapper(Component):
     @mapping
     def name(self, record):
         name = None
-        adapter = self.component(usage='backend.adapter', model_name='prestashop.address')
-        address_ids = adapter.search(filters={'filter[id_customer]': '%d' % (int(record['id']),)})
+        adapter = self.component(
+            usage="backend.adapter", model_name="prestashop.address"
+        )
+        address_ids = adapter.search(
+            filters={"filter[id_customer]": "%d" % (int(record["id"]),)}
+        )
         for address_id in address_ids:
             address = adapter.read(address_id)
-            if address.get('facturacion_defecto') == '1':
-                if address['company']:
-                    name = address['company']
+            if address.get("facturacion_defecto") == "1":
+                if address["company"]:
+                    name = address["company"]
                 else:
-                    parts = [address['firstname'], address['lastname']]
-                    name = ' '.join(p.strip() for p in parts if p.strip())
+                    parts = [address["firstname"], address["lastname"]]
+                    name = " ".join(p.strip() for p in parts if p.strip())
         if not name:
-            parts = [record['firstname'], record['lastname']]
-            name = ' '.join(p.strip() for p in parts if p.strip())
-        return {'name': name}
+            parts = [record["firstname"], record["lastname"]]
+            name = " ".join(p.strip() for p in parts if p.strip())
+        return {"name": name}
 
     @mapping
     def address_data(self, record):
         res = {}
-        adapter = self.component(usage='backend.adapter', model_name='prestashop.address')
-        address_ids = adapter.search(filters={'filter[id_customer]': '%d' % (int(record['id']),)})
+        adapter = self.component(
+            usage="backend.adapter", model_name="prestashop.address"
+        )
+        address_ids = adapter.search(
+            filters={"filter[id_customer]": "%d" % (int(record["id"]),)}
+        )
         for address_id in address_ids:
             address = adapter.read(address_id)
-            if address.get('facturacion_defecto') == '1':
-                res['street'] = address['address1']
-                res['street2'] = address['address2']
-                res['city'] = address['city']
-                res['zip'] = address['postcode']
-                if address.get('id_country'):
-                    binder = self.binder_for('prestashop.res.country')
-                    country = binder.to_internal(address['id_country'], unwrap=True)
-                    res['country_id'] = country.id
+            if address.get("facturacion_defecto") == "1":
+                res["street"] = address["address1"]
+                res["street2"] = address["address2"]
+                res["city"] = address["city"]
+                res["zip"] = address["postcode"]
+                if address.get("id_country"):
+                    binder = self.binder_for("prestashop.res.country")
+                    country = binder.to_internal(address["id_country"], unwrap=True)
+                    res["country_id"] = country.id
         return res
 
 
@@ -142,51 +150,58 @@ class AddressImportMapper(Component):
 
     @mapping
     def name(self, record):
-        name = ''
+        name = ""
         binder = self.binder_for("prestashop.res.partner")
         parent = binder.to_internal(record["id_customer"], unwrap=True)
         address_binder = self.binder_for("prestashop.address")
         address_record = address_binder.to_internal(record["id"], unwrap=True)
         if not parent or not address_record or parent != address_record:
-            if record.get('facturacion_defecto') == '1':
-                if record['company']:
-                    name = record['company']
+            if record.get("facturacion_defecto") == "1":
+                if record["company"]:
+                    name = record["company"]
             if not name:
-                parts = [record['firstname'], record['lastname']]
-                name = ' '.join(p.strip() for p in parts if p.strip())
-            return {'name': name}
+                parts = [record["firstname"], record["lastname"]]
+                name = " ".join(p.strip() for p in parts if p.strip())
+            return {"name": name}
         return {}
 
 
 class AddressImporter(Component):
-    _inherit = 'prestashop.address.importer'
+    _inherit = "prestashop.address.importer"
 
     def _after_import(self, binding):
         record = self.prestashop_record
         vat_number = None
         if record.get("facturacion_defecto") == "1":
             sii_simplified = True
-            if binding.odoo_id.country_id in (self.env.ref('base.es'), self.env.ref('base.pt')):
+            if binding.odoo_id.country_id in (
+                self.env.ref("base.es"),
+                self.env.ref("base.pt"),
+            ):
                 sii_simplified = False
-            if record['vat_number']:
-                vat_number = record['vat_number'].replace('.', '').replace(' ', '')
+            if record["vat_number"]:
+                vat_number = record["vat_number"].replace(".", "").replace(" ", "")
             # TODO move to custom localization module
-            elif not record['vat_number'] and record.get('dni'):
-                vat_number = record['dni'].replace('.', '').replace(
-                    ' ', '').replace('-', '')
+            elif not record["vat_number"] and record.get("dni"):
+                vat_number = (
+                    record["dni"].replace(".", "").replace(" ", "").replace("-", "")
+                )
             if vat_number:
                 if vat_number[:2] != binding.odoo_id.country_id.code:
                     vat_number = binding.odoo_id.country_id.code + vat_number
                 if self._check_vat(vat_number, binding.odoo_id.country_id):
                     sii_simplified = False
                 else:
-                    msg = _('Please, check the VAT number: %s') % vat_number
+                    msg = _("Please, check the VAT number: %s") % vat_number
                     self.backend_record.add_checkpoint(
-                        binding.parent_id or binding,
-                        message=msg,
+                        binding.parent_id or binding, message=msg
                     )
                     vat_number = None
             if binding.parent_id:
-                binding.parent_id.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
+                binding.parent_id.write(
+                    {"vat": vat_number, "sii_simplified_invoice": sii_simplified}
+                )
             else:
-                binding.write({'vat': vat_number, 'sii_simplified_invoice': sii_simplified})
+                binding.write(
+                    {"vat": vat_number, "sii_simplified_invoice": sii_simplified}
+                )

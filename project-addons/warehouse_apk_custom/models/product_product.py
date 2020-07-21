@@ -25,12 +25,12 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
-    wh_code = fields.Char(string='Unique WH Code')
+    wh_code = fields.Char(string="Unique WH Code")
 
     @api.multi
-    @api.depends('default_code', 'barcode')
+    @api.depends("default_code", "barcode")
     def _compute_wh_code(self):
         for product in self:
             if product.barcode:
@@ -40,22 +40,36 @@ class ProductTemplate(models.Model):
             else:
                 bind_id = product.prestashop_bind_ids and product.prestashop_bind_ids[0]
                 if bind_id:
-                    product.wh_code = '.%06d.'%bind_id.prestashop_id
+                    product.wh_code = ".%06d." % bind_id.prestashop_id
                 else:
-                    product.wh_code = '.9%05d.' %product.id
+                    product.wh_code = ".9%05d." % product.id
 
 
 class ProductProduct(models.Model):
-    _inherit = 'product.product'
+    _inherit = "product.product"
 
     code_ignored = fields.Char(string="Codes to ignore as Serial")
 
-    def return_fields(self, mode='tree'):
-        return ['id', 'display_name', 'default_code', 'list_price', 'qty_available', 'virtual_available', 'tracking', 'wh_code']
+    def return_fields(self, mode="tree"):
+        return [
+            "id",
+            "display_name",
+            "default_code",
+            "list_price",
+            "qty_available",
+            "virtual_available",
+            "tracking",
+            "wh_code",
+        ]
 
     def m2o_dict(self, field):
         if field:
-            return {'id': field.id, 'name': field.apk_name, 'default_code': field.default_code, 'barcode': field.barcode, 'wh_code': field.wh_code}
+            return {
+                "id": field.id,
+                "name": field.apk_name,
+                "default_code": field.default_code,
+                "barcode": field.barcode,
+                "wh_code": field.wh_code,
+            }
         else:
-            return {'id': False}
-
+            return {"id": False}

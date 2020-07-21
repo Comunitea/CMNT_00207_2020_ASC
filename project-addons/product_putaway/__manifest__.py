@@ -8,11 +8,7 @@
     "author": "Comunitea",
     "category": "Inventory",
     "depends": ["stock", "stock_picking_batch"],
-    "data": [
-        "views/product_views.xml",
-        "views/models.xml",
-
-    ],
+    "data": ["views/product_views.xml", "views/models.xml"],
     "installable": True,
     "license": "AGPL-3",
 }

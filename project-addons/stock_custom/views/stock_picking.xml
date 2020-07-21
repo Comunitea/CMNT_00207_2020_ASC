@@ -17,7 +17,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <field name="origin" position="after">
-                <field name="ready_to_send" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="ready_to_send" readonly="True" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="team_id"/>
             </field>
             <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='state']" position="attributes">

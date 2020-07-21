@@ -9,13 +9,14 @@ class DeliveryCarrierMapper(Component):
 
     @mapping
     def prestashop_unique_id(self, record):
-        return {'prestashop_unique_id': record['id']}
+        return {"prestashop_unique_id": record["id"]}
 
     @only_create
     @mapping
     def odoo_id(self, record):
-        carrier_exists = self.env['delivery.carrier'].search(
-            [('prestashop_unique_id', '=', record['id'])])
+        carrier_exists = self.env["delivery.carrier"].search(
+            [("prestashop_unique_id", "=", record["id"])]
+        )
         if carrier_exists:
-            return{'odoo_id': carrier_exists.id}
+            return {"odoo_id": carrier_exists.id}
         return {}

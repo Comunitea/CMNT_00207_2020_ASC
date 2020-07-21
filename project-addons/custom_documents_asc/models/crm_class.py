@@ -2,7 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import fields, models
 
-class CrmClass (models.Model):
+
+class CrmClass(models.Model):
     _name = "crm.class"
 
     name = fields.Char(string="Company css", required=True)

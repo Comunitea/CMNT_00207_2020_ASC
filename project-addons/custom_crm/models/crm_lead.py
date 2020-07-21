@@ -6,6 +6,6 @@ from odoo.addons.crm.models import crm_stage
 
 class CrmLead(models.Model):
 
-    _inherit = 'crm.lead'
+    _inherit = "crm.lead"
 
     priority = fields.Selection(crm_stage.AVAILABLE_PRIORITIES)

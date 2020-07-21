@@ -5,6 +5,6 @@ from odoo import fields, models
 
 class DeliveryCarrier(models.Model):
 
-    _inherit = 'delivery.carrier'
+    _inherit = "delivery.carrier"
 
     prestashop_unique_id = fields.Char()

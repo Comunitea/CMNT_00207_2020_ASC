@@ -4,7 +4,8 @@
 from odoo import fields, models, api, exceptions, _
 import datetime
 
+
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
 
     date_alert = fields.Date()

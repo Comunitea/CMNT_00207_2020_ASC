@@ -7,7 +7,7 @@ class StcokPicking(models.Model):
     _inherit = "stock.picking"
 
     delivery_picking_id = fields.Many2one("stock.picking", string="delivery picking")
-    gropued_picking_ids = fields.One2many('stock.picking', 'delivery_picking_id')
+    gropued_picking_ids = fields.One2many("stock.picking", "delivery_picking_id")
 
     def _update_delivery_picking_values(self, partner_id, carrier_id):
         picking_type_id = self.env.ref("delivery_picking_creator.delivery_picking_type")

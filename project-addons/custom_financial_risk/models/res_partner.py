@@ -4,7 +4,7 @@ from odoo import models, fields
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
 
     risk_invoice_draft = fields.Monetary(store=False)
     risk_invoice_open = fields.Monetary(store=False)

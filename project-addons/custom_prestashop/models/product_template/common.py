@@ -12,7 +12,11 @@ class ProductTemplate(models.Model):
     prestashop_unique_id = fields.Char()
 
     _sql_constraints = [
-        ('prestashop_unique_id', 'UNIQUE(prestashop_unique_id)', 'Prestashop id should be unique.')
+        (
+            "prestashop_unique_id",
+            "UNIQUE(prestashop_unique_id)",
+            "Prestashop id should be unique.",
+        )
     ]
 
     @api.one
@@ -22,17 +26,21 @@ class ProductTemplate(models.Model):
             self._event("on_standard_price_changed").notify(record)
         return res
 
-    @api.depends('product_variant_ids.qty_available_not_res')
+    @api.depends("product_variant_ids.qty_available_not_res")
     def _compute_product_available_not_res(self):
         for tmpl in self:
             if isinstance(tmpl.id, models.NewId):
                 continue
-            no_pack_variants = tmpl.product_variant_ids.filtered(lambda r: not r.pack_product)
+            no_pack_variants = tmpl.product_variant_ids.filtered(
+                lambda r: not r.pack_product
+            )
             if no_pack_variants:
-                tmpl.qty_available_not_res = sum([x.qty_available_not_res for x in no_pack_variants])
+                tmpl.qty_available_not_res = sum(
+                    [x.qty_available_not_res for x in no_pack_variants]
+                )
             else:
                 tmpl.qty_available_not_res = sum(
-                    tmpl.mapped('product_variant_ids.qty_available_not_res')
+                    tmpl.mapped("product_variant_ids.qty_available_not_res")
                 )
 
 
@@ -44,7 +52,8 @@ class PrestashopProductTemplateListener(Component):
     def on_standard_price_changed(self, record):
         for binding in record.prestashop_bind_ids:
             binding.with_delay().export_standard_price()
-    out_of_stock = fields.Selection(default='2')
+
+    out_of_stock = fields.Selection(default="2")
 
 
 class PrestashopProductTemplate(models.Model):

@@ -39,15 +39,9 @@ class CarrierAccount(models.Model):
     delivery_carrier = fields.Selection(selection_add=[("mrw", "MRW")])
     mrw_account = fields.Char("MRW Client Code")
     mrw_franchise = fields.Char("MRW Franchise Code")
-    mrw_saturday_delivery = fields.Selection(
-        [("S", "Yes"), ("N", "No")], default="N"
-    )
-    mrw_frequency = fields.Selection(
-        [("1", "Frequency 1"), ("2", "Frequency 2")]
-    )
-    mrw_830_delivery = fields.Selection(
-        [("S", "Yes"), ("N", "No")], default="N"
-    )
+    mrw_saturday_delivery = fields.Selection([("S", "Yes"), ("N", "No")], default="N")
+    mrw_frequency = fields.Selection([("1", "Frequency 1"), ("2", "Frequency 2")])
+    mrw_830_delivery = fields.Selection([("S", "Yes"), ("N", "No")], default="N")
     mrw_delivery_hangle = fields.Selection(
         [("N", "No handle"), ("O", "Origin"), ("D", "Destination")], default="N"
     )

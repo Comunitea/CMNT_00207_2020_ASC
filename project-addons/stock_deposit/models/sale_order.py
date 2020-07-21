@@ -25,19 +25,18 @@ import odoo.addons.decimal_precision as dp
 
 
 class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
+    _inherit = "sale.order.line"
 
-    deposit = fields.Boolean('Deposit')
-    deposit_date = fields.Date('Date Dep.')
+    deposit = fields.Boolean("Deposit")
+    deposit_date = fields.Date("Date Dep.")
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id', 'deposit')
+    @api.depends("product_uom_qty", "discount", "price_unit", "tax_id", "deposit")
     def _compute_amount(self):
         super(SaleOrderLine, self.filtered(lambda x: not x.deposit))._compute_amount()
-        for line in self.filtered('deposit'):
-            line.update({
-                'price_subtotal': 0.0})
+        for line in self.filtered("deposit"):
+            line.update({"price_subtotal": 0.0})
 
-    @api.onchange('deposit')
+    @api.onchange("deposit")
     def onchange_deposit(self):
         if self.deposit:
             current_date = datetime.utcnow()
@@ -49,46 +48,49 @@ class SaleOrderLine(models.Model):
 
     @api.multi
     def invoice_line_create_vals(self, invoice_id, qty):
-        lines = self.env['sale.order.line']
+        lines = self.env["sale.order.line"]
         for line in self:
-            if not line.deposit or self.env.context.get('invoice_deposit', False):
+            if not line.deposit or self.env.context.get("invoice_deposit", False):
                 lines += line
         return super(SaleOrderLine, lines).invoice_line_create_vals(invoice_id, qty)
 
 
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    _inherit = "sale.order"
 
-    deposit_ids = fields.One2many('stock.deposit', 'sale_id', 'Deposits')
-    deposit_count = fields.Integer('deposit count', compute='_get_deposit_len', store=True)
+    deposit_ids = fields.One2many("stock.deposit", "sale_id", "Deposits")
+    deposit_count = fields.Integer(
+        "deposit count", compute="_get_deposit_len", store=True
+    )
 
     @api.multi
-    @api.depends('deposit_ids')
+    @api.depends("deposit_ids")
     def _get_deposit_len(self):
         for sale in self:
             sale.deposit_count = len(sale.deposit_ids)
 
     @api.multi
     def action_confirm(self):
-
         res = super().action_confirm()
         for line in self.order_line:
             if line.deposit:
-                #line.qty_invoiced = line.product_uom_qty
-                line.invoice_status = 'invoiced'
+                # line.qty_invoiced = line.product_uom_qty
+                line.invoice_status = "invoiced"
         return res
 
     def _finalize_invoices(self, invoices, references):
 
-        if self._context.get('invoice_deposit'):
+        if self._context.get("invoice_deposit"):
             for invoice in references.keys():
                 sale_id = references[invoice]
                 if sale_id.deposit_count:
                     sequence = max(line.sequence for line in invoice.invoice_line_ids)
-                    for line in sale_id.order_line.filtered('deposit'):
+                    for line in sale_id.order_line.filtered("deposit"):
                         sequence += 1
-                        #sale_line_id = line.move_id.sale_line_id
-                        line_vals_list = line.invoice_line_create_vals(invoice.id, line.qty_to_invoice)
-                        line_vals_list[0]['sequence'] = sequence
-                        self.env['account.invoice.line'].create(line_vals_list)
+                        # sale_line_id = line.move_id.sale_line_id
+                        line_vals_list = line.invoice_line_create_vals(
+                            invoice.id, line.qty_to_invoice
+                        )
+                        line_vals_list[0]["sequence"] = sequence
+                        self.env["account.invoice.line"].create(line_vals_list)
         return super()._finalize_invoices(invoices=invoices, references=references)

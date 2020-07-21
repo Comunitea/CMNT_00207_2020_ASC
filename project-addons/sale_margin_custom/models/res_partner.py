@@ -20,15 +20,9 @@ class ResPartner(models.Model):
     @api.multi
     def _compute_average_sale_margin(self):
         partner_id = "partner_id"
-        domain = [
-            (partner_id, "child_of", self.ids),
-            ("state", "in", ("done", "sale")),
-        ]
+        domain = [(partner_id, "child_of", self.ids), ("state", "in", ("done", "sale"))]
         vals = self.env["sale.order"].read_group(
-            domain,
-            [partner_id, "margin", "amount_untaxed"],
-            [partner_id],
-            orderby="id",
+            domain, [partner_id, "margin", "amount_untaxed"], [partner_id], orderby="id"
         )
         res = dict(
             (

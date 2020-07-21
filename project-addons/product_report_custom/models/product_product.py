@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
-    _rec_name = 'code'
+    _rec_name = "code"
 
     code = fields.Char("Code")
     days = fields.Integer("# Days")
@@ -30,9 +30,7 @@ class ProductTemplate(models.Model):
     count_sales_2 = fields.Float(string="Count sales 2")
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
-    days_for_alarm = fields.Many2one(
-        "product.alarm.days", string="Days for sale alarm"
-    )
+    days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
 
     @api.multi
     def compute_product_template_sales(self):
@@ -48,14 +46,14 @@ class ProductTemplate(models.Model):
         for template in self:
             for i in range(0, 4):
                 field = "count_sales_{}".format(i)
-                template[field] = sum(
-                    x[field] for x in template.product_variant_ids
-                )
+                template[field] = sum(x[field] for x in template.product_variant_ids)
 
         for template in self:
             month_str = "{}".format(template["count_sales_0"])
             for i in range(1, 4):
-                month_str = "{}/{}".format(month_str, template["count_sales_{}".format(i)])
+                month_str = "{}/{}".format(
+                    month_str, template["count_sales_{}".format(i)]
+                )
                 template.count_sales = month_str
 
     @api.multi
@@ -76,9 +74,7 @@ class ProductProduct(models.Model):
     count_sales_2 = fields.Float(string="Count sales 2")
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
-    days_for_alarm = fields.Many2one(
-        "product.alarm.days", string="Days for sale alarm"
-    )
+    days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
 
     @api.multi
     def compute_product_sales(self):
@@ -132,8 +128,9 @@ class ProductProduct(models.Model):
             for i in range(0, 4):
                 month_str = "{}".format(i)
                 if res[month_str] and res[month_str].get(product.id, False):
-                    product["count_sales_{}".format(month_str)] = \
-                        res[month_str][product.id]
+                    product["count_sales_{}".format(month_str)] = res[month_str][
+                        product.id
+                    ]
                 else:
                     product["count_sales_{}".format(month_str)] = 0
                 if not i:

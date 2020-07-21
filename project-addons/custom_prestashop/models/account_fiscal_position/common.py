@@ -6,6 +6,5 @@ from odoo import fields, models
 class AccountFiscalPosition(models.Model):
     _inherit = "account.fiscal.position"
 
-    prestashop_tax_ids = fields.Char(help="comma separated ids of prestashop taxes"
-    )
+    prestashop_tax_ids = fields.Char(help="comma separated ids of prestashop taxes")
     recargo_equivalencia = fields.Boolean()

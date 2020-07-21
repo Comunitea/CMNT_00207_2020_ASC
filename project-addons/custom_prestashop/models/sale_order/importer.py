@@ -28,10 +28,7 @@ class SaleImportRule(Component):
                 usage="backend.adapter", model_name="prestashop.res.partner"
             )
             partner_data = partner_adapter.read(partner_id)
-            if partner_data.get("f_pago") and partner_data.get("f_pago") in [
-                "1",
-                "2",
-            ]:
+            if partner_data.get("f_pago") and partner_data.get("f_pago") in ["1", "2"]:
                 payment_mode = self.env["account.payment.mode"].search(
                     [("prestashop_name", "=", partner_data.get("f_pago"))]
                 )
@@ -66,9 +63,7 @@ class SaleOrderImportMapper(Component):
 
     @mapping
     def fiscal_position_id(self, record):
-        order_lines = (
-            record.get("associations").get("order_rows").get("order_row")
-        )
+        order_lines = record.get("associations").get("order_rows").get("order_row")
         if isinstance(order_lines, dict):
             order_lines = [order_lines]
         line_taxes = []
@@ -85,18 +80,24 @@ class SaleOrderImportMapper(Component):
 
         fiscal_positions = self.env["account.fiscal.position"]
         for tax_id in line_taxes:
-            matched_fiscal_position = self.env[
-                "account.fiscal.position"
-            ].search([("prestashop_tax_ids", "ilike", tax_id)])
+            matched_fiscal_position = self.env["account.fiscal.position"].search(
+                [("prestashop_tax_ids", "ilike", tax_id)]
+            )
             fiscal_positions += matched_fiscal_position.filtered(
                 lambda r: tax_id in r.prestashop_tax_ids.split(",")
             )
         if len(fiscal_positions) > 1:
-            if record.get('associations').get('recargos_equivalencia').get('recargo_equivalencia'):
-                preferred_fiscal_positions = fiscal_positions.filtered(lambda r: r.recargo_equivalencia
+            if (
+                record.get("associations")
+                .get("recargos_equivalencia")
+                .get("recargo_equivalencia")
+            ):
+                preferred_fiscal_positions = fiscal_positions.filtered(
+                    lambda r: r.recargo_equivalencia
                 )
             else:
-                preferred_fiscal_positions = fiscal_positions.filtered(lambda r: not  r.recargo_equivalencia
+                preferred_fiscal_positions = fiscal_positions.filtered(
+                    lambda r: not r.recargo_equivalencia
                 )
             if preferred_fiscal_positions:
                 fiscal_positions = preferred_fiscal_positions
@@ -156,27 +157,25 @@ class SaleOrderImportMapper(Component):
                 fpos_id = self.fiscal_position_id(record)["fiscal_position_id"]
                 fpos = self.env["account.fiscal.position"].browse(fpos_id)
                 tax = (
-                    fpos.map_tax(
-                        self.backend_record.discount_product_id.taxes_id
-                    )
+                    fpos.map_tax(self.backend_record.discount_product_id.taxes_id)
                     if fpos
                     else self.backend_record.discount_product_id.taxes_id
                 )
                 factor_tax = not tax.price_include and (1 + tax.amount / 100) or 1.0
-                return {
-                    "commission_amount": float(commission_amount) / factor_tax
-                }
+                return {"commission_amount": float(commission_amount) / factor_tax}
         return {}
 
     @mapping
     def notes(self, record):
-        messages = (
-            record.get("associations").get("messages").get("message")
-        )
+        messages = record.get("associations").get("messages").get("message")
         if isinstance(messages, dict):
             messages = [messages]
         if messages:
-            return {'note': '\n'.join([x.get('message') for x in messages if x['private'] == '0'])}
+            return {
+                "note": "\n".join(
+                    [x.get("message") for x in messages if x["private"] == "0"]
+                )
+            }
 
     def _map_child(self, map_record, from_attr, to_attr, model_name):
         binder = self.binder_for("prestashop.sale.order")
@@ -253,10 +252,8 @@ class ImportMapChild(Component):
                         and values[item]
                     ):
                         if float(values[item]) != prestashop_binding[item] and (
-                            prestashop_binding[item] - float(values[item])
-                            > 0.01
-                            or prestashop_binding[item] - float(values[item])
-                            < -0.01
+                            prestashop_binding[item] - float(values[item]) > 0.01
+                            or prestashop_binding[item] - float(values[item]) < -0.01
                         ):
                             final_vals[item] = values[item]
                     elif prestashop_binding._fields[item].type == "many2one":
@@ -282,7 +279,9 @@ class SaleOrderImporter(Component):
             state = self.binder_for("prestashop.sale.order.state").to_internal(
                 ps_state_id, unwrap=1
             )
-            self._get_binding().with_context(bypass_risk=True).prestashop_state = state.id
+            self._get_binding().with_context(
+                bypass_risk=True
+            ).prestashop_state = state.id
         if self._get_binding().prestashop_state.trigger_cancel:
             return True
         rules = self.component(usage="sale.import.rule")
@@ -311,22 +310,17 @@ class SaleOrderImporter(Component):
                     added_amount = True
                     if (
                         line.applied_commission_amount
-                        and line.applied_commission_amount
-                        != binding.commission_amount
+                        and line.applied_commission_amount != binding.commission_amount
                     ):
                         line.price_unit = (
                             line.price_unit
                             - line.applied_commission_amount
                             + binding.commission_amount
                         )
-                        line.applied_commission_amount = (
-                            binding.commission_amount
-                        )
+                        line.applied_commission_amount = binding.commission_amount
                     if not line.applied_commission_amount:
                         line.price_unit += binding.commission_amount
-                        line.applied_commission_amount = (
-                            binding.commission_amount
-                        )
+                        line.applied_commission_amount = binding.commission_amount
                     break
             if not added_amount:
                 taxes = discount_product.taxes_id

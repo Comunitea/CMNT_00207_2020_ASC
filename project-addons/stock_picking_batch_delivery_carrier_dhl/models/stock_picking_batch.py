@@ -56,19 +56,14 @@ class StockBatchPicking(models.Model):
             )
             delivery.request_date = "{}{}".format(picking_time, k)
 
-    request_date = fields.Char(
-        "Requested Date", compute="compute_resquest_date"
-    )
+    request_date = fields.Char("Requested Date", compute="compute_resquest_date")
 
     def setHeaders(self):
 
         auth_data = "{}:{}".format(
-            self.carrier_id.account_id.account,
-            self.carrier_id.account_id.password,
+            self.carrier_id.account_id.account, self.carrier_id.account_id.password
         )
-        auth_basic = "Basic " + str(
-            base64.b64encode(auth_data.encode()).decode()
-        )
+        auth_basic = "Basic " + str(base64.b64encode(auth_data.encode()).decode())
 
         headers = {
             "authorization": auth_basic,
@@ -91,9 +86,7 @@ class StockBatchPicking(models.Model):
                     self.carrier_id.account_id.service_test_url
                 )
             else:
-                url = "{}ShipmentRequest".format(
-                    self.carrier_id.account_id.service_url
-                )
+                url = "{}ShipmentRequest".format(self.carrier_id.account_id.service_url)
 
             RequestedPackages = []
             cur_pack = 1
@@ -128,7 +121,7 @@ class StockBatchPicking(models.Model):
                         "PaymentInfo": "DAP",
                         "InternationalDetail": {
                             "Commodities": {
-                                "Description": "{}".format(self.name.upper()),
+                                "Description": "{}".format(self.name.upper())
                             },
                             "Content": "DOCUMENTS"
                             if self.partner_id.country_id.code == "ES"
@@ -147,8 +140,7 @@ class StockBatchPicking(models.Model):
                                         self.env.user.company_id.name.upper()
                                     ),
                                     "PhoneNumber": "{}".format(
-                                        self.env.user.company_id.phone
-                                        or ""
+                                        self.env.user.company_id.phone or ""
                                     ),
                                     "EmailAddress": self.env.user.company_id.email,
                                 },
@@ -157,20 +149,17 @@ class StockBatchPicking(models.Model):
                                         self.env.user.company_id.street
                                     ),
                                     "StreetLines2": "{}".format(
-                                        self.env.user.company_id.street2
-                                        or "N/A"
+                                        self.env.user.company_id.street2 or "N/A"
                                     ),
                                     "StreetLines3": "{}".format(
-                                        self.delivery_note
-                                        or "N/A"
+                                        self.delivery_note or "N/A"
                                     ),
                                     "City": "{}".format(
                                         self.env.user.company_id.city.upper()
                                     ),
                                     "PostalCode": self.env.user.company_id.zip,
                                     "CountryCode": "{}".format(
-                                        self.env.user.company_id.country_id.code
-                                        or "ES"
+                                        self.env.user.company_id.country_id.code or "ES"
                                     ),
                                 },
                             },
@@ -196,15 +185,11 @@ class StockBatchPicking(models.Model):
                                     ),
                                 },
                                 "Address": {
-                                    "StreetLines": "{}".format(
-                                        self.partner_id.street
-                                    ),
+                                    "StreetLines": "{}".format(self.partner_id.street),
                                     "StreetLines2": "{}".format(
                                         self.partner_id.street2 or "N/A"
                                     ),
-                                    "City": "{}".format(
-                                        self.partner_id.city.upper()
-                                    ),
+                                    "City": "{}".format(self.partner_id.city.upper()),
                                     "PostalCode": self.partner_id.zip,
                                     "CountryCode": "{}".format(
                                         self.partner_id.country_id.code
@@ -227,13 +212,9 @@ class StockBatchPicking(models.Model):
                     response = r.json()["ShipmentResponse"]
                     if "ShipmentIdentificationNumber" not in response:
                         raise UserError(
-                            "Error: {}".format(
-                                response["Notification"][0]["Message"]
-                            )
+                            "Error: {}".format(response["Notification"][0]["Message"])
                         )
-                    self.carrier_tracking_ref = response[
-                        "ShipmentIdentificationNumber"
-                    ]
+                    self.carrier_tracking_ref = response["ShipmentIdentificationNumber"]
 
                     if response["LabelImage"]:
                         if self.carrier_id.account_id.file_format == "PDF":
@@ -241,15 +222,11 @@ class StockBatchPicking(models.Model):
                                 {
                                     "name": "Label: {}".format(self.name),
                                     "type": "binary",
-                                    "datas": response["LabelImage"][0][
-                                        "GraphicImage"
-                                    ],
+                                    "datas": response["LabelImage"][0]["GraphicImage"],
                                     "datas_fname": "Label"
                                     + self.name
                                     + ".{}".format(
-                                        response["LabelImage"][0][
-                                            "LabelImageFormat"
-                                        ]
+                                        response["LabelImage"][0]["LabelImageFormat"]
                                     ),
                                     "store_fname": self.name,
                                     "res_model": self._name,
@@ -262,15 +239,11 @@ class StockBatchPicking(models.Model):
                                 {
                                     "name": "Label: {}".format(self.name),
                                     "type": "binary",
-                                    "datas": response["LabelImage"][0][
-                                        "GraphicImage"
-                                    ],
+                                    "datas": response["LabelImage"][0]["GraphicImage"],
                                     "datas_fname": "Label"
                                     + self.name
                                     + ".{}".format(
-                                        response["LabelImage"][0][
-                                            "LabelImageFormat"
-                                        ]
+                                        response["LabelImage"][0]["LabelImageFormat"]
                                     ),
                                     "store_fname": self.name,
                                     "res_model": self._name,
@@ -281,9 +254,7 @@ class StockBatchPicking(models.Model):
                         self.print_created_labels()
                     if response["PackagesResult"]:
                         shipment_reference = ""
-                        for package in response["PackagesResult"][
-                            "PackageResult"
-                        ]:
+                        for package in response["PackagesResult"]["PackageResult"]:
                             shipment_reference += "{} ".format(
                                 package["TrackingNumber"]
                             )
@@ -295,33 +266,21 @@ class StockBatchPicking(models.Model):
         super(StockBatchPicking, self).check_delivery_address()
         if self.carrier_id.code == "DHL":
             if not self.env.user.company_id.city:
-                raise UserError(
-                    _("Company address is not complete (City missing).")
-                )
+                raise UserError(_("Company address is not complete (City missing)."))
             if not self.env.user.company_id.state_id:
-                raise UserError(
-                    _("Company address is not complete (State missing).")
-                )
+                raise UserError(_("Company address is not complete (State missing)."))
             if not self.env.user.company_id.country_id:
-                raise UserError(
-                    _("Company address is not complete (Country missing).")
-                )
+                raise UserError(_("Company address is not complete (Country missing)."))
             if not self.env.user.company_id.email:
-                raise UserError(
-                    _("Company address is not complete (Email missing).")
-                )
+                raise UserError(_("Company address is not complete (Email missing)."))
             if not self.env.user.company_id.phone:
-                raise UserError(
-                    _("Company address is not complete (Needs a phone).")
-                )
+                raise UserError(_("Company address is not complete (Needs a phone)."))
             if not self.env.user.company_id.zip:
                 raise UserError(
                     _("Company address is not complete (Zip code missing).")
                 )
             if not self.env.user.company_id.street:
-                raise UserError(
-                    _("Company address is not complete (Street missing).")
-                )
+                raise UserError(_("Company address is not complete (Street missing)."))
 
 
 class StockPicking(models.Model):
@@ -330,18 +289,14 @@ class StockPicking(models.Model):
 
     def get_message_reference(self, stringLength=8):
         lettersAndDigits = string.ascii_letters + string.digits
-        return "".join(
-            (random.choice(lettersAndDigits) for i in range(stringLength))
-        )
+        return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
     def check_shipment_status(self):
         if self.carrier_id.code == "DHL":
             headers = self.batch_id.setHeaders()
 
             if not self.carrier_id.account_id:
-                _logger.error(
-                    _("Delivery carrier has no account.")
-                )
+                _logger.error(_("Delivery carrier has no account."))
                 return
 
             if self.carrier_id.account_id.test_enviroment:
@@ -349,9 +304,7 @@ class StockPicking(models.Model):
                     self.carrier_id.account_id.service_test_url
                 )
             else:
-                url = "{}TrackingRequest".format(
-                    self.carrier_id.account_id.service_url
-                )
+                url = "{}TrackingRequest".format(self.carrier_id.account_id.service_url)
 
             payload = {
                 "trackShipmentRequest": {
@@ -360,9 +313,7 @@ class StockPicking(models.Model):
                             "Request": {
                                 "ServiceHeader": {
                                     "MessageTime": "{}".format(
-                                        self.batch_id.request_date.replace(
-                                            "GMT", ""
-                                        )
+                                        self.batch_id.request_date.replace("GMT", "")
                                     ),
                                     "MessageReference": "{}".format(
                                         self.get_message_reference(32)
@@ -383,25 +334,25 @@ class StockPicking(models.Model):
                     "POST", url, data=json.dumps(payload), headers=headers
                 )
             except requests.exceptions.RequestException as e:
-                _logger.error(
-                    _("Access error message: {}").format(e)
-                )
+                _logger.error(_("Access error message: {}").format(e))
                 return
 
             response = r.json()["trackShipmentRequestResponse"]
-            awbinfoitem = response["trackingResponse"]["TrackingResponse"][
-                "AWBInfo"
-            ]["ArrayOfAWBInfoItem"]
+            awbinfoitem = response["trackingResponse"]["TrackingResponse"]["AWBInfo"][
+                "ArrayOfAWBInfoItem"
+            ]
             if "ShipmentInfo" in awbinfoitem:
-                if "ShipmentEvent" in awbinfoitem['ShipmentInfo']:
-                    delivery_status = awbinfoitem['ShipmentInfo']["ShipmentEvent"][
+                if "ShipmentEvent" in awbinfoitem["ShipmentInfo"]:
+                    delivery_status = awbinfoitem["ShipmentInfo"]["ShipmentEvent"][
                         "ArrayOfShipmentEventItem"
                     ]["ServiceEvent"]["EventCode"]
                     if delivery_status == "OK":
                         self.delivered = True
             else:
                 _logger.error(
-                    _("Access error message: {}").format(awbinfoitem["Status"]["ActionStatus"])
+                    _("Access error message: {}").format(
+                        awbinfoitem["Status"]["ActionStatus"]
+                    )
                 )
                 return
         else:

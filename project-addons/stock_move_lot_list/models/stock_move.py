@@ -8,9 +8,7 @@ class StockMove(models.Model):
     _inherit = "stock.move"
 
     move_line_lot_ids = fields.Many2many(
-        "stock.production.lot",
-        string="Lots",
-        compute="_compute_move_line_lot_ids",
+        "stock.production.lot", string="Lots", compute="_compute_move_line_lot_ids"
     )
     proposed_lot_ids = fields.Many2many(
         "stock.production.lot",
@@ -67,9 +65,7 @@ class StockMove(models.Model):
                         self.env["stock.move.line"].create(move_line_vals_list)
                 move.proposed_lot_ids.unlink()
                 move.move_line_ids.filtered(lambda x: not x.lot_name).unlink()
-                if float_is_zero(
-                    move.quantity_done, precision_rounding=rounding
-                ):
+                if float_is_zero(move.quantity_done, precision_rounding=rounding):
                     confirmed_moves |= move
                 elif (
                     float_is_zero(
@@ -100,9 +96,7 @@ class StockMove(models.Model):
             for move in move_ids:
                 ctx.update(proposed_lot_ids=move.proposed_lot_ids.ids)
                 super(StockMove, move.with_context(ctx))._action_assign()
-                move.move_line_ids.filtered(lambda x: x.lot_id).write(
-                    {"qty_done": 1}
-                )
+                move.move_line_ids.filtered(lambda x: x.lot_id).write({"qty_done": 1})
                 self -= move
         super()._action_assign()
         self.apply_proposed_lots()
@@ -136,10 +130,7 @@ class StockMove(models.Model):
                 ]
                 existing_lot = lot_ids.search(lot_domain, limit=1)
                 if not existing_lot:
-                    new_lot_vals = {
-                        "product_id": self.product_id.id,
-                        "name": name,
-                    }
+                    new_lot_vals = {"product_id": self.product_id.id, "name": name}
                     existing_lot = lot_ids.create(new_lot_vals)
                 lot_ids |= existing_lot
             self.proposed_lot_ids |= lot_ids

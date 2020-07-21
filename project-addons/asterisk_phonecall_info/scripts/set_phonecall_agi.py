@@ -108,75 +108,149 @@ not_found_name = False
 
 # Define command line options
 options = [
-    {'names': ('-s', '--server'), 'dest': 'server', 'type': 'string',
-        'action': 'store', 'default': False,
-        'help': 'DNS or IP address of the Odoo server. Default = none '
-        '(will not try to connect to Odoo)'},
-    {'names': ('-p', '--port'), 'dest': 'port', 'type': 'int',
-        'action': 'store', 'default': False,
-        'help': "Port of Odoo's webservice interface. Default = 443 when SSL "
-        "is on, 8069 when SSL is off"},
-    {'names': ('-e', '--ssl'), 'dest': 'ssl',
-        'help': "Use SSL connections instead of clear connections. "
+    {
+        "names": ("-s", "--server"),
+        "dest": "server",
+        "type": "string",
+        "action": "store",
+        "default": False,
+        "help": "DNS or IP address of the Odoo server. Default = none "
+        "(will not try to connect to Odoo)",
+    },
+    {
+        "names": ("-p", "--port"),
+        "dest": "port",
+        "type": "int",
+        "action": "store",
+        "default": False,
+        "help": "Port of Odoo's webservice interface. Default = 443 when SSL "
+        "is on, 8069 when SSL is off",
+    },
+    {
+        "names": ("-e", "--ssl"),
+        "dest": "ssl",
+        "help": "Use SSL connections instead of clear connections. "
         "Default = no, use clear XML-RPC or JSON-RPC",
-        'action': 'store_true', 'default': False},
-    {'names': ('-j', '--jsonrpc'), 'dest': 'jsonrpc',
-        'help': "Use JSON-RPC instead of the default protocol XML-RPC. "
+        "action": "store_true",
+        "default": False,
+    },
+    {
+        "names": ("-j", "--jsonrpc"),
+        "dest": "jsonrpc",
+        "help": "Use JSON-RPC instead of the default protocol XML-RPC. "
         "Default = no, use XML-RPC",
-        'action': 'store_true', 'default': False},
-    {'names': ('-d', '--database'), 'dest': 'database', 'type': 'string',
-        'action': 'store', 'default': 'odoo',
-        'help': "Odoo database name. Default = 'odoo'"},
-    {'names': ('-u', '--user-id'), 'dest': 'userid', 'type': 'int',
-        'action': 'store', 'default': 2,
-        'help': "Odoo user ID to use when connecting to Odoo in "
-        "XML-RPC. Default = 2"},
-    {'names': ('-t', '--username'), 'dest': 'username', 'type': 'string',
-        'action': 'store', 'default': 'demo',
-        'help': "Odoo username to use when connecting to Odoo in "
-        "JSON-RPC. Default = demo"},
-    {'names': ('-w', '--password'), 'dest': 'password', 'type': 'string',
-        'action': 'store', 'default': 'demo',
-        'help': "Password of the Odoo user. Default = 'demo'"},
-    {'names': ('-a', '--ascii'), 'dest': 'ascii',
-        'action': 'store_true', 'default': False,
-        'help': "Convert name from UTF-8 to ASCII. Default = no, keep UTF-8"},
-    {'names': ('-n', '--notify'), 'dest': 'notify',
-        'action': 'store_true', 'default': False,
-        'help': "Notify Odoo users via a pop-up (requires the Odoo "
+        "action": "store_true",
+        "default": False,
+    },
+    {
+        "names": ("-d", "--database"),
+        "dest": "database",
+        "type": "string",
+        "action": "store",
+        "default": "odoo",
+        "help": "Odoo database name. Default = 'odoo'",
+    },
+    {
+        "names": ("-u", "--user-id"),
+        "dest": "userid",
+        "type": "int",
+        "action": "store",
+        "default": 2,
+        "help": "Odoo user ID to use when connecting to Odoo in "
+        "XML-RPC. Default = 2",
+    },
+    {
+        "names": ("-t", "--username"),
+        "dest": "username",
+        "type": "string",
+        "action": "store",
+        "default": "demo",
+        "help": "Odoo username to use when connecting to Odoo in "
+        "JSON-RPC. Default = demo",
+    },
+    {
+        "names": ("-w", "--password"),
+        "dest": "password",
+        "type": "string",
+        "action": "store",
+        "default": "demo",
+        "help": "Password of the Odoo user. Default = 'demo'",
+    },
+    {
+        "names": ("-a", "--ascii"),
+        "dest": "ascii",
+        "action": "store_true",
+        "default": False,
+        "help": "Convert name from UTF-8 to ASCII. Default = no, keep UTF-8",
+    },
+    {
+        "names": ("-n", "--notify"),
+        "dest": "notify",
+        "action": "store_true",
+        "default": False,
+        "help": "Notify Odoo users via a pop-up (requires the Odoo "
         "module 'base_phone_popup'). If you use this option, you must pass "
         "the logins of the Odoo users to notify as argument to the "
-        "script. Default = no"},
-    {'names': ('-g', '--geoloc'), 'dest': 'geoloc',
-        'action': 'store_true', 'default': False,
-        'help': "Try to geolocate phone numbers unknown to Odoo. This "
+        "script. Default = no",
+    },
+    {
+        "names": ("-g", "--geoloc"),
+        "dest": "geoloc",
+        "action": "store_true",
+        "default": False,
+        "help": "Try to geolocate phone numbers unknown to Odoo. This "
         "features requires the 'phonenumbers' Python lib. To install it, "
-        "run 'sudo pip install phonenumbers' Default = no"},
-    {'names': ('-l', '--geoloc-lang'), 'dest': 'lang', 'type': 'string',
-        'action': 'store', 'default': "en",
-        'help': "Language in which the name of the country and city name "
+        "run 'sudo pip install phonenumbers' Default = no",
+    },
+    {
+        "names": ("-l", "--geoloc-lang"),
+        "dest": "lang",
+        "type": "string",
+        "action": "store",
+        "default": "en",
+        "help": "Language in which the name of the country and city name "
         "will be displayed by the geolocalisation database. Use the 2 "
-        "letters ISO code of the language. Default = 'en'"},
-    {'names': ('-c', '--geoloc-country'), 'dest': 'country', 'type': 'string',
-        'action': 'store', 'default': "FR",
-        'help': "2 letters ISO code for your country e.g. 'FR' for France. "
+        "letters ISO code of the language. Default = 'en'",
+    },
+    {
+        "names": ("-c", "--geoloc-country"),
+        "dest": "country",
+        "type": "string",
+        "action": "store",
+        "default": "FR",
+        "help": "2 letters ISO code for your country e.g. 'FR' for France. "
         "This will be used by the geolocalisation system to parse the phone "
-        "number of the calling party. Default = 'FR'"},
-    {'names': ('-o', '--outgoing'), 'dest': 'outgoing',
-        'action': 'store_true', 'default': False,
-        'help': "Update the Connected Line ID name on outgoing calls via a "
+        "number of the calling party. Default = 'FR'",
+    },
+    {
+        "names": ("-o", "--outgoing"),
+        "dest": "outgoing",
+        "action": "store_true",
+        "default": False,
+        "help": "Update the Connected Line ID name on outgoing calls via a "
         "call to the Asterisk function CONNECTEDLINE(), instead of updating "
-        "the Caller ID name on incoming calls. Default = no."},
-    {'names': ('-i', '--outgoing-agi-variable'), 'dest': 'outgoing_agi_var',
-        'type': 'string', 'action': 'store', 'default': "extension",
-        'help': "Enter the name of the AGI variable (without the 'agi_' "
+        "the Caller ID name on incoming calls. Default = no.",
+    },
+    {
+        "names": ("-i", "--outgoing-agi-variable"),
+        "dest": "outgoing_agi_var",
+        "type": "string",
+        "action": "store",
+        "default": "extension",
+        "help": "Enter the name of the AGI variable (without the 'agi_' "
         "prefix) from which the script will get the phone number dialed by "
         "the user on outgoing calls. For example, with Xivo, you should "
-        "specify 'dnid' as the AGI variable. Default = 'extension'"},
-    {'names': ('-m', '--max-size'), 'dest': 'max_size', 'type': 'int',
-        'action': 'store', 'default': 40,
-        'help': "If the name has more characters this maximum size, cut it "
-        "to this maximum size. Default = 40"},
+        "specify 'dnid' as the AGI variable. Default = 'extension'",
+    },
+    {
+        "names": ("-m", "--max-size"),
+        "dest": "max_size",
+        "type": "int",
+        "action": "store",
+        "default": 40,
+        "help": "If the name has more characters this maximum size, cut it "
+        "to this maximum size. Default = 40",
+    },
 ]
 
 
@@ -184,8 +258,7 @@ def main(options, arguments):
 
     agi = agilib.AGI()
 
-    agi.verbose(
-            "ENTRA EN EL PHONECALL")    
+    agi.verbose("ENTRA EN EL PHONECALL")
 
     if options.port:
         port = options.port
@@ -200,32 +273,39 @@ def main(options, arguments):
     # Yes, this script can be used without "-s odoo_server" !
     if options.server and options.jsonrpc:
         import odoorpc
-        proto = options.ssl and 'jsonrpc+ssl' or 'jsonrpc'
+
+        proto = options.ssl and "jsonrpc+ssl" or "jsonrpc"
         agi.verbose(
-            "Starting %s request on Odoo %s:%d database %s username %s" % (
-                proto.upper(), options.server, port, options.database,
-                options.username))
+            "Starting %s request on Odoo %s:%d database %s username %s"
+            % (proto.upper(), options.server, port, options.database, options.username)
+        )
         try:
             odoo = odoorpc.ODOO(options.server, proto, port)
             odoo.login(options.database, options.username, options.password)
-            res = odoo.execute('crm.phonecall', 'create_phonecall_from_asterisk', agi)
-            agi.verbose("Called method %s" % 'create_phonecall_from_asterisk')
+            res = odoo.execute("crm.phonecall", "create_phonecall_from_asterisk", agi)
+            agi.verbose("Called method %s" % "create_phonecall_from_asterisk")
         except:
             agi.verbose("Could not connect to Odoo in JSON-RPC")
     elif options.server:
-        proto = options.ssl and 'https' or 'http'
+        proto = options.ssl and "https" or "http"
         agi.verbose(
             "Starting %s XML-RPC request on Odoo %s:%d "
-            "database %s user ID %d" % (
-                proto, options.server, port, options.database,
-                options.userid))
+            "database %s user ID %d"
+            % (proto, options.server, port, options.database, options.userid)
+        )
         sock = xmlrpclib.ServerProxy(
-            '%s://%s:%d/xmlrpc/object' % (proto, options.server, port))
+            "%s://%s:%d/xmlrpc/object" % (proto, options.server, port)
+        )
         try:
             res = sock.execute(
-                options.database, options.userid, options.password,
-                'crm.phonecall', 'create_phonecall_from_asterisk', agi)
-            agi.verbose("Called method %s" % 'create_phonecall_from_asterisk')
+                options.database,
+                options.userid,
+                options.password,
+                "crm.phonecall",
+                "create_phonecall_from_asterisk",
+                agi,
+            )
+            agi.verbose("Called method %s" % "create_phonecall_from_asterisk")
         except:
             agi.verbose("Could not connect to Odoo in XML-RPC")
         # To simulate a long execution of the XML-RPC request
@@ -247,7 +327,7 @@ def main(options, arguments):
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     usage = "Usage: get_name_agi.py [options] login1 login2 login3 ..."
     epilog = "Script written by Alexis de Lattre. "
     "Published under the GNU AGPL licence."
@@ -256,8 +336,8 @@ if __name__ == '__main__':
     "of incoming calls."
     parser = OptionParser(usage=usage, epilog=epilog, description=description)
     for option in options:
-        param = option['names']
-        del option['names']
+        param = option["names"]
+        del option["names"]
         parser.add_option(*param, **option)
     options, arguments = parser.parse_args()
     sys.argv[:] = arguments

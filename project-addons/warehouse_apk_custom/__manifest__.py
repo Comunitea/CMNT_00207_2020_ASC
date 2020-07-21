@@ -18,27 +18,23 @@
 #
 ##############################################################################
 {
-    'name': 'Warehouse Apk Custom',
-    'version': '12.0.0.0',
-    'summary': 'Customizations Wh APK A-SEC',
-    'category': 'Custom',
-    'author': 'comunitea',
-    'website': 'www.comunitea.com',
-    'license': 'AGPL-3',
-    'depends': [
-        'warehouse_apk',
-        'stock_custom',
-        'stock_picking_batch_extended'
+    "name": "Warehouse Apk Custom",
+    "version": "12.0.0.0",
+    "summary": "Customizations Wh APK A-SEC",
+    "category": "Custom",
+    "author": "comunitea",
+    "website": "www.comunitea.com",
+    "license": "AGPL-3",
+    "depends": ["warehouse_apk", "stock_custom", "stock_picking_batch_extended"],
+    "data": [
+        "views/stock_picking_type.xml",
+        "views/stock_picking_batch.xml",
+        "views/stock_picking.xml",
+        "views/product_view.xml",
+        "views/crm_team.xml",
+        "views/delivery_carrier.xml",
     ],
-    'data': [
-        'views/stock_picking_type.xml',
-        'views/stock_picking_batch.xml',
-        'views/stock_picking.xml',
-        'views/product_view.xml',
-        'views/crm_team.xml',
-        'views/delivery_carrier.xml',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
+    "installable": True,
+    "auto_install": False,
+    "application": False,
 }

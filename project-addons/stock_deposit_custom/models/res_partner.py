@@ -8,10 +8,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     def compute_deposit_domain(self):
-        return [
-            ("order_partner_id", "child_of", [self.id]),
-            ("deposit", "=", True),
-        ]
+        return [("order_partner_id", "child_of", [self.id]), ("deposit", "=", True)]
 
     @api.multi
     def _compute_deposit_ids(self):
@@ -25,15 +22,13 @@ class ResPartner(models.Model):
         string="# of Deposits", compute="_compute_deposit_ids"
     )
     deposit_days = fields.Integer("Deposit days", default=30)
-    deposit_ids = fields.One2many(
-        "sale.order.line", compute="_compute_deposit_ids"
-    )
+    deposit_ids = fields.One2many("sale.order.line", compute="_compute_deposit_ids")
 
     @api.multi
     def action_open_deposit(self):
         self.ensure_one()
-        action = self.env.ref(
-            "stock_deposit_custom.act_res_partner_2_deposit"
-        ).read()[0]
+        action = self.env.ref("stock_deposit_custom.act_res_partner_2_deposit").read()[
+            0
+        ]
         action["domain"] = self.compute_deposit_domain()
         return action

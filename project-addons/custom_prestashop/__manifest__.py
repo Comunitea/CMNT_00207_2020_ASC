@@ -16,7 +16,7 @@
         "base_multi_image",
         "base_location",
         "stock_custom",
-        "sale_financial_risk"
+        "sale_financial_risk",
     ],
     "data": [
         "views/account_payment_term.xml",

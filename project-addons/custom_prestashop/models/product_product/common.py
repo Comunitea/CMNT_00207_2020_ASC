@@ -6,25 +6,33 @@ from odoo import api, fields, models
 class ProductProduct(models.Model):
 
     _inherit = "product.product"
-    pack_product = fields.Boolean(compute='_compute_pack_product', store=True)
+    pack_product = fields.Boolean(compute="_compute_pack_product", store=True)
     need_export_stock = fields.Boolean()
 
     @api.multi
     def update_prestashop_qty(self):
-        if self._context.get('cron_compute'):
-            self.write({'need_export_stock': False})
+        if self._context.get("cron_compute"):
+            self.write({"need_export_stock": False})
             for prod in self:
                 if prod.used_in_bom_count:
-                    boms = self.env['mrp.bom'].search([('bom_line_ids.product_id', '=', prod.id)])
-                    self = self + boms.mapped('product_tmpl_id.product_variant_ids') + boms.mapped('product_id')
+                    boms = self.env["mrp.bom"].search(
+                        [("bom_line_ids.product_id", "=", prod.id)]
+                    )
+                    self = (
+                        self
+                        + boms.mapped("product_tmpl_id.product_variant_ids")
+                        + boms.mapped("product_id")
+                    )
             return super().update_prestashop_qty()
         else:
-            self.write({'need_export_stock': True})
+            self.write({"need_export_stock": True})
 
-    @api.depends('attribute_value_ids.product_id')
+    @api.depends("attribute_value_ids.product_id")
     def _compute_pack_product(self):
         for product in self:
-            if any(product.mapped('attribute_value_ids.product_id')) or self.env['mrp.bom']._bom_find(product=product):
+            if any(product.mapped("attribute_value_ids.product_id")) or self.env[
+                "mrp.bom"
+            ]._bom_find(product=product):
                 product.pack_product = True
             else:
                 product.pack_product = False
@@ -88,11 +96,13 @@ class ProductProduct(models.Model):
     def _compute_qty_available_not_reserved(self):
         pack_prods = self.filtered(lambda r: r.pack_product)
         not_pack_prods = self.filtered(lambda r: not r.pack_product)
-        res = super(ProductProduct, not_pack_prods)._compute_qty_available_not_reserved()
+        res = super(
+            ProductProduct, not_pack_prods
+        )._compute_qty_available_not_reserved()
         for prod in pack_prods:
-            bom = self.env['mrp.bom']._bom_find(product=prod)
+            bom = self.env["mrp.bom"]._bom_find(product=prod)
             min_qty = 9999999999999
-            if bom and bom.type == 'phantom':
+            if bom and bom.type == "phantom":
                 for line in bom.bom_line_ids:
                     available = line.product_id.qty_available_not_res
                     pack_quantity = available / line.product_qty
@@ -106,18 +116,22 @@ class ProductProduct(models.Model):
     def create(self, vals):
         res = super().create(vals)
         standard_price_added = False
-        if isinstance(vals, dict) and vals.get('standard_price'):
+        if isinstance(vals, dict) and vals.get("standard_price"):
             standard_price_added = True
-        elif isinstance(vals, list) and any([x.get('standard_price') for x in vals]):
+        elif isinstance(vals, list) and any([x.get("standard_price") for x in vals]):
             standard_price_added = True
         if standard_price_added:
-            for record in self.mapped('product_tmpl_id'):
-                self.env['product.template']._event("on_standard_price_changed").notify(record)
+            for record in self.mapped("product_tmpl_id"):
+                self.env["product.template"]._event("on_standard_price_changed").notify(
+                    record
+                )
         return res
 
     def write(self, vals):
         res = super().write(vals)
-        if vals.get('standard_price'):
-            for record in self.mapped('product_tmpl_id'):
-                self.env['product.template']._event("on_standard_price_changed").notify(record)
+        if vals.get("standard_price"):
+            for record in self.mapped("product_tmpl_id"):
+                self.env["product.template"]._event("on_standard_price_changed").notify(
+                    record
+                )
         return res

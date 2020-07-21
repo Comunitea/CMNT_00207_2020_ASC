@@ -11,6 +11,7 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     delivered = fields.Boolean()
+    manual_ready_to_send = fields.Boolean()
 
     @api.onchange("payment_mode_id")
     def onchange_payment_mode_id(self):
@@ -18,7 +19,9 @@ class SaleOrder(models.Model):
             self.invoice_policy = self.payment_mode_id.defaullt_sale_invoice_policy
 
     def _create_delivery_line(self, carrier, price_unit):
-        return super(SaleOrder, self.with_context(purchase_price=price_unit))._create_delivery_line(carrier, price_unit)
+        return super(
+            SaleOrder, self.with_context(purchase_price=price_unit)
+        )._create_delivery_line(carrier, price_unit)
 
     @api.model
     def create(self, vals):
@@ -34,7 +37,7 @@ class SaleOrder(models.Model):
     def check_risk_exception(self):
         if not self.payment_mode_id.check_risk:
             return False
-        if self.state == 'cancel':
+        if self.state == "cancel":
             return False
         partner = self.partner_id.commercial_partner_id
         exception_msg = ""
@@ -66,21 +69,24 @@ class SaleOrder(models.Model):
         for order in self:
             if vals.get("prestashop_state"):
                 state = order.prestashop_state
-                if state.trigger_paid:
+                if state.trigger_paid and not order.manual_ready_to_send:
                     order.ready_to_send = True
                     order.picking_ids.write({"ready_to_send": True})
+            if vals.get("ready_to_send"):
+                order.picking_ids.write({"ready_to_send": vals["ready_to_send"]})
+                order.write({"manual_ready_to_send"})
         return res
 
 
 class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
+    _inherit = "sale.order.line"
 
     applied_commission_amount = fields.Float()
 
     @api.model
     def create(self, vals):
-        if self._context.get('purchase_price'):
-            vals['purchase_price'] = self._context.get('purchase_price')
+        if self._context.get("purchase_price"):
+            vals["purchase_price"] = self._context.get("purchase_price")
         return super().create(vals)
 
 
@@ -97,7 +103,7 @@ class PrestashopSaleOrder(models.Model):
                 if picking.state in ("assigned", "done"):
                     can_edit = False
             if not can_edit:
-                vals.pop('prestashop_order_line_ids')
+                vals.pop("prestashop_order_line_ids")
                 return super().write(vals)
             self.odoo_id.picking_ids.filtered(
                 lambda r: r.state == "confirmed"
@@ -126,19 +132,20 @@ class PrestashopSaleOrder(models.Model):
                 exporter = work.component(usage="sale.order.state.exporter")
                 return exporter.run(self, new_state)
 
-    @job(default_channel='root.prestashop')
+    @job(default_channel="root.prestashop")
     def import_orders_since(self, backend, since_date=None, **kwargs):
         """ Prepare the import of orders modified on PrestaShop """
         filters = None
         if since_date:
-            filters = {'date': '1', 'filter[date_upd]': '>[%s]' % (since_date)}
+            filters = {"date": "1", "filter[date_upd]": ">[%s]" % (since_date)}
         if backend.start_import_date:
             if not since_date:
-                filters = {'date': '1'}
-            filters['filter[date_add]'] = '>[{}]'.format(backend.start_import_date)
+                filters = {"date": "1"}
+            filters["filter[date_add]"] = ">[{}]".format(backend.start_import_date)
         now_fmt = fields.Datetime.now()
-        self.env['prestashop.sale.order'].import_batch(
-            backend, filters=filters, priority=5, max_retries=0)
+        self.env["prestashop.sale.order"].import_batch(
+            backend, filters=filters, priority=5, max_retries=0
+        )
 
         # substract a 10 second margin to avoid to miss an order if it is
         # created in prestashop at the exact same time odoo is checking.
@@ -148,7 +155,7 @@ class PrestashopSaleOrder(models.Model):
 
 
 class PrestashopSaleOrderLine(models.Model):
-    _inherit = 'prestashop.sale.order.line'
+    _inherit = "prestashop.sale.order.line"
 
     @api.multi
     def unlink(self):
@@ -159,12 +166,12 @@ class PrestashopSaleOrderLine(models.Model):
 
 class SaleOrderOnChange(Component):
 
-    _inherit = 'ecommerce.onchange.manager.sale.order'
+    _inherit = "ecommerce.onchange.manager.sale.order"
 
     order_onchange_fields = [
-        'partner_id',
-        'partner_shipping_id',
-        'payment_mode_id',
-        'workflow_process_id',
-        'carrier_id'
+        "partner_id",
+        "partner_shipping_id",
+        "payment_mode_id",
+        "workflow_process_id",
+        "carrier_id",
     ]

@@ -9,9 +9,8 @@ class StockMoveLine(models.Model):
 
     def unlink(self):
 
-        picking_type_id = self.env.ref(
-            'delivery_picking_creator.delivery_picking_type')
-        if self.mapped('move_id').mapped('picking_type_id') == picking_type_id:
+        picking_type_id = self.env.ref("delivery_picking_creator.delivery_picking_type")
+        if self.mapped("move_id").mapped("picking_type_id") == picking_type_id:
             ctx = self._context.copy()
             ctx.update(delivery_type=True)
             self = self.with_context(ctx)

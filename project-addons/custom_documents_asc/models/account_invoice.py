@@ -5,6 +5,6 @@ from odoo import fields, models
 
 class AccountInvoice(models.Model):
 
-    _inherit = 'account.invoice'
+    _inherit = "account.invoice"
 
     mail_sended = fields.Boolean()

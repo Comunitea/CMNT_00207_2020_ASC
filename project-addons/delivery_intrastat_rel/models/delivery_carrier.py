@@ -9,5 +9,7 @@ class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
 
     intrastat_transport_id = fields.Many2one(
-        comodel_name='intrastat.transport_mode', string='Transport Mode',
-        help="This information is used in Intrastat reports")
+        comodel_name="intrastat.transport_mode",
+        string="Transport Mode",
+        help="This information is used in Intrastat reports",
+    )

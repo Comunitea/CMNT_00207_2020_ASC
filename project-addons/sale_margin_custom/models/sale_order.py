@@ -12,7 +12,7 @@ class SaleOrder(models.Model):
         compute="_product_margin",
         string="Margin (%)",
         help="It gives profitability by calculating the difference between "
-             "the Unit Price and the cost in %",
+        "the Unit Price and the cost in %",
         digits=dp.get_precision("Product Price"),
         store=True,
     )

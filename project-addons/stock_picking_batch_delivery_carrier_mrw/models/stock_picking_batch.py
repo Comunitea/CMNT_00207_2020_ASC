@@ -34,6 +34,7 @@ from zeep.transports import Transport
 _logger = logging.getLogger(__name__)
 
 import urllib3
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -58,7 +59,7 @@ class StockBatchPicking(models.Model):
             pickings_total_value = 0.0
             for pick in self.picking_ids:
                 pickings_total_value += pick.amount_total
-            self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace('.',',')
+            self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace(".", ",")
 
     def create_tracking_client(self):
         session = Session()
@@ -125,9 +126,7 @@ class StockBatchPicking(models.Model):
             }
         }
 
-        label = client.service.EtiquetaEnvio(
-            **EtiquetaEnvio, _soapheaders=[headers]
-        )
+        label = client.service.EtiquetaEnvio(**EtiquetaEnvio, _soapheaders=[headers])
         return label
 
     def send_shipping(self):
@@ -178,12 +177,13 @@ class StockBatchPicking(models.Model):
                                         self.partner_id.street or "",
                                         self.partner_id.street2 or "",
                                     ),
-                                    "CodigoPostal": self.partner_id.zip.replace(' ', '')[:4]
-                                    if self.partner_id.country_id.code == 'PT'
+                                    "CodigoPostal": self.partner_id.zip.replace(
+                                        " ", ""
+                                    )[:4]
+                                    if self.partner_id.country_id.code == "PT"
                                     else self.partner_id.zip.zfill(5)
-                                    if self.partner_id.country_id.code == 'AD'
-                                    else
-                                    self.partner_id.zip,
+                                    if self.partner_id.country_id.code == "AD"
+                                    else self.partner_id.zip,
                                     "Poblacion": self.partner_id.city,
                                     "Provincia": self.partner_id.state_id.name,
                                 },
@@ -194,9 +194,7 @@ class StockBatchPicking(models.Model):
                                 or self.partner_id.commercial_partner_id.phone
                                 or self.partner_id.commercial_partner_id.mobile
                                 or "",
-                                "Observaciones": "{}".format(
-                                    self.delivery_note
-                                ),
+                                "Observaciones": "{}".format(self.delivery_note),
                             },
                             "DatosServicio": {
                                 "Fecha": datetime.now().strftime(
@@ -221,7 +219,7 @@ class StockBatchPicking(models.Model):
                                 and self.payment_on_delivery
                                 else "",
                                 "TipoMercancia": self.carrier_id.account_id.mrw_goods_type
-                                if self.partner_id.country_id.code != 'ES'
+                                if self.partner_id.country_id.code != "ES"
                                 else "",
                                 "Notificaciones": notices,
                             },
@@ -235,9 +233,7 @@ class StockBatchPicking(models.Model):
                     raise AccessError(_("Access error message: {}").format(e))
 
                 if res["Estado"] == "0":
-                    raise AccessError(
-                        _("Error message: {}").format(res["Mensaje"])
-                    )
+                    raise AccessError(_("Error message: {}").format(res["Mensaje"]))
                 elif res["Estado"] == "1":
 
                     self.write(
@@ -276,18 +272,14 @@ class StockBatchPicking(models.Model):
                         self.print_created_labels()
                     elif label["Estado"] == "0":
                         raise AccessError(
-                            _(
-                                "Error while trying to retrieve the label: {}"
-                            ).format(label["Mensaje"])
+                            _("Error while trying to retrieve the label: {}").format(
+                                label["Mensaje"]
+                            )
                         )
                     else:
-                        raise AccessError(
-                            _("Error while trying to retrieve the label")
-                        )
+                        raise AccessError(_("Error while trying to retrieve the label"))
                 else:
-                    raise AccessError(
-                        _("Unknown error with the SOAP connection.")
-                    )
+                    raise AccessError(_("Unknown error with the SOAP connection."))
 
             else:
                 raise AccessError(_("Not possible to establish a client."))
@@ -302,7 +294,7 @@ class StockBatchPicking(models.Model):
                         _("Partner address is not complete (State missing).")
                     )
                 else:
-                    self.partner_id.state_id = state_id['state_id']
+                    self.partner_id.state_id = state_id["state_id"]
 
 
 class StockPicking(models.Model):
@@ -312,17 +304,13 @@ class StockPicking(models.Model):
     def check_shipment_status(self):
         if self.carrier_id.code == "MRW":
             if not self.carrier_id.account_id:
-                _logger.error(
-                    _("Delivery carrier has no account.")
-                )
+                _logger.error(_("Delivery carrier has no account."))
                 return
 
             client, history = self.batch_id.create_tracking_client()
 
             if not client:
-                _logger.error(
-                    _("Not possible to establish a client.")
-                )
+                _logger.error(_("Not possible to establish a client."))
                 return
 
             try:
@@ -339,20 +327,21 @@ class StockPicking(models.Model):
 
                 res = client.service.GetEnvios(**GetEnvios)
             except Exception as e:
-                _logger.error(
-                    _("Access error message: {}").format(e)
-                )
+                _logger.error(_("Access error message: {}").format(e))
                 return
-            if res["Seguimiento"]["Abonado"] and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]:
-                for seguimiento in res["Seguimiento"]["Abonado"][0]["SeguimientoAbonado"]["Seguimiento"]:
+            if (
+                res["Seguimiento"]["Abonado"]
+                and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]
+            ):
+                for seguimiento in res["Seguimiento"]["Abonado"][0][
+                    "SeguimientoAbonado"
+                ]["Seguimiento"]:
                     if seguimiento["Estado"] == "00":
                         self.delivered = True
                         break
 
             else:
-                _logger.error(
-                    _("Error: {}").format(res["MensajeSeguimiento"])
-                )
+                _logger.error(_("Error: {}").format(res["MensajeSeguimiento"]))
                 return
         else:
             return super().check_shipment_status()

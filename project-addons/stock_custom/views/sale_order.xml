@@ -7,10 +7,13 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_cancel']" position="after">
-                <field name="ready_to_send" invisible="1"/>
-                <button name="set_ready_to_send_pick_status" invisible="1" context="{'ready_to_send': True}" type="object" string="Ready PDA"/>
-                <button name="set_ready_to_send_pick_status" invisible="1" context="{'ready_to_send': False}" type="object" string="Not ready PDA"/>
+                <!-- <field name="ready_to_send" invisible="1"/> -->
+                <button name="toggle_ready_to_send" attrs="{'invisible': [('ready_to_send', '=', True)]}" type="object" string="Ready to send" confirm="No se volverá a modificar de forma automática, ¿estás seguro?"/>
+                <button name="toggle_ready_to_send" attrs="{'invisible': [('ready_to_send', '=', False)]}" type="object" string="Not ready to send" confirm="No se volverá a modificar de forma automática, ¿estás seguro?"/>
             </xpath>
+            <field name="pricelist_id" position="after">
+                <field name="ready_to_send" readonly="True"/>
+            </field>
         </field>
     </record>
 </odoo>

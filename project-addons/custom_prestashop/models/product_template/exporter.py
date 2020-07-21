@@ -29,11 +29,9 @@ class PrestashopStandardPriceExporter(Component):
 
 
 class ProductInventoryExporter(Component):
-    _inherit = 'prestashop.product.template.inventory.exporter'
+    _inherit = "prestashop.product.template.inventory.exporter"
 
     def get_filter(self, template):
         binder = self.binder_for()
         prestashop_id = binder.to_external(template)
-        return {
-            'filter[id_product]': prestashop_id
-        }
+        return {"filter[id_product]": prestashop_id}

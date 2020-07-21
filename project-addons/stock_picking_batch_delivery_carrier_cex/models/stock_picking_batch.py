@@ -78,10 +78,7 @@ class StockBatchPicking(models.Model):
                     "mensajeRetorno": "\n\nEl servidor está tardando mucho en responder.",
                 }
             except Exception:
-                rjson = {
-                    "codigoRetorno": 999,
-                    "mensajeRetorno": "\n\n" + response.text,
-                }
+                rjson = {"codigoRetorno": 999, "mensajeRetorno": "\n\n" + response.text}
             retorno = rjson["codigoRetorno"]
             message = rjson["mensajeRetorno"]
 
@@ -142,7 +139,13 @@ class StockBatchPicking(models.Model):
 
         partner = self.partner_id
         number_of_packages = self.carrier_packages or 1
-        phone = partner.mobile or partner.phone or partner.commercial_partner_id.mobile or partner.commercial_partner_id.phone or ""
+        phone = (
+            partner.mobile
+            or partner.phone
+            or partner.commercial_partner_id.mobile
+            or partner.commercial_partner_id.phone
+            or ""
+        )
         listaBultos = []
         for i in range(0, number_of_packages):
             listaBultos.append(
@@ -166,12 +169,7 @@ class StockBatchPicking(models.Model):
             streets.append(unidecode(partner.street))
         if partner.street2:
             streets.append(unidecode(partner.street2))
-        if (
-            not streets
-            or not partner.city
-            or not partner.zip
-            or not partner.zip
-        ):
+        if not streets or not partner.city or not partner.zip or not partner.zip:
             raise UserError("Review partner data")
         if self.carrier_id.account_id.file_format not in ("PDF", "ZPL"):
             raise UserError("Format file not supported by cex")
@@ -202,12 +200,20 @@ class StockBatchPicking(models.Model):
             "nifDest": "",
             "dirDest": "".join(streets)[:300],
             "pobDest": partner.city[:50] or "",
-            "codPosNacDest": partner.zip if partner.country_id.code == 'ES' else "",
-            "paisISODest": "" if partner.country_id.code == 'ES' else partner.country_id.code,
-            "codPosIntDest": "" if partner.country_id.code == 'ES' else partner.zip.replace(' ', ''),
+            "codPosNacDest": partner.zip if partner.country_id.code == "ES" else "",
+            "paisISODest": ""
+            if partner.country_id.code == "ES"
+            else partner.country_id.code,
+            "codPosIntDest": ""
+            if partner.country_id.code == "ES"
+            else partner.zip.replace(" ", ""),
             "contacDest": partner.name[:40] or "",
             "telefDest": phone[:15],
-            "emailDest": partner.email and partner.email[:75] or partner.commercial_partner_id.email and partner.commercial_partner_id.email[:75] or "",
+            "emailDest": partner.email
+            and partner.email[:75]
+            or partner.commercial_partner_id.email
+            and partner.commercial_partner_id.email[:75]
+            or "",
             "contacOtrs": "",
             "telefOtrs": "",
             "emailOtrs": "",
@@ -229,8 +235,7 @@ class StockBatchPicking(models.Model):
             "password": "string",
             "listaInformacionAdicional": [
                 {
-                    "tipoEtiqueta": self.carrier_id.account_id.file_format
-                    == "PDF"
+                    "tipoEtiqueta": self.carrier_id.account_id.file_format == "PDF"
                     and "1"
                     or "2",
                     "etiquetaPDF": "",
@@ -243,25 +248,17 @@ class StockBatchPicking(models.Model):
         super(StockBatchPicking, self).check_delivery_address()
         if self.carrier_id.code == "CEX":
             if not self.env.user.company_id.city:
-                raise UserError(
-                    _("Company address is not complete (City missing).")
-                )
+                raise UserError(_("Company address is not complete (City missing)."))
             if not self.env.user.company_id.email:
-                raise UserError(
-                    _("Company address is not complete (Email missing).")
-                )
+                raise UserError(_("Company address is not complete (Email missing)."))
             if not self.env.user.company_id.phone:
-                raise UserError(
-                    _("Company address is not complete (Needs a phone).")
-                )
+                raise UserError(_("Company address is not complete (Needs a phone)."))
             if not self.env.user.company_id.zip:
                 raise UserError(
                     _("Company address is not complete (Zip code missing).")
                 )
             if not self.env.user.company_id.street:
-                raise UserError(
-                    _("Company address is not complete (Street missing).")
-                )
+                raise UserError(_("Company address is not complete (Street missing)."))
 
 
 class StockPicking(models.Model):
@@ -294,8 +291,10 @@ class StockPicking(models.Model):
                     timeout=5000,
                     headers={"Content-Type": "text/xml; charset=utf-8"},
                 )
-                xml_start = response.content.decode('iso-8859-1').find("<")
-                result_xml = parseString(response.content.decode('iso-8859-1')[xml_start:])
+                xml_start = response.content.decode("iso-8859-1").find("<")
+                result_xml = parseString(
+                    response.content.decode("iso-8859-1")[xml_start:]
+                )
                 state_nodes = result_xml.getElementsByTagName("EstadoEnvios")
                 for state_node in state_nodes:
                     if (
@@ -307,18 +306,12 @@ class StockPicking(models.Model):
                     ):
                         self.delivered = True
                         break
-            except (
-                requests.exceptions.Timeout,
-                requests.exceptions.ReadTimeout,
-            ):
+            except (requests.exceptions.Timeout, requests.exceptions.ReadTimeout):
                 rjson = {
                     "codigoRetorno": 999,
                     "mensajeRetorno": "\n\nEl servidor está tardando mucho en responder.",
                 }
             except:
-                rjson = {
-                    "codigoRetorno": 999,
-                    "mensajeRetorno": "\n\n" + response.text,
-                }
+                rjson = {"codigoRetorno": 999, "mensajeRetorno": "\n\n" + response.text}
         else:
             return super().check_shipment_status()
