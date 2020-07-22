@@ -8,7 +8,9 @@ class PrestashopResPartner(models.Model):
     _inherit = "prestashop.res.partner"
 
     @job(default_channel="root.prestashop")
-    def import_customers_since(self, backend_record=None, since_date=None, **kwargs):
+    def import_customers_since(
+        self, backend_record=None, since_date=None, **kwargs
+    ):
         """ Prepare the import of partners modified on PrestaShop """
         filters = {}
         if since_date:
@@ -23,3 +25,10 @@ class PrestashopResPartner(models.Model):
         )
         backend_record.import_partners_since = now_fmt
         return True
+
+    def resync(self):
+        for address in self.mapped(
+            "odoo_id.child_ids.prestashop_address_bind_ids"
+        ) + self.mapped("odoo_id.prestashop_address_bind_ids"):
+            address.resync()
+        return super().resync()
