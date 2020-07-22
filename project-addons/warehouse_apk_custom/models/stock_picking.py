@@ -106,7 +106,7 @@ class StockPicking(models.Model):
             "state": "draft",
             "picking_ids": [(6, 0, self.ids)],
             "payment_on_delivery": self.payment_on_delivery,
-            "notes": "{}: {}".format(self.name, self.note),
+            "notes": "{}: {}".format(self.name, self.note) if self.note else None,
         }
 
     @api.multi
@@ -127,9 +127,14 @@ class StockPicking(models.Model):
                     pick.get_new_batch_values()
                 )
             else:
-                batch_id.notes = "{} // {}: {}".format(
-                    batch_id.notes, pick.name, pick.note
-                )
+                if pick.note and batch_id.notes:
+                    batch_id.notes = "{} // {}: {}".format(
+                        batch_id.notes, pick.name, pick.note
+                    )
+                elif pick.note and not batch_id.notes:
+                    batch_id.notes = "{}: {}".format(
+                        pick.name, pick.note
+                    )
             if batch_id:
                 pick.write({"batch_id": batch_id.id})
                 batch_id.assign_order_moves()
