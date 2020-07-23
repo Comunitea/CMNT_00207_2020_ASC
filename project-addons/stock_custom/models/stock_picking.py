@@ -10,7 +10,6 @@ class PickingTypeGroup(models.Model):
     need_ready_to_send = fields.Boolean(
         string="Need PDA Ready",
         default=False,
-        copy=False,
         help="Si está marcado el alabrán necesitará una autorización para enviarse",
     )
 
@@ -18,7 +17,7 @@ class PickingTypeGroup(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    ready_to_send = fields.Boolean(string="PDA Ready", default=False)
+    ready_to_send = fields.Boolean(string="PDA Ready", default=False, copy=False,)
     team_id = fields.Many2one("crm.team")
 
     @api.depends(
