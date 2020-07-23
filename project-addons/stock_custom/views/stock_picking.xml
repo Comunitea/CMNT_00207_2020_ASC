@@ -25,4 +25,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="pick_mark_as_ready_to_send" model="ir.actions.server">
+        <field name="name">Ready to send</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">
+            for pick in records:
+            pick.mark_as_ready_to_send()
+        </field>
+    </record>
 </odoo>

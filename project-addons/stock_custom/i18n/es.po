@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 10:26+0000\n"
-"PO-Revision-Date: 2020-06-03 10:26+0000\n"
+"POT-Creation-Date: 2020-07-23 15:05+0000\n"
+"PO-Revision-Date: 2020-07-23 15:05+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,14 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_custom
-#: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__attachment_ids
-msgid "Attachments"
-msgstr "Adjuntos"
+#: model:ir.model.fields,field_description:stock_custom.field_stock_production_lot__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: stock_custom
+#: model:ir.actions.server,name:stock_custom.action_deactivate_and_rename
+msgid "Archivar"
+msgstr ""
 
 #. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__average_ratio
@@ -26,14 +31,14 @@ msgid "Average ratio"
 msgstr "Ratio media"
 
 #. module: stock_custom
-#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
-msgid "Ready to send"
-msgstr "Marcar listo para enviar"
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_variable_replenish_form
+msgid "Changes +"
+msgstr ""
 
 #. module: stock_custom
-#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
-msgid "Not ready to send"
-msgstr "Desmarcar listo para enviar"
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_variable_replenish_form
+msgid "Changes -"
+msgstr ""
 
 #. module: stock_custom
 #: model:ir.model,name:stock_custom.model_res_partner
@@ -116,6 +121,11 @@ msgid "Last Updated on"
 msgstr "Última actualización el"
 
 #. module: stock_custom
+#: model:ir.model,name:stock_custom.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Lote/Número de serie"
+
+#. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__max_qty
 msgid "Max quantity"
 msgstr "Cantidad máxima"
@@ -136,9 +146,19 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: stock_custom
-#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
-msgid "Not ready PDA"
+#: model:ir.model.fields,field_description:stock_custom.field_picking_type_group_code__need_ready_to_send
+msgid "Need PDA Ready"
 msgstr ""
+
+#. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "No se volverá a modificar de forma automática, ¿estás seguro?"
+msgstr ""
+
+#. module: stock_custom
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Not ready to send"
+msgstr "Desmarcar listo para enviar"
 
 #. module: stock_custom
 #: model:ir.model.fields,field_description:stock_custom.field_stock_picking__ready_to_send
@@ -146,22 +166,38 @@ msgid "PDA Ready"
 msgstr ""
 
 #. module: stock_custom
+#: code:addons/stock_custom/models/stock_picking.py:79
+#, python-format
+msgid "Pick is already ready to send."
+msgstr "El albarán ya está listo para enviar."
+
+#. module: stock_custom
 #: model:ir.model,name:stock_custom.model_product_product
 msgid "Product"
 msgstr "Producto"
 
 #. module: stock_custom
-#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
-msgid "Ready PDA"
-msgstr ""
+#: model:ir.model,name:stock_custom.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
 
 #. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_sale_order__ready_to_send
 #: model:ir.model.fields,field_description:stock_custom.field_sale_order__ready_to_send
 msgid "Ready To Send"
 msgstr "Listo para enviar"
 
 #. module: stock_custom
+#: model:ir.actions.server,name:stock_custom.pick_mark_as_ready_to_send
+#: model_terms:ir.ui.view,arch_db:stock_custom.view_order_form_stock_custom
+msgid "Ready to send"
+msgstr "Marcar listo para enviar"
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_product_combination__replenish_type
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_product_template__replenish_type
 #: model:ir.model.fields,field_description:stock_custom.field_product_product__replenish_type
+#: model:ir.model.fields,field_description:stock_custom.field_product_template__replenish_type
 #: model_terms:ir.ui.view,arch_db:stock_custom.product_search_view_replenish_type
 msgid "Replenish type"
 msgstr "Tipo de reposición"
@@ -175,6 +211,16 @@ msgstr "Pedido de venta"
 #: model:ir.model.fields,field_description:stock_custom.field_variable_replenish__sale_days
 msgid "Sale days"
 msgstr "Días de venta"
+
+#. module: stock_custom
+#: model:ir.model.fields,help:stock_custom.field_picking_type_group_code__need_ready_to_send
+msgid "Si está marcado el alabrán necesitará una autorización para enviarse"
+msgstr ""
+
+#. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_stock_picking__team_id
+msgid "Team"
+msgstr "Equipo"
 
 #. module: stock_custom
 #: model:ir.model,name:stock_custom.model_stock_picking
@@ -192,6 +238,9 @@ msgid "Use - changes"
 msgstr "Usar cambios -"
 
 #. module: stock_custom
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_address__valued_picking
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_res_partner__valued_picking
+#: model:ir.model.fields,field_description:stock_custom.field_prestashop_supplier__valued_picking
 #: model:ir.model.fields,field_description:stock_custom.field_res_partner__valued_picking
 #: model:ir.model.fields,field_description:stock_custom.field_res_users__valued_picking
 msgid "Valued Picking"
@@ -204,13 +253,32 @@ msgid "Variable Replenish"
 msgstr "Reposición variable"
 
 #. module: stock_custom
+#: code:addons/stock_custom/models/stock_picking.py:77
+#, python-format
+msgid "You can not mark a picking with a sale order as ready to send manually."
+msgstr "No puedes marcar manualmente como listo para enviar un pedido asociado a una venta."
+
+#. module: stock_custom
+#: code:addons/stock_custom/models/stock_picking.py:81
+#, python-format
+msgid "You can not mark as a ready to send an incoming picking."
+msgstr "No puedes marcar como listo para enviar un pedido entrante."
+
+#. module: stock_custom
+#: model:ir.model.fields,help:stock_custom.field_prestashop_address__valued_picking
+#: model:ir.model.fields,help:stock_custom.field_prestashop_res_partner__valued_picking
+#: model:ir.model.fields,help:stock_custom.field_prestashop_supplier__valued_picking
 #: model:ir.model.fields,help:stock_custom.field_res_partner__valued_picking
 #: model:ir.model.fields,help:stock_custom.field_res_users__valued_picking
 msgid "You can select which partners have valued pickings"
 msgstr "Puede seleccionar qué empresas tienen albarán valorado"
 
 #. module: stock_custom
+#: model:ir.model,name:stock_custom.model_picking_type_group_code
+msgid "picking.type.group.code"
+msgstr ""
+
+#. module: stock_custom
 #: model:ir.model,name:stock_custom.model_variable_replenish
 msgid "variable.replenish"
 msgstr ""
-

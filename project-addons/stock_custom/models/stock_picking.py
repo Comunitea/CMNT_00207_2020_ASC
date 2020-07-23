@@ -1,6 +1,7 @@
 # © 2020 Comunitea
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import fields, models, api
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 
 class PickingTypeGroup(models.Model):
@@ -9,6 +10,7 @@ class PickingTypeGroup(models.Model):
     need_ready_to_send = fields.Boolean(
         string="Need PDA Ready",
         default=False,
+        copy=False,
         help="Si está marcado el alabrán necesitará una autorización para enviarse",
     )
 
@@ -67,6 +69,18 @@ class StockPicking(models.Model):
         backorder = super()._create_backorder(backorder_moves=backorder_moves)
         backorder.write({"move_type": "one"})
         return backorder
+
+    @api.multi
+    def mark_as_ready_to_send(self):
+        for pick in self:
+            if pick.sale_id:
+                raise UserError(_("You can not mark a picking with a sale order as ready to send manually."))
+            elif pick.ready_to_send:
+                raise UserError(_("Pick is already ready to send."))
+            elif pick.picking_type_id.code != "outgoing":
+                raise UserError(_("You can not mark as a ready to send an incoming picking."))
+            else:
+                pick.ready_to_send = True
 
 
 class StockPicking(models.Model):
