@@ -19,6 +19,7 @@ class SaleImportRule(Component):
         :returns: True if the sale order should be imported
         :rtype: boolean
         """
+        payment_mode = False
         ps_payment_method = record["module"]
         mode_binder = self.binder_for("account.payment.mode")
         if ps_payment_method == MODO_DIFERIDO:
