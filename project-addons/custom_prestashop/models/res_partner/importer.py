@@ -10,7 +10,6 @@ class PartnerImportMapper(Component):
     _inherit = "prestashop.res.partner.mapper"
 
     @mapping
-    @only_create
     def property_payment_term_id(self, record):
         if record.get("plazo") and record.get("plazo") != "0":
             payment_term = self.env["account.payment.term"].search(
@@ -197,7 +196,7 @@ class AddressImporter(Component):
                         binding.parent_id or binding, message=msg
                     )
                     vat_number = None
-            if binding.parent_id:
+            if binding.parent_id and binding.parent_id.id != binding.odoo_id.id:
                 binding.parent_id.write(
                     {"vat": vat_number, "sii_simplified_invoice": sii_simplified}
                 )

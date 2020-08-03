@@ -3,6 +3,14 @@
 from odoo import fields, models
 from odoo.addons.queue_job.job import job
 
+class ResPartner(models.Model):
+    _inherit = "res.partner"
+
+    def write(self, vals):
+        country_id = vals.get('country_id', False)
+        if country_id and country_id == self.country_id.id:
+            del vals['country_id']
+        return super().write(vals)
 
 class PrestashopResPartner(models.Model):
     _inherit = "prestashop.res.partner"
