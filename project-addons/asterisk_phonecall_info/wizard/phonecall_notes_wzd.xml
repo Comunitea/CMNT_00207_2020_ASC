@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="phonecall_notes_wizard_form" model="ir.ui.view">
+        <field name="name">phonecall.notes.wizard.form</field>
+        <field name="model">phonecall.notes.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Notes">
+                    <field name="notes"/>
+                <footer>
+                    <button name="confirm" string="Confirm" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

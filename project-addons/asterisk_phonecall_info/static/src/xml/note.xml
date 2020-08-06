@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+    <t t-name="asterisk_phonecall_info.systray.WriteNote">
+        <li class="o_mail_systray_item">
+            <a id="asterisk-open-notes" href="#" title="New Note" role="button">
+                <i class="fa fa-sticky-note-o" role="img" aria-label="New Note"/>
+            </a>
+        </li>
+    </t>
+
+</template>

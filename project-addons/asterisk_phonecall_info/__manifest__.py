@@ -19,7 +19,10 @@
         "base_phone_popup",
     ],
     "data": [
-        #'security/ir.model.access.csv',
-        "views/crm_phonecall_view.xml"
+        'views/crm_phonecall_view.xml',
+        'views/assets.xml',
+        'wizard/phonecall_notes_wzd.xml',
+        'data/cdr_import_cron.xml',
     ],
+    'qweb': ['static/src/xml/note.xml'],
 }
