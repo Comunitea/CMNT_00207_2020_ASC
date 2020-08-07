@@ -25,12 +25,13 @@ var FieldPhone = require('base_phone.updatedphone_widget').FieldPhone;
 FieldPhone.include({
     _renderReadonly: function() {
         var self = this;
+        var phone_num = this.value;
         this._super();
         // We need to do preventDefault to stop the window from losing the current focus
         this.$('a.dial').off('click');
         this.$('a.dial').on('click', function onClick(event) {
             event.preventDefault();
-            self.click2dial(this.phone_num);
+            self.click2dial(phone_num);
         });
     },
 });
