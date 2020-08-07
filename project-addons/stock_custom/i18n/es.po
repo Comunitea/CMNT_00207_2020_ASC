@@ -255,8 +255,8 @@ msgstr "Reposición variable"
 #. module: stock_custom
 #: code:addons/stock_custom/models/stock_picking.py:77
 #, python-format
-msgid "You can not mark a picking with a sale order as ready to send manually."
-msgstr "No puedes marcar manualmente como listo para enviar un pedido asociado a una venta."
+msgid "You can not mark a picking with a sale order not ready to send manually."
+msgstr "No puedes marcar manualmente como listo para enviar un pedido cuya venta no está lista para enviar."
 
 #. module: stock_custom
 #: code:addons/stock_custom/models/stock_picking.py:81

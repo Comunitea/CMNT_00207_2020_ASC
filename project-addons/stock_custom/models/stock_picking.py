@@ -72,8 +72,8 @@ class StockPicking(models.Model):
     @api.multi
     def mark_as_ready_to_send(self):
         for pick in self:
-            if pick.sale_id:
-                raise UserError(_("You can not mark a picking with a sale order as ready to send manually."))
+            if pick.sale_id and not pick.sale_id.ready_to_send:
+                raise UserError(_("You can not mark a picking with a sale order not ready to send manually."))
             elif pick.ready_to_send:
                 raise UserError(_("Pick is already ready to send."))
             elif pick.picking_type_id.code != "outgoing":
