@@ -35,6 +35,10 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         return super(SaleOrder, self.with_context(bypass_risk=True)).action_confirm()
 
+    @api.multi
+    def action_unlock(self):
+        return super(SaleOrder, self.with_context(bypass_risk=True)).action_unlock()
+
     def check_risk_exception(self):
         if not self.payment_mode_id.check_risk:
             return False
