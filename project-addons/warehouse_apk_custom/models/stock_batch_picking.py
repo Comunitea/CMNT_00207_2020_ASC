@@ -47,29 +47,44 @@ class StockPickingBatch(models.Model):
     need_package = fields.Boolean(related="picking_type_id.group_code.need_package")
     need_weight = fields.Boolean(related="picking_type_id.group_code.need_weight")
 
-    def mark_as_pda_validate(self):
+    @api.model
+    def mark_as_pda_validate(self, vals):
+        batch_id = vals.get('id', False)
+        if not batch_id:
+            return False
+        sql = "update stock_picking_batch set try_validate = true where id = {}".format(
+            batch_id
+        )
+        self._cr.execute(sql)
+        return True
+
         with api.Environment.manage():
             registry = modules.registry.Registry(self.env.cr.dbname)
             with closing(registry.cursor()) as cr:
                 try:
                     sql = "update stock_picking_batch set try_validate = true where id = {}".format(
-                        self.id
+                        batch_id
                     )
                     cr.execute(sql)
+                    return True
                 except:
                     cr.rollback()
+                    return False
                     raise
                 else:
                     # Despite what pylint says, this a perfectly valid
                     # commit (in a new cursor). Disable the warning.
                     cr.commit()  # pylint: disable=invalid-commit
 
+
     @api.model
     def button_validate_apk(self, vals):
         batch_id = self.browse(vals.get("id", False))
         if not batch_id:
             raise ValidationError("No se ha encontrado el albarán ")
-        batch_id.mark_as_pda_validate()
+        #if batch_id.state != 'done' and batch_id.try_validate:
+        #    raise ValidationError("Ya se ha intentado validar")
+        #batch_id.mark_as_pda_validate()
         if batch_id.picking_type_id.group_code:
             g_code = batch_id.picking_type_id.group_code
             if g_code.need_weight and batch_id.carrier_weight == 0.00:
