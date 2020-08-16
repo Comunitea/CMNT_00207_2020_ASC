@@ -17,5 +17,5 @@
         "l10n_es_aeat_sii",
         "base_automation",
     ],
-    "data": ["data/custom_account_data.xml", "views/account_move_view.xml"],
+    "data": ["data/custom_account_data.xml", "views/account_move_view.xml", "views/account_payment_mode.xml"],
 }
