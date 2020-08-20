@@ -48,3 +48,7 @@ class RmaOrderLine(models.Model):
         wizard.action_create_picking()
         self.mapped('move_ids.picking_id').button_validate()
         return res
+
+    @api.onchange('reference_move_id')
+    def _onchange_reference_move_id(self):
+        pass
