@@ -52,3 +52,29 @@ class RmaOrderLine(models.Model):
     @api.onchange('reference_move_id')
     def _onchange_reference_move_id(self):
         pass
+
+    @api.multi
+    @api.constrains('invoice_line_id', 'partner_id')
+    def _check_invoice_partner(self):
+        for rec in self:
+            if (rec.invoice_line_id and
+                    rec.invoice_line_id.invoice_id.partner_id !=
+                    rec.partner_id and
+                    rec.invoice_line_id.invoice_id.partner_id.parent_id !=
+                    rec.partner_id):
+                raise ValidationError(_(
+                    "RMA customer and originating invoice line customer "
+                    "doesn't match."))
+    
+    @api.multi
+    @api.constrains('reference_move_id', 'partner_id')
+    def _check_move_partner(self):
+        for rec in self:
+            if (rec.reference_move_id and
+                    rec.reference_move_id.picking_id.partner_id !=
+                    rec.partner_id and 
+                    rec.reference_move_id.picking_id.partner_id.parent_id !=
+                    rec.partner_id):
+                raise ValidationError(_(
+                    "RMA customer and originating stock move customer "
+                    "doesn't match."))
