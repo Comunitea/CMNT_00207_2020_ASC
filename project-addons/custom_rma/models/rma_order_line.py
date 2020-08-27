@@ -45,41 +45,57 @@ class RmaOrderLine(models.Model):
         return
 
     def action_rma_approve(self):
-        if self.product_tracking in ('lot', 'serial') and not self.lot_id:
-            raise UserError(_('Serial number required'))
+        if self.product_tracking in ("lot", "serial") and not self.lot_id:
+            raise UserError(_("Serial number required"))
         res = super().action_rma_approve()
-        wizard = self.env['rma_make_picking.wizard'].with_context(picking_type='incoming', active_ids=self._ids, active_model='rma.order.line').create({})
-        wizard.item_ids.write({'qty_to_receive': 1})
+        wizard = (
+            self.env["rma_make_picking.wizard"]
+            .with_context(
+                picking_type="incoming",
+                active_ids=self._ids,
+                active_model="rma.order.line",
+            )
+            .create({})
+        )
+        wizard.item_ids.write({"qty_to_receive": 1})
         wizard.action_create_picking()
-        self.mapped('move_ids.picking_id').button_validate()
+        self.mapped("move_ids.picking_id").button_validate()
         return res
 
-    @api.onchange('reference_move_id')
+    @api.onchange("reference_move_id")
     def _onchange_reference_move_id(self):
         pass
 
     @api.multi
-    @api.constrains('invoice_line_id', 'partner_id')
+    @api.constrains("invoice_line_id", "partner_id")
     def _check_invoice_partner(self):
         for rec in self:
-            if (rec.invoice_line_id and
-                    rec.invoice_line_id.invoice_id.partner_id !=
-                    rec.partner_id and
-                    rec.invoice_line_id.invoice_id.partner_id.parent_id !=
-                    rec.partner_id):
-                raise ValidationError(_(
-                    "RMA customer and originating invoice line customer "
-                    "doesn't match."))
-    
+            if (
+                rec.invoice_line_id
+                and rec.invoice_line_id.invoice_id.partner_id != rec.partner_id
+                and rec.invoice_line_id.invoice_id.partner_id.parent_id
+                != rec.partner_id
+            ):
+                raise ValidationError(
+                    _(
+                        "RMA customer and originating invoice line customer "
+                        "doesn't match."
+                    )
+                )
+
     @api.multi
-    @api.constrains('reference_move_id', 'partner_id')
+    @api.constrains("reference_move_id", "partner_id")
     def _check_move_partner(self):
         for rec in self:
-            if (rec.reference_move_id and
-                    rec.reference_move_id.picking_id.partner_id !=
-                    rec.partner_id and 
-                    rec.reference_move_id.picking_id.partner_id.parent_id !=
-                    rec.partner_id):
-                raise ValidationError(_(
-                    "RMA customer and originating stock move customer "
-                    "doesn't match."))
+            if (
+                rec.reference_move_id
+                and rec.reference_move_id.picking_id.partner_id != rec.partner_id
+                and rec.reference_move_id.picking_id.partner_id.parent_id
+                != rec.partner_id
+            ):
+                raise ValidationError(
+                    _(
+                        "RMA customer and originating stock move customer "
+                        "doesn't match."
+                    )
+                )
