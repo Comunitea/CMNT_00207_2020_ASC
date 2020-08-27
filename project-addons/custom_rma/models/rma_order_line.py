@@ -8,6 +8,11 @@ class RmaOrderLine(models.Model):
 
     _inherit = "rma.order.line"
     informed_lot_id = fields.Char()
+    operation_id = fields.Many2one(readonly=False, states={})
+    refund_policy = fields.Selection(readonly=False, states={})
+    receipt_policy = fields.Selection(readonly=False, states={})
+    delivery_policy = fields.Selection(readonly=False, states={})
+    sale_policy = fields.Selection(readonly=False, states={})
 
     @api.onchange("lot_id")
     def onchange_lot_id_custom(self):
