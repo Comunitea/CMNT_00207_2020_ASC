@@ -75,9 +75,12 @@ class StockBatchPicking(models.Model):
         batch_id = self.browse(vals.get("id", False))
         res = super(StockBatchPicking, self).button_validate_apk(vals)
         if batch_id.picking_type_id.code == "outgoing":
-            self.env.ref("stock.action_report_delivery").print_document(
-                batch_id.picking_ids._ids
-            )
+            try:
+                self.env.ref("stock.action_report_delivery").print_document(
+                    batch_id.picking_ids._ids
+                )
+            except Exception:
+                batch_id.message_post('Ha fallado la impresión del albarán')
             try:
                 batch_id.send_shipping()
                 batch_id.failed_shipping = False

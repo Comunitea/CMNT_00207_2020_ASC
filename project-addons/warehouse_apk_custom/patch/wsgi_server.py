@@ -122,20 +122,7 @@ def wsgi_xmlrpc(environ, start_response):
                 response = xmlrpc_handle_exception_string(e)
             else:
                 response = xmlrpc_handle_exception_int(e)
-        start_response(
-            "200 OK",
-            [
-                ("Content-Type", "text/xml"),
-                ("Content-Length", str(len(response))),
-                ("Access-Control-Allow-Origin", "*"),
-                ("Access-Control-Allow-Methods", "POST, GET, OPTIONS"),
-                ("Access-Control-Max-Age", 1000),
-                (
-                    "Access-Control-Allow-Headers",
-                    "origin, x-csrftoken, content-type, accept",
-                ),
-            ],
-        )
+
         return werkzeug.wrappers.Response(response=response, mimetype="text/xml")(
             environ, start_response
         )
