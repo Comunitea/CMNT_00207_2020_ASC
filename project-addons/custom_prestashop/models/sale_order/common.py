@@ -37,12 +37,12 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_unlock(self):
-        return super(SaleOrder, self.with_context(bypass_risk=True)).action_unlock()
+        return super(SaleOrder, self.with_context(bypass_risk=True, bypass_risk_exception=True)).action_unlock()
 
     def check_risk_exception(self):
         if not self.payment_mode_id.check_risk:
             return False
-        if self.state == "cancel":
+        if self.state == "cancel" or self._context.get('bypass_risk_exception'):
             return False
         partner = self.partner_id.commercial_partner_id
         exception_msg = ""

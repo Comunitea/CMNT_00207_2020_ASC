@@ -135,6 +135,8 @@ class StockBatchPicking(models.Model):
             ).unlink()
 
     def send_shipping(self):
+        if self.carrier_tracking_ref:
+            return
         self.check_delivery_address()
 
     def track_request(self):
