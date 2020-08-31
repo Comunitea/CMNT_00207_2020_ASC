@@ -24,7 +24,7 @@ class RmaOrderLine(models.Model):
                         ("lot_id", "=", self.lot_id.id),
                         ("state", "=", "done"),
                         ("move_id.sale_line_id", "!=", False),
-                    ]
+                    ], limit=1, order="id desc"
                 )
                 .mapped("move_id")
             )
