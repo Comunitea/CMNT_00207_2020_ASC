@@ -73,8 +73,7 @@ class RmaOrderLine(models.Model):
             if (
                 rec.invoice_line_id
                 and rec.invoice_line_id.invoice_id.partner_id != rec.partner_id
-                and rec.invoice_line_id.invoice_id.partner_id.parent_id
-                != rec.partner_id
+                and rec.reference_move_id.picking_id.partner_id not in self.env['res.partner'].search([('id', 'child_of', [rec.partner_id.id])])
             ):
                 raise ValidationError(
                     _(
@@ -90,8 +89,7 @@ class RmaOrderLine(models.Model):
             if (
                 rec.reference_move_id
                 and rec.reference_move_id.picking_id.partner_id != rec.partner_id
-                and rec.reference_move_id.picking_id.partner_id.parent_id
-                != rec.partner_id
+                and rec.reference_move_id.picking_id.partner_id not in self.env['res.partner'].search([('id', 'child_of', [rec.partner_id.id])])
             ):
                 raise ValidationError(
                     _(
