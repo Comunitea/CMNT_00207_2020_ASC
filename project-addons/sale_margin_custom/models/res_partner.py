@@ -19,24 +19,14 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_average_sale_margin(self):
-        partner_id = "partner_id"
-        domain = [(partner_id, "child_of", self.ids), ("state", "in", ("done", "sale"))]
-        vals = self.env["sale.order"].read_group(
-            domain, [partner_id, "margin", "amount_untaxed"], [partner_id], orderby="id"
-        )
-        res = dict(
-            (
-                item[partner_id][0],
-                {
-                    "count": item["partner_id_count"],
-                    "margin": item["margin"],
-                    "amount": item["amount_untaxed"],
-                },
-            )
-            for item in vals
-        )
         for partner in self:
-            rp = res.get(partner.id)
-            if rp and rp["count"] and rp["amount"]:
-                partner.total_sale_margin = rp["margin"] / rp["count"]
-                partner.average_sale_margin = rp["margin"] / rp["amount"] * 100
+            domain = [("partner_id", "child_of", partner.ids), ("state", "in", ("done", "sale"))]
+            sales = self.env['sale.order'].search(domain)
+            margins = []
+            totals = []
+            for sale in sales:
+                totals.append(sale.margin)
+                margins.append((sale.margin / sale.amount_untaxed) * 100)
+            
+            partner.total_sale_margin = sum(totals)/float(len(totals))
+            partner.average_sale_margin = sum(margins)/float(len(margins))
