@@ -120,6 +120,8 @@ class CrmPhonecall(models.Model):
             while True: 
                 try: 
                     yield next(csv_reader) 
+                except StopIteration:
+                    return
                 except csv.Error: 
                     pass
                 continue 
@@ -127,7 +129,7 @@ class CrmPhonecall(models.Model):
 
         reader = mycsv_reader(csv.reader(open(ABSOLUTE_PATH, 'rU'), delimiter=',', quotechar='"'))
 
-        calls = [x for x in reader if x and x[3] in ['odoo-cola', 'from-outlet']\
+        calls = [x for x in reader if x and x[3] in ['odoo-cola', 'from-outlet'] \
             and x[14] == 'ANSWERED' \
             and x[7] == 'Dial' \
             and datetime.strptime(x[9], "%Y-%m-%d %H:%M:%S") > cdr_last_imported_date]
