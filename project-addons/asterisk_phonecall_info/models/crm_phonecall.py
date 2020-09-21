@@ -92,12 +92,12 @@ class CrmPhonecall(models.Model):
         return res
 
     def process_asterisk_cdr_logs(self):
-        # Uncomment this if you need to download the file via scp.
         # user
-        #user = self.env.user
+        user = self.env.user
         # server
-        #ast_server = user.get_asterisk_server_from_user()
+        ast_server = user.get_asterisk_server_from_user()
         
+        # Uncomment this if you need to download the file via scp.
         #server_name = ast_server.cdr_user+'@'+ast_server.ip_address
         #server_file = server_name+':'+ast_server.cdr_file_path
         #command = 'scp ' + server_file + ' ' + ABSOLUTE_PATH
