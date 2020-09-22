@@ -87,6 +87,7 @@ class CrmPhonecall(models.Model):
             "partner_id": partner_id.id if partner_id else None,
             "opportunity_id": opportunity_id.id if opportunity_id else None,
             'user_id': user_id.id if user_id else self.env.user.id,
+            "state": "done",
         }
             
         return res
