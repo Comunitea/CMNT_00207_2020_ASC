@@ -50,10 +50,12 @@ class CrmPhonecall(models.Model):
         if row[3] == 'odoo-cola':
             dest = row[1]
             origin = row[2]
+            direction = 'inbound'
             message = _("Asterisk Imported Incoming Call")
         else:
             dest = row[2]
             origin = row[5][4:14]
+            direction = 'outbound'
             message = _("Asterisk Imported Outgoing Call")
 
         record_number = self.env['phone.common'].get_record_from_phone_number(dest)
@@ -87,6 +89,7 @@ class CrmPhonecall(models.Model):
             "partner_id": partner_id.id if partner_id else None,
             "opportunity_id": opportunity_id.id if opportunity_id else None,
             'user_id': user_id.id if user_id else self.env.user.id,
+            "direction": direction,
             "state": "done",
         }
             
