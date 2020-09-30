@@ -134,10 +134,15 @@ class StockBatchPicking(models.Model):
                 ]
             ).unlink()
 
+            if batch.payment_on_delivery:
+                batch.mark_as_unpaid_shipping()
+
     def send_shipping(self):
         if self.carrier_tracking_ref:
             return
         self.check_delivery_address()
+        if self.payment_on_delivery:
+            self.mark_as_paid_shipping()
 
     def track_request(self):
         return True
@@ -214,6 +219,19 @@ class StockBatchPicking(models.Model):
             if city_zip:
                 return {"state_id": city_zip.city_id.state_id.id}
 
+    @api.multi
+    def mark_as_paid_shipping(self):
+        for batch in self:
+            for sale in batch.picking_ids.mapped("sale_id"):
+                if not sale.paid_shipping_batch_id:
+                    sale.paid_shipping_batch_id = batch.id
+
+    @api.multi
+    def mark_as_unpaid_shipping(self):
+        for batch in self:
+            for sale in batch.picking_ids.mapped("sale_id"):
+                if sale.paid_shipping_batch_id and sale.paid_shipping_batch_id.id == batch.id:
+                    sale.paid_shipping_batch_id = None
 
 class StockPicking(models.Model):
 
