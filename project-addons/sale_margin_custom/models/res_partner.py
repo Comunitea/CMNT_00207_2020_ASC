@@ -24,9 +24,16 @@ class ResPartner(models.Model):
             sales = self.env['sale.order'].search(domain)
             margins = []
             totals = []
-            for sale in sales:
-                totals.append(sale.margin)
-                margins.append((sale.margin / sale.amount_untaxed) * 100)
-            
-            partner.total_sale_margin = sum(totals)/float(len(totals))
-            partner.average_sale_margin = sum(margins)/float(len(margins))
+            if sales:
+                for sale in sales:
+                    totals.append(sale.margin)
+                    if sale.amount_untaxed > 0:
+                        margins.append((sale.margin / sale.amount_untaxed or 1) * 100)
+                    else:
+                        margins.append(0)
+                
+                partner.total_sale_margin = sum(totals)/float(len(totals))
+                partner.average_sale_margin = sum(margins)/float(len(margins))
+            else:
+                partner.total_sale_margin = 0.0
+                partner.average_sale_margin = 0.0

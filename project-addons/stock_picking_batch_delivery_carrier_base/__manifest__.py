@@ -26,6 +26,7 @@
     "website": "www.comunitea.com",
     "license": "AGPL-3",
     "depends": [
+        "sale_shipping_info_helper",
         "delivery",
         "cmnt_delivery_carrier_label",
         "warehouse_apk_custom",

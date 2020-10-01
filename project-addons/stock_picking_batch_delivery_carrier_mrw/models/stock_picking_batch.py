@@ -26,6 +26,7 @@ from requests import Session
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
+from odoo.addons import decimal_precision as dp
 from zeep import Client
 from zeep.cache import SqliteCache
 from zeep.plugins import HistoryPlugin
@@ -42,25 +43,32 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    mrw_pdo_quantity = fields.Char("PDO amount")
+    mrw_pdo_quantity = fields.Float("PDO amount", digits=dp.get_precision("Product Price"))
     carrier_code = fields.Char(related="carrier_id.code")
 
-    @api.multi
+    def create(self, vals):
+        res = super().create(vals)
+        if vals.get("payment_on_delivery", False):
+            self.get_mrw_pdo_quantity()
+        return res
+            
     def write(self, vals):
         res = super().write(vals)
-        if self.carrier_id.code == "MRW":
-            if vals.get("carrier_id", False):
-                self.onchange_carrier_id()
-            return res
+        if self.payment_on_delivery and not vals.get("mrw_pdo_quantity"):
+            self.get_mrw_pdo_quantity()
+        return res
 
-    @api.onchange("carrier_id")
-    def onchange_carrier_id(self):
-        if self.carrier_id.code == "MRW":
-            pickings_total_value = 0.0
-            for pick in self.picking_ids:
-                pickings_total_value += pick.amount_total
-            self.mrw_pdo_quantity = "{}".format(pickings_total_value).replace(".", ",")
-
+    @api.multi
+    def get_mrw_pdo_quantity(self):
+        for batch in self:
+            if batch.carrier_id.code == "MRW":
+                pickings_total_value = 0.0
+                for pick in batch.picking_ids:
+                    pickings_total_value += pick.amount_total
+                    if pick.sale_id and (not pick.sale_id.paid_shipping_batch_id or pick.sale_id.paid_shipping_batch_id == batch):
+                        pickings_total_value += pick.sale_id.shipping_amount_total
+                batch.mrw_pdo_quantity = pickings_total_value
+            
     def create_tracking_client(self):
         session = Session()
         session.verify = False
@@ -214,7 +222,7 @@ class StockBatchPicking(models.Model):
                                 "Reembolso": self.carrier_id.account_id.mrw_delivery_pdo
                                 if self.payment_on_delivery
                                 else "N",
-                                "ImporteReembolso": self.mrw_pdo_quantity
+                                "ImporteReembolso": "{}".format(self.mrw_pdo_quantity).replace(".", ",")
                                 if self.carrier_id.account_id.mrw_delivery_pdo != "N"
                                 and self.payment_on_delivery
                                 else "",

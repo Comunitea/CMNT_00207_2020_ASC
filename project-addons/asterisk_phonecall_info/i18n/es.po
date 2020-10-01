@@ -30,7 +30,7 @@ msgstr ""
 #. module: asterisk_phonecall_info
 #: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:53
 #, python-format
-msgid "Asterisk Imported Incomming Call"
+msgid "Asterisk Imported Incoming Call"
 msgstr "Llamada entrante importada"
 
 #. module: asterisk_phonecall_info

@@ -50,10 +50,12 @@ class CrmPhonecall(models.Model):
         if row[3] == 'odoo-cola':
             dest = row[1]
             origin = row[2]
-            message = _("Asterisk Imported Incomming Call")
+            direction = 'inbound'
+            message = _("Asterisk Imported Incoming Call")
         else:
             dest = row[2]
             origin = row[5][4:14]
+            direction = 'outbound'
             message = _("Asterisk Imported Outgoing Call")
 
         record_number = self.env['phone.common'].get_record_from_phone_number(dest)
@@ -87,6 +89,8 @@ class CrmPhonecall(models.Model):
             "partner_id": partner_id.id if partner_id else None,
             "opportunity_id": opportunity_id.id if opportunity_id else None,
             'user_id': user_id.id if user_id else self.env.user.id,
+            "direction": direction,
+            "state": "done",
         }
             
         return res
@@ -97,17 +101,18 @@ class CrmPhonecall(models.Model):
         # server
         ast_server = user.get_asterisk_server_from_user()
         
-        server_name = ast_server.cdr_user+'@'+ast_server.ip_address
-        server_file = server_name+':'+ast_server.cdr_file_path
-        command = 'scp ' + server_file + ' ' + ABSOLUTE_PATH
+        # Uncomment this if you need to download the file via scp.
+        #server_name = ast_server.cdr_user+'@'+ast_server.ip_address
+        #server_file = server_name+':'+ast_server.cdr_file_path
+        #command = 'scp ' + server_file + ' ' + ABSOLUTE_PATH
         
-        try:   
-            ssh = pexpect.spawn(command)
-            ssh.expect(server_name+"'s password:")
-            ssh.sendline(ast_server.cdr_pass)
-            ssh.expect(pexpect.EOF, timeout=10)
-        except Exception as e:
-            _logger.error('Unable to download the Master.csv file: {}.'.format(e))
+        #try:   
+        #    ssh = pexpect.spawn(command)
+        #    ssh.expect(server_name+"'s password:")
+        #    ssh.sendline(ast_server.cdr_pass)
+        #    ssh.expect(pexpect.EOF, timeout=10)
+        #except Exception as e:
+        #    _logger.error('Unable to download the Master.csv file: {}.'.format(e))
 
         self.import_master_file(ast_server.cdr_last_imported_date)
         ast_server.cdr_last_imported_date = datetime.now()
@@ -119,6 +124,8 @@ class CrmPhonecall(models.Model):
             while True: 
                 try: 
                     yield next(csv_reader) 
+                except StopIteration:
+                    return
                 except csv.Error: 
                     pass
                 continue 
@@ -126,7 +133,7 @@ class CrmPhonecall(models.Model):
 
         reader = mycsv_reader(csv.reader(open(ABSOLUTE_PATH, 'rU'), delimiter=',', quotechar='"'))
 
-        calls = [x for x in reader if x and x[3] in ['odoo-cola', 'from-outlet']\
+        calls = [x for x in reader if x and x[3] in ['odoo-cola', 'from-outlet'] \
             and x[14] == 'ANSWERED' \
             and x[7] == 'Dial' \
             and datetime.strptime(x[9], "%Y-%m-%d %H:%M:%S") > cdr_last_imported_date]

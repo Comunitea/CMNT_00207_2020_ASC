@@ -10,6 +10,10 @@ class SaleOrder(models.Model):
         related="carrier_id.needs_signature", readonly=True, store=True
     )
     batches_count = fields.Integer(compute="_compute_batches_count")
+    paid_shipping_batch_id = fields.Many2one(
+        'stock.picking.batch',
+        readonly=True
+    )
 
     def _compute_batches_count(self):
         for sale in self:
