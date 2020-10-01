@@ -85,6 +85,8 @@ class StockPicking(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    move_type = fields.Selection(track_visibility='onchange')
+
     @api.model
     def check_assign_all(self):
         """ Try to assign confirmed pickings """
@@ -98,3 +100,4 @@ class StockPicking(models.Model):
             .mapped("picking_id")
         )
         picking_ids.action_assign()
+

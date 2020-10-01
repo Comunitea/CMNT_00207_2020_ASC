@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+
+<record id="carrier_report_xlsx_form" model="ir.ui.view">
+    <field name="name">carrier.report.xlsx.form</field>
+    <field name="model">carrier.report.xlsx</field>
+    <field name="arch"  type="xml">
+        <form string="Carrier Ceport XLSX">
+            <div name="help">
+                <p>Generar listado de transportistas.</p>
+            </div>
+            <group name="setup">
+                <field name="warehouse_id" invisible="1"/>
+                <field name="team_ids" widget="many2many_tags"/>
+                <field name="account_ids" widget="many2many_tags"/>
+                <field name="carrier_ids" widget="many2many_tags"/>
+                <field name="service_ids" widget="many2many_tags"/>
+                <field name="stock_date_type" widget="radio"/>
+                <field name="past_date" attrs="{'invisible': [('stock_date_type', '!=', 'past')], 'required': [('stock_date_type', '=', 'past')]}"/>
+
+            </group>
+            <group string="Sub totals">
+                <field name="split_by_service"/>
+                <field name="split_by_carrier"/>
+            </group>
+            <footer>
+                <button name="generate" type="object"
+                    class="btn-primary" string="Listar"/>
+                <button special="cancel" string="Cancel" class="btn-default" />
+                <button special="cancel" string="Close" class="btn-default" />
+            </footer>
+        </form>
+    </field>
+</record>
+
+<record id="carrier_report_xlsx_action" model="ir.actions.act_window">
+    <field name="name">Carrier Report XLSX</field>
+    <field name="res_model">carrier.report.xlsx</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+<menuitem id="menu_carrier_report_XLSX"
+          parent="stock.menu_warehouse_report"
+          name="Stock carrier XLSX"
+          sequence="129"
+          action="carrier_report_xlsx_action"/>
+
+<report string="Listado de Albaranes"
+            id="action_report_deliveries"
+            model="carrier.report.xlsx"
+            report_type="qweb-html"
+            name="carrier_report_xlsx.report_deliveries"
+            file="carrier_report_xlsx.report_deliveries"/>
+
+<template id="report_deliveries">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+             <table width="100%" border="0">
+                <tr style="background-color: #bbbbbb">
+                    <td width="85%" colspan="4"><h3><span>Descripción</span></h3></td>
+                    <td width="5%" ><h3><span>#</span></h3></td>
+                    <td width="5%"><h3><span>Pack</span></h3></td>
+                    <td width="5%"><h3><span>Kgrs</span></h3></td>
+                </tr>
+
+                <t t-foreach="data['res'].keys()" t-as="key_0">
+                    <t t-set="key_0_values" t-value="data['res'][key_0]"/>
+                    <tr style="background-color: #cccccc">
+
+                        <td width="85%" colspan="4"><h4>Agencia: <span t-esc="key_0_values['name']"/></h4></td>
+                        <td width="5%" ><span t-esc="key_0_values['contador']"/></td>
+                        <td width="5%"><span t-esc="key_0_values['carrier_packages']"/></td>
+                        <td width="5%"><span t-esc="key_0_values['carrier_weight']"/></td>
+                    </tr>
+
+                    <t t-set="key_0_list" t-value="key_0_values['childs']"/>
+                    <t t-foreach="key_0_list.keys()" t-as="key_1">
+                        <t t-set="key_1_values" t-value="data['res'][key_0]['childs'][key_1]"/>
+                        <t t-if="o.split_by_carrier">
+                            <tr style="background-color: #dddddd">
+                            <td width="20%"></td>
+                            <td width="65%" colspan="3"><span t-esc="key_1_values['name']"/></td>
+                            <td width="5%"><span t-esc="key_1_values['contador']"/></td>
+                            <td width="5%"><span t-esc="key_1_values['carrier_packages']"/></td>
+                            <td width="5%"><span t-esc="key_1_values['carrier_weight']"/></td>
+                        </tr>
+                        </t>
+                            <!--th>
+                                <td width="50%" align="center"><span t-esc="key_1"/></td>
+                            </th-->
+
+
+                        <t t-set="key_1_list" t-value="data['res'][key_0]['childs'][key_1]['childs']"/>
+                        <t t-foreach="key_1_list.keys()" t-as="key_2">
+                        <t t-set="key_2_values" t-value="data['res'][key_0]['childs'][key_1]['childs'][key_2]"/>
+                            <t t-if="o.split_by_service">
+                                <tr style="background-color: #eeeeee">
+                                    <td width="20%"></td>
+                                    <td width="65%" colspan="3"><span t-esc="key_2_values['name']"/></td>
+                                    <td width="5%"><span t-esc="key_2_values['contador']"/></td>
+                                    <td width="5%"><span t-esc="key_2_values['carrier_packages']"/></td>
+                                    <td width="5%"><span t-esc="key_2_values['carrier_weight']"/></td>
+                                </tr>
+                            </t>
+                            <t t-set="batchs" t-value="data['res'][key_0]['childs'][key_1]['childs'][key_2]['batchs']"/>
+                            <t t-foreach="batchs" t-as="batch">
+                                <tr style="border-bottom: 1px;">
+                                    <td width="10%" ><span t-esc="batch['name']"/></td>
+                                    <td width="45%" ><span t-esc="batch['partner']"/></td>
+                                    <td width="20%" ><span t-esc="batch['carrier_tracking_ref']"/></td>
+                                    <td width="15%" colspan="2"><span t-esc="batch['team_id']"/></td>
+                                    <td width="5%"><span t-esc="batch['carrier_packages']"/></td>
+                                    <td width="5%"><span t-esc="batch['carrier_weight']"/></td>
+                                </tr>
+
+                            </t>
+                        </t>
+                    </t>
+
+            </t>
+
+             </table>
+        </t>
+    </t>
+</template>
+
+
+</odoo>
