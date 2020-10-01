@@ -50,13 +50,13 @@ class StockBatchPicking(models.Model):
         res = super().create(vals)
         if vals.get("payment_on_delivery", False):
             self.get_mrw_pdo_quantity()
-            return res
+        return res
             
     def write(self, vals):
         res = super().write(vals)
         if self.payment_on_delivery and not vals.get("mrw_pdo_quantity"):
             self.get_mrw_pdo_quantity()
-            return res
+        return res
 
     @api.multi
     def get_mrw_pdo_quantity(self):
