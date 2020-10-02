@@ -13,7 +13,8 @@
     """,
     'author': "Comunitea",
     'website': 'http://www.comunitea.com',
-    'depends': ['cmnt_delivery_carrier_label', 'stock_picking_batch_delivery_carrier_base'],
+    'depends': ['cmnt_delivery_carrier_label',
+                'stock_picking_batch_delivery_carrier_base'],
     'data': [
         'wizard/carrier_report_xlsx.xml',
         ],

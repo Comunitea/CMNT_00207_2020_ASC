@@ -81,6 +81,8 @@ class CarrierreportXlsx(models.TransientModel):
         spo = self.env['stock.picking.batch']
         picking_ids = spo.search(self._get_stock_picking_domain(date), order="carrier_id, service_code, name asc")#, self._prepare_picking_fields())
         return picking_ids
+
+
     def group_result(self, data):
 
         # 1ª agrupación
@@ -157,7 +159,7 @@ class CarrierreportXlsx(models.TransientModel):
             date = self.past_date
         batch_ids = self.compute_picking_data(date)
         if not batch_ids:
-            raise UserError(_("There are no batchs to analyse."))
+            raise UserError(_("No hay envíos."))
 
         data = {'res': self.group_result(batch_ids)}
         print(data)
