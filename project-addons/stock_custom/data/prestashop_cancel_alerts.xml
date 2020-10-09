@@ -45,7 +45,6 @@
             <field name="col1" ref="stock_custom.field_sale_order__sent_prestashop_cancel_alert"/>
         </record>
 
-        <!--Automation -->
 
         <record id="sent_prestashop_cancel_alerts" model="base.automation">
             <field name="name">Enviar aviso de cancelación en Prestashop</field>
