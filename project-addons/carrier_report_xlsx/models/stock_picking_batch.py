@@ -10,35 +10,17 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thefire
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    "name": "Stock Picking Batch Delivery Carrier Base",
-    "version": "12.0.0.0.0",
-    "summary": "Base Module for stock picking batch deliveries",
-    "category": "Custom",
-    "author": "comunitea",
-    "website": "www.comunitea.com",
-    "license": "AGPL-3",
-    "depends": [
-        "sale_shipping_info_helper",
-        "delivery",
-        "cmnt_delivery_carrier_label",
-        "warehouse_apk_custom",
-        "account_payment_mode",
-    ],
-    "data": [
-        "wizard/picking_sign_wizard.xml",
-        "views/stock_picking_batch.xml",
-        "views/account_payment_mode.xml",
-        "views/sale.xml",
-    ],
-    "installable": True,
-    "auto_install": False,
-    "application": False,
-}
+
+from odoo import fields, models, api, _
+
+class StockBatchPicking(models.Model):
+    _inherit = "stock.picking.batch"
+
+    delivery_type = fields.Selection(related="carrier_id.delivery_type", store=True)
