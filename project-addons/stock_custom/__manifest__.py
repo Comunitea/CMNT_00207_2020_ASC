@@ -18,6 +18,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/cron.xml",
+        "data/prestashop_cancel_alerts.xml",
         "views/stock_location.xml",
         "views/product_view.xml",
         "views/stock_picking.xml",
