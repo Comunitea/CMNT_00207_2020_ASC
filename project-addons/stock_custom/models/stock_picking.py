@@ -19,6 +19,12 @@ class StockPicking(models.Model):
 
     ready_to_send = fields.Boolean(string="PDA Ready", default=False, copy=False,)
     team_id = fields.Many2one("crm.team")
+    move_type = fields.Selection(track_visibility='onchange')
+
+
+
+
+
 
     @api.depends(
         "ready_to_send", "move_type", "move_lines.state", "move_lines.picking_id"
@@ -81,11 +87,6 @@ class StockPicking(models.Model):
             else:
                 pick.ready_to_send = True
 
-
-class StockPicking(models.Model):
-    _inherit = "stock.picking"
-
-    move_type = fields.Selection(track_visibility='onchange')
 
     @api.model
     def check_assign_all(self):

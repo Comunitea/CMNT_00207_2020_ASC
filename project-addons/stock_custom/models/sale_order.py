@@ -7,6 +7,7 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     ready_to_send = fields.Boolean()
+    picking_policy = fields.Selection(track_visibility='onchange')
 
     def toggle_ready_to_send(self):
         for order in self:
