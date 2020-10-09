@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--Email template -->
+        <record id="sent_prestashop_cancel_alert_mail_template" model="mail.template">
+            <field name="name">Intento de cancelación de Prestashop</field>
+            <field name="email_from">${user.company_id.email or ''}</field>
+            <field name="subject">Prestashop Cancel ${object.display_name or 'n/a'}</field>
+            <field name="email_to">${user.company_id.email}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">es_ES</field>
+            <field name="body_html"><![CDATA[
+                Saludos:
+                <br/>
+                <br/>
+                El pedido ${object.display_name} ha sido cancelado en Prestashop (o alguien ha intentado cancelarlo a mano).<br/>
+                Este pedido no puede ser cancelado debido a que ya pertenece a una agrupación que tiene asignada un responsable.
+                <br/><br/>
+                Un saludo.
+                ]]>
+            </field>
+        </record>
+
+        <!--Actions -->
+
+        <record id="sent_prestashop_cancel_alert_mail" model="ir.actions.server">
+            <field name="name">Enviar aviso de cancelación</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="state">email</field>
+            <field name="template_id" ref="stock_custom.sent_prestashop_cancel_alert_mail_template"/>
+        </record>
+
+        <record id="sent_prestashop_cancel_sent_state_update" model="ir.actions.server">
+            <field name="name">Marcar como mail enviado</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="state">object_write</field>
+        </record>
+
+        <record id="sent_prestashop_cancel_sent_state_update_lines" model="ir.server.object.lines">
+            <field name="server_id" ref="stock_custom.sent_prestashop_cancel_sent_state_update"/>
+            <field name="value" eval="True"/>
+            <field name="type">value</field>
+            <field name="col1" ref="stock_custom.field_sale_order__sent_prestashop_cancel_alert"/>
+        </record>
+
+        <!--Automation -->
+
+        <record id="sent_prestashop_cancel_alerts" model="base.automation">
+            <field name="name">Enviar aviso de cancelación en Prestashop</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="state">multi</field>
+            <field name="trigger">on_write</field>
+            <field name="active" eval="True"/>
+            <field name="filter_pre_domain">[('prestashop_cancel_alert', '=', False), ("sent_prestashop_cancel_alert","=",False)]</field>
+            <field name="filter_domain">[('prestashop_cancel_alert', '=', True), ("sent_prestashop_cancel_alert","=",False)]</field>
+            <field name="child_ids" eval="[(6,0,[ref('sent_prestashop_cancel_alert_mail'), ref('sent_prestashop_cancel_sent_state_update')])]"/>
+        </record>
+    </data>
+
+</odoo>
