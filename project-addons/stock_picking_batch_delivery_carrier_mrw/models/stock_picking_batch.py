@@ -328,7 +328,7 @@ class StockPicking(models.Model):
                     "codigoIdioma": 3082,
                     "tipoFiltro": 0,
                     "valorFiltroDesde": self.carrier_tracking_ref,
-                    "tipoInformacion": 0,
+                    "tipoInformacion": 1,
                     "codigoAbonado": self.carrier_id.account_id.mrw_account,
                     "codigoFranquicia": self.carrier_id.account_id.mrw_franchise,
                 }
