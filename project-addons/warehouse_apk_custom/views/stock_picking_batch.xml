@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <delete model="ir.ui.view" id="warehouse_apk_custom.stock_batch_picking_form"/>
     <record model="ir.ui.view" id="stock_batch_picking_form">
             <field name="name">stock.picking.batch.form.wac</field>
             <field name="model">stock.picking.batch</field>
@@ -13,9 +13,6 @@
                          <field name="try_validate" attributes="{'invisible': [('try_validate','=',True)]}"/>
                          <field name="pick_state" widget="statusbar" statusbar_visible="assigned,done"/>
                          <field name="team_id"/>
-                         <field name="carrier_id" />
-                         <field name="carrier_weight" />
-                         <field name="carrier_packages" />
                      </group>
                  </xpath>
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='state']" position="after">

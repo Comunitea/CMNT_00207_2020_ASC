@@ -28,8 +28,8 @@
     "depends": [
         "sale_shipping_info_helper",
         "delivery",
+        "custom_prestashop",
         "cmnt_delivery_carrier_label",
-        "warehouse_apk_custom",
         "account_payment_mode",
     ],
     "data": [

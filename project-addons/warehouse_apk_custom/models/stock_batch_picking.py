@@ -20,10 +20,9 @@
 
 from odoo import api, models, fields, modules
 from contextlib import closing
-
+from odoo.exceptions import ValidationError
 
 import logging
-from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -32,10 +31,6 @@ class StockPickingBatch(models.Model):
     _inherit = "stock.picking.batch"
     _order = "name asc"
 
-    carrier_weight = fields.Float(default=0)
-    carrier_packages = fields.Integer(default=0)
-    carrier_id = fields.Many2one("delivery.carrier", "Carrier", ondelete="cascade")
-    partner_id = fields.Many2one("res.partner", string="Empresa")
     picking_ids = fields.One2many(
         string="Pickings",
         readonly=True,
@@ -100,7 +95,7 @@ class StockPickingBatch(models.Model):
             res += ["carrier_weight", "carrier_packages", "need_package", "need_weight"]
         return res
 
-    def get_model_object(self, values={}):
+    def get_model_object_no_usar(self, values={}):
 
         res = super().get_model_object(values=values)
         picking_id = self
@@ -122,6 +117,7 @@ class StockPickingBatch(models.Model):
 
     @api.model
     def get_picking_list(self, values):
+
         domain = values.get("domain", [])
         filter_values = values.get("filter_values", {})
         ## AÑADO DOMINIO POR STATE

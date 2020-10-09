@@ -27,7 +27,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    carrier_id = fields.Many2one(comodel_name="delivery.carrier", string="Carrier")
+    carrier_id = fields.Many2one("delivery.carrier", "Carrier", ondelete="cascade")
     service_code = fields.Many2one(
         "delivery.carrier.service", string="Carrier service code"
     )
@@ -43,6 +43,9 @@ class StockBatchPicking(models.Model):
     tracking_url = fields.Char("Tracking URL", compute="_compute_tracking_url")
     failed_shipping = fields.Boolean("Failed Shipping", default=False)
     delivery_note = fields.Char(compute="_compute_delivery_note")
+    carrier_weight = fields.Float(default=0)
+    carrier_packages = fields.Integer(default=0)
+    partner_id = fields.Many2one("res.partner", string="Empresa")
 
     @api.model
     def create(self, vals):
