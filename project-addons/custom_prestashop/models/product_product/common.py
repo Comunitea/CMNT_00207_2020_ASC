@@ -92,6 +92,26 @@ class ProductProduct(models.Model):
                         }
                     )
 
+    def _compute_virtual_stock_conservative(self):
+        pack_prods = self.filtered(lambda r: r.pack_product)
+        not_pack_prods = self.filtered(lambda r: not r.pack_product)
+        res = super(
+            ProductProduct, not_pack_prods
+        )._compute_virtual_stock_conservative()
+        for prod in pack_prods:
+            bom = self.env["mrp.bom"]._bom_find(product=prod)
+            min_qty = 9999999999999
+            if bom and bom.type == "phantom":
+                for line in bom.bom_line_ids:
+                    available = line.product_id.virtual_stock_conservative
+                    pack_quantity = available / line.product_qty
+                    if pack_quantity < min_qty:
+                        min_qty = pack_quantity
+                    if min_qty == 0:
+                        break
+                prod.virtual_stock_conservative = int(min_qty)
+        return res
+
     @api.multi
     def _compute_qty_available_not_reserved(self):
         pack_prods = self.filtered(lambda r: r.pack_product)
