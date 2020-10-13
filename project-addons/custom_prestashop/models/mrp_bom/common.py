@@ -4,6 +4,7 @@ from odoo import api, models
 
 
 class MrpBom(models.Model):
+    _inherit = 'mrp.bom'
 
     @api.model
     def create(self, vals):
