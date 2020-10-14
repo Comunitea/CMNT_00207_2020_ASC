@@ -53,11 +53,11 @@ class PrestashopProductTemplateListener(Component):
         for binding in record.prestashop_bind_ids:
             binding.with_delay().export_standard_price()
 
-    out_of_stock = fields.Selection(default="2")
-
 
 class PrestashopProductTemplate(models.Model):
     _inherit = "prestashop.product.template"
+
+    out_of_stock = fields.Selection(default="2")
 
     @job(default_channel="root.prestashop")
     @related_action(action="related_action_unwrap_binding")
