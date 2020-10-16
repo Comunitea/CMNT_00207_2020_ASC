@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record id="check_unreserve_more_qty" model="ir.actions.server">
+        <field name="name">Error al anular reserva</field>
+        <field name="model_id" ref="stock.model_product_product"/>
+        <field name="binding_model_id" ref="stock.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">
+            records.check_unreserve_more_qty()
+        </field>
+    </record>
+        <record id="auto_corregir_reseva" model="ir.actions.server">
+        <field name="name">Corregir reservas de lotes</field>
+        <field name="model_id" ref="stock.model_product_product"/>
+        <field name="binding_model_id" ref="stock.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">
+            records.check_reserved_quantity()
+        </field>
+    </record>
     <record id="product_product_tree_view_sc" model="ir.ui.view">
         <field name="name">product.tree.view.custom</field>
         <field name="model">product.product</field>
