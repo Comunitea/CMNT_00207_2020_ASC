@@ -8,7 +8,6 @@ class StockProductionLot(models.Model):
 
     active = fields.Boolean("Active", default=True)
 
-
     @api.multi
     def check_duplicate_lote_names(self):
 
@@ -39,8 +38,6 @@ class StockProductionLot(models.Model):
                 )["value"]
             composer_id.write(values)
             composer_id.with_context(ctx).send_mail()
-
-
 
     @api.multi
     def deactivate_and_rename_lot(self):

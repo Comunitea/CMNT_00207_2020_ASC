@@ -20,7 +20,6 @@
 
 from odoo import api, models, fields
 from odoo.exceptions import ValidationError
-from odoo.tools.safe_eval import safe_eval
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -77,7 +76,6 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_auto_assign_batch_id(self):
-
         domain = self.get_autoassign_pick_domain()
         if self:
             if len(self) == 1:
@@ -111,8 +109,9 @@ class StockPicking(models.Model):
 
     @api.multi
     def auto_assign_batch_id(self):
-
         for pick in self:
+            if pick.state != 'assigned':
+                raise ValidationError ('No puedes enviar el albarán {} : Estado: {}'.format(pick.name, pick.state))
             if pick.batch_id:
                 raise ValidationError(
                     "El albarán {} ya está en el lote {}".format(
@@ -143,6 +142,7 @@ class StockPicking(models.Model):
                         batch_id.name, pick.name
                     )
                 )
+                batch_id.verify_state('assigned')
         return
 
     @api.multi
@@ -164,3 +164,13 @@ class StockPicking(models.Model):
     @api.multi
     def write(self, vals):
         return super().write(vals=vals)
+
+    @api.multi
+    def action_cancel(self):
+        ## Si tiene batch picking y este está asignado no podemos cancelar
+        if self.mapped('batch_id.user_id'):
+            for batch_id in self.mapped('batch_id').filtered(lambda x: x.user_id):
+                _logger.info("El batch {} no puede ser cancelado porque está asignado".format(batch_id.name))
+            raise ValidationError("No puedes cancelar una albarán con un batch ya asignado")
+        self.mapped('batch_id').unlink()
+        return super().action_cancel()

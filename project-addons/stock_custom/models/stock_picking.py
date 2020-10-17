@@ -21,11 +21,6 @@ class StockPicking(models.Model):
     team_id = fields.Many2one("crm.team")
     move_type = fields.Selection(track_visibility='onchange')
 
-
-
-
-
-
     @api.depends(
         "ready_to_send", "move_type", "move_lines.state", "move_lines.picking_id"
     )
@@ -86,7 +81,6 @@ class StockPicking(models.Model):
                 raise UserError(_("You can not mark as a ready to send an incoming picking."))
             else:
                 pick.ready_to_send = True
-
 
     @api.model
     def check_assign_all(self):

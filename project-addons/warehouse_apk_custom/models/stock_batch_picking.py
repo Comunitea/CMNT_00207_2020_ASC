@@ -155,3 +155,11 @@ class StockPickingBatch(models.Model):
                     elif sale_id and sale_id.note and not notes:
                         notes = "{}: {}".format(notes, pick.name, sale_id.note)
             batch_id.notes = notes
+
+    @api.multi
+    def unlink(self):
+        for batch in self:
+            message = 'Se ha eliminado el batch {}'.format(batch.name)
+            for pick in batch.picking_ids:
+                pick.message_post(message)
+        return super().unlink()

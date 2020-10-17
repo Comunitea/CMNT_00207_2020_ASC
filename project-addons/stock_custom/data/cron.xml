@@ -29,7 +29,7 @@
     <record id="duplicate_lots_advise_partner" model="mail.template">
         <field name="name">Aviso de lotes duplicados</field>
         <field name="email_from">almacen@outletseguridad.com</field>
-        <field name="email_to">almacen@outletseguridad.com,kiko@comunitea.com</field>
+        <field name="email_to">almacen@outletseguridad.com</field>
         <field name="subject">Lote Duplicado: ${object.name}</field>
         <field name="model_id" ref="stock.model_stock_production_lot"/>
         <field name="auto_delete" eval="True"/>
