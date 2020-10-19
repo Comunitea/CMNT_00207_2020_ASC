@@ -52,7 +52,7 @@ class StockMove(models.Model):
             # Busco un movimiento que tenga esa reserva
             if True:
                 domain = [('state', '=', 'assigned'),
-                          ('id', '!=', move.id),
+                          ('move_id', '!=', move.id),
                           ('move_id.location_id', '=', move.location_id.id),
                           ('qty_done', '=', 0),
                           ('lot_id', '=', lot.id),
