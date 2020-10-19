@@ -2,20 +2,28 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import fields, models, api
 
+import logging
 
+_logger = logging.getLogger(__name__)
 class StockProductionLot(models.Model):
     _inherit = "stock.production.lot"
 
     active = fields.Boolean("Active", default=True)
+    duplicate = fields.Boolean("Duplicate", default=False)
 
     @api.multi
     def check_duplicate_lote_names(self):
-
+        update ="update stock_production_lot set duplicate = false where duplicate = true"
+        self._cr.execute(update)
         sql = "select max(id), name from stock_production_lot group by(name) having count(id)>1"
         self._cr.execute(sql)
         res = self._cr.fetchall()
+        lot_ids = self.env['stock.production.lot']
+
         for lot in res:
             lot_id = self.browse(lot[0])
+            lot_ids += lot_id
+            _logger.info ("El número de serie {} ({}) esta duplicado".format(lot[1], lot[0]))
             body = "El número de serie <a href=#data-oe-model=stock.production.lot data-oe-id=%d>%s</a> está duplicado"% (lot[0], lot[1])
             lot_id.message_post(body=body,  subtype_id=self.env.ref('mail.mt_note').id)
             template = self.env.ref(
@@ -38,6 +46,9 @@ class StockProductionLot(models.Model):
                 )["value"]
             composer_id.write(values)
             composer_id.with_context(ctx).send_mail()
+        lot_ids.write({'duplicate': True})
+
+
 
     @api.multi
     def deactivate_and_rename_lot(self):

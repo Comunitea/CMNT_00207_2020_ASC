@@ -87,7 +87,7 @@ class StockPicking(models.Model):
         """ Try to assign confirmed pickings """
         domain = [
             ("picking_type_id.code", "=", "outgoing"),
-            ("state", "=", ["confirmed", "partially_available", "waiting"]),
+            ("state", "in", ["confirmed", "partially_available", "waiting"]),
         ]
         picking_ids = (
             self.env["stock.move"]

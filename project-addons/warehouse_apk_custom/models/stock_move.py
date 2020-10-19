@@ -53,6 +53,7 @@ class StockMove(models.Model):
             if True:
                 domain = [('state', '=', 'assigned'),
                           ('move_id', '!=', move.id),
+                          ('move_id.product_id', '=', move.product_id.id),
                           ('move_id.location_id', '=', move.location_id.id),
                           ('qty_done', '=', 0),
                           ('lot_id', '=', lot.id),
@@ -137,6 +138,9 @@ class StockMove(models.Model):
     @api.model
     def create_move_lots(self, vals):
 
+        #PUNTO DE ENTRADA PARA CUANDO LLEGA DESDE LA PANTALLA DEL MOVIMEINTO DE LA APP
+        print("#PUNTO DE ENTRADA PARA CUANDO LLEGA DESDE LA PANTALLA DEL MOVIMEINTO DE LA APP")
+
         move_id = vals.get('id', False)
         lot_names = vals.get('lot_names', False)
         if not lot_names:
@@ -144,13 +148,14 @@ class StockMove(models.Model):
         move = self.browse(move_id)
         if not move:
             raise ValidationError("No has enviado ningún movimiento válido")
-
+        if move.product_id.default_code in lot_names:
+            raise ValidationError("Verifica que no has leido el codigo del producto")
         #Recupero la ubicación activa o la establezco por defecto
         active_location_id = vals.get('active_location', False)
         if lot_names:
             lot_ids = self.env['stock.production.lot']
             for lot in lot_names:
-                lot_id = lot_ids.find_or_create_lot(lot, move.product_id, not move.picking_type_id.use_existing_lots)
+                lot_id = lot_ids.find_or_create_lot(lot.upper(), move.product_id, not move.picking_type_id.use_existing_lots)
                 if lot_id:
                     lot_ids |= lot_id
 
