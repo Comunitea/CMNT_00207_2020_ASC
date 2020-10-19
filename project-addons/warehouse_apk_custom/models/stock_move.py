@@ -39,8 +39,8 @@ class StockMove(models.Model):
         if not active_location:
             active_location = move.active_location_id or move.move_line_location_id
         sml_ids_to_update = self.env['stock.move.line']
-        sml_with_lot_ids = move.move_line_ids.filtered(lambda x: x.lot_id in lot_ids or x.lot_id == False)
-        sml_no_lot_ids = move.move_line_ids - sml_with_lot_ids
+        sml_with_lot_ids = move.move_line_ids.filtered(lambda x: x.lot_id in lot_ids)
+        sml_no_lot_ids = move.move_line_ids - sml_with_lot_ids - move.move_line_ids.filtered(lambda x: x.qty_done == 1)
         lot_ids -= sml_with_lot_ids.mapped('lot_id')
         sml_ids_to_update += sml_with_lot_ids
         move_to_rereserve = self.env['stock.move']
@@ -97,7 +97,7 @@ class StockMove(models.Model):
             if not reserved:
                 raise ValidationError('No se ha podido reservar el lote {}'.format(lot.name))
             # Añado el move line a la lista de movimientos para actualizar
-            sml_ids_to_update += move.move_line_ids[-1]
+            sml_ids_to_update += move.move_line_ids.filtered(lambda x: x.lot_id == lot)
             #move.move_line_ids[-1][move.default_location] = active_location.id
             lot_ids -= lot
 
