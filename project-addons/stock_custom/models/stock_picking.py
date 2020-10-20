@@ -59,8 +59,7 @@ class StockPicking(models.Model):
                     relevant_move_state == "partially_available"
                     or relevant_move_state == "assigned"
                 )
-                and not self.ready_to_send
-                and self.picking_type_id.group_code.need_ready_to_send
+                and (not self.ready_to_send and self.sale_id and self.picking_type_id.group_code.need_ready_to_send )
             ):
                 self.state = "waiting"
 
@@ -73,6 +72,7 @@ class StockPicking(models.Model):
     @api.multi
     def mark_as_ready_to_send(self):
         for pick in self:
+
             if pick.sale_id and not pick.sale_id.ready_to_send:
                 raise UserError(_("You can not mark a picking with a sale order not ready to send manually."))
             elif pick.ready_to_send:

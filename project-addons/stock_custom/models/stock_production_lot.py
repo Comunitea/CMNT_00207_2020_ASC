@@ -9,46 +9,6 @@ class StockProductionLot(models.Model):
     _inherit = "stock.production.lot"
 
     active = fields.Boolean("Active", default=True)
-    duplicate = fields.Boolean("Duplicate", default=False)
-
-    @api.multi
-    def check_duplicate_lote_names(self):
-        update ="update stock_production_lot set duplicate = false where duplicate = true"
-        self._cr.execute(update)
-        sql = "select max(id), name from stock_production_lot group by(name) having count(id)>1"
-        self._cr.execute(sql)
-        res = self._cr.fetchall()
-        lot_ids = self.env['stock.production.lot']
-
-        for lot in res:
-            lot_id = self.browse(lot[0])
-            lot_ids += lot_id
-            _logger.info ("El número de serie {} ({}) esta duplicado".format(lot[1], lot[0]))
-            body = "El número de serie <a href=#data-oe-model=stock.production.lot data-oe-id=%d>%s</a> está duplicado"% (lot[0], lot[1])
-            lot_id.message_post(body=body,  subtype_id=self.env.ref('mail.mt_note').id)
-            template = self.env.ref(
-                "stock_custom.duplicate_lots_advise_partner", False
-            )
-            ctx = dict(self._context)
-            ctx.update(
-                {
-                        "default_model": "stock.production.lot",
-                        "default_res_id": lot_id.id,
-                        "default_use_template": bool(template.id),
-                        "default_template_id": template.id,
-                        "default_composition_mode": "comment",
-                        "mark_so_as_sent": True,
-                    }
-                )
-            composer_id = self.env["mail.compose.message"].sudo(1).with_context(ctx).create({})
-            values = composer_id.onchange_template_id(
-                template.id, "comment", lot_id.name, lot_id.id
-                )["value"]
-            composer_id.write(values)
-            composer_id.with_context(ctx).send_mail()
-        lot_ids.write({'duplicate': True})
-
-
 
     @api.multi
     def deactivate_and_rename_lot(self):
