@@ -3,8 +3,7 @@
 from odoo import fields, models
 
 
-class AccountPaymentMode(models.Model):
+class CrmTeam(models.Model):
+    _inherit = "crm.team"
 
-    _inherit = "account.payment.mode"
-
-    credit_control = fields.Boolean()
+    invoice_on_company = fields.Many2one("res.company")
