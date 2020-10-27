@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_quant_tree_link" model="ir.ui.view">
+        <field name="name">stock.quant.form.link.rel</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-braille" type="object" name="action_view_stock_moves_reservations" string="Reservations"/>
+            </xpath>
+        </field>
+    </record>
+      <record id="product_normal_form_view_reservations" model="ir.ui.view">
+        <field name="name">product.product.form.reservations</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_quants']" position="before">
+                <button class="oe_stat_button"
+                        icon="fa-braille"
+                        type="object"
+                        name="action_view_stock_moves_reservations">
+                    <div class="o_field_widget o_stat_info danger">
+                        <span class="o_stat_value">
+                            <field name="quantity_reserved" widget="statinfo" nolabel="1" class="mr4"/>
+                            <span class="o_stat_text">Reservas</span>
+                        </span>
+                        <span class="o_stat_value">
+                            <field name="quantity_reserved_link" widget="statinfo" nolabel="1" class="mr4"/>
+                            <span class="o_stat_text">Movs</span>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+
+     <record id="view_move_line_quant_link" model="ir.ui.view">
+        <field name="name">stock.move.line.quant.link</field>
+        <field name="model">stock.move.line</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="(state not in ('assigned', 'partially_available'))"
+                  decoration-danger="state == 'partially_available'"
+                  string="Move Lines" create="0" default_order="date">
+                <field name="date"/>
+                <field name="move_id"/>
+                <field name="picking_id"/>
+                <field name="lot_id"/>
+                <field name="product_uom_qty"/>
+                <field name="qty_done" string="Quantity Done"/>
+                <field name="product_uom_id" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                <field name="state"/>
+                <button name="unlink_stock_move" type="object" icon ="fa-trash"/>
+                <button name="check_move_availability" type="object" icon ="fa-binoculars" attrs="{'invisible': [('state', '=', 'assigned')]}"/>
+            </tree>
+        </field>
+    </record>
+
+
+</odoo>
