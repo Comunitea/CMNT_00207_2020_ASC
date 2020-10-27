@@ -10,6 +10,15 @@
         <field name='interval_type'>days</field>
         <field name="numbercall">-1</field>
     </record>
+    <record id="ir_delete_unused_lot" model="ir.cron">
+        <field name="name">Get and delete unused lots</field>
+        <field name="model_id" ref="model_stock_production_lot"/>
+        <field name="state">code</field>
+        <field name="code">model.unlink_not_used_lot_ids()</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+    </record>
 
     <record id="duplicate_lots_advise_partner" model="mail.template">
         <field name="name">Aviso de lotes duplicados</field>
@@ -40,8 +49,8 @@
                         <ul>
                            % for line in ctx['lot_ids']:
                                <li>
-                                   Lote: <a href="web#id=${line.id}&action=310&model=stock.production.lot&view_type=form&menu_id=182" target="_blank">${line.name}</a> --->
-                                   Producto: <a href="web#id=${line.product_id.id}&action=310&model=product.product&view_type=form&menu_id=182" target="_blank">${line.product_id.display_name}</a>
+                                   Lote: <a href="${ctx['url']}/web#id=${line.id}&action=310&model=stock.production.lot&view_type=form&menu_id=182" target="_blank">${line.name}</a> --->
+                                   Producto: <a href="${ctx['url']}/web#id=${line.product_id.id}&action=310&model=product.product&view_type=form&menu_id=182" target="_blank">${line.product_id.display_name}</a>
                                </li>
                            % endfor
                         </ul>

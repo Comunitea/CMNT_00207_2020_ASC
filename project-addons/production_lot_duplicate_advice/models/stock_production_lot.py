@@ -12,8 +12,28 @@ class StockProductionLot(models.Model):
     duplicate = fields.Boolean("Duplicate", default=False)
     ignore_duplicates = fields.Boolean("Ignorar check de duplicado", default = False)
 
+
+    @api.multi
+    def unlink_not_used_lot_ids(self):
+        _logger.info ("BORRAR LOTES: Se van a eliminar los lotes no utilizados")
+        sql = "select spl.id as lot_id, sml.id as sml_id from stock_production_lot spl " \
+              "left join stock_move_line sml on spl.id = sml.lot_id " \
+              "where sml.id is null"
+        self._cr.execute(sql)
+        res = self._cr.fetchall()
+        _logger.info("BORRAR LOTES: >>> Total: {} lotes. Solo los primeros 500".format(len(res)))
+        for lot in res[0:500]:
+            lot_id = self.browse(lot[0])
+            str = "BORRAR LOTES: >>> El número de serie {} ({}) se ha eliminado".format(lot_id.name, lot_id.id)
+            lot_id.unlink()
+            _logger.info(str)
+
+
+
+
     @api.multi
     def check_duplicate_lote_names(self):
+
         update ="update stock_production_lot set duplicate = false where duplicate = true"
         self._cr.execute(update)
         sql = "select max(id), min(id) from stock_production_lot where ignore_duplicates = false group by(name) having count(id)>1 order by name"
@@ -23,6 +43,7 @@ class StockProductionLot(models.Model):
             return
         lot_ids = self.env['stock.production.lot']
         msg = []
+
         for lot in res:
             lot_id = self.browse(lot[0])
             lot_ids += lot_id
@@ -44,6 +65,7 @@ class StockProductionLot(models.Model):
             "production_lot_duplicate_advice.duplicate_lots_advise_partner", False
         )
         ctx = dict(self._context)
+        ctx.update(url=self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
         ctx.update(
             {
                     "default_model": "stock.production.lot",
