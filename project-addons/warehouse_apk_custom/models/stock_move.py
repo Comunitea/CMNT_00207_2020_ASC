@@ -31,94 +31,135 @@ FLAG_PROP = {'view': 1, 'req': 2, 'done': 4};
 class StockMove(models.Model):
     _inherit = 'stock.move'
 
-    def update_move_lot_apk(self, move, lot_ids, active_location=False, sql=True):
+    def reserve_not_free_lots(self, move, move_ids, lot_ids):
+        ### BUSCO DE LOS LOTES QUE QUEDAN, LOS QUE NO ESTÁN RESERVADOS
+        sml_no_lot_ids = move_ids.filtered(lambda x: x.qty_done == 0 and x.lot_id not in lot_ids)
+        domain = [('state', '=', 'assigned'),
+                  ('move_id', '!=', move.id),
+                  ('move_id.product_id', '=', move.product_id.id),
+                  ('location_id', 'child_of', move.location_id.id),  # No tienen porque estar en la misma estanteria
+                  ('qty_done', '=', 0),
+                  ('lot_id', 'in', lot_ids.ids)]
+        sml_ids_to_unreserve = self.env['stock.move.line'].search(domain)
+        sml_ids_to_update = self.env['stock.move.line']
+        if sml_ids_to_unreserve:
+            msg = "Los lotes {} están en otros movimientos y se intercambiarán".format(sml_ids_to_unreserve.mapped('lot_id.name'))
+        else:
+            msg = "No se ha encontrado nngún lote asignado fuera de este movimiento"
+        _logger.info(msg)
+        execute_sql = False
+        for to_unreserve in sml_ids_to_unreserve:
+            sml_id = sml_no_lot_ids[0]
+            lot_id = to_unreserve.lot_id
+            ##Intercambio los lotes de 2 movimientos
+            sql = "update stock_move_line set location_id = %d,location_dest_id = %d,lot_id = %d where id = %d; " \
+                  "update stock_move_line set location_id = %d,location_dest_id = %d,lot_id = %d where id = %d; " \
+                  % (sml_id.location_id.id,
+                     sml_id.location_dest_id.id,
+                     sml_id.lot_id.id,
+                     to_unreserve.id,
+                     to_unreserve.location_id.id,
+                     to_unreserve.location_dest_id.id,
+                     to_unreserve.lot_id.id,
+                     sml_id.id,
+                     )
+            msg = "Libero el lote {} en el movimiento, y lo traigo al movimiento {} con lote {}".format(lot_id.name, to_unreserve.id, sml_id.id, sml_id.lot_id.name)
+            _logger.info(msg)
+            self._cr.execute(sql)
+            execute_sql = True
+            sml_ids_to_update += sml_id
+            lot_ids -= lot_id
+        if execute_sql:
+            self._cr.commit()
+        return sml_ids_to_update, lot_ids
 
+    def reserve_free_lots(self, move, move_ids, lot_ids):
+        sml_ids_to_update = self.env['stock.move.line']
+        ### BUSCO DE LOS LOTES QUE QUEDAN, LOS QUE NO ESTÁN RESERVADOS
+        while move_ids and lot_ids:
+            move_id = move_ids[0]
+            lot_id = lot_ids[0]
+            msg = "Libero el lote {} en el movimiento {}, y le asigno el  lote {}".format(move_id.lot_id.name, move_id.id, lot_id.name)
+            _logger.info(msg)
+            move_id.unlink()
+            reserved = move._update_reserved_quantity(1, 1, move.location_id, lot_id=lot_id, strict=False)
+            if not reserved:
+                _logger.info ('No se ha podido reservar el lote {} poara el movimiento {}'.format(lot_id.name, move.display_name))
+                domain = [('location_id', 'child_of', move.location_id.id),
+                          ('product_id', '=', move.product_id.id),
+                          ('lot_id', '=', lot_id.id)]
+                quant = self.env['stock.quant'].search(domain)
+                if not quant:
+                    msg = '>>> No hay stock en {} para {} con serie {}'.format(
+                        move.location_id.name, move.product_id.default_code, lot_id.name)
+                    _logger.info(msg)
+                    raise ValidationError(msg)
+                ## Esto a continuación es solo para ayudar a identificar el problema
+                elif quant.reserved_quantity != 0:
+                    ## Busco el movimiento que lo está reservando
+                    domain = [('location_id', 'child_of', move.location_id.id),
+                              ('lot_id', '=', lot_id.id),
+                              ('move_id.product_id', '=', move.product_id.id),
+                              ('state', '=', 'assigned')]
+                    moves = self.env['stock.move.line'].search(domain).mapped('move_id.display_name')
+                    if not moves:
+                        msg = '>>>No hay movimeito con origen {} para {} con serie {}'.format(move.location_id.name,
+                                                                               move.product_id.default_code,
+                                                                               lot_id.name)
+                        _logger.info(msg)
+                        raise ValidationError(msg)
+                    msg = 'El stock en {} para {} con serie {} ya esta reservado y hecho para otro movimiento {}'.format(
+                            move.location_id.name, move.product_id.default_code, lot_id.name, moves)
+                    _logger.info(msg)
+                    raise ValidationError(msg)
+                else:
+                    raise ValidationError('No se ha podido reservar. Causa desconocida')
+
+            sml_ids_to_update += move.move_line_ids.filtered(lambda x: x.lot_id == lot_id)
+            lot_ids -= lot_id
+        return sml_ids_to_update, lot_ids
+
+    def update_move_lot_apk(self, move, lot_ids, active_location=False, sql=True):
         if move.product_id.tracking != 'serial':
             raise ValidationError('El producto %s no tiene tracking por número de serie'% move.product_id.display_name)
-        print ('Actualizo el movimiento %d con lote(s) %s' % (move.id, lot_ids.mapped('name')))
         if not active_location:
             active_location = move.active_location_id or move.move_line_location_id
+
+
         sml_ids_to_update = self.env['stock.move.line']
-        sml_with_lot_ids = move.move_line_ids.filtered(lambda x: x.lot_id in lot_ids)
-        sml_no_lot_ids = move.move_line_ids - sml_with_lot_ids - move.move_line_ids.filtered(lambda x: x.qty_done == 1)
+        move_ids = move.move_line_ids.filtered(lambda x: not x.qty_done)
+        ## Filtro los moviminetos que tienen lotes que el isuairo introduce. Si qty_done = 0 , los actualizo, si no los ignoro
+        sml_with_lot_ids = move_ids.filtered(lambda x: x.lot_id in lot_ids)
+
+        ## Los lotes que están en los movimeintos los saco del conjunto
         lot_ids -= sml_with_lot_ids.mapped('lot_id')
-        sml_ids_to_update += sml_with_lot_ids
-        move_to_rereserve = self.env['stock.move']
 
+        # Los que no tienen qty_done, los meto to update
+        sml_ids_to_update += sml_with_lot_ids.filtered(lambda x: x.qty_done == 0)
 
-        for sml_id in sml_no_lot_ids:
-            # Si es una entrada o similar .....
+        # Me quedan los siguientes movimientos "libres" por estudiar
+        move_ids = move.move_line_ids - sml_with_lot_ids
 
+        ## Intercambio los lotes en los movimientos
+        update_sml_ids, lot_ids = self.reserve_not_free_lots(move, move_ids, lot_ids)
+        #Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
+        sml_ids_to_update += update_sml_ids
+        move_ids -= update_sml_ids
 
-            if not lot_ids:
-                break
-            lot = lot_ids[0]
-            if move.location_id.should_bypass_reservation() \
-                    or move.product_id.type == 'consu':
-                sml_id.lot_id = lot
-                lot_ids -= lot
-                sml_ids_to_update += sml_id
-                continue
-            # Busco un movimiento que tenga esa reserva
+        ## Pongo los lotes libres en los movimientos tengan un lote no leido
+        update_sml_ids, lot_ids = self.reserve_free_lots(move, move_ids, lot_ids)
+        # Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
+        sml_ids_to_update += update_sml_ids
+        move_ids -= update_sml_ids
 
-            domain = [('state', '=', 'assigned'),
-                      ('move_id', '!=', move.id),
-                      ('move_id.product_id', '=', move.product_id.id),
-                      ('location_id', '=', sml_id.location_id.id),
-                      ('location_dest_id', '=', sml_id.location_dest_id.id),
-                      ('qty_done', '=', 0),
-                      ('lot_id', '=', lot.id),
-                      ]
-            to_unreserve = self.env['stock.move.line'].search(domain)
-            if len(to_unreserve)>1:
-                raise ValidationError('Tienes 2 movimientos asignados con el mismo numero de serie o no hay disponibilidad para el lote %s'%lot.name)
-            elif to_unreserve:
-                print('-->> Desreservamos el movimiento %d con lote %s'%(to_unreserve.id, lot_ids.mapped('name')))
-                if sql:
-                    #Intercambio solo el lote id y las ubicaciones en los move_line_ids
-                    sql = "update stock_move_line set lot_id = %d where id = %d; " \
-                          "update stock_move_line set lot_id = %d where id = %d; "\
-                          % (sml_id.lot_id.id,
-                             to_unreserve.id,
-                             to_unreserve.lot_id.id,
-                             sml_id.id,
-                             )
-                    self._cr.execute(sql)
-                    sml_ids_to_update += sml_id
-                    lot_ids -= lot
-                    continue
-                else:
-                    move_to_rereserve += to_unreserve.mapped('move_id')
-                    to_unreserve.unlink()
-
-            else:
-                print('-->> No hay reserva, pero debemos forzar la reserva del movimiento %d con lote %s'%(sml_id.id, lot.name))
-                sml_id.unlink()
-                reserved = move._update_reserved_quantity(1, 1, move.location_id, lot_id=lot, strict=False)
-                print('-->> Reservamos el movimiento (%d) con para el artículo %s , lote %s' % (move.id, move.product_id.default_code, lot.name))
-                if not reserved:
-                    domain = [('location_id', 'child_of', move.location_id.id),
-                              ('product_id', '=', move.product_id.id),
-                              ('lot_id', '=', lot.id)]
-                    quant = self.env['stock.quant'].search(domain)
-                    if not quant:
-                        raise ValidationError('No hay stock en {} para {} con serie {}'.format(
-                            move.location_id.name, move.product_id.default_code, lot.name))
-                    elif quant.reserved_quantity != 0:
-                        domain = [('lot_id', '=', lot.id), ('state', '=', 'assigned')]
-                        moves = self.env['stock.move.line'].search(domain).mapped('move_id.display_name')
-                        raise ValidationError('El stock en {} para {} con serie {} ya esta reservado y hecho para otro movimiento {}'.format(
-                            move.location_id.name, move.product_id.default_code, lot.name, moves))
-                    else:
-                        raise ValidationError ('No se ha podido reservar')
-
-                # Añado el move line a la lista de movimientos para actualizar
-                sml_ids_to_update += move.move_line_ids.filtered(lambda x: x.lot_id == lot)
-                lot_ids -= lot
-
+        #Si aun me quedan lotes ....
+        if lot_ids and move_ids:
+            msg = 'Error. No deberías de tener lotes y movimeintos'
+            _logger.info (msg)
+            raise (msg)
 
         if lot_ids and move.picking_type_id.allow_overprocess:
-            print('-->> Creamos nuevos movimientos para los lotes%s' % lot_ids.mapped('name'))
+            _logger.info('-->> Creamos nuevos movimientos para los lotes %s' % lot_ids.mapped('name'))
             for lot_id in lot_ids:
                 if move.quantity_done >= move.reserved_availability:
                     break
@@ -127,7 +168,7 @@ class StockMove(models.Model):
                     sml_with_lot_ids += move.move_line_ids[-1]
 
         if sml_ids_to_update:
-            print('-->> Actualizo los movimientos con lotes: %s' % sml_ids_to_update.mapped('lot_id.name'))
+            _logger.info('-->> Actualizo los movimientos con lotes: %s' % sml_ids_to_update.mapped('lot_id.name'))
             vals = {}
             ##para no llamar a write_status para todos llamo a uno y escribo al resto
             sml_id = sml_ids_to_update[0]
@@ -144,16 +185,13 @@ class StockMove(models.Model):
                 vals['field_status_apk'] = sml_id.field_status_apk
                 sml_ids_to_update[1:].write(vals)
 
-        if move_to_rereserve:
-            print('-->> Reservamos de nuevo los movimientos (stock move) para los lotes %s' % move_to_rereserve.mapped('name'))
-            move_to_rereserve._action_assign()
         return move
 
     @api.model
     def create_move_lots(self, vals):
 
         #PUNTO DE ENTRADA PARA CUANDO LLEGA DESDE LA PANTALLA DEL MOVIMEINTO DE LA APP
-        print("#PUNTO DE ENTRADA PARA CUANDO LLEGA DESDE LA PANTALLA DEL MOVIMEINTO DE LA APP")
+        _logger.info("#PUNTO DE ENTRADA PARA CUANDO LLEGA DESDE LA PANTALLA DEL MOVIMEINTO DE LA APP")
 
         move_id = vals.get('id', False)
         lot_names = vals.get('lot_names', False)

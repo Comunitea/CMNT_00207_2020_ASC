@@ -53,8 +53,6 @@ class ProductProduct(models.Model):
     @api.multi
     def check_unreserve_more_qty(self):
         ##
-        if self.env.user.id not in (2, 6):
-            return
         domain = [('move_id.product_id', 'in', self.ids),
                   ('location_id', 'child_of', 13),
                   ('move_id.product_id.tracking', '=', 'serial'),
@@ -63,21 +61,20 @@ class ProductProduct(models.Model):
 
         sml_ids = self.env['stock.move.line'].search(domain)
         sm_ids = sml_ids.mapped('move_id')
-        sql = "delete from stock_move_line where id in %s"
-        params = [tuple(sml_ids.ids)]
-        self._cr.execute(sql, params)
-        sql = "update stock_move set state = 'partially_available' where id in %s"
-        params = [tuple(sm_ids.ids)]
-        self._cr.execute(sql, params)
-        self._cr.commit()
-        self.check_reserved_quantity()
-        sm_ids._action_assign()
+        if sm_ids:
+            sql = "delete from stock_move_line where id in %s"
+            params = [tuple(sml_ids.ids)]
+            self._cr.execute(sql, params)
+            sql = "update stock_move set state = 'partially_available' where id in %s"
+            params = [tuple(sm_ids.ids)]
+            self._cr.execute(sql, params)
+            self._cr.commit()
+            self.check_reserved_quantity()
+            sm_ids._action_assign()
 
     @api.multi
     def check_reserved_quantity(self):
         ##
-        if self.env.user.id not in (2, 6):
-            return
         for product_id in self:
             quant_domain = [('location_id', 'child_of', 13),
                             ('product_id', '=', product_id.id),
