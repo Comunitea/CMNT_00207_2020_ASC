@@ -68,6 +68,7 @@ class StockMove(models.Model):
             self._cr.execute(sql)
             execute_sql = True
             sml_ids_to_update += sml_id
+            sml_no_lot_ids -= sml_id
             lot_ids -= lot_id
         if execute_sql:
             self._cr.commit()
@@ -78,6 +79,7 @@ class StockMove(models.Model):
         ### BUSCO DE LOS LOTES QUE QUEDAN, LOS QUE NO ESTÁN RESERVADOS
         while move_ids and lot_ids:
             move_id = move_ids[0]
+            move_ids -= move_id
             lot_id = lot_ids[0]
             msg = "Libero el lote {} en el movimiento {}, y le asigno el  lote {}".format(move_id.lot_id.name, move_id.id, lot_id.name)
             _logger.info(msg)
@@ -157,13 +159,11 @@ class StockMove(models.Model):
             #Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
             sml_ids_to_update += update_sml_ids
             move_ids -= update_sml_ids
-
             ## Pongo los lotes libres en los movimientos tengan un lote no leido
             update_sml_ids, lot_ids = self.reserve_free_lots(move, move_ids, lot_ids)
             # Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
             sml_ids_to_update += update_sml_ids
             move_ids -= update_sml_ids
-
             #Si aun me quedan lotes ....
             if lot_ids and move_ids:
                 msg = 'Error. No deberías de tener lotes y movimeintos'
