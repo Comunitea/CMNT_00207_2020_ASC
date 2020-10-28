@@ -21,8 +21,8 @@ class StockProductionLot(models.Model):
               "where sml.id is null"
         self._cr.execute(sql)
         res = self._cr.fetchall()
-        _logger.info("BORRAR LOTES: >>> Total: {} lotes. Solo los primeros 500".format(len(res)))
-        for lot in res[0:500]:
+        _logger.info("BORRAR LOTES: >>> Total: {} lotes.".format(len(res)))
+        for lot in res:
             lot_id = self.browse(lot[0])
             str = "BORRAR LOTES: >>> El número de serie {} ({}) se ha eliminado".format(lot_id.name, lot_id.id)
             lot_id.unlink()
