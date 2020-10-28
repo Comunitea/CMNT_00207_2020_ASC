@@ -140,23 +140,35 @@ class StockMove(models.Model):
         # Me quedan los siguientes movimientos "libres" por estudiar
         move_ids = move.move_line_ids - sml_with_lot_ids
 
-        ## Intercambio los lotes en los movimientos
-        update_sml_ids, lot_ids = self.reserve_not_free_lots(move, move_ids, lot_ids)
-        #Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
-        sml_ids_to_update += update_sml_ids
-        move_ids -= update_sml_ids
+        ## Es una entrada  ono requiere reservas
+        if move.location_id.should_bypass_reservation() \
+                or move.product_id.type == 'consu':
+            while move_ids and lot_ids:
+                move_id = move_ids[0]
+                lot_id = lot_ids[0]
+                move_id.lot_id = lot_id
+                lot_ids -= lot_id
+                move_ids -= move_id
+                sml_ids_to_update += move_id
 
-        ## Pongo los lotes libres en los movimientos tengan un lote no leido
-        update_sml_ids, lot_ids = self.reserve_free_lots(move, move_ids, lot_ids)
-        # Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
-        sml_ids_to_update += update_sml_ids
-        move_ids -= update_sml_ids
+        else:
+            ## Intercambio los lotes en los movimientos
+            update_sml_ids, lot_ids = self.reserve_not_free_lots(move, move_ids, lot_ids)
+            #Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
+            sml_ids_to_update += update_sml_ids
+            move_ids -= update_sml_ids
 
-        #Si aun me quedan lotes ....
-        if lot_ids and move_ids:
-            msg = 'Error. No deberías de tener lotes y movimeintos'
-            _logger.info (msg)
-            raise (msg)
+            ## Pongo los lotes libres en los movimientos tengan un lote no leido
+            update_sml_ids, lot_ids = self.reserve_free_lots(move, move_ids, lot_ids)
+            # Devuelve un listado de moviemitnos y lotes que tendo que actualizar y o no tocar mas, ademas, lot_ids le ha quitado unidades
+            sml_ids_to_update += update_sml_ids
+            move_ids -= update_sml_ids
+
+            #Si aun me quedan lotes ....
+            if lot_ids and move_ids:
+                msg = 'Error. No deberías de tener lotes y movimeintos'
+                _logger.info (msg)
+                raise (msg)
 
         if lot_ids and move.picking_type_id.allow_overprocess:
             _logger.info('-->> Creamos nuevos movimientos para los lotes %s' % lot_ids.mapped('name'))
