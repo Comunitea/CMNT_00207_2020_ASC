@@ -366,3 +366,10 @@ class SaleOrderImporter(Component):
                     }
                 )
         return res
+
+    def _import_dependencies(self):
+        record = self.prestashop_record
+        self._import_dependency(
+            record['id_customer'], 'prestashop.res.partner', always=True
+        )
+        return super()._import_dependencies()
