@@ -1,94 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo >
 
-        <record id="ir_cron_product_variable_replenish" forcecreate="True" model="ir.cron">
-            <field name="name">Get Product Variable replenish</field>
-            <field name="active" eval="True" />
-            <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">months</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model_id" ref="product.model_product_product" />
-            <field name="code">model.cron_variable_replenish()</field>
-            <field name="state">code</field>
-        </record>
-    </data>
-
-    <record id="ir_check_duplicate_lot" model="ir.cron">
-        <field name="name">Get and advise duplicate lots</field>
-        <field name="model_id" ref="model_stock_production_lot"/>
-        <field name="state">code</field>
-        <field name="code">model.check_duplicate_lote_names()</field>
-        <field name='interval_number'>1</field>
-        <field name='interval_type'>hours</field>
+    <record id="ir_cron_product_variable_replenish" forcecreate="True" model="ir.cron">
+        <field name="name">Get Product Variable replenish</field>
+        <field name="active" eval="True" />
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
         <field name="numbercall">-1</field>
+        <field name="doall" eval="False" />
+        <field name="model_id" ref="product.model_product_product" />
+        <field name="code">model.cron_variable_replenish()</field>
+        <field name="state">code</field>
     </record>
-
-    <record id="duplicate_lots_advise_partner" model="mail.template">
-        <field name="name">Aviso de lotes duplicados</field>
-        <field name="email_from">almacen@outletseguridad.com</field>
-        <field name="email_to">almacen@outletseguridad.com</field>
-        <field name="subject">Lote Duplicado: ${object.name}</field>
-        <field name="model_id" ref="stock.model_stock_production_lot"/>
-        <field name="auto_delete" eval="True"/>
-        <field name="add_followers" eval="True"/>
-        <field name="body_html"><![CDATA[
-            <html>
-                <head>
-                    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-                    <title>Número de serie  ${object.name}</title>
-                    <style>
-                        span.oe_mail_footer_access {
-                            display:block;
-                            text-align:center;
-                            color:grey;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-                        <p>Hola</p>
-                        <p>El número de serie ${object.name} está duplicado. </p>
-                        <br>
-                        <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
-                            <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
-                                <strong style="text-transform:uppercase;">${user.company_id.name}</strong></h3>
-                        </div>
-                        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
-                        <span style="color: #222; margin-bottom: 5px; display: block; ">
-                        % if user.company_id.street:
-                            ${user.company_id.street}<br>
-                        % endif
-                        % if user.company_id.street2:
-                            ${user.company_id.street2}<br>
-                        % endif
-                        % if user.company_id.city or user.company_id.zip:
-                            ${user.company_id.zip} ${user.company_id.city}<br>
-                        % endif
-                        % if user.company_id.country_id:
-                            ${user.company_id.state_id and ('%s, ' % user.company_id.state_id.name) or ''} ${user.company_id.country_id.name or ''}<br>
-                        % endif
-                        </span>
-                        % if user.company_id.phone:
-                            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
-                                Teléfono:&nbsp; ${user.company_id.phone}
-                            </div>
-                        % endif
-                        % if user.company_id.website:
-                            <div>
-                                Web :&nbsp;<a href="${user.company_id.website}">${user.company_id.website}</a>
-                            </div>
-                        %endif
-                        <p></p>
-                    </div>
-                        <br>
-
-                        </div>
-                </body>
-            </html>
-            ]]>
-            </field>
-    </record>
+    <delete id="ir_check_duplicate_lot" model="ir.cron"/>
+     <delete id="duplicate_lots_advise_partner" model="mail.template"/>
 </odoo>
