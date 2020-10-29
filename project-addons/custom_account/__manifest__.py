@@ -12,17 +12,10 @@
     "license": "AGPL-3",
     "depends": [
         "account",
-        "sale",
-        "sales_team",
         "l10n_es_mis_report",
         "l10n_es_account_invoice_sequence",
         "l10n_es_aeat_sii",
         "base_automation",
     ],
-    "data": [
-        "data/custom_account_data.xml",
-        "views/account_move_view.xml",
-        "views/account_payment_mode.xml",
-        "views/crm_team.xml",
-    ],
+    "data": ["data/custom_account_data.xml", "views/account_move_view.xml", "views/account_payment_mode.xml"],
 }

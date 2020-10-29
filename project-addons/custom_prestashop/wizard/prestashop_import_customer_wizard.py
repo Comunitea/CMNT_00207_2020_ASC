@@ -15,7 +15,7 @@ class PrestashopImportCustomer(models.TransientModel):
             self.env.context.get("active_ids")
         )
         for backend in backend_ids:
-            self.env["prestashop.res.partner"].with_context(company_id=backend.company_id.id).with_delay().import_record(
+            self.env["prestashop.res.partner"].with_delay().import_record(
                 backend, self.prestashop_id
             )
 
