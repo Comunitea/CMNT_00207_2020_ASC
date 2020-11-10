@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="lot_search_duplicate" model="ir.ui.view">
+        <field name="name">lot.inherit.view.search.duplicate</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <filter name="duplicate_lots" string="Duplicados" domain="[('duplicate', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

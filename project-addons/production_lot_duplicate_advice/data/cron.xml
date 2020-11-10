@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo >
+
+    <record id="ir_check_duplicate_lot" model="ir.cron">
+        <field name="name">Get and advise duplicate lots</field>
+        <field name="model_id" ref="model_stock_production_lot"/>
+        <field name="state">code</field>
+        <field name="code">model.check_duplicate_lote_names()</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <record id="ir_delete_unused_lot" model="ir.cron">
+        <field name="name">Get and delete unused lots</field>
+        <field name="model_id" ref="model_stock_production_lot"/>
+        <field name="state">code</field>
+        <field name="code">model.unlink_not_used_lot_ids()</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+    </record>
+
+    <record id="duplicate_lots_advise_partner" model="mail.template">
+        <field name="name">Aviso de lotes duplicados</field>
+        <field name="email_from">almacen@outletseguridad.com</field>
+        <field name="email_to">almacen@outletseguridad.com</field>
+        <field name="subject">Lotes Duplicados</field>
+        <field name="model_id" ref="stock.model_stock_production_lot"/>
+        <field name="auto_delete" eval="True"/>
+        <field name="add_followers" eval="True"/>
+        <field name="body_html"><![CDATA[
+            <html>
+                <head>
+                    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+                    <title>Número de serie  duplicados</title>
+                    <style>
+                        span.oe_mail_footer_access {
+                            display:block;
+                            text-align:center;
+                            color:grey;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+                        <p>Hola</p>
+                        <p>Los siguientes números de serie están duplicados </p>
+
+                        <ul>
+                           % for line in ctx['lot_ids']:
+                               <li>
+                                   Lote: <a href="${ctx['url']}/web#id=${line.id}&action=310&model=stock.production.lot&view_type=form&menu_id=182" target="_blank">${line.name}</a> --->
+                                   Producto: <a href="${ctx['url']}/web#id=${line.product_id.id}&action=310&model=product.product&view_type=form&menu_id=182" target="_blank">${line.product_id.display_name}</a>
+                               </li>
+                           % endfor
+                        </ul>
+                        <p>Puedes ver la lista <a href="web#action=310&model=stock.production.lot&view_type=list&menu_id=182" target="_blank">Aquí --->></a></p>
+                        <br>
+                        <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+                            <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+                                <strong style="text-transform:uppercase;">${user.company_id.name}</strong></h3>
+                        </div>
+
+                        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+                        <span style="color: #222; margin-bottom: 5px; display: block; ">
+                        % if user.company_id.street:
+                            ${user.company_id.street}<br>
+                        % endif
+                        % if user.company_id.street2:
+                            ${user.company_id.street2}<br>
+                        % endif
+                        % if user.company_id.city or user.company_id.zip:
+                            ${user.company_id.zip} ${user.company_id.city}<br>
+                        % endif
+                        % if user.company_id.country_id:
+                            ${user.company_id.state_id and ('%s, ' % user.company_id.state_id.name) or ''} ${user.company_id.country_id.name or ''}<br>
+                        % endif
+                        </span>
+                        % if user.company_id.phone:
+                            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+                                Teléfono:&nbsp; ${user.company_id.phone}
+                            </div>
+                        % endif
+                        % if user.company_id.website:
+                            <div>
+                                Web :&nbsp;<a href="${user.company_id.website}">${user.company_id.website}</a>
+                            </div>
+                        %endif
+                        <p></p>
+                    </div>
+                        <br>
+
+                        </div>
+                </body>
+            </html>
+            ]]>
+            </field>
+    </record>
+</odoo>

@@ -68,7 +68,7 @@ class SaleOrderImportMapper(Component):
     @mapping
     def fiscal_position_id(self, record):
         order_lines = (
-            record.get("associations", {}).get("order_rows", {}).get("order_row")
+            record.get("associations").get("order_rows").get("order_row")
         )
         if isinstance(order_lines, dict):
             order_lines = [order_lines]
@@ -79,7 +79,7 @@ class SaleOrderImportMapper(Component):
         for line in order_lines:
             line_data = sale_line_adapter.read(line["id"])
             prestashop_tax_id = (
-                line_data.get("associations", {}).get("taxes", {}).get("tax", {}).get("id")
+                line_data.get("associations").get("taxes").get("tax").get("id")
             )
             if prestashop_tax_id not in line_taxes:
                 line_taxes.append(prestashop_tax_id)
@@ -179,13 +179,13 @@ class SaleOrderImportMapper(Component):
 
     @mapping
     def notes(self, record):
-        messages = record.get("associations", {}).get("messages", {}).get("message", {})
+        messages = record.get("associations").get("messages").get("message")
         if isinstance(messages, dict):
             messages = [messages]
         if messages:
             return {
                 "note": "\n".join(
-                    [x.get("message") for x in messages if x.get("private") == "0"]
+                    [x.get("message") for x in messages if x["private"] == "0"]
                 )
             }
 

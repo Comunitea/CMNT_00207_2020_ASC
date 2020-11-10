@@ -13,7 +13,8 @@ class CreditControlRun(models.Model):
             {
                 "date": fields.Date.today(),
                 "policy_ids": [
-                    (4, x.id) for x in self.env["credit.control.policy"].search([])
+                    (4, x.id)
+                    for x in self.env["credit.control.policy"].search([])
                 ],
             }
         )
@@ -25,8 +26,8 @@ class CreditControlRun(models.Model):
             ]
         )
         if credit_control_lines:
-            credit_control_lines.write({"state": "to_be_sent"})
-            emailer = self.env["credit.control.emailer"].create(
-                {"line_ids": [(6, 0, credit_control_lines._ids)]}
-            )
+            credit_control_lines.write({'state': 'to_be_sent'})
+            emailer = self.env['credit.control.emailer'].create({
+                'line_ids': [(6, 0, credit_control_lines._ids)]
+            })
             emailer.email_lines()
