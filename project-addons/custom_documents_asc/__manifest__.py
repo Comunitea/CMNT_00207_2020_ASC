@@ -39,5 +39,6 @@
         "views/purchase_order.xml",
         "views/res_partner.xml",
         "views/sale_report.xml",
+        "views/report_invoice_amz.xml"
     ],
 }

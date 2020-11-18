@@ -8,10 +8,6 @@
     font-weight: bold;
 }
 
-.table th,
-.table td {
-    border: none !important;
-}
 .Asec {
     .header_color {
         padding-top:40px;
@@ -106,11 +102,16 @@
     }
 }
 
+.Asec, .Outlet {
+    table[class="table table-sm o_main_table"] tbody tr:nth-child(even) {
+        background-color: #dcdfe4;
+    }
 
-table[class="table table-sm o_main_table"] tbody tr:nth-child(even) {
-    background-color: #dcdfe4;
-}
-
-table[name="invoice_line_table"] tbody tr:nth-child(even) {
-    background-color: #dcdfe4;
+    table[name="invoice_line_table"] tbody tr:nth-child(even) {
+        background-color: #dcdfe4;
+    }
+    .table th,
+    .table td {
+        border: none !important;
+    }
 }
