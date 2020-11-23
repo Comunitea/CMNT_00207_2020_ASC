@@ -1,3 +1,4 @@
+
 ##############################################################################
 #    License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 #    Copyright (C) 2020 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
@@ -10,7 +11,7 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thefire
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
@@ -18,6 +19,25 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizard
-from . import report
+import logging
+
+from odoo import api, fields, models
+from odoo.tools import float_is_zero
+
+
+_logger = logging.getLogger(__name__)
+
+
+class ReportPrintBatchPicking(models.AbstractModel):
+    _name = 'report.stock_picking_batch_extended.report_batch_picking'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        model = 'stock.picking.batch'
+        docs = self.env[model].browse(docids)
+        try:
+            self.env.ref("stock.action_report_delivery").print_document(
+                docs.picking_ids._ids
+            )
+        except Exception:
+            docs.message_post('Ha fallado la impresión del albarán')
