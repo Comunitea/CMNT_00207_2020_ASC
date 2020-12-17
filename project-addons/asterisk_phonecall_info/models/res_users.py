@@ -12,4 +12,11 @@ class ResUsers(models.Model):
     _inherit = "res.users"
 
     asterisk_notify = fields.Boolean(string='Asterisk notify', default=True)
-    
+    asterisk_user_type = fields.Selection(
+        [('commercial', 'Commercial'),
+         ('technical', 'Technical'),
+         ('undefined', 'Undefined')],
+        string='User type',
+        required=True,
+        default='undefined',
+    )

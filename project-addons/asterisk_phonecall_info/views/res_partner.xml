@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="asterisk_phonecall_info_view_partner_form" model="ir.ui.view">
+        <field name="name">Asteriosk Phonecall Info Partner phonecall schedule</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_phonecall_schedule.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='phonecalls']/group[1]" position="before">
+                <group string="Calls Summary">
+                    <field name="commercial_minutes_cur_month"/>
+                    <field name="technical_minutes_cur_month"/>
+                    <field name="commercial_minutes"/>
+                    <field name="technical_minutes"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -40,6 +40,7 @@
         <field name="arch" type="xml">
             <field name="context_propose_creation_crm_call" position="after">
                 <field name="asterisk_notify"/>
+                <field name="asterisk_user_type"/>
             </field>
         </field>
     </record>
