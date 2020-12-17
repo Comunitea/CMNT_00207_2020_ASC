@@ -24,22 +24,42 @@ class PhoneCommon(models.AbstractModel):
         action = clean_action(action)
         partner_id = self.env["phone.common"].get_record_from_phone_number(number)
         partner_notes = False
+        commercial_partner_notes = False
+        technical_partner_notes = False
         if partner_id and partner_id[2]:
             partner_name = partner_id[2]
             partner = self.env[partner_id[0]].browse(partner_id[1])
-            partner_phonecall_ids = self.env["crm.phonecall"].search([
+            partner_commercial_phonecall_ids = self.env["crm.phonecall"].search([
                 ('partner_id', 'child_of', partner.id),
-                ('notes', '!=', False)
+                ('notes', '!=', False),
+                ('asterisk_user_type', '=', 'commercial')
             ], order="id desc", limit=5)
-            if partner_phonecall_ids:
-                partner_notes = ''
-                for phonecall in partner_phonecall_ids:
-                    partner_notes += '{}: {} <br/>'.format(phonecall.date, phonecall.notes)
+
+            partner_technical_phonecall_ids = self.env["crm.phonecall"].search([
+                ('partner_id', 'child_of', partner.id),
+                ('notes', '!=', False),
+                ('asterisk_user_type', '=', 'technical')
+            ], order="id desc", limit=5)
+
+            if partner_commercial_phonecall_ids:
+                commercial_partner_notes = ''
+                for phonecall in partner_commercial_phonecall_ids:
+                    commercial_partner_notes += '{}: {} <br/>'.format(phonecall.date, phonecall.notes)
+
+            if partner_technical_phonecall_ids:
+                technical_partner_notes = ''
+                for phonecall in partner_commercial_phonecall_ids:
+                    technical_partner_notes += '{}: {} <br/>'.format(phonecall.date, phonecall.notes)
         else:
             partner_name = "Unknown"
         if action:
             for user in users:
+                partner_notes = ''
                 channel = "notify_info_%s" % user.id
+                if user.asterisk_user_type == 'commercial':
+                    partner_notes = commercial_partner_notes
+                elif user.asterisk_user_type == 'technical':
+                    partner_notes = technical_partner_notes
                 bus_message = {
                     "message": _(
                         "Incoming call from {} ({}) <br/> {}".format(partner_name, number, partner_notes if partner_notes else '')
