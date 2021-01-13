@@ -37,6 +37,8 @@ class AsteriskServer(models.Model):
         very old or very new versions of Asterisk'''
         sip_account = user.asterisk_chan_type + '/' + user.resource
         internal_number = user.internal_number
+
+        _logger.info("_get_calling_agi_uniqueid_from_channel: SIP ACC {}, INTERNAL NUMBER: {}, CHAN: {}, USER: {}".format(sip_account, internal_number, chan))
         # 4 = Ring
         # 6 = Up
         if (
@@ -44,7 +46,7 @@ class AsteriskServer(models.Model):
                     chan.get('ConnectedLineNum') == internal_number or
                     chan.get('EffectiveConnectedLineNum') == internal_number or
                     sip_account in chan.get('BridgedChannel', ''))):
-            _logger.debug(
+            _logger.info(
                 "Found a matching Event with ID = %s",
                 chan.get('Uniqueid'))
             return chan.get('Uniqueid')
@@ -52,7 +54,7 @@ class AsteriskServer(models.Model):
         if (
                 chan.get('State') == 'Up' and
                 sip_account in chan.get('Link', '')):
-            _logger.debug("Found a matching Event in 'Up' state")
+            _logger.info("Found a matching Event in 'Up' state")
             return chan.get('Uniqueid')
         return False
 
@@ -65,8 +67,8 @@ class AsteriskServer(models.Model):
         calling_party_number = False
         try:
             list_chan = ast_manager.Status()
-            _logger.debug("Result of Status AMI request:")
-            _logger.debug(format(list_chan))
+            _logger.info("Result of Status AMI request:")
+            _logger.info(format(list_chan))
             for chan in list_chan.values():
                 calling_agi_uniqueid = self._get_calling_agi_uniqueid_from_channel(
                     chan, user)
