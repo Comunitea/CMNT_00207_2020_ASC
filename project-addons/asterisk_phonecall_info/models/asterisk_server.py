@@ -38,7 +38,7 @@ class AsteriskServer(models.Model):
         sip_account = user.asterisk_chan_type + '/' + user.resource
         internal_number = user.internal_number
 
-        _logger.info("_get_calling_agi_uniqueid_from_channel: SIP ACC {}, INTERNAL NUMBER: {}, CHAN: {}, USER: {}".format(sip_account, internal_number, chan))
+        _logger.info("_get_calling_agi_uniqueid_from_channel: SIP ACC {}, INTERNAL NUMBER: {}, CHAN: {}".format(sip_account, internal_number, chan))
         # 4 = Ring
         # 6 = Up
         if (
