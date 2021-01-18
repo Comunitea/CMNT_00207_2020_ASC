@@ -53,8 +53,6 @@ var WriteNoteMenu = Widget.extend({
             route: '/asterisk_click2dial/get_record_from_my_channel',
             params: {local_context: context, },
             }).then(function(r) {
-
-        console.log("RPC");
         
         if (r === false) {
              self.do_warn(

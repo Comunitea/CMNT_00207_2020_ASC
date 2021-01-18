@@ -32,7 +32,7 @@ class PickingSignWizard(models.TransientModel):
             partner_id = object_id
 
         user = self.env.user
-        logger.info("Getting agi_unique_id with user {}".format(user))
+        logger.debug("Getting agi_unique_id with user {}".format(user))
         # server
         ast_server = user.get_asterisk_server_from_user()
         agi_unique_id = ast_server._get_calling_agi_uniqueid(user)
