@@ -24,7 +24,7 @@ class PhoneCommon(models.AbstractModel):
         action = clean_action(action)
         partner_id = self.env["phone.common"].get_record_from_phone_number(number)
         logger.info(
-            "Partner info %s" % (partner_id)
+            "Partner info {}".format(partner_id)
         )
         partner_notes = False
         commercial_partner_notes = False
@@ -39,7 +39,7 @@ class PhoneCommon(models.AbstractModel):
             ], order="id desc", limit=5)
 
             logger.info(
-                "partner_commercial_phonecall_ids info %s" % (partner_commercial_phonecall_ids)
+                "partner_commercial_phonecall_ids info {}".format(partner_commercial_phonecall_ids)
             )
 
             partner_technical_phonecall_ids = self.env["crm.phonecall"].search([
@@ -49,7 +49,7 @@ class PhoneCommon(models.AbstractModel):
             ], order="id desc", limit=5)
 
             logger.info(
-                "partner_technical_phonecall_ids info %s" % (partner_technical_phonecall_ids)
+                "partner_technical_phonecall_ids info {}".format(partner_technical_phonecall_ids)
             )
 
             if partner_commercial_phonecall_ids:
@@ -72,7 +72,7 @@ class PhoneCommon(models.AbstractModel):
                 elif user.asterisk_user_type == 'technical':
                     partner_notes = technical_partner_notes
                 logger.info(
-                    "user.asterisk_user_type info %s" % (user.asterisk_user_type)
+                    "user.asterisk_user_type info {}".format(user.asterisk_user_type)
                 )
                 bus_message = {
                     "message": _(
