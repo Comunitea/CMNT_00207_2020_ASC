@@ -8,6 +8,8 @@
         <field name="arch" type="xml">
             <field name="origin_location_disable" position="before">
                 <field name="product_ids" widget="many2many_tags"/>
+                <field name="apply_to_location_path"/>
+                <field name="all_done"/>
             </field>
         </field>
     </record>
