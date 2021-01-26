@@ -2,6 +2,13 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import fields, models
 from odoo.addons.queue_job.job import job
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    from prestapyt import PrestaShopWebServiceError
+except:
+    _logger.debug('Cannot import from `prestapyt`')
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -11,6 +18,7 @@ class ResPartner(models.Model):
         if country_id and country_id == self.country_id.id:
             del vals['country_id']
         return super().write(vals)
+
 
 class PrestashopResPartner(models.Model):
     _inherit = "prestashop.res.partner"
@@ -38,5 +46,8 @@ class PrestashopResPartner(models.Model):
         for address in self.mapped(
             "odoo_id.child_ids.prestashop_address_bind_ids"
         ) + self.mapped("odoo_id.prestashop_address_bind_ids"):
-            address.resync()
+            try:
+                address.resync()
+            except PrestaShopWebServiceError:
+                pass
         return super().resync()
