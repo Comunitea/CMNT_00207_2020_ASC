@@ -32,4 +32,17 @@
             </group>
         </field>
     </record>
+
+    <record id="asterisk_phonecall_info_view_users_form" model="ir.ui.view">
+        <field name="name">asterisk.phonecall.info.crm.phone.res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="crm_phone.view_users_form"/>
+        <field name="arch" type="xml">
+            <field name="context_propose_creation_crm_call" position="after">
+                <field name="asterisk_notify"/>
+                <field name="asterisk_user_type"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>

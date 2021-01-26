@@ -44,6 +44,7 @@ class CrmPhonecall(models.Model):
         help="This is the delivery method, e.g. Postcard, Email, or Banner Ad",
         default=lambda self: self.env.ref("utm.utm_medium_email", False),
     )
+    asterisk_user_type = fields.Selection(related='user_id.asterisk_user_type')
 
     def _parse_row_vals(self, row):
 

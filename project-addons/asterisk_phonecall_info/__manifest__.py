@@ -14,6 +14,7 @@
         "base_phone",
         "crm_phone",
         "crm_phonecall_planner",
+        "partner_phonecall_schedule",
         "crm_phonecall",
         "asterisk_click2dial",
         "base_phone_popup",
@@ -23,6 +24,7 @@
         'views/assets.xml',
         'wizard/phonecall_notes_wzd.xml',
         'data/cdr_import_cron.xml',
+        'views/res_partner.xml',
     ],
     'qweb': ['static/src/xml/note.xml'],
 }

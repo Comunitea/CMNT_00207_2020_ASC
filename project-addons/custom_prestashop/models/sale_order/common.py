@@ -48,12 +48,12 @@ class SaleOrder(models.Model):
         exception_msg = ""
         if partner.risk_exception:
             exception_msg = _("Financial risk exceeded.\n")
-        elif partner.risk_sale_order_limit and (
+        elif partner.risk_sale_order_limit and not partner.risk_sale_order_limit == 0.0 and (
             (partner.risk_sale_order + self.amount_total)
             > partner.risk_sale_order_limit
         ):
             exception_msg = _("This sale order exceeds the sales orders risk.\n")
-        elif partner.risk_sale_order_include and (
+        elif partner.risk_sale_order_include and not partner.credit_limit == 0.0 and (
             (partner.risk_total + self.amount_total) > partner.credit_limit
         ):
             exception_msg = _("This sale order exceeds the financial risk.\n")
