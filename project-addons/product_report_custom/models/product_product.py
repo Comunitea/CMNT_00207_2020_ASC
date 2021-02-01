@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
-
+from odoo.osv import expression
 
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
@@ -84,7 +84,7 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales(self):
-
+         
         domain = [("key", "ilike", "count_sales_")]
         count = dict(
             (item["key"], int(item["value"]))
@@ -102,11 +102,40 @@ class ProductProduct(models.Model):
             field_to_count = "product_uom_qty"
 
         default = {"0": 0, "1": 1, "2": 2, "3": 6}
+        default = {"0": 0, "1": 3, "2": 6, "3": 9}
         date_ref = fields.Date.today()
         next_date = fields.Date.from_string(date_ref)
         res = {}
         max_month = 0
         for i in range(0, 4):
+            month_str = "{}".format(i)
+            month = count.get("count_sales_{}".format(i), default[month_str])
+            max_month = max(max_month, month)
+            start = next_date + relativedelta(day=1, months=-month)
+            start_date = fields.Date.to_string(start)
+            domain = ['&', '&', 
+                ("state", "=", "done"),
+                ("date", ">=", start_date),
+                ("product_id", "in", self.ids)]
+            product_ids = {}
+            for product in self:
+                product_ids[product.id] = 0
+
+            domain_out = expression.AND([domain, ['&', ('location_id.usage', '!=', 'customer'), ('location_dest_id.usage', '=', 'customer')]])
+            move_out = self.env["stock.move"].read_group(domain_out, ["product_id", 'product_uom_qty'], ["product_id"])
+            for item in move_out:
+                product_id = item['product_id'][0]
+                product_ids[product_id] += item['product_uom_qty']
+            #devoluciones
+            domain_in = expression.AND([domain, ['&', ('location_id.usage', '=', 'customer'), ('location_dest_id.usage', '!=', 'customer')]])
+            
+            move_in = self.env["stock.move"].read_group(domain_in, ["product_id", 'product_uom_qty'], ["product_id"])
+            for item in move_in:
+                product_id = item['product_id'][0]
+                product_ids[product_id] -= item['product_uom_qty']
+            
+            res[month_str] = product_ids
+        """for i in range(0, 4):
             month_str = "{}".format(i)
             month = count.get("count_sales_{}".format(i), default[month_str])
             max_month = max(max_month, month)
@@ -123,9 +152,14 @@ class ProductProduct(models.Model):
                     domain, ["product_id", field_to_count], ["product_id"]
                 )
             )
-
+"""
+        cont = len(self) +1
         for product in self:
+        
+            print ('{}: {}'.format(cont, product.name))
+            cont -= 1
             for i in range(0, 4):
+               
                 month_str = "{}".format(i)
                 if res[month_str] and res[month_str].get(product.id, False):
                     product["count_sales_{}".format(month_str)] = res[month_str][
@@ -140,6 +174,7 @@ class ProductProduct(models.Model):
                         month_str, product["count_sales_{}".format(month_str)]
                     )
                 product.count_sales = month_str
+            
 
     @api.multi
     def _compute_product_sale_alarm(self):
