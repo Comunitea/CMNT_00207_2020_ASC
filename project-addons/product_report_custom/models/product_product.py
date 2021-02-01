@@ -102,7 +102,7 @@ class ProductProduct(models.Model):
             field_to_count = "product_uom_qty"
 
         default = {"0": 0, "1": 1, "2": 2, "3": 6}
-        default = {"0": 0, "1": 3, "2": 6, "3": 9}
+        # default = {"0": 0, "1": 3, "2": 6, "3": 9}
         date_ref = fields.Date.today()
         next_date = fields.Date.from_string(date_ref)
         res = {}
