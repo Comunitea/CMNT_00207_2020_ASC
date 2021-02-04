@@ -13,7 +13,6 @@ class FixedPutAwayStrategy(models.Model):
     @api.multi
     def name_get(self):
         res = []
-        print(self._context)
         for name in self:
             display_name = "{}: {}".format(
                 name.putaway_id.name, name.fixed_location_id.name
