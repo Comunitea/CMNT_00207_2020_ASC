@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record model="ir.ui.view" id="view_move_line_tree">
+        <field name="name">Stock Move Lines</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock."/>
+        <field name="arch" type="xml">
+            <field name="qty_done" position="before">
+                <field name="product_uom_qty"/>
+            </field>
+        </field>
+</record>
+
     <record model="ir.ui.view" id="view_picking_type_form">
             <field name="name">Operation Types Codes</field>
             <field name="model">picking.type.group.code</field>
@@ -36,4 +47,6 @@
             pick.mark_as_ready_to_send()
         </field>
     </record>
+
+
 </odoo>
