@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <record id="product_normal_form_view" model="ir.ui.view">
+        <field name="name">product_normal_form_view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="tracking" position="after">
+                <field name="not_lot_name_ids" attrs="{'invisible': [('tracking', '=', 'none')]}"/>
+            </field>
+        </field>
+    </record>
     <record id="product_form_view_replenish_type" model="ir.ui.view">
         <field name="name">product.form.view.replenish.type</field>
         <field name="model">product.template</field>
