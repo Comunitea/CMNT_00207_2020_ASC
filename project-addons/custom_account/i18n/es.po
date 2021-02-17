@@ -21,6 +21,12 @@ msgid "Account"
 msgstr "Cuenta"
 
 #. module: custom_account
+#: code:addons/custom_account/models/invoice.py:70
+#, python-format
+msgid "cannot validate invoices without fiscal position"
+msgstr "Se debe de establecer la posición fiscal antes de validar la factura"
+
+#. module: custom_account
 #: code:addons/custom_account/models/invoice.py:44
 #, python-format
 msgid "Any invoice found with last number %s."
