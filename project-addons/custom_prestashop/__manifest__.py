@@ -26,6 +26,7 @@
         "views/prestashop_backend.xml",
         "views/sale_order_state.xml",
         "views/account_fiscal_position.xml",
+        "views/product_template.xml",
         "data/sale_exception.xml",
         "data/ir_cron.xml",
         "security/ir.model.access.csv",
