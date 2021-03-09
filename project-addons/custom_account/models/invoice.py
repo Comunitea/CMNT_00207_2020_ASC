@@ -63,3 +63,17 @@ class AccountInvoice(models.Model):
         if invoice.payment_term_id:
             vals["payment_term_id"] = invoice.payment_term_id.id
         return vals
+
+    @api.multi
+    def action_invoice_open(self):
+        if self.filtered(lambda r: not r.fiscal_position_id):
+            raise exceptions.ValidationError(_('cannot validate invoices without fiscal position'))
+        return super().action_invoice_open()
+
+    @api.multi
+    def write(self, vals):
+        """No resetear la fecha contable al cambiar a borrador"""
+        if vals.get('state') == 'draft' and 'date' in vals:
+            del vals['date']
+        return super().write(vals)
+

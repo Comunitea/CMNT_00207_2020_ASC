@@ -162,6 +162,5 @@ class CarrierreportXlsx(models.TransientModel):
             raise UserError(_("No hay envíos."))
 
         data = {'res': self.group_result(batch_ids)}
-        print(data)
         return self.env.ref('carrier_report_xlsx.action_report_deliveries').report_action(self, data=data)
 

@@ -1,0 +1,437 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* custom_prestashop
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-01 10:38+0000\n"
+"PO-Revision-Date: 2021-03-01 10:38+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_base_multi_image_image
+msgid " image model for multiple image functionality "
+msgstr ""
+
+#. module: custom_prestashop
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.view_prestashop_backend_form
+msgid "<span>Import product attributes</span>"
+msgstr ""
+
+#. module: custom_prestashop
+#: selection:prestashop.product.template,out_of_stock:0
+msgid "Accept order"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order_line__applied_commission_amount
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order_line_discount__applied_commission_amount
+#: model:ir.model.fields,field_description:custom_prestashop.field_sale_order_line__applied_commission_amount
+msgid "Applied Commission Amount"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_product_attribute_value
+msgid "Attribute Value"
+msgstr "Valor del Atributo"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Lista de materiales"
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/res_partner/importer.py:55
+#, python-format
+msgid "CRM team with {} prestashop id not found."
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_mode__can_edit
+msgid "Can Edit"
+msgstr ""
+
+#. module: custom_prestashop
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.prestashop_import_customer_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_mode__check_risk
+msgid "Check Risk"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order__commission_amount
+msgid "Commission Amount"
+msgstr ""
+
+#. module: custom_prestashop
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.prestashop_import_customer_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_mode__defaullt_sale_invoice_policy
+msgid "Defaullt Sale Invoice Policy"
+msgstr ""
+
+#. module: custom_prestashop
+#: selection:prestashop.product.template,out_of_stock:0
+msgid "Default prestashop"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order__delivered
+#: model:ir.model.fields,field_description:custom_prestashop.field_sale_order__delivered
+msgid "Delivered"
+msgstr "Entregado"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_backend__delivered_state
+msgid "Delivered State"
+msgstr ""
+
+#. module: custom_prestashop
+#: selection:account.payment.mode,defaullt_sale_invoice_policy:0
+msgid "Delivered quantities"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_delivery_carrier
+msgid "Delivery Methods"
+msgstr "Método de envío"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: custom_prestashop
+#: model:ir.actions.server,name:custom_prestashop.cron_export_prestashop_ir_actions_server
+#: model:ir.cron,cron_name:custom_prestashop.cron_export_prestashop
+#: model:ir.cron,name:custom_prestashop.cron_export_prestashop
+msgid "Export prestashop qty custom"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:exception.rule,name:custom_prestashop.excep_order_financial_risk
+msgid "Financial risk exceeded"
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/sale_order/common.py:50
+#, python-format
+msgid "Financial risk exceeded.\n"
+""
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_account_fiscal_position
+msgid "Fiscal Position"
+msgstr "Posición fiscal"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__id
+msgid "ID"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__prestashop_id
+msgid "Id"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_template__out_of_stock
+msgid "If stock shortage"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_base_multi_image_image__file_db_store
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_image__file_db_store
+msgid "Image stored in database"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.actions.act_window,name:custom_prestashop.prestashop_import_customer_action
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.prestashop_import_customer_form
+msgid "Import customer"
+msgstr ""
+
+#. module: custom_prestashop
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.view_prestashop_backend_form
+msgid "Import in background"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_import_customer__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order__manual_ready_to_send
+#: model:ir.model.fields,field_description:custom_prestashop.field_sale_order__manual_ready_to_send
+msgid "Manual Ready To Send"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination__need_export_stock
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_product__need_export_stock
+msgid "Need Export Stock"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination__odoo_managed_bom
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_template__odoo_managed_bom
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_product__odoo_managed_bom
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_template__odoo_managed_bom
+msgid "Odoo Managed Bom"
+msgstr "LdM gestionada en Odoo"
+
+#. module: custom_prestashop
+#: selection:account.payment.mode,defaullt_sale_invoice_policy:0
+msgid "Ordered quantities"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination__pack_product
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_product__pack_product
+msgid "Pack Product"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_account_payment_mode
+msgid "Payment Modes"
+msgstr "Modos de pago"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_account_payment_term
+msgid "Payment Terms"
+msgstr "Plazos de pago"
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/res_partner/importer.py:34
+#, python-format
+msgid "Payment mode with {} prestashop name not found."
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/res_partner/importer.py:20
+#, python-format
+msgid "Payment term with {} prestashop name not found."
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/res_partner/importer.py:194
+#, python-format
+msgid "Please, check the VAT number: %s"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_backend
+msgid "PrestaShop Backend Configuration"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_crm_team__prestashop_id
+msgid "Prestashop"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_mode__prestashop_module
+msgid "Prestashop Module"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_mode__prestashop_name
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_payment_term__prestashop_name
+msgid "Prestashop Name"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_fiscal_position__prestashop_tax_ids
+msgid "Prestashop Tax"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_delivery_carrier__prestashop_unique_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_delivery_carrier__prestashop_unique_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination__prestashop_unique_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_template__prestashop_unique_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_product__prestashop_unique_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_template__prestashop_unique_id
+msgid "Prestashop Unique"
+msgstr ""
+
+#. module: custom_prestashop
+#: sql_constraint:product.template:0
+msgid "Prestashop id should be unique."
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_product_product
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination_option_value__product_id
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_attribute_value__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_account_fiscal_position__recargo_equivalencia
+msgid "Recargo Equivalencia"
+msgstr ""
+
+#. module: custom_prestashop
+#: selection:prestashop.product.template,out_of_stock:0
+msgid "Refuse order"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_sale_order
+msgid "Sale Order"
+msgstr "Pedido de venta"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_sale_order_state
+msgid "Sale Order States"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_crm_team
+msgid "Sales Channels"
+msgstr "Canales de Ventas"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea de pedido de venta"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_automatic_workflow_job
+msgid "Scheduler that will play automatically the validation of invoices, pickings..."
+msgstr "Programador que reproducirá automáticamente la validación de facturas, pickings ..."
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_backend__sent_state
+msgid "Sent State"
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/sale_order/importer.py:45
+#, python-format
+msgid "The configuration is missing for the Payment Mode '%s'.\n"
+"\n"
+"Resolution:\n"
+" - Use the automatic import in 'Connectors > PrestaShop Backends', button 'Import payment modes', or:\n"
+"\n"
+"- Go to 'Invoicing > Configuration > Management > Payment Modes'\n"
+"- Create a new Payment Mode with name '%s'\n"
+"-Eventually  link the Payment Method to an existing Workflow Process or create a new one."
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/sale_order/common.py:59
+#, python-format
+msgid "This sale order exceeds the financial risk.\n"
+""
+msgstr ""
+
+#. module: custom_prestashop
+#: model:exception.rule,description:custom_prestashop.excep_order_financial_risk
+msgid "This sale order exceeds the risk."
+msgstr ""
+
+#. module: custom_prestashop
+#: code:addons/custom_prestashop/models/sale_order/common.py:55
+#, python-format
+msgid "This sale order exceeds the sales orders risk.\n"
+""
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_sale_order_state__trigger_paid
+#: model:ir.model.fields,field_description:custom_prestashop.field_sale_order_state__trigger_paid
+msgid "Trigger Paid"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,field_description:custom_prestashop.field_prestashop_product_combination_option_value__variant_ids
+#: model:ir.model.fields,field_description:custom_prestashop.field_product_attribute_value__variant_ids
+msgid "Variant"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model.fields,help:custom_prestashop.field_account_fiscal_position__prestashop_tax_ids
+msgid "comma separated ids of prestashop taxes"
+msgstr ""
+
+#. module: custom_prestashop
+#: model_terms:ir.ui.view,arch_db:custom_prestashop.prestashop_import_customer_form
+msgid "or"
+msgstr "o"
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_import_customer
+msgid "prestashop.import.customer"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_product_template
+msgid "prestashop.product.template"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_res_partner
+msgid "prestashop.res.partner"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_sale_order
+msgid "prestashop.sale.order"
+msgstr ""
+
+#. module: custom_prestashop
+#: model:ir.model,name:custom_prestashop.model_prestashop_sale_order_line
+msgid "prestashop.sale.order.line"
+msgstr ""

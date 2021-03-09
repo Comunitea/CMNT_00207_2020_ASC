@@ -10,7 +10,8 @@ class ProductTemplateImporter(Component):
 
     def _after_import(self, binding):
         super()._after_import(binding)
-        self.import_bundles(binding)
+        if not binding.odoo_managed_bom:
+            self.import_bundles(binding)
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
