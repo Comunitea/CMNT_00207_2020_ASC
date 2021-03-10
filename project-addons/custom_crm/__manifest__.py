@@ -10,6 +10,6 @@
     "maintainer": "Comunitea",
     "website": "www.comunitea.com",
     "license": "AGPL-3",
-    "depends": ["crm"],
+    "depends": ["crm", "calendar"],
     "data": ["views/crm_lead.xml", "views/res_partner.xml"],
 }
