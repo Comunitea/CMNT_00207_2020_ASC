@@ -20,7 +20,7 @@ class ProductTemplate(models.Model):
     def create(self, vals):
         res = super().create(vals)
         res.product_variant_ids.act_not_lot_names()
-        res.product_variant_ids.create_default_orderpoint()
+        # res.product_variant_ids.create_default_orderpoint()
         return res
 
 class ProductProduct(models.Model):
@@ -38,7 +38,7 @@ class ProductProduct(models.Model):
                 if product_id[field] and product_id[field] not in not_names:
                     values = {'name': product_id[field], 'product_id': product_id.id}
                     SLN.create(values)
-        
+
     @api.model
     def create(self, vals):
         res = super(ProductProduct, self).create(vals)
@@ -105,7 +105,7 @@ class ProductProduct(models.Model):
             if not product.orderpoint_ids:
                 swo_vals = {'product_id': product.id, 'product_min_qty': 0, 'product_max_qty': 0}
                 self.env['stock.warehouse.orderpoint'].create(swo_vals)
-                
+
 
             min_qty = rt.min_qty
             max_qty = rt.max_qty
