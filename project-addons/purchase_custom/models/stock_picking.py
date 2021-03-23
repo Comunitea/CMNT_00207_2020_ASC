@@ -115,7 +115,7 @@ class StockPicking(models.Model):
     def _create_backorder(self, backorder_moves=[]):
         backorder_ids = super()._create_backorder(backorder_moves=backorder_moves)
         for backorder_id in backorder_ids:
-            backorder_id.message_subscribe(partner_ids=backorder_id.backorder_id.follower_ids.ids)
+            backorder_id.message_subscribe(partner_ids=backorder_id.backorder_id.message_follower_ids.ids)
         return backorder_ids
 
 
