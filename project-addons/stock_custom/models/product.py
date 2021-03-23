@@ -20,7 +20,6 @@ class ProductTemplate(models.Model):
     def create(self, vals):
         res = super().create(vals)
         res.product_variant_ids.act_not_lot_names()
-        # res.product_variant_ids.create_default_orderpoint()
         return res
 
 class ProductProduct(models.Model):
