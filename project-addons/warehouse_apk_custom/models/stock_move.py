@@ -139,7 +139,6 @@ class StockMove(models.Model):
         return sml_ids_to_update, lot_ids
 
     def update_move_lot_apk(self, move, lot_ids, active_location=False, sql=True):
-        import pdb; pdb.set_trace()
         if move.product_id.tracking != 'serial':
             raise ValidationError('El producto %s no tiene tracking por número de serie'% move.product_id.display_name)
         if not active_location:
