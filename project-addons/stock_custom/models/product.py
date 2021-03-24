@@ -40,6 +40,11 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, vals):
+        ## Esto lo hago para corregir lo de que pone a none el tracking
+        if vals.get('product_tmpl_id', False):
+            product_tmpl_id = self.env['product.template'].browse(vals['product_tmpl_id'])
+            vals['tracking'] = product_tmpl_id.tracking
+        ##### HASTA AQUI
         res = super(ProductProduct, self).create(vals)
         res.act_not_lot_names()
         return res
