@@ -37,7 +37,7 @@ class StockMove(models.Model):
 
         sml_ids_to_update = self.env['stock.move.line']
         sml_no_lot_ids = move_ids.filtered(lambda x: x.qty_done == 0 and x.lot_id not in lot_ids)
-        domain = [('state', '=', 'assigned'),
+        domain = [('state', '=', ['partially_available', 'assigned']),
                   ('move_id', '!=', move.id),
                   ('move_id.product_id', '=', move.product_id.id),
                   ('location_id', 'child_of', move.location_id.id),  # No tienen porque estar en la misma estanteria
@@ -139,6 +139,7 @@ class StockMove(models.Model):
         return sml_ids_to_update, lot_ids
 
     def update_move_lot_apk(self, move, lot_ids, active_location=False, sql=True):
+        import pdb; pdb.set_trace()
         if move.product_id.tracking != 'serial':
             raise ValidationError('El producto %s no tiene tracking por número de serie'% move.product_id.display_name)
         if not active_location:
