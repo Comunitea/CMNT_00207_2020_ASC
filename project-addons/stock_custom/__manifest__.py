@@ -25,6 +25,7 @@
         "views/sale_order.xml",
         "views/variable_replensih.xml",
         "views/stock_production_lot.xml",
+        "views/stock_move.xml"
     ],
     "installable": True,
     "license": "AGPL-3",
