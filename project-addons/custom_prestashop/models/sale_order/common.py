@@ -105,6 +105,12 @@ class PrestashopSaleOrder(models.Model):
 
     commission_amount = fields.Float()
 
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        res.with_delay(eta=30).export_order()
+        return res
+
     @api.multi
     def write(self, vals):
         can_edit = True
@@ -163,6 +169,13 @@ class PrestashopSaleOrder(models.Model):
         backend.import_orders_since = next_check_datetime
         return True
 
+    @job(default_channel='root.prestashop')
+    def export_order(self):
+        self.ensure_one()
+        with self.backend_id.work_on('prestashop.sale.order.log') as work:
+            exporter = work.component(usage="order_log.exporter")
+            return exporter.run(self)
+
 
 class PrestashopSaleOrderLine(models.Model):
     _inherit = "prestashop.sale.order.line"
@@ -185,3 +198,18 @@ class SaleOrderOnChange(Component):
         "workflow_process_id",
         "carrier_id",
     ]
+
+
+class OrderLog(Component):
+    _name = 'prestashop.order.log.adapter'
+    _inherit = 'prestashop.adapter'
+    _apply_on = '__not_exit_prestashop.orderodoo'
+
+    _prestashop_model = 'orderodoo'
+    _export_node_name = 'orderodoo'
+
+
+class OrderLogModel(models.TransientModel):
+    # In actual connector version is mandatory use a model
+    _name = '__not_exit_prestashop.orderodoo'
+    _description = 'Dummy Transient model for Order Log'
