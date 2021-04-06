@@ -12,6 +12,7 @@ class ProductBrand(models.Model):
         inverse_name='odoo_id',
         string='PrestaShop Bindings',
     )
+    prestashop_unique_id = fields.Char()
 
 
 class PrestashopProductBrand(models.Model):
