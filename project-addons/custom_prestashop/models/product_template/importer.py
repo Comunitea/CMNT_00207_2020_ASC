@@ -8,6 +8,17 @@ class ProductTemplateImporter(Component):
 
     _inherit = "prestashop.product.template.importer"
 
+    def _import_dependencies(self):
+        res = super()._import_dependencies()
+        self._import_brand()
+        return res
+
+    def _import_brand(self):
+        record = self.prestashop_record
+        if record.get('id_manufacturer'):
+            self._import_dependency(record['id_manufacturer'],
+                                    'prestashop.product.brand')
+
     def _after_import(self, binding):
         super()._after_import(binding)
         if not binding.odoo_managed_bom:
@@ -121,3 +132,12 @@ class TemplateMapper(Component):
         if template_exists:
             return {"odoo_id": template_exists.id}
         return {}
+
+    @mapping
+    def product_brand_id(self, record):
+        if record.get('id_manufacturer'):
+            brand_binder = self.binder_for("prestashop.product.brand")
+            brand = brand_binder.to_internal(
+                record["id_manufacturer"], unwrap=True
+            )
+            return {'product_brand_id': brand.id}

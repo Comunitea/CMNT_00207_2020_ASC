@@ -17,6 +17,7 @@
         "base_location",
         "stock_custom",
         "sale_financial_risk",
+        "product_brand"
     ],
     "data": [
         "views/account_payment_term.xml",
