@@ -9,17 +9,4 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, vals):
-        pt_id = vals.get('product_tmpl_id', False)
-        if pt_id:
-            template_id = self.env['product.template'].browse(pt_id)
-            tracking = template_id.tracking
-            msg = '<ul>'
-            for val in vals.keys():
-                msg += "<li> %s : %s </li> "% (val, vals[val])
-            msg += '</ul>'
-            template_id.message_post("Se ha creado una nueva variante para %s %s. Seguimiento: %s"%(template_id.display_name, msg, tracking))
-
-        new_id = super().create(vals)
-        if new_id.tracking != tracking:
-            template_id.message_post("<strong>Se ha cambiado el tracking del artículo</strong>")
-        return new_id
+        return super().create(vals)

@@ -5,6 +5,7 @@ from odoo import models, fields, api
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -40,12 +41,11 @@ class StockPicking(models.Model):
             partner_ids = partner_ids.filtered(lambda x: x not in self.message_follower_ids.mapped('partner_id'))
             self.message_subscribe(partner_ids=partner_ids.ids)
 
-
     def write_advise_affected_picks(self, new_scheduled_date=False):
         """
             Actualizo los seguidores
         """
-        _logger.info("Enviando mensaje de retraso del albarán %s"%self.name)
+        _logger.info("Enviando mensaje de retraso del albarán %s" % self.name)
         self.refresh_picking_followers()
         if self.picking_type_code == 'incoming':
             affected_picks = self.get_dest_outgoing_picks()
@@ -58,7 +58,7 @@ class StockPicking(models.Model):
             incoming_subject = 'Albarán %s. Cambio de fecha' % self.name
         else:
             incoming_subject = 'Albarán %s. Retrasado' % self.name
-            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado.' % (self.id, self.name)
+            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado. Fecha Prevista: %s' % (self.id, self.name, self.scheduled_date)
 
         if affected_picks:
             body_incoming += "Se pueden ver afectadas las siguientes entregas: <ul>"
@@ -89,7 +89,6 @@ class StockPicking(models.Model):
             if incoming_pick.scheduled_date != new_scheduled_date:
                 incoming_pick.write_advise_affected_picks(new_scheduled_date)
 
-
     def send_advise_delayed_scheduled_email(self):
 
         today = fields.Datetime.today()
@@ -100,12 +99,12 @@ class StockPicking(models.Model):
 
         domain = [('delayed_mail_send', '=', False),
                   ('scheduled_date', '<', today),
-                  ('state', 'not in', ['cancel', 'draft', 'done'])]
+                  ('state', '=', 'assigned')]
         """
             Picking_ids son los albaranes retrasados.
         """
         picking_ids = self.env['stock.picking'].search(domain)
-        _logger.info("Alabranes retrasados: %s"%picking_ids.mapped('name'))
+        _logger.info("Alabranes retrasados: %s" % picking_ids.mapped('name'))
         for pick in picking_ids:
             pick.write_advise_affected_picks()
         picking_ids.write({'delayed_mail_send': True})
@@ -117,6 +116,4 @@ class StockPicking(models.Model):
         for backorder_id in backorder_ids:
             backorder_id.message_subscribe(partner_ids=backorder_id.backorder_id.message_follower_ids.ids)
         return backorder_ids
-
-
 
