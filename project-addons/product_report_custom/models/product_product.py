@@ -84,7 +84,86 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales(self):
-         
+        
+        if len(self)> 1:
+            _where =  ' and  product_id in {}'.format((tuple(self.ids)))
+        elif len(self) == 1:
+            _where =  ' and  product_id = {}'.format(self.id)
+        else: 
+            _where = ''
+
+        domain = [("key", "ilike", "count_sales_")]
+        count = dict(
+            (item["key"], int(item["value"]))
+            for item in self.env["ir.config_parameter"].search_read(
+                domain, ["key", "value"]
+            )
+        )
+
+        interval_0 =  count.get("count_sales_0", 1)
+        interval_1 =  count.get("count_sales_1", 2)
+        interval_2 =  count.get("count_sales_2", 3)
+        interval_3 =  count.get("count_sales_3", 6)
+
+        sql ="""
+            with grouped as (
+            select 
+                case when sl.usage = 'internal' then product_uom_qty 
+                else product_uom_qty * -1
+                end quantity,
+                product_uom_qty, sm.id, sl.usage, product_id, now(), 
+                now() - interval '{} month' < sm.date as ventas_0,
+                now() - interval '{} month' < sm.date as ventas_1,
+                now() - interval '{} month' < sm.date as ventas_2,
+                now() - interval '{} month' < sm.date as ventas_3
+                from stock_move sm
+                join stock_location sl on sm.location_id = sl.id
+                join stock_location sl2 on sm.location_dest_id = sl2.id
+                where state = 'done' and (now() - interval '6 month') < sm.date {}
+                and ((sl.usage = 'internal' and sl2.usage = 'customer') or (sl.usage = 'customer' and sl2.usage = 'internal') )
+                order by date
+            )
+            select sum(quantity) as quantity, product_id, ventas_0, ventas_1, ventas_2, ventas_3
+            from grouped 
+            group by product_id, ventas_0, ventas_1, ventas_2, ventas_3
+            order by product_id
+            """.format(interval_0, interval_1,interval_2, interval_3, _where)
+        self._cr.execute(sql)
+        res = self._cr.fetchall()
+        
+        product_ids = {}
+        for product in self:
+            product_ids[product.id] = {'count_sales_0': 0, 'count_sales_1': 0, 'count_sales_2': 0, 'count_sales_3': 0}
+        for item in res:
+            quantity = item[0]
+            product_id = item[1]
+            ventas_0 = item[2]
+            ventas_1 = item[3]
+            ventas_2 = item[4]
+            ventas_3 = item[5]
+            if ventas_0: 
+                product_ids[product_id]['count_sales_0'] += quantity
+            if ventas_1: 
+                product_ids[product_id]['count_sales_1'] += quantity
+            if ventas_2: 
+                product_ids[product_id]['count_sales_2'] += quantity
+            if ventas_3: 
+                product_ids[product_id]['count_sales_3'] += quantity
+        for product in self:
+            print ("actualizando {}".format(product.name))
+            vals = {
+                'count_sales_0': product_ids[product.id]['count_sales_0'],
+                'count_sales_1': product_ids[product.id]['count_sales_1'],
+                'count_sales_2': product_ids[product.id]['count_sales_2'],
+                'count_sales_3': product_ids[product.id]['count_sales_3'],
+            }
+            product.write(vals)
+
+
+
+    @api.multi
+    def _compute_product_sales_bis(self):
+        
         domain = [("key", "ilike", "count_sales_")]
         count = dict(
             (item["key"], int(item["value"]))
