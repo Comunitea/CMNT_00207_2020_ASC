@@ -145,7 +145,7 @@ class StockBatchPicking(models.Model):
             or partner.commercial_partner_id.mobile
             or partner.commercial_partner_id.phone
             or ""
-        )
+        ).replace(" ","").replace("+","")
         listaBultos = []
         for i in range(0, number_of_packages):
             listaBultos.append(

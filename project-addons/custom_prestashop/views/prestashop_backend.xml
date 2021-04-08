@@ -14,6 +14,13 @@
                     <button name="import_attributes" type="object" class="oe_highlight"
                         string="Import in background" />
                 </group>
+                <group>
+                    <div>
+                        <span>Import product brands</span>
+                    </div>
+                    <button name="import_brands" type="object" class="oe_highlight"
+                        string="Import in background" />
+                </group>
             </xpath>
             <xpath expr="//field[@name='matching_product_template']/../.." position="before">
                 <group>

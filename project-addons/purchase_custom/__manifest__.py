@@ -7,10 +7,11 @@
     "description": """Purchase customizations""",
     "author": "Comunitea Servicios Tecnológicos, S.L.",
     "website": "www.comunitea.com",
-    "depends": ["purchase", "sale"],
+    "depends": ["purchase", "sale", "product_brand"],
     "data": [
         "data/data.xml",
-        "views/purchase_order.xml"
+        "views/purchase_order.xml",
+        "report/purchase_report.xml"
     ],
     "installable": True,
 }
