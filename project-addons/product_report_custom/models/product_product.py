@@ -161,7 +161,7 @@ class ProductProduct(models.Model):
             
             for product in self[:10]:
                 total -= 1
-                _logger.info ('%s'%product_id.display_name)
+                _logger.info ('%s'%product.display_name)
                 vals = {
                     'count_sales_0': product_ids[product.id]['count_sales_0'],
                     'count_sales_1': product_ids[product.id]['count_sales_1'],
