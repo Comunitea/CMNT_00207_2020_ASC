@@ -9,6 +9,7 @@
     "category": "Inventory",
     "depends": [
         "stock",
+        
     ],
     "data": [
         "views/stock_quant.xml",

@@ -31,6 +31,7 @@
         "custom_prestashop",
         "cmnt_delivery_carrier_label",
         "account_payment_mode",
+        "stock_custom"
     ],
     "data": [
         "wizard/picking_sign_wizard.xml",
