@@ -159,7 +159,7 @@ class ProductProduct(models.Model):
             _logger.info ('Faltan %d'%total)
             rg = self[:100]
             
-            for product in self[:100]:
+            for product in self[:10]:
                 total -= 1
                 
                 vals = {
