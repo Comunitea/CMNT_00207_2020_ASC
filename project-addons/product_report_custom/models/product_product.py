@@ -4,6 +4,9 @@
 from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 from odoo.osv import expression
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
@@ -134,6 +137,8 @@ class ProductProduct(models.Model):
         product_ids = {}
         for product in self:
             product_ids[product.id] = {'count_sales_0': 0, 'count_sales_1': 0, 'count_sales_2': 0, 'count_sales_3': 0}
+        total = len(self)
+        _logger.info("Número de articulos: {}".format(total))
         for item in res:
             quantity = item[0]
             product_id = item[1]
@@ -149,16 +154,23 @@ class ProductProduct(models.Model):
                 product_ids[product_id]['count_sales_2'] += quantity
             if ventas_3: 
                 product_ids[product_id]['count_sales_3'] += quantity
-        for product in self:
-            print ("actualizando {}".format(product.name))
-            vals = {
-                'count_sales_0': product_ids[product.id]['count_sales_0'],
-                'count_sales_1': product_ids[product.id]['count_sales_1'],
-                'count_sales_2': product_ids[product.id]['count_sales_2'],
-                'count_sales_3': product_ids[product.id]['count_sales_3'],
-            }
-            product.write(vals)
-
+        
+        while self:
+            _logger.info ('Faltan %d'%total)
+            rg = self[:100]
+            
+            for product in self[:100]:
+                total -= 1
+                
+                vals = {
+                    'count_sales_0': product_ids[product.id]['count_sales_0'],
+                    'count_sales_1': product_ids[product.id]['count_sales_1'],
+                    'count_sales_2': product_ids[product.id]['count_sales_2'],
+                    'count_sales_3': product_ids[product.id]['count_sales_3'],
+                }
+                product.write(vals)
+            rg._cr.commit()
+            self -= rg
 
 
     @api.multi
