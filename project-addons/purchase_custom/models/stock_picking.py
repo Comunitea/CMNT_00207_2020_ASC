@@ -3,7 +3,9 @@
 
 from odoo import models, fields, api
 import logging
+
 _logger = logging.getLogger(__name__)
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -40,12 +42,11 @@ class StockPicking(models.Model):
             partner_ids = partner_ids.filtered(lambda x: x not in self.message_follower_ids.mapped('partner_id'))
             self.message_subscribe(partner_ids=partner_ids.ids)
 
-
     def write_advise_affected_picks(self, new_scheduled_date=False):
         """
             Actualizo los seguidores
         """
-        _logger.info("Enviando mensaje de retraso del albarán %s"%self.name)
+        _logger.info("Enviando mensaje de retraso del albarán %s" % self.name)
         self.refresh_picking_followers()
         if self.picking_type_code == 'incoming':
             affected_picks = self.get_dest_outgoing_picks()
@@ -58,7 +59,7 @@ class StockPicking(models.Model):
             incoming_subject = 'Albarán %s. Cambio de fecha' % self.name
         else:
             incoming_subject = 'Albarán %s. Retrasado' % self.name
-            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado.' % (self.id, self.name)
+            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado. Fecha Prevista: %s' % (self.id, self.name, self.scheduled_date)
 
         if affected_picks:
             body_incoming += "Se pueden ver afectadas las siguientes entregas: <ul>"
@@ -89,7 +90,6 @@ class StockPicking(models.Model):
             if incoming_pick.scheduled_date != new_scheduled_date:
                 incoming_pick.write_advise_affected_picks(new_scheduled_date)
 
-
     def send_advise_delayed_scheduled_email(self):
 
         today = fields.Datetime.today()
@@ -100,12 +100,12 @@ class StockPicking(models.Model):
 
         domain = [('delayed_mail_send', '=', False),
                   ('scheduled_date', '<', today),
-                  ('state', 'not in', ['cancel', 'draft', 'done'])]
+                  ('state', '=', 'assigned')]
         """
             Picking_ids son los albaranes retrasados.
         """
         picking_ids = self.env['stock.picking'].search(domain)
-        _logger.info("Alabranes retrasados: %s"%picking_ids.mapped('name'))
+        _logger.info("Alabranes retrasados: %s" % picking_ids.mapped('name'))
         for pick in picking_ids:
             pick.write_advise_affected_picks()
         picking_ids.write({'delayed_mail_send': True})
@@ -118,5 +118,50 @@ class StockPicking(models.Model):
             backorder_id.message_subscribe(partner_ids=backorder_id.backorder_id.message_follower_ids.ids)
         return backorder_ids
 
+    @api.multi
+    def action_cancel(self):
+        picking_ids = self.filtered(lambda x: x.state not in ('cancel', 'draft'))
+        res = super().action_cancel()
+        ## Si un albarán que tiene artículos marcados como replenish_type.send_cancel_mail se cancela
+        # Se busca si tiene compras asociadas: Sin confirmar o ya confirmadas y no recibidas
+        # Y se envía un mensaje a los seguidores de los pedidos de compra.
+        outgoing_picks = picking_ids.filtered(lambda x: x.picking_type_id.code == 'outgoing')
+        for pick in outgoing_picks.filtered(lambda x: x.state == 'cancel'):
+            purchase_states = ['purchase', 'done', 'cancel']
+            ## saco todos los productos sin replenish_type o con replenish_type == True
+            product_ids = pick.filtered(lambda x: x.state == 'cancel').mapped('move_lines.product_id').filtered(lambda x: not x.replenish_type or x.replenish_type.send_cancel_mail)
+            ## saco las lineas de compra asociadas a estos productos.
 
+            ## EN PEDIDOS DE COMPRA NOT IN ['purchase', 'done', 'cancel']. Pedidos de compra no confirmados aún
+            domain = [('product_id', 'in', product_ids.ids), ('order_id.state', 'not in', purchase_states)]
+            line_ids = self.env['purchase.order.line'].search(domain)
 
+            # MOVIMIENTOS DE ENTRADA NO HECHOS ASOCIADOS A PEDIDOS DE COMPRA . Pedidos de compra confirmados pero no recibidos aún
+            domain = [('product_id', 'in', product_ids.ids), ('state', '=', 'assigned'), ('purchase_line_id', '!=', False)]
+            line_ids |= self.env['stock.move'].search(domain).mapped('purchase_line_id')
+            msg = ''
+            pick_link = "<a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a>" % (pick.id, pick.name)
+            for line in line_ids:
+                puchase_id = line.order_id
+                purchase_link = "<a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a>" % (puchase_id.id, puchase_id.name)
+                product_link = "<a href=# data-oe-model=product.product data-oe-id=%d>%s</a>" % (line.product_id.id, line.product_id.display_name)
+                purchase_msg = "El pedido de compra {} tiene {} unidades del artículo {} que están en el albarán cancelado {}".format(purchase_link, line.product_qty, product_link, pick_link)
+                msg = '{}<hr/>{}'.format(msg, purchase_msg)
+                product_id = line.product_id
+                domain = [('product_id', '=', line.product_id.id), ('picking_type_id.code', '=', 'outgoing'), ('state', 'in', ['waiting', 'partially_available', 'confirmed', 'assigned'])]
+                pending_moves = self.env['stock.move'].search(domain)
+                if pending_moves:
+                    msg = " {}<p/> Stock Actual: (Reservada) {} ({}) Unidades. Salidas pendientes: <ul>".format(msg, product_id.qty_available, product_id.quantity_reserved)
+                    for move in pending_moves:
+                        pick_link = "<a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a>" % (move.picking_id.id, move.picking_id.display_name)
+                        m1 = "<li>Albarán {}. {} Reservado: {} Unidades</li>".format(pick_link, move.product_uom_qty, move.reserved_availability)
+                        msg = '{}{}'.format(msg, m1)
+                    msg = '{}</ul>'.format(msg)
+                puchase_id.message_post(body = msg, subject = 'Albarán {} cancelado'.format(pick.name), subtype='mail.mt_comment', mail_server_id=2)
+            
+            pick.message_post(body = msg, subject = 'Albarán {} cancelado'.format(pick.name), subtype='mail.mt_comment', mail_server_id=2)
+            
+
+        return res
+
+        

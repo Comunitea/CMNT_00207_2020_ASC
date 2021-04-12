@@ -14,13 +14,19 @@ class PurchaseOrder(models.Model):
     def apply_purchase_line_common(self):
         for line in self.order_line:
             line.discount = self.purchase_line_common
+            
     @api.multi
     def write(self, vals):
         if 'state' in vals and vals['state'] == 'purchase':
             ## añado como seguidor a quien confirme el pedido de compra
+            ## y el/ los id de los usuarios que estén en purchase_custom.auto_add_follower
+            ids = self.env['ir.config_parameter'].sudo().get_param('purchase_custom.auto_add_follower')
+            partner_ids = self.env['res.partner']
+            if ids:
+                partner_ids = self.env['res.partner'].browse(eval(ids))
             for purchase in self:
-                partner_id = purchase.env.user and purchase.env.user.partner_id or False
-                if partner_id and partner_id not in self.message_follower_ids.mapped('partner_id'):
-                    self.message_subscribe(partner_ids=partner_id.ids)
+                partner_ids |= purchase.env.user and purchase.env.user.partner_id or self.env['res.partner']
+                if partner_ids:## and partner_id not in self.message_follower_ids.mapped('partner_id'):
+                    self.message_subscribe(partner_ids=partner_ids.ids)
         return super().write(vals)
 

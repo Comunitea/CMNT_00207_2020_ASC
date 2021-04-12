@@ -23,3 +23,5 @@ class VariableReplenish(models.Model):
 
     average_ratio = fields.Float("Average ratio", default=2)
     min_qty_ratio = fields.Float("Min qty ratio", default=0.6)
+
+    send_cancel_mail = fields.Boolean("Send cancel mail", default=False, help="If checked, send an advice mail if outgoing pick is canceled")
