@@ -18,7 +18,6 @@ class StockRule(models.Model):
         """ Method intended to be overridden by customized modules to implement any logic in the
             selection of supplier.
         """
-        import ipdb; ipdb.set_trace()
         ### SI viene forzado, devulevo lo que corresponda. No lo uso pero ....
         if values.get('po_supplier', False):
             return values['po_supplier']
