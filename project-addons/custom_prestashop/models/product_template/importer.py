@@ -15,7 +15,7 @@ class ProductTemplateImporter(Component):
 
     def _import_brand(self):
         record = self.prestashop_record
-        if record.get('id_manufacturer'):
+        if record.get('id_manufacturer') and record.get('id_manufacturer') not in ('0', 0):
             self._import_dependency(record['id_manufacturer'],
                                     'prestashop.product.brand')
 
@@ -135,7 +135,7 @@ class TemplateMapper(Component):
 
     @mapping
     def product_brand_id(self, record):
-        if record.get('id_manufacturer'):
+        if record.get('id_manufacturer') and record.get('id_manufacturer') not in ('0', 0):
             brand_binder = self.binder_for("prestashop.product.brand")
             brand = brand_binder.to_internal(
                 record["id_manufacturer"], unwrap=True
