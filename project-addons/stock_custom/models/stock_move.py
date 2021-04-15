@@ -20,7 +20,6 @@ class StockMove(models.Model):
 
     def reassing_split_from_picking(self):
         picking_id = self.mapped('picking_id')
-        print (picking_id)
         if picking_id.state in ['cancel', 'draft', 'done']:
             raise UserError('El albarań %s está en estado incorrecto: %s'%(picking_id.name, picking_id.state))
         if len(picking_id) != 1:
@@ -67,8 +66,10 @@ class StockMove(models.Model):
                     })
                     backorder_ids |= backorder_picking
                     print("se ha creado el %s" % backorder_picking.name)
+        return backorder_ids
+        """
             if backorder_ids:
                 action = self.env.ref('stock.action_picking_tree_all').read()[0]
                 action['domain'] = [('id', 'in', backorder_ids.ids)]
                 return action
-        return
+            """       

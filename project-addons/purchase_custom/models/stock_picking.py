@@ -12,6 +12,7 @@ class StockPicking(models.Model):
 
     delayed_mail_send = fields.Boolean(default=False)
 
+
     @api.multi
     def write(self, vals):
         if 'scheduled_date' in vals:
@@ -20,9 +21,7 @@ class StockPicking(models.Model):
         return super().write(vals)
 
     @api.model
-    def get_dest_outgoing_picks(self):
-
-        product_ids = self.move_lines.mapped('product_id')
+    def get_dest_outgoing_picks(self, product_ids):
         domain = [('picking_id.ready_to_send', '=', True),
                   ('product_id', 'in', product_ids.ids),
                   ('state', 'in', ['confirmed', 'partially_available'])]
@@ -49,7 +48,7 @@ class StockPicking(models.Model):
         _logger.info("Enviando mensaje de retraso del albarán %s" % self.name)
         self.refresh_picking_followers()
         if self.picking_type_code == 'incoming':
-            affected_picks = self.get_dest_outgoing_picks()
+            affected_picks = self.get_dest_outgoing_picks(self.move_lines.mapped('product_id'))
         else:
             affected_picks = False
 
@@ -58,8 +57,8 @@ class StockPicking(models.Model):
             self.id, self.name, self.scheduled_date, new_scheduled_date)
             incoming_subject = 'Albarán %s. Cambio de fecha' % self.name
         else:
-            incoming_subject = 'Albarán %s. Retrasado' % self.name
-            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado. Fecha Prevista: %s' % (self.id, self.name, self.scheduled_date)
+            incoming_subject = 'Albarán %s. Retrasado/Split' % self.name
+            body_incoming = 'El albarán <a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a> está retrasado/split. Fecha Prevista: %s' % (self.id, self.name, self.scheduled_date)
 
         if affected_picks:
             body_incoming += "Se pueden ver afectadas las siguientes entregas: <ul>"
@@ -100,12 +99,13 @@ class StockPicking(models.Model):
 
         domain = [('delayed_mail_send', '=', False),
                   ('scheduled_date', '<', today),
-                  ('state', '=', 'assigned')]
+                  ('state', 'in', ['confirmed', 'waiting', 'assigned'])]
+                  
         """
             Picking_ids son los albaranes retrasados.
         """
         picking_ids = self.env['stock.picking'].search(domain)
-        _logger.info("Alabranes retrasados: %s" % picking_ids.mapped('name'))
+        _logger.info("Albaranes retrasados: %s" % picking_ids.mapped('name'))
         for pick in picking_ids:
             pick.write_advise_affected_picks()
         picking_ids.write({'delayed_mail_send': True})
@@ -120,12 +120,12 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_cancel(self):
-        picking_ids = self.filtered(lambda x: x.state not in ('cancel', 'draft'))
+        outgoing_picks = self.filtered(lambda x: x.picking_type_id.code == 'outgoing' and x.state not in ('cancel', 'draft'))
         res = super().action_cancel()
         ## Si un albarán que tiene artículos marcados como replenish_type.send_cancel_mail se cancela
         # Se busca si tiene compras asociadas: Sin confirmar o ya confirmadas y no recibidas
         # Y se envía un mensaje a los seguidores de los pedidos de compra.
-        outgoing_picks = picking_ids.filtered(lambda x: x.picking_type_id.code == 'outgoing')
+
         for pick in outgoing_picks.filtered(lambda x: x.state == 'cancel'):
             purchase_states = ['purchase', 'done', 'cancel']
             ## saco todos los productos sin replenish_type o con replenish_type == True
@@ -160,8 +160,10 @@ class StockPicking(models.Model):
                 puchase_id.message_post(body = msg, subject = 'Albarán {} cancelado'.format(pick.name), subtype='mail.mt_comment', mail_server_id=2)
             
             pick.message_post(body = msg, subject = 'Albarán {} cancelado'.format(pick.name), subtype='mail.mt_comment', mail_server_id=2)
-            
-
         return res
 
-        
+    @api.multi
+    def split_process(self):
+        super().split_process()
+        for pick in self:
+            pick.backorder_id.write_advise_affected_picks()

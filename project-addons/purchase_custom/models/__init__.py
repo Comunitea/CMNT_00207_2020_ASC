@@ -1,1 +1,1 @@
-from . import stock_picking, purchase_order, sale_order, product, stock_rule
+from . import stock_picking, purchase_order, sale_order, product, stock_rule, stock_move
