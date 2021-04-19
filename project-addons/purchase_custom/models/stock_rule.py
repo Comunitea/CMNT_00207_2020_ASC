@@ -43,7 +43,6 @@ class StockRule(models.Model):
         res = super(StockRule, self)._run_buy(
             product_id, product_qty, product_uom, location_id, name,
             origin, values)
-        
         ## Compruebo si el producto tiene 2º pedido de compra y no viene ya desde una segund compra (po_suplier en values)
 
         if not values.get('po_supplier', False) and (not product_id.replenish_type or product_id.replenish_type.days_to_second_orderpoint > 1):

@@ -51,7 +51,8 @@ class PurchaseOrder(models.Model):
         purchase = super().create(vals)
         if purchase.state == 'purchase':
             purchase.add_purchase_default_follower()
-    
+        return purchase
+
     @api.multi
     def write(self, vals):
         if 'state' in vals and vals['state'] == 'purchase':
