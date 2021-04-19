@@ -46,7 +46,7 @@ class PurchaseOrder(models.Model):
                 self.message_subscribe(partner_ids=partner_ids.ids)
         return True
 
-
+    @api.model
     def create(self, vals):
         purchase = super().create(vals)
         if purchase.state == 'purchase':
