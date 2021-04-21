@@ -29,6 +29,17 @@ class PurchaseOrder(models.Model):
     confirming_job_ids = fields.Many2many(comodel_name='queue.job',
                                       column1='order_id', column2='job_id',
                                       string="Queue orders", copy=False)
+    
+    
+    def get_notification_ids(self):
+        partner_ids = self.user_id.partner_id
+        ids = self.env['ir.config_parameter'].sudo().get_param('purchase_custom.auto_add_follower')
+        partner_ids = self.env['res.partner']
+        if ids:
+            partner_ids = self.env['res.partner'].browse(eval(ids))
+        partner_ids += self.user_id.partner_id
+        return partner_ids
+
     def apply_purchase_line_common(self):
         for line in self.order_line:
             line.discount = self.purchase_line_common
@@ -38,25 +49,20 @@ class PurchaseOrder(models.Model):
         partner_ids = self.env['res.partner']
         if ids:
             partner_ids = self.env['res.partner'].browse(eval(ids))
-        ## añado como seguidor a quien confirme el pedido de compra
-        ## y el/ los id de los usuarios que estén en purchase_custom.auto_add_follower
-        for purchase in self:
-            partner_ids |= purchase.env.user and purchase.env.user.partner_id or self.env['res.partner']
-            if partner_ids:## and partner_id not in self.message_follower_ids.mapped('partner_id'):
-                self.message_subscribe(partner_ids=partner_ids.ids)
+        ## añado como seguidor el/ los id de los usuarios que estén en purchase_custom.auto_add_follower
+        if partner_ids:
+            for purchase in self:
+                purchase.message_subscribe(partner_ids=partner_ids.ids)
         return True
 
     @api.model
     def create(self, vals):
         purchase = super().create(vals)
-        if purchase.state == 'purchase':
-            purchase.add_purchase_default_follower()
+        purchase.add_purchase_default_follower()
         return purchase
 
     @api.multi
     def write(self, vals):
-        if 'state' in vals and vals['state'] == 'purchase':
-            self.add_purchase_default_follower()
         return super().write(vals)
 
 
@@ -64,7 +70,8 @@ class PurchaseOrder(models.Model):
     def send_mail_to_waiting_picks(self):
         ## Al confirmar una compra, se enviará un correo a los pedidos de venta
         ## que tengan material en espera de esta compra.
-        
+        ctx = self._context.copy()
+        ctx.update(notify_followers=False)
         states = ['confirmed', 'waiting', 'partially_available']
         product_ids = self.mapped('order_line.product_id')
         move_domain = [('picking_type_id.code', '=', 'outgoing'), ('product_id', 'in', product_ids.ids), ('state', 'in', states)]
@@ -88,22 +95,25 @@ class PurchaseOrder(models.Model):
             
             po_body = 'Lista de salidas en espera:<ul>'
             for outgoing_pick in msg:
+                sale_id = outgoing_pick.sale_id
                 outgoing_pick_link = "<a href=# data-oe-model=stock.picking data-oe-id=%d>%s</a>" % (outgoing_pick.id, outgoing_pick.name)
                 subject = "Previsión de recepciones del albarán {}".format(outgoing_pick.name)
                 body ="Previsión de recepciones <ul>{}</ul>".format(msg[outgoing_pick])
                 po_body = '%s<li>%s</li>'%(po_body, outgoing_pick_link)
-                outgoing_pick.sale_id.message_post(body=body, subject=subject, subtype='mail.mt_comment', mail_server_id=2, email_to=outgoing_pick.team_id.team_email)
-                print (outgoing_pick.name)
+                sale_id.with_context(ctx).message_post(
+                    body=body, 
+                    subject=subject, 
+                    subtype='mail.mt_comment', 
+                    mail_server_id=2, 
+                    partner_ids = sale_id.get_notification_ids().ids)
             po_body = "%s</ul>"%po_body    
-            po.message_post(body=po_body)
+            po.with_context(ctx).message_post(body=po_body, partner_ids = po.get_notification_ids().ids)
 
     @job
     @api.multi
     def job_send_mail_to_waiting_picks(self):
         self.ensure_one()
-        ctx = self._context.copy()
-        ctx.update({'do_super': True})
-        self.with_context(ctx).send_mail_to_waiting_picks()
+        self.send_mail_to_waiting_picks()
         
 
     @api.multi
@@ -113,7 +123,7 @@ class PurchaseOrder(models.Model):
         ctx = self._context.copy()
         for order in self:
             notif_user = order.env.user.id
-            order2 = self.with_context(ctx,tracking_disable=True).browse(order.id)
+            order2 = self.with_context(ctx,tracking_disable=True, notify_followers=False).browse(order.id)
             new_delay = order2.sudo().with_delay().job_send_mail_to_waiting_picks()
             job = queue_obj.search([('uuid', '=', new_delay.uuid)])
             order.sudo().write({'confirming_job_ids': [(4, job.id)]})

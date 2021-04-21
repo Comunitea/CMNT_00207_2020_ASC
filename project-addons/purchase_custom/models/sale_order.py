@@ -26,6 +26,15 @@ class SaleOrder(models.Model):
                                       column1='order_id', column2='job_id',
                                       string="Queue orders", copy=False)
 
+
+    def get_notification_ids(self):
+        partner_ids = self.user_id.partner_id
+        if self.team_id.user_id:
+            partner_ids |= self.team_id.user_id.partner_id
+        if self.team_id.member_ids:
+            partner_ids |= self.team_id.member_ids.mapped('partner_id')
+        return partner_ids
+
     @api.multi
     def add_team_followers(self):
         for sale in self:
@@ -40,6 +49,9 @@ class SaleOrder(models.Model):
     
     @api.multi
     def send_mail_no_stock(self):
+        _logger.info("ENtrando en send_mail_no_stock")
+        ctx = self._context.copy()
+        ctx.update(notify_followers=False)
         for sale in self:
             mail_line = ''
             for move in sale.order_line.mapped('move_ids').filtered(lambda x: x.state not in ['cancel', 'done', 'draft']):
@@ -66,19 +78,28 @@ class SaleOrder(models.Model):
             if mail_line:
                 body = 'El pedido tiene los siguientes artículos sin stock suficiente<ul>%s</ul>'%mail_line
                 subject = 'Pedido %s. Artñiculos sin stock'%sale.name
-                sale.message_post(body=body, subject=subject, subtype='mail.mt_comment', mail_server_id=2)
+                sale.with_context(ctx).message_post(
+                    body=body, 
+                    subject=subject, 
+                    subtype='mail.mt_comment', 
+                    mail_server_id=2, 
+                    partner_ids = sale.get_notification_ids().ids
+                )
     
 
     @job
     @api.multi
     def job_send_mail_no_stock(self):
+        _logger.info("ENtrando en job_send_mail_no_stock")
+        
         self.ensure_one()
-        self.add_team_followers()
+        # self.add_team_followers()
         self.send_mail_no_stock()
        
     @api.multi
     def action_confirm(self):
         res = super().action_confirm()
+        
         queue_obj = self.env['queue.job']
         ctx = self._context.copy()
         for order in self:
@@ -88,6 +109,12 @@ class SaleOrder(models.Model):
             job = queue_obj.search([('uuid', '=', new_delay.uuid)])
             order.sudo().write({'confirming_job_ids': [(4, job.id)]})
             # self.send_mail_to_waiting_picks()
+        """
+        for order in self:
+            ctx = self._context.copy()
+            ctx.update(notify_followers=False)
+            order.with_context(ctx).send_mail_no_stock()
+        """
         return res
        
 
