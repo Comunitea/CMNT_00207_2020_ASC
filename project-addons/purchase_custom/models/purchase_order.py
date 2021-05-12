@@ -91,7 +91,7 @@ class PurchaseOrder(models.Model):
                 if not picking_id in msg: msg.update({picking_id: ''})
                 po_lines = po.order_line.filtered(lambda x: x.product_id == move_id.product_id)
                 for po_line in po_lines:
-                    msg[picking_id] = '{}<li> El artículo {} está en el {}. Fecha prevista {}. Cantidad. {}</li>'.format(msg[picking_id], product_id_link, po_link, po_line.date_planned, po_line.product_qty)
+                    msg[picking_id] = '{}<li> El artículo {} está en el {}. Fecha prevista {}. Cantidad. {}</li>'.format(msg[picking_id], product_id_link, po_link, fields.Datetime.to_datetime(po_line.date_planned).strftime('%d-%m-%y'), po_line.product_qty)
             
             po_body = 'Lista de salidas en espera:<ul>'
             for outgoing_pick in msg:
@@ -123,7 +123,7 @@ class PurchaseOrder(models.Model):
         ctx = self._context.copy()
         for order in self:
             notif_user = order.env.user.id
-            order2 = self.with_context(ctx,tracking_disable=True, notify_followers=False).browse(order.id)
+            order2 = self.with_context(ctx, tracking_disable=True, notify_followers=False).browse(order.id)
             new_delay = order2.sudo().with_delay().job_send_mail_to_waiting_picks()
             job = queue_obj.search([('uuid', '=', new_delay.uuid)])
             order.sudo().write({'confirming_job_ids': [(4, job.id)]})

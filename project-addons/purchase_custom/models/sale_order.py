@@ -66,18 +66,30 @@ class SaleOrder(models.Model):
                         #  product.display_name, ispack, seller.name.display_name, seller.delay
                         #)
 
-                        mail_line += "<li>El artículo %s%s no tiene stock suficiente. El proveedor tiene un tiempo de entrega mayor de 1 día</li>"%(
+                        mail_line += "<li>El artículo %s%s no tiene stock suficiente. El proveedor tiene un tiempo de entrega mayor de 1 día."%(
                           product.display_name, ispack
                         )
                     else:
                         # No tiene vendedor o retraso un día.
-                        mail_line += "<li>El artículo %s%s no tiene stock suficiente</li>"%(
+                        mail_line += "<li>El artículo %s%s no tiene stock suficiente"%(
                           product.display_name, ispack
                         )
+                    ### 
+                    domain = [('picking_type_id.code', '=', 'incoming'), 
+                              ('purchase_line_id', '!=', False), 
+                              ('product_id', '=', product.id),
+                              ('state', '=', 'assigned')]
+                    sm = self.env['stock.move'].search(domain, limit=1, order="date asc")
+                    if sm:
+                        date = fields.Datetime.to_datetime(sm.date).strftime('%d-%m-%y')
+                        mail_line += ". Previsto el {}</li>".format(date)
+                    else:
+                        mail_line += ". Sin fecha de llegada.</li>"
+
 
             if mail_line:
                 body = 'El pedido tiene los siguientes artículos sin stock suficiente<ul>%s</ul>'%mail_line
-                subject = 'Pedido %s. Artñiculos sin stock'%sale.name
+                subject = 'Pedido %s. Artículos sin stock'%sale.name
                 sale.with_context(ctx).message_post(
                     body=body, 
                     subject=subject, 
@@ -91,7 +103,6 @@ class SaleOrder(models.Model):
     @api.multi
     def job_send_mail_no_stock(self):
         _logger.info("ENtrando en job_send_mail_no_stock")
-        
         self.ensure_one()
         # self.add_team_followers()
         self.send_mail_no_stock()
@@ -99,12 +110,11 @@ class SaleOrder(models.Model):
     @api.multi
     def action_confirm(self):
         res = super().action_confirm()
-        
         queue_obj = self.env['queue.job']
         ctx = self._context.copy()
         for order in self:
             notif_user = order.env.user.id
-            order2 = self.with_context(ctx,tracking_disable=True).browse(order.id)
+            order2 = self.with_context(ctx,tracking_disable=True, notify_followers=False).browse(order.id)
             new_delay = order2.sudo().with_delay().job_send_mail_no_stock()
             job = queue_obj.search([('uuid', '=', new_delay.uuid)])
             order.sudo().write({'confirming_job_ids': [(4, job.id)]})

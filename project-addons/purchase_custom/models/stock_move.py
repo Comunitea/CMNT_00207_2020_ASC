@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 class StockMove(models.Model):
     _inherit = 'stock.move'
  
+    
     def reassing_split_from_picking(self):
         
         res = super().reassing_split_from_picking()
