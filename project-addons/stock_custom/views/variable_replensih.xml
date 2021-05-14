@@ -14,6 +14,8 @@
                                 <field name="min_qty"/>
                                 <field name="max_qty"/>
                                 <field name="send_cancel_mail"/>
+                                <field name="days_to_second_orderpoint"/>
+                                <field name="quantity_per_cent"/>
                                 
                             </group>
                             <group>
