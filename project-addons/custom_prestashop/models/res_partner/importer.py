@@ -94,7 +94,7 @@ class PartnerImportMapper(Component):
             if address.get("facturacion_defecto") == "1":
                 res["street"] = address["address1"]
                 res["street2"] = address["address2"]
-                state_id = self.component(usage='import.mapper', model_name='prestashop.address').map_record(address).values().get('state_id')
+                state_id = self.component(usage='import.mapper', model_name='prestashop.address').state_id(address).get('state_id')
                 if state_id:
                     res["state_id"] = state_id
                 res["city"] = address["city"]
