@@ -47,7 +47,19 @@ class ProductProduct(models.Model):
         ##### HASTA AQUI
         res = super(ProductProduct, self).create(vals)
         res.act_not_lot_names()
+        res.create_product_defaults()
         return res
+
+    def create_product_defaults(self):
+        try: 
+            defaul_stock_location = self.env['ir.config_parameter'].sudo().get_param('product.default_product_location', default=13)
+            ## create stock.warehouse.orderpoint
+            vals = {'product_id': self.id, 'location_id': 13, 'product_min_qty': 0, 'product_max_qty': 0, 'qty_multiple': 1}
+            self.env['stock.warehouse.orderpoint'].create(vals)
+            vals = {'putaway_id': 1, 'product_id': self.id, 'fixed_location_id': defaul_stock_location}
+            self.env['stock.fixed.putaway.strat'].create(vals)
+        except:
+            pass
 
     @api.model
     def cron_variable_replenish(self):
