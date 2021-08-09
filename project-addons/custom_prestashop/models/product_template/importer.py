@@ -70,6 +70,9 @@ class ProductTemplateImporter(Component):
                 else:
                     create_bom = True
                 if create_bom:
+                    self.env['stock.warehouse.orderpoint'].search(
+                        [('product_id', 'in',
+                          binding.odoo_id.product_variant_ids._ids)]).unlink()
                     self.env["mrp.bom"].create(
                         {
                             "product_tmpl_id": binding.odoo_id.id,
