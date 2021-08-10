@@ -73,6 +73,8 @@ class ProductProduct(models.Model):
                 else:
                     create_bom = True
                 if create_bom:
+                    self.env['stock.warehouse.orderpoint'].search(
+                        [('product_id', '=', product.id)]).unlink()
                     self.env["mrp.bom"].create(
                         {
                             "product_tmpl_id": product.product_tmpl_id.id,
