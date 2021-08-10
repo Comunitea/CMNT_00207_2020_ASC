@@ -26,6 +26,8 @@
                     <field name="count_sales_1"/>
                     <field name="count_sales_2"/>
                     <field name="count_sales_3"/>
+                    <field name="days_with_no_stock_count"/>
+                    <!--field name="days_with_no_stock_ids"/-->
                 </group>
             </group>
         </field>
