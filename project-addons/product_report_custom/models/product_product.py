@@ -8,6 +8,52 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+class DaysWithNoStock(models.Model):
+    _name = "days.no.stock"
+
+    product_id = fields.Many2one('product.product', string='Artículo')
+    tmpl_id = fields.Many2one('product.template', string='Artículo')
+    date = fields.Date('Date')
+    
+    _sql_constraints = [(
+        'product_date_unique',
+        'unique(product_id, date)',
+        'No puedes tener 2 registros para mismo artículo y fecha!'
+        )]
+    
+    def get_all_no_stock_days(self):
+        _days = 180
+        ctx = self._context.copy()
+        while _days >=1:
+            to_date = fields.Datetime.to_string(fields.Date.today()- relativedelta(days=_days))
+            ctx.update(to_date=to_date)
+            domain = ctx.get('domain', [])
+            product_ids = self.env['product.product'].with_context(to_date=to_date).search(domain).filtered(lambda x: x.qty_available <= 0)
+            _logger.info (">>>>>>>>>>>>>>>>>>>>%s %d"%(to_date, len(product_ids)))
+            for product in product_ids:
+                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': to_date}
+                #print("   >> %s %s"%(vals, product.qty_available))
+                self.env['days.no.stock'].create(vals)
+            _days -= 1
+
+
+    @api.multi
+    def compute_days_with_no_stock(self):
+       
+        domain = [('qty_available', '<=', 0)]
+        today_date = fields.Date.from_string(fields.Date.today())
+        product_ids = self.env['product.product'].search(domain)
+        for product in product_ids:
+            domain = [('product_id', '=', product.id), ('date', '=', today_date)]
+            self.env['days.no.stock'].search(domain)
+            if not self.env['days.no.stock'].search(domain):
+                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
+                self.env['days.no.stock'].create(vals)
+        
+        last_date = today_date - relativedelta(days=180)
+        domain = [('date', '<', last_date)]
+        self.env['days.no.stock'].search(domain).unlink()
+
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
     _rec_name = "code"
@@ -27,6 +73,12 @@ class ProductAlarmDays(models.Model):
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    @api.multi
+    def compute_days_with_no_stock(self):
+        for template in self:
+            template.days_with_no_stock_count = len(template.days_with_no_stock_ids)
+            
+
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
     count_sales_1 = fields.Float(string="Count sales 1")
@@ -34,6 +86,8 @@ class ProductTemplate(models.Model):
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
     days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
+    days_with_no_stock_count = fields.Integer('Days with no stock count', compute=compute_days_with_no_stock)
+    days_with_no_stock_ids = fields.One2many('days.no.stock', 'tmpl_id',  string='Days with no stock')
 
     @api.multi
     def compute_product_template_sales(self):
@@ -71,6 +125,11 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
+    @api.multi
+    def compute_days_with_stock_count(self):
+        for product in self:
+            product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
+       
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
     count_sales_1 = fields.Float(string="Count sales 1")
@@ -78,6 +137,9 @@ class ProductProduct(models.Model):
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
     days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
+    days_with_no_stock_count = fields.Integer('Days with no stock count', compute=compute_days_with_stock_count)
+    days_with_no_stock_ids = fields.One2many('days.no.stock', 'product_id', string='Days with no stock')
+
 
     @api.multi
     def compute_product_sales(self):
