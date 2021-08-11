@@ -8,6 +8,15 @@ class ProductTemplateImporter(Component):
 
     _inherit = "prestashop.product.template.importer"
 
+    def deactivate_default_product(self, binding):
+        if binding.product_variant_count != 1:
+            for product in binding.with_context(
+                    active_test=True).product_variant_ids:
+                if not product.attribute_value_ids:
+                    self.env['product.product'].browse(product.id).orderpoint_ids.write(
+                        {'active': False})
+        return super().deactivate_default_product(binding)
+
     def _import_dependencies(self):
         res = super()._import_dependencies()
         self._import_brand()
