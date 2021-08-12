@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
+from prestapyt.prestapyt import PrestaShopWebServiceError
 
 
 class ProductTemplateImporter(Component):
@@ -25,8 +26,11 @@ class ProductTemplateImporter(Component):
     def _import_brand(self):
         record = self.prestashop_record
         if record.get('id_manufacturer') and record.get('id_manufacturer') not in ('0', 0):
-            self._import_dependency(record['id_manufacturer'],
-                                    'prestashop.product.brand')
+            try:
+                self._import_dependency(record['id_manufacturer'],
+                                        'prestashop.product.brand')
+            except PrestaShopWebServiceError as e:
+                return
 
     def _after_import(self, binding):
         super()._after_import(binding)
@@ -152,4 +156,5 @@ class TemplateMapper(Component):
             brand = brand_binder.to_internal(
                 record["id_manufacturer"], unwrap=True
             )
-            return {'product_brand_id': brand.id}
+            if brand:
+                return {'product_brand_id': brand.id}
