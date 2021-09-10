@@ -60,11 +60,8 @@ class ProductCombinationMapper(Component):
     @mapping
     def weight(self, record):
         combination_weight = float(record.get("weight", "0.0"))
-        main_weight = (
-            self.binder_for("prestashop.product.template")
-            .to_internal(record["id_product"])
-            .weight
-        )
+        backend_adapter = self.component(usage='backend.adapter', model_name='prestashop.product.template')
+        main_weight = float(backend_adapter.read(record['id_product']).get('weight', 0.0))
         weight = main_weight + combination_weight
         return {"weight": weight}
 
