@@ -36,6 +36,7 @@ class ProductProduct(models.Model):
                 product.pack_product = True
             else:
                 product.pack_product = False
+            product.update_prestashop_qty()
 
     def recompute_packs(self):
         for product in self:
