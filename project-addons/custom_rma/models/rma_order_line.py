@@ -8,6 +8,7 @@ class RmaOrderLine(models.Model):
 
     _inherit = "rma.order.line"
     informed_lot_id = fields.Char()
+    informed_invoice_id = fields.Char()
     operation_id = fields.Many2one(readonly=False, states={})
     refund_policy = fields.Selection(readonly=False, states={})
     receipt_policy = fields.Selection(readonly=False, states={})
@@ -45,8 +46,6 @@ class RmaOrderLine(models.Model):
         return
 
     def action_rma_approve(self):
-        if self.product_tracking in ("lot", "serial") and not self.lot_id:
-            raise UserError(_("Serial number required"))
         res = super().action_rma_approve()
         wizard = (
             self.env["rma_make_picking.wizard"]
@@ -59,7 +58,7 @@ class RmaOrderLine(models.Model):
         )
         wizard.item_ids.write({"qty_to_receive": 1})
         wizard.action_create_picking()
-        self.mapped("move_ids.picking_id").button_validate()
+        # self.mapped("move_ids.picking_id").button_validate()
         return res
 
     @api.onchange("reference_move_id")

@@ -14,6 +14,7 @@
         "stock_picking_report_valued",
         "stock_picking_type_group",
         "warehouse_apk",
+        "rma"
     ],
     "data": [
         "security/ir.model.access.csv",
