@@ -70,7 +70,7 @@
               </p>
             </field>
         </record>
-
+       
      <menuitem
             id="menu_variable_replenish"
             action="action_variable_replenish"

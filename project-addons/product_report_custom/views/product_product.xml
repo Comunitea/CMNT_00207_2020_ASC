@@ -32,5 +32,12 @@
             </group>
         </field>
     </record>
+    <record id="action_compute_sales_info" model="ir.actions.server">
+        <field name="name">Info Ventas</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="binding_model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">record.compute_product_sales()</field>
+    </record>
 
 </odoo>

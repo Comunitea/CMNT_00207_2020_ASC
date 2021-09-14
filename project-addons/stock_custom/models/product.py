@@ -183,7 +183,7 @@ class ProductProduct(models.Model):
             if total_sales and total_month_sales > 2:
                 average = (total_qty / total_sales) * rt.average_ratio
                 # Get qty by order where qty under average
-                for sale_line in sale_lines.filtered(lambda x: x.product_uom_qty < average):
+                for sale_line in sale_lines.filtered(lambda x: x[rt.qty_field] < average):
                     max_qty2 += sale_line[rt.qty_field]
             min_qty2 = max_qty2 * rt.min_qty_ratio
 
