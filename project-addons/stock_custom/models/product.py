@@ -72,7 +72,7 @@ class ProductProduct(models.Model):
         products.get_variable_replenish()
         return
 
-    def get_moves_by_date(self, days_ago):
+    def get_moves_by_date(self, days_ago, order='id desc'):
         self.ensure_one()
         current_date = datetime.now().strftime("%Y-%m-%d")
         date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
@@ -83,37 +83,57 @@ class ProductProduct(models.Model):
             ("picking_id.state", "in", ["done"]),
             ("sale_line_id", "!=", False),
         ]
-        moves = self.env["stock.move"].search(domain)
+        sale_domain = [
+            ("product_id", "=", self.id),
+            ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
+            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
+            #("picking_id.state", "in", ["done"]),
+            #("sale_line_id", "!=", False),
+        ]
+        moves = self.env["stock.move"].search(sale_domain, order=order)
         return moves
 
-    def get_lt_changes(self):
+    def get_lt_changes(self, lines):
         self.ensure_one()
         res = False
         rt = self.replenish_type
-        if not rt.use_lt or not (rt.lt_sales and rt.lt_days and rt.lt_qty):
+        if not rt.use_lt:
             return res
-
-        moves = self.get_moves_by_date(rt.lt_days)
-        total_sales = len(moves.mapped("sale_line_id.order_id"))
+        date_ago = datetime.now() - relativedelta(days=rt.lt_days)
+        lines = lines.filtered(lambda x: x.order_id.confirmation_date >= date_ago)
+        total_sales = len(lines.mapped("order_id"))
         if total_sales <= rt.lt_sales:
             res = rt.lt_qty
         return res
 
-    def get_gt_changes(self):
+    def get_gt_changes(self, lines):
         self.ensure_one()
         res = False
         rt = self.replenish_type
-        if not rt.use_gt or not (rt.gt_sales and rt.gt_days and rt.gt_qty):
+        if not rt.use_gt:# or not (rt.gt_sales and rt.gt_days and rt.gt_qty):
             return res
-
-        moves = self.get_moves_by_date(rt.gt_days)
-        total_sales = len(moves.mapped("sale_line_id.order_id"))
+        date_ago = datetime.now() - relativedelta(days=rt.gt_days)
+        lines = lines.filtered(lambda x: x.order_id.confirmation_date >= date_ago)
+        total_sales = len(lines.mapped("order_id"))
         if total_sales >= rt.gt_sales:
             res = rt.gt_qty
         return res
 
-    def get_variable_replenish(self):
+    def get_sale_line_by_date(self, days_ago, order="id desc"):
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
+        sale_domain = [
+            ("product_id", "=", self.id),
+            ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
+            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
+            ("state", "=", "done"),
+            #("sale_line_id", "!=", False),
+        ]
+        return self.env["stock.move"].search(sale_domain, order=order).mapped('sale_line_id')
+
+    def get_variable_replenish(self, max_days = 0 ):
         for product in self:
+            
             rt = product.replenish_type
             if not rt:
                 continue
@@ -122,50 +142,50 @@ class ProductProduct(models.Model):
                 swo_vals = {'product_id': product.id, 'product_min_qty': 0, 'product_max_qty': 0}
                 self.env['stock.warehouse.orderpoint'].create(swo_vals)
 
-
+            sale_days = max(rt.gt_days, rt.lt_days, 30, rt.sale_days, max_days)
+            lines = product.get_sale_line_by_date(sale_days)
             min_qty = rt.min_qty
             max_qty = rt.max_qty
+
             min_qty2 = 0
             max_qty2 = 0
 
-            lt_change_qty = product.get_lt_changes()
+            lt_change_qty = product.get_lt_changes(lines)
             if lt_change_qty:
                 min_qty = lt_change_qty
                 max_qty = lt_change_qty
 
             if not lt_change_qty:
-                gt_change_qty = product.get_gt_changes()
+                gt_change_qty = product.get_gt_changes(lines)
                 if gt_change_qty:
                     min_qty = gt_change_qty
                     max_qty = gt_change_qty
 
-                # COMPUTE ALGORITM MIN MAX
-                moves = product.get_moves_by_date(rt.sale_days)
-                order_qtys = {}
-                total_sales = len(moves.mapped("sale_line_id.order_id"))
-                total_qty = sum(moves.mapped("sale_line_id.qty_delivered"))
-                average = 0
+            # COMPUTE ALGORITM MIN MAX
+          
+            date_ago = datetime.now() - relativedelta(days=rt.sale_days)
+            sale_lines = lines.filtered(lambda x: x.order_id.confirmation_date >= date_ago).sorted(lambda x:x.order_id.confirmation_date)
+          
+            total_sales = len(sale_lines.mapped("order_id"))
+            total_qty = sum(sale_lines.mapped(rt.qty_field))
+            average = 0
 
-                last_month_moves = product.get_moves_by_date(30)
-                total_month_sales = len(
-                    last_month_moves.mapped("sale_line_id.order_id")
-                )
 
-                # MENOS DE DOS VENTAS ÚLTIMOS 30 DÍAS IMPLICA COGER EL MIN/MAX
-                # POR DEFECTO, QUE PUEDE HABE CAMBIADO
-                if total_sales and total_month_sales > 2:
-                    average = (total_qty / total_sales) * rt.average_ratio
-                    # Get qty by order where qty under average
-                    for move in moves:
-                        if move.product_uom_qty < average:
-                            if move.sale_line_id.qty_delivered:
-                                sale = move.sale_line_id.order_id
-                                if sale not in order_qtys:
-                                    order_qtys[sale] = 0
-                                order_qtys[sale] += move.sale_line_id.qty_delivered
 
-                max_qty2 = sum(order_qtys.values())
-                min_qty2 = max_qty2 * rt.min_qty_ratio
+            date_ago = datetime.now() - relativedelta(days=2)
+            last_month_lines = lines.filtered(lambda x: x.order_id.confirmation_date >= date_ago)
+            total_month_sales = len(
+                last_month_lines.mapped("order_id")
+            )
+
+            # MENOS DE DOS VENTAS ÚLTIMOS 30 DÍAS IMPLICA COGER EL MIN/MAX
+            # POR DEFECTO, QUE PUEDE HABE CAMBIADO
+            if total_sales and total_month_sales > 2:
+                average = (total_qty / total_sales) * rt.average_ratio
+                # Get qty by order where qty under average
+                for sale_line in sale_lines.filtered(lambda x: x.product_uom_qty < average):
+                    max_qty2 += sale_line[rt.qty_field]
+            min_qty2 = max_qty2 * rt.min_qty_ratio
 
             # UPDATE REPLENISH RULES
             if max_qty and min_qty:

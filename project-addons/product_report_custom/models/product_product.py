@@ -42,17 +42,19 @@ class DaysWithNoStock(models.Model):
        
         domain = [('qty_available', '<=', 0)]
         today_date = fields.Date.from_string(fields.Date.today())
-        product_ids = self.env['product.product'].search(domain)
-        for product in product_ids:
-            domain = [('product_id', '=', product.id), ('date', '=', today_date)]
-            self.env['days.no.stock'].search(domain)
-            if not self.env['days.no.stock'].search(domain):
-                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
-                self.env['days.no.stock'].create(vals)
         
+        ## Borro los anteriores a 180 días
         last_date = today_date - relativedelta(days=180)
         domain = [('date', '<', last_date)]
         self.env['days.no.stock'].search(domain).unlink()
+        product_ids = self.env['product.product'].search(domain)
+        for product in product_ids:
+            domain = [('product_id', '=', product.id), ('date', '=', today_date)]
+            if not self.env['days.no.stock'].search(domain):
+                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
+                self.env['days.no.stock'].create(vals)
+            product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
+        
 
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
@@ -86,7 +88,7 @@ class ProductTemplate(models.Model):
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
     days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
-    days_with_no_stock_count = fields.Integer('Days with no stock count', compute=compute_days_with_no_stock)
+    days_with_no_stock_count = fields.Integer('Days with no stock count') #, compute=compute_days_with_no_stock)
     days_with_no_stock_ids = fields.One2many('days.no.stock', 'tmpl_id',  string='Days with no stock')
 
     @api.multi
@@ -149,7 +151,6 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales(self):
-        
         if len(self)> 1:
             _where =  ' and  product_id in {}'.format((tuple(self.ids)))
         elif len(self) == 1:
@@ -221,7 +222,7 @@ class ProductProduct(models.Model):
             _logger.info ('Faltan %d'%total)
             rg = self[:100]
             
-            for product in self[:10]:
+            for product in rg:
                 total -= 1
                 _logger.info ('%s'%product.display_name)
                 vals = {
