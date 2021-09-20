@@ -130,7 +130,10 @@ class StockBatchPicking(models.Model):
                                     else delivery_partner_id.zip,
                                     "Poblacion": delivery_partner_id.city,
                                     "Provincia": delivery_partner_id.state_id.name,
-                                    # METER HORARIO
+                                    "Horario": {
+                                        "Desde": rma_id.pickup_time.strftime("%H:%M"),
+                                        "Hasta": (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),
+                                    }
                                 },
                                 "Nif": delivery_partner_id.vat,
                                 "Nombre": delivery_partner_id.name,

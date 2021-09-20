@@ -17,4 +17,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import carrier_account, stock_picking_batch, stock_picking
+
+from odoo import fields, models
+
+
+class StockPicking(models.Model):
+    _inherit = "stock.picking"
+
+
+    def action_confirm(self):
+        res = super(StockPicking, self).action_confirm()
+        rma_id = self.picking_ids.move_lines.mapped('rma_line_id').rma_id
+        if rma_id and rma_id.operation_type == 'rma':
+            self.auto_assign_batch_id()
+            if self.batch_id:
+                self.batch_id.send_shipping()
+        return res
