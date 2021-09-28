@@ -4,6 +4,7 @@ from odoo import models, fields, api
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+
 class NotLotName(models.Model):
     _name="not.lot.name"
 
@@ -72,27 +73,6 @@ class ProductProduct(models.Model):
         products.get_variable_replenish()
         return
 
-    def get_moves_by_date(self, days_ago, order='id desc'):
-        self.ensure_one()
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
-        domain = [
-            ("product_id", "=", self.id),
-            ("sale_line_id", "!=", False),
-            ("date", ">=", date_ago),
-            ("date", "<=", current_date),
-            ("state", "=", "done"),
-        ]
-        sale_domain = [
-            ("product_id", "=", self.id),
-            ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
-            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
-            #("picking_id.state", "in", ["done"]),
-            #("sale_line_id", "!=", False),
-        ]
-        moves = self.env["stock.move"].search(sale_domain, order=order)
-        return moves
-
     def get_lt_changes(self, lines):
         self.ensure_one()
         res = False
@@ -125,13 +105,12 @@ class ProductProduct(models.Model):
         sale_domain = [
             ("product_id", "=", self.id),
             ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
-            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
             ("state", "=", "done"),
             #("sale_line_id", "!=", False),
         ]
         return self.env["stock.move"].search(sale_domain, order=order).mapped('sale_line_id')
 
-    def get_variable_replenish(self, max_days = 0 ):
+    def get_variable_replenish(self, max_days=0):
         for product in self:
 
             rt = product.replenish_type
