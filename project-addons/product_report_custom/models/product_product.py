@@ -14,13 +14,13 @@ class DaysWithNoStock(models.Model):
     product_id = fields.Many2one('product.product', string='Artículo')
     tmpl_id = fields.Many2one('product.template', string='Artículo')
     date = fields.Date('Date')
-    
+
     _sql_constraints = [(
         'product_date_unique',
         'unique(product_id, date)',
         'No puedes tener 2 registros para mismo artículo y fecha!'
         )]
-    
+
     def get_all_no_stock_days(self):
         _days = 180
         ctx = self._context.copy()
@@ -39,7 +39,7 @@ class DaysWithNoStock(models.Model):
 
     @api.multi
     def compute_days_with_no_stock(self):
-       
+
         domain = [('qty_available', '<=', 0)]
         today_date = fields.Date.from_string(fields.Date.today())
         product_ids = self.env['product.product'].search(domain)
@@ -49,7 +49,7 @@ class DaysWithNoStock(models.Model):
             if not self.env['days.no.stock'].search(domain):
                 vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
                 self.env['days.no.stock'].create(vals)
-        
+
         last_date = today_date - relativedelta(days=180)
         domain = [('date', '<', last_date)]
         self.env['days.no.stock'].search(domain).unlink()
@@ -77,7 +77,7 @@ class ProductTemplate(models.Model):
     def compute_days_with_no_stock(self):
         for template in self:
             template.days_with_no_stock_count = len(template.days_with_no_stock_ids)
-            
+
 
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
@@ -129,7 +129,7 @@ class ProductProduct(models.Model):
     def compute_days_with_stock_count(self):
         for product in self:
             product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
-       
+
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
     count_sales_1 = fields.Float(string="Count sales 1")
@@ -149,12 +149,12 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales(self):
-        
+
         if len(self)> 1:
             _where =  ' and  product_id in {}'.format((tuple(self.ids)))
         elif len(self) == 1:
             _where =  ' and  product_id = {}'.format(self.id)
-        else: 
+        else:
             _where = ''
 
         domain = [("key", "ilike", "count_sales_")]
@@ -172,11 +172,11 @@ class ProductProduct(models.Model):
 
         sql ="""
             with grouped as (
-            select 
-                case when sl.usage = 'internal' then product_uom_qty 
+            select
+                case when sl.usage = 'internal' then product_uom_qty
                 else product_uom_qty * -1
                 end quantity,
-                product_uom_qty, sm.id, sl.usage, product_id, now(), 
+                product_uom_qty, sm.id, sl.usage, product_id, now(),
                 now() - interval '{} month' < sm.date as ventas_0,
                 now() - interval '{} month' < sm.date as ventas_1,
                 now() - interval '{} month' < sm.date as ventas_2,
@@ -189,13 +189,13 @@ class ProductProduct(models.Model):
                 order by date
             )
             select sum(quantity) as quantity, product_id, ventas_0, ventas_1, ventas_2, ventas_3
-            from grouped 
+            from grouped
             group by product_id, ventas_0, ventas_1, ventas_2, ventas_3
             order by product_id
             """.format(interval_0, interval_1,interval_2, interval_3, _where)
         self._cr.execute(sql)
         res = self._cr.fetchall()
-        
+
         product_ids = {}
         for product in self:
             product_ids[product.id] = {'count_sales_0': 0, 'count_sales_1': 0, 'count_sales_2': 0, 'count_sales_3': 0}
@@ -208,19 +208,19 @@ class ProductProduct(models.Model):
             ventas_1 = item[3]
             ventas_2 = item[4]
             ventas_3 = item[5]
-            if ventas_0: 
+            if ventas_0:
                 product_ids[product_id]['count_sales_0'] += quantity
-            if ventas_1: 
+            if ventas_1:
                 product_ids[product_id]['count_sales_1'] += quantity
-            if ventas_2: 
+            if ventas_2:
                 product_ids[product_id]['count_sales_2'] += quantity
-            if ventas_3: 
+            if ventas_3:
                 product_ids[product_id]['count_sales_3'] += quantity
-        
+
         while self:
             _logger.info ('Faltan %d'%total)
             rg = self[:100]
-            
+
             for product in self[:10]:
                 total -= 1
                 _logger.info ('%s'%product.display_name)
@@ -237,7 +237,7 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales_bis(self):
-        
+
         domain = [("key", "ilike", "count_sales_")]
         count = dict(
             (item["key"], int(item["value"]))
@@ -266,7 +266,7 @@ class ProductProduct(models.Model):
             max_month = max(max_month, month)
             start = next_date + relativedelta(day=1, months=-month)
             start_date = fields.Date.to_string(start)
-            domain = ['&', '&', 
+            domain = ['&', '&',
                 ("state", "=", "done"),
                 ("date", ">=", start_date),
                 ("product_id", "in", self.ids)]
@@ -281,12 +281,12 @@ class ProductProduct(models.Model):
                 product_ids[product_id] += item['product_uom_qty']
             #devoluciones
             domain_in = expression.AND([domain, ['&', ('location_id.usage', '=', 'customer'), ('location_dest_id.usage', '!=', 'customer')]])
-            
+
             move_in = self.env["stock.move"].read_group(domain_in, ["product_id", 'product_uom_qty'], ["product_id"])
             for item in move_in:
                 product_id = item['product_id'][0]
                 product_ids[product_id] -= item['product_uom_qty']
-            
+
             res[month_str] = product_ids
         """for i in range(0, 4):
             month_str = "{}".format(i)
@@ -308,11 +308,11 @@ class ProductProduct(models.Model):
 """
         cont = len(self) +1
         for product in self:
-        
-            print ('{}: {}'.format(cont, product.name))
+
+            # print ('{}: {}'.format(cont, product.name))
             cont -= 1
             for i in range(0, 4):
-               
+
                 month_str = "{}".format(i)
                 if res[month_str] and res[month_str].get(product.id, False):
                     product["count_sales_{}".format(month_str)] = res[month_str][
@@ -327,7 +327,7 @@ class ProductProduct(models.Model):
                         month_str, product["count_sales_{}".format(month_str)]
                     )
                 product.count_sales = month_str
-            
+
 
     @api.multi
     def _compute_product_sale_alarm(self):

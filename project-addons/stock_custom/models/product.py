@@ -51,7 +51,7 @@ class ProductProduct(models.Model):
         return res
 
     def create_product_defaults(self):
-        try: 
+        try:
             defaul_stock_location = self.env['ir.config_parameter'].sudo().get_param('product.default_product_location', default=13)
             ## create stock.warehouse.orderpoint
             vals = {'product_id': self.id, 'location_id': 13, 'product_min_qty': 0, 'product_max_qty': 0, 'qty_multiple': 1}
@@ -78,10 +78,10 @@ class ProductProduct(models.Model):
         date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
         domain = [
             ("product_id", "=", self.id),
-            ("picking_id.date_done", ">=", date_ago),
-            ("picking_id.date_done", "<=", current_date),
-            ("picking_id.state", "in", ["done"]),
             ("sale_line_id", "!=", False),
+            ("date", ">=", date_ago),
+            ("date", "<=", current_date),
+            ("state", "=", "done"),
         ]
         moves = self.env["stock.move"].search(domain)
         return moves
@@ -121,7 +121,6 @@ class ProductProduct(models.Model):
             if not product.orderpoint_ids:
                 swo_vals = {'product_id': product.id, 'product_min_qty': 0, 'product_max_qty': 0}
                 self.env['stock.warehouse.orderpoint'].create(swo_vals)
-
 
             min_qty = rt.min_qty
             max_qty = rt.max_qty
