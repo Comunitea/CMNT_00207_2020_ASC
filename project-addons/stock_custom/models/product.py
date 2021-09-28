@@ -4,6 +4,7 @@ from odoo import models, fields, api
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+
 class NotLotName(models.Model):
     _name="not.lot.name"
 
@@ -51,7 +52,7 @@ class ProductProduct(models.Model):
         return res
 
     def create_product_defaults(self):
-        try: 
+        try:
             defaul_stock_location = self.env['ir.config_parameter'].sudo().get_param('product.default_product_location', default=13)
             ## create stock.warehouse.orderpoint
             vals = {'product_id': self.id, 'location_id': 13, 'product_min_qty': 0, 'product_max_qty': 0, 'qty_multiple': 1}
@@ -71,27 +72,6 @@ class ProductProduct(models.Model):
         products = self.search(domain)
         products.get_variable_replenish()
         return
-
-    def get_moves_by_date(self, days_ago, order='id desc'):
-        self.ensure_one()
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
-        domain = [
-            ("product_id", "=", self.id),
-            ("picking_id.date_done", ">=", date_ago),
-            ("picking_id.date_done", "<=", current_date),
-            ("picking_id.state", "in", ["done"]),
-            ("sale_line_id", "!=", False),
-        ]
-        sale_domain = [
-            ("product_id", "=", self.id),
-            ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
-            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
-            #("picking_id.state", "in", ["done"]),
-            #("sale_line_id", "!=", False),
-        ]
-        moves = self.env["stock.move"].search(sale_domain, order=order)
-        return moves
 
     def get_lt_changes(self, lines):
         self.ensure_one()
@@ -125,15 +105,14 @@ class ProductProduct(models.Model):
         sale_domain = [
             ("product_id", "=", self.id),
             ("sale_line_id.order_id.confirmation_date", ">=", date_ago),
-            ("sale_line_id.order_id.confirmation_date", "<=", current_date),
             ("state", "=", "done"),
             #("sale_line_id", "!=", False),
         ]
         return self.env["stock.move"].search(sale_domain, order=order).mapped('sale_line_id')
 
-    def get_variable_replenish(self, max_days = 0 ):
+    def get_variable_replenish(self, max_days=0):
         for product in self:
-            
+
             rt = product.replenish_type
             if not rt:
                 continue
@@ -162,10 +141,10 @@ class ProductProduct(models.Model):
                     max_qty = gt_change_qty
 
             # COMPUTE ALGORITM MIN MAX
-          
+
             date_ago = datetime.now() - relativedelta(days=rt.sale_days)
             sale_lines = lines.filtered(lambda x: x.order_id.confirmation_date >= date_ago).sorted(lambda x:x.order_id.confirmation_date)
-          
+
             total_sales = len(sale_lines.mapped("order_id"))
             total_qty = sum(sale_lines.mapped(rt.qty_field))
             average = 0
