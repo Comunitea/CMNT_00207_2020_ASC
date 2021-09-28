@@ -27,3 +27,6 @@ class VariableReplenish(models.Model):
     send_cancel_mail = fields.Boolean("Send cancel mail", default=False, help="If checked, send an advice mail if outgoing pick is canceled")
     days_to_second_orderpoint = fields.Integer("Días para 2º Proveedor", default=3)
     quantity_per_cent = fields.Integer("% en segundo pedido", default=50)
+
+    qty_field = fields.Selection([('product_uom_qty', 'Cant. Pedida'), ('qty_delivered', 'Cant. Entregada')], 
+    "Sale line qty field", default="product_uom_qty")
