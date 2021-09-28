@@ -15,6 +15,9 @@
                 rel="stylesheet"
                 type="text/css"
             />
+            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css"/>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"></script>
         </xpath>
     </template>
 
@@ -32,7 +35,6 @@
     <template id="remove_my_details" inherit_id="portal.portal_layout">
         <xpath expr="//div[hasclass('o_portal_my_details')]" position="replace">
         </xpath>
-
     </template>
 
     <template id="portal_my_home" name="Portal My Home: rma entries" inherit_id="portal.portal_my_home" priority="40">
@@ -42,6 +44,9 @@
                 <t t-set="url" t-value="'/my/rmas'"/>
                 <t t-set="count" t-value="rma_count"/>
             </t>
+            <a href="/requestrma" title="Request RMA" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                <span>Request RMA</span>
+            </a>
         </xpath>
     </template>
 
@@ -62,6 +67,9 @@
                     <tr>
                         <th>Name</th>
                         <th class="text-center">State</th>
+                        <th class="text-right">Create date</th>
+                        <th class="text-right">Reception date</th>
+                        <th class="text-right">Finish date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,12 +82,15 @@
                                 <i class="fa fa-fw" role="img" t-att-aria-label="rma.state" t-att-title="rma.state"/><span t-esc="rma.state"/>
                             </span>
                         </td>
-                        <!-- <td class="text-right">
-                            <a t-attf-href="/my/tasks?{{keep_query('debug', filterby=rma.id)}}">
-                                <t t-esc="rma.task_count" />
-                                <t t-esc="rma.label_tasks" />
-                            </a>
-                        </td> -->
+                        <td class="text-right">
+                            <span t-field="rma.creation_date"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="rma.reception_date"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="rma.finish_date"/>
+                        </td>
                     </tr>
                 </tbody>
             </t>
@@ -268,133 +279,114 @@
                             </div>
                         </div>
                         <div id="return_info" style="display: none;">
-                            <div class="row">
-                                <div class="col-5">
-                                    <label>Order reference:</label>
-                                    <input type="text" id="order_reference"/>
-                                    <a class="btn btn-primary rma_check_order">Comprobar pedido</a>
+                            <div class="row mt16">
+                                <div class="col-2">
+                                    <label>Order: </label>
                                 </div>
-                                <div class="col-3" id="return_info_message"/>
-                            </div>
-                        </div>
-                        <div class="row mt32">
-                            <div class="col-2">
-                                <label>pick up day</label>
-                            </div>
-                            <div class="col-3">
-                                <input type="date" id="start" name="trip-start"
-                                    t-att-value="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')"
-                                    t-att-min="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')" t-att-max="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')"/>
-                            </div>
-                            <div class="col-2">
-                                <label title="The pick-up time will be in a range of 3 hours">pick up time</label>
-                            </div>
-                            <div class="col-3">
-                                From: <input type="time" id="pickup_time_from" name="pickup_time_from" min="08:00" max="20:00"/>
-                                To: <input type="time" id="pickup_time_to" name="pickup_time_to" min="08:00" max="20:00" readonly="True"/>
-                            </div>
-                        </div>
-                        <div class="row mt16">
-                            <div class="col-2">
-                                <label>Customer: </label>
-                            </div>
-                            <div class="col-3">
-                                <select class="form-control" name="partner">
-                                    <t t-foreach="partners" t-as="partner">
-                                        <t
-                                            t-if="user_id.partner_id.id == partner['id']"
-                                        >
-                                            <option
-                                                t-att-value="partner['id']"
-                                                selected="selected"
-                                            >
-                                                <!-- <t t-esc="partner['name']"/> -->
-                                                <t t-esc="partner.name_get()[0][1]" />
+                                <div class="col-3">
+                                    <select class="form-control" name="order_reference">
+                                        <t t-foreach="orders" t-as="order">
+                                            <option t-att-value="order['id']">
+                                                <!-- <t t-esc="order['name']"/> -->
+                                                <t t-esc="order.name_get()[0][1]" />
                                             </option>
                                         </t>
-                                        <t
-                                            t-if="user_id.partner_id.id != partner['id']"
-                                        >
-                                            <option t-att-value="partner['id']">
-                                                <!-- <t t-esc="partner['name']"/> -->
-                                                <t t-esc="partner.name_get()[0][1]" />
-                                            </option>
-                                        </t>
-                                    </t>
-                                </select>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        <div id="rma_info">
+                            <div class="row mt32 form-group">
+                                <div class="col-2">
+                                    <label>pick up day</label>
+                                </div>
+                                <div class="col-3">
+                                    <!-- <input type="date" id="start" name="trip-start" class="form-control"
+                                        t-att-value="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')"
+                                        t-att-min="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')" t-att-max="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')"/> -->
+                                        <input type="text" name="date" class="form-control datepicker" autocomplete="off"/>
+                                </div>
+                                <div class="col-2">
+                                    <label title="The pick-up time will be in a range of 3 hours">pick up time</label>
+                                </div>
+                                <div class="col-3">
+                                    From:<span id="from_pickup_time_error"/> <input class="form-control" type="time" id="pickup_time_from" name="pickup_time_from" min="08:00" max="20:00"/>
+                                    To: <input class="form-control" type="time" id="pickup_time_to" name="pickup_time_to" min="08:00" max="20:00" readonly="True"/>
 
-                        <div class="row mt16">
-                            <div class="col-2">
-                                <label>Return Delivery Address: </label>
+                                </div>
                             </div>
-                            <div class="col-3">
-                                <select
-                                    class="form-control"
-                                    id="delivery_address"
-                                    name="delivery_address"
-                                >
-                                    <option value="" />
-                                    <t
-                                        t-foreach="delivery_partners"
-                                        t-as="delivery_partner"
+
+                            <div class="row mt16">
+                                <div class="col-2">
+                                    <label>Return Delivery Address: </label>
+                                </div>
+                                <div class="col-10">
+                                    <select
+                                        class="form-control"
+                                        id="delivery_address"
+                                        name="delivery_address"
                                     >
-                                        <option t-att-value="delivery_partner['id']">
-                                            <!-- <t t-esc="delivery_partner['name']"/> -->
-                                            <t
-                                                t-esc="delivery_partner.name_get()[0][1]"
-                                            />
-                                            <t t-set="address" t-value="[]" />
-                                            <t t-if="delivery_partner.street">
+                                        <option value="" />
+                                        <t
+                                            t-foreach="delivery_partners"
+                                            t-as="delivery_partner"
+                                        >
+                                            <option t-att-value="delivery_partner['id']">
+                                                <!-- <t t-esc="delivery_partner['name']"/> -->
                                                 <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.street]"
+                                                    t-esc="delivery_partner.name_get()[0][1]"
                                                 />
-                                            </t>
-                                            <t t-if="delivery_partner.street2">
-                                                <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.street2]"
-                                                />
-                                            </t>
-                                            <t t-if="delivery_partner.zip">
-                                                <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.zip]"
-                                                />
-                                            </t>
-                                            <t t-if="delivery_partner.city">
-                                                <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.city]"
-                                                />
-                                            </t>
-                                            <t t-if="delivery_partner.state_id">
-                                                <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.state_id.name]"
-                                                />
-                                            </t>
-                                            <t t-if="delivery_partner.country_id">
-                                                <t
-                                                    t-set="address"
-                                                    t-value="address + [delivery_partner.country_id.name]"
-                                                />
-                                            </t>
-
-                                            <t
-                                                t-if="delivery_partner.zip or delivery_partner.street or delivery_partner.city or delivery_partner.state_id or delivery_partner.country_id"
-                                            >
-                                                (
+                                                <t t-set="address" t-value="[]" />
+                                                <t t-if="delivery_partner.street">
                                                     <t
-                                                    t-esc="', '.join(map(lambda x: x, address))"
-                                                />
-                                                )
-                                            </t>
-                                        </option>
-                                    </t>
-                                </select>
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.street]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.street2">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.street2]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.zip">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.zip]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.city">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.city]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.state_id">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.state_id.name]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.country_id">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.country_id.name]"
+                                                    />
+                                                </t>
+
+                                                <t
+                                                    t-if="delivery_partner.zip or delivery_partner.street or delivery_partner.city or delivery_partner.state_id or delivery_partner.country_id"
+                                                >
+                                                    (
+                                                        <t
+                                                        t-esc="', '.join(map(lambda x: x, address))"
+                                                    />
+                                                    )
+                                                </t>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <ul class="nav nav-tabs mt32">
@@ -414,12 +406,13 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr class="active">
-                                            <th style="width:15%">Product Id</th>
+                                            <th style="width:30%">Product Id</th>
                                             <!-- <th>Lot Id</th> -->
-                                            <th style="width:20%">Serial Number</th>
-                                            <th style="width:10%">Invoice number</th>
+                                            <th style="width:15%">Serial Number</th>
+                                            <th style="width:8%">Qty</th>
+                                            <th style="width:17%">Invoice number</th>
                                             <!-- <th style="width:15%">Reason</th> -->
-                                            <th style="width:35%">Symptoms/Notes</th>
+                                            <th style="width:25%">Symptoms/Notes</th>
                                             <th style="width:5%" />
                                         </tr>
                                     </thead>
@@ -453,8 +446,9 @@
                         </div>
 
                         <span
-                            class="btn btn-primary pull-right submit_rma_obj"
+                            class="btn btn-primary pull-left submit_rma_obj"
                         >Submit RMA</span>
+                        <span id="s_website_form_result"></span>
                     </form>
                 </div>
             </div>
@@ -469,7 +463,7 @@
                     name="product_id"
                     onchange="not_prod_in_list(this)"
                 >
-                    <option value="">Select Product</option>
+                    <option></option>
                     <t t-foreach="products" t-as="product">
                         <option t-att-value="product['id']"><t
                                 t-esc="product.name_get()[0][1]"
@@ -487,6 +481,11 @@
             <td>
                 <div class="">
                     <input type="text" class="form-control" name="serial_num" />
+                </div>
+            </td>
+            <td>
+                <div class="">
+                    <input type="number" class="form-control" name="quantity" />
                 </div>
             </td>
             <td>
@@ -515,7 +514,6 @@
                     <h1>Your RMA : <span
                             t-field="rma_order.name"
                         /> has been submitted.</h1>
-                    <h2>download: <a class="btn btn-secondary btn-block o_print_btn o_portal_invoice_print" t-att-href="rma_order.get_portal_url(report_type='pdf')" id="print_invoice_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a></h2>
                     <h1>You can go to <a
                             href="/my/home"
                         >My account</a> RMA list to check the status. </h1>

@@ -50,12 +50,12 @@ class RmaMakePicking(models.TransientModel):
         line = item.line_id
         res = super()._get_procurement_data(item, group, qty, picking_type)
         res['origin'] = line.rma_id and line.rma_id.name or line.name
-        res['partner_id'] = line.rma_id.delivery_address_id or line.rma_id.partner_id
+        res['partner_id'] = line.rma_id.delivery_address_id.id or line.rma_id.partner_id.id
         return res
 
     def _get_procurement_group_data(self, item):
         group_data = super()._get_procurement_group_data(item)
-        group_data['partner_id'] = item.rma_id.delivery_address_id or item.rma_id.partner_id,
+        group_data['partner_id'] = item.rma_id.delivery_address_id.id or item.rma_id.partner_id.id,
         return group_data
 
     @api.multi

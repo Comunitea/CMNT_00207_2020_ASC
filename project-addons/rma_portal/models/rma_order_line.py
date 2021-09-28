@@ -13,6 +13,14 @@ class RmaOrder(models.Model):
     pickup_time = fields.Datetime()
     operation_type = fields.Selection([('return', 'Return'), ('rma', 'RMA')])
     return_from_sale = fields.Many2one('sale.order')
+    creation_date = fields.Date(compute='_compute_creation_date', store=True)
+    reception_date = fields.Date()
+    finish_date = fields.Date()
+
+    @api.depends('create_date')
+    def _compute_creation_date(self):
+        for r in self:
+            r.creation_date = r.create_date.date()
 
     @api.model
     def create(self, vals):

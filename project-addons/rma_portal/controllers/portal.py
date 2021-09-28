@@ -9,7 +9,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 from odoo.addons.account.controllers.portal import PortalAccount
 from odoo.addons.web.controllers.main import Home, ensure_db
 from odoo.tools import groupby as groupbyelem
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from odoo.osv.expression import OR
 
@@ -120,14 +120,16 @@ class CustomerPortal(CustomerPortal):
     @http.route(["/requestrma"], type="http", auth="user", website=True)
     def request_rma(self, **post):
         partners = request.env["res.partner"].search([])
+        from_date_order = (datetime.now() + timedelta(days=-60)).date()
+        orders = request.env['sale.order'].search([('date_order', '>=', from_date_order)])
         delivery_partners = partners.filtered(
             lambda rec: rec.type in ("delivery") or not rec.parent_id
         )
         return request.render(
             "rma_portal.add_rma_portal",
             {
-                "partners": partners,
                 "delivery_partners": delivery_partners,
+                "orders": orders,
             },
         )
 
@@ -185,21 +187,24 @@ class CustomerPortal(CustomerPortal):
             return_delivery_address = shiping_id.id
         else:
             return_delivery_address = rma_obj.get("return_delivery_address", False)
-
         if rma_line:
-            pickup_date = rma_obj.get("pickup_date", False)
-            pickup_hour = rma_obj.get("pickup_hour", False)
-            pickup_time = "{} {}".format(pickup_date, pickup_hour)
             vals = {
-                "partner_id": rma_obj.get("partner_id", False),
-                "delivery_address_id": return_delivery_address,
-                "pickup_time": pickup_time,
-                "operation_type": rma_obj['operation_type']
+                "partner_id": request.env.user.partner_id.id,
+                "operation_type": rma_obj['operation_type'],
+                "requested_by": request.env.user.id
             }
             if rma_obj['operation_type'] == 'return':
-                order_ref = rma_obj['order']
-                order = request.env['sale.order'].search([('name', '=ilike', order_ref)])
-                vals['order_id'] = order.id
+                vals['return_from_sale'] = rma_obj['order_id']
+            else:
+                pickup_date = rma_obj.get("pickup_date", False)
+                pickup_hour = rma_obj.get("pickup_hour", False)
+                hours, minutes = pickup_hour.split(':')
+                hours = int(hours) + rma_obj['timezone']
+                pickup_hour = '{}:{}'.format(hours, minutes)
+                pickup_time = "{} {}".format(pickup_date, pickup_hour)
+                pickup_time = datetime.strptime(pickup_time, '%d/%m/%Y %H:%M')
+                vals['pickup_time'] = pickup_time
+                vals['delivery_address_id'] = return_delivery_address
             res = request.env["rma.order"].sudo().create(vals)
             for line in rma_line:
                 product_id = line.get("pid")
@@ -216,9 +221,9 @@ class CustomerPortal(CustomerPortal):
                     "product_qty": 1,
                     "description": line.get("note", '') + '\n' + line.get('invoice', ''),
                     "product_ref": line.get("product_ref"),
-                    "partner_id": rma_obj.get("partner_id", False),
+                    "partner_id": request.env.user.partner_id.id,
                 }
-                lot_exists = request.env['stock.production.lot'].search([
+                lot_exists = request.env['stock.production.lot'].sudo().search([
                     ('product_id', '=', product_id),
                     ('name', '=ilike', line.get("searial_num"))
                     ])

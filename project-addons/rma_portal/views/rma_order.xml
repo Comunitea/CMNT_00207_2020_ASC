@@ -7,7 +7,12 @@
         <field name="arch" type="xml">
             <field name="date_rma" position="replace">
                 <field name="pickup_time"/>
+                <field name="operation_type"/>
+                <field name="return_from_sale" attrs="{'invisible': [('operation_type', '!=', 'return')]}"/>
             </field>
+            <xpath expr="//field[@name='rma_line_ids']/tree/field[@name='lot_id']" position="before">
+                <field name="informed_lot_id"/>
+            </xpath>
         </field>
     </record>
 </odoo>

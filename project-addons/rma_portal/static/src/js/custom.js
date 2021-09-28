@@ -1,3 +1,18 @@
+function matchCustom(params, data) {
+    if(data==='No está en la lista' || data==='Not in List'){
+        return data;
+    }
+    if ($.trim(params) === '') {
+      return data;
+    }
+    if (data.toUpperCase().indexOf(params.toUpperCase()) > -1) {
+        return data
+    }
+
+    // Return `null` if the term should not be displayed
+    return null;
+}
+
 odoo.define("rma_portal.custom", function (require) {
     "use strict";
     require("web.dom_ready");
@@ -11,48 +26,89 @@ odoo.define("rma_portal.custom", function (require) {
         $("body").append("<div class='add_rma_loader'/>");
         ajax.jsonRpc("/my/add_rma_line", "call", {}).then(function (result) {
             $(".rma_line_tbody").append(result);
+            $(".rma_line_tbody select").select2({
+                placeholder: 'Select a product',
+                allowClear: true,
+                matcher: matchCustom
+              })
             $(".add_rma_loader").remove();
         });
     });
     $(document).on("click", ".submit_rma_obj", function () {
-        var partner_id = $(".rma_add_object_page").find("select[name='partner']").val();
         var delivery_address = $(".rma_add_object_page")
             .find("select[name='delivery_address']")
             .val();
+        var pickup_date = $("#pickup_time_from").val();
         var list = [];
         var objlist = [];
+        var with_errors = false;
+        if($("#operation_type_return")[0].checked ===true){
+            var order_id = $(".rma_add_object_page").find("select[name='order_reference']").val();
+            if(!order_id){
+                $(".rma_add_object_page").find("select[name='order_reference']").addClass("is-invalid");
+                $("#s_website_form_result").addClass("text-danger ml8");
+                $("#s_website_form_result").html('<i class="fa fa-close mr4" role="img" aria-label="Error" title="Error"></i>Please fill in the form correctly.');
+                with_errors = true;
+            }
+            else{
+                $(".rma_add_object_page").find("select[name='order_reference']").removeClass("is-invalid");
+                $("#s_website_form_result").removeClass("text-danger ml8");
+                $("#s_website_form_result").html('');
+            }
+        }
+        else{
+            if (!pickup_date) {
+                $("#pickup_time_from").addClass("is-invalid");
+                $("#s_website_form_result").addClass("text-danger ml8");
+                $("#s_website_form_result").html('<i class="fa fa-close mr4" role="img" aria-label="Error" title="Error"></i>Please fill in the form correctly.');
+                with_errors = true;
+            } else {
+                $("#pickup_time_from").removeClass("is-invalid");
+                $("#s_website_form_result").removeClass("text-danger ml8");
+                $("#s_website_form_result").html('');
+            }
+            if (!delivery_address) {
+                $(".rma_add_object_page")
+                    .find("select[name='delivery_address']")
+                    .addClass("is-invalid");
+                $("#s_website_form_result").addClass("text-danger ml8")
+                $("#s_website_form_result").html('<i class="fa fa-close mr4" role="img" aria-label="Error" title="Error"></i>Please fill in the form correctly.')
+                with_errors = true;
+            } else {
+                $(".rma_add_object_page")
+                    .find("select[name='delivery_address']")
+                    .removeClass("is-invalid");
+                    $("#s_website_form_result").removeClass("text-danger ml8")
+                    $("#s_website_form_result").html('')
+            }
 
-        if (!delivery_address) {
-            $(".rma_add_object_page")
-                .find("select[name='delivery_address']")
-                .addClass("error_border");
-        } else {
-            $(".rma_add_object_page")
-                .find("select[name='delivery_address']")
-                .removeClass("error_border");
         }
         if(!$("#privacy_policy").prop("checked")){
-            $("#privacy_policy_label").addClass("error_border");
+            $("#privacy_policy_label").addClass("is-invalid");
+            $("#s_website_form_result").addClass("text-danger ml8")
+            $("#s_website_form_result").html('<i class="fa fa-close mr4" role="img" aria-label="Error" title="Error"></i>Please fill in the form correctly.')
+            with_errors = true;
         } else {
-            $("#privacy_policy_label").removeClass("error_border");
+            $("#privacy_policy_label").removeClass("is-invalid");
+            $("#s_website_form_result").removeClass("text-danger ml8")
+            $("#s_website_form_result").html('')
         }
 
-        if (!delivery_address || !$("#privacy_policy").prop("checked")) {
+        if (with_errors===true) {
             return;
         }
-
         objlist = {
-            partner_id: parseInt(partner_id),
-            return_delivery_address: parseInt(delivery_address),
-            pickup_date: $("#start").val(),
-            pickup_hour: $("#pickup_time_from").val(),
         };
         if($("#operation_type_return")[0].checked ===true){
             objlist['operation_type'] = 'return'
-            objlist['order'] = $("#order_reference").val()
+            objlist['order_id'] = $(".rma_add_object_page").find("select[name='order_reference']").val();
         }
         else{
             objlist['operation_type'] = 'rma'
+            objlist['return_delivery_address'] = parseInt(delivery_address);
+            objlist['pickup_date'] = $(".rma_add_object_page").find("input[name='date']").val()
+            objlist['pickup_hour'] = $("#pickup_time_from").val();
+            objlist['timezone'] = new Date().getTimezoneOffset() / 60
         }
         var list_of_tr = $(".rma_add_object_page").find(".rma_line_tbody tr");
         var rma_line_required = false;
@@ -71,11 +127,11 @@ odoo.define("rma_portal.custom", function (require) {
                     rma_line_required = true;
                     $(list_of_tr[res])
                         .find("input[name='not_in_list']")
-                        .addClass("error_border");
+                        .addClass("is-invalid");
                 } else {
                     $(list_of_tr[res])
                         .find("input[name='not_in_list']")
-                        .removeClass("error_border");
+                        .removeClass("is-invalid");
                 }
 
                 if (product_id) {
@@ -164,51 +220,70 @@ odoo.define("rma_portal.custom", function (require) {
     });
     $(rma_obj).on("change", "#pickup_time_from", function () {
         var hour_from = $('#pickup_time_from').val();
-        var hour_to = (parseInt(hour_from.substring(0,2)) + 3).toString().concat(hour_from.substring(2,5))
-        $('#pickup_time_to').val(hour_to);
+        if(parseInt(hour_from.substring(0,2)) < 9 || parseInt(hour_from.substring(0,2)) > 17){
+            $("#pickup_time_from").addClass("is-invalid");
+            $("#from_pickup_time_error").addClass("text-danger ml8");
+            $("#from_pickup_time_error").html('<i class="fa fa-close mr4" role="img" aria-label="Error" title="Error"></i>Should be between 09:00-17:00.');
+        }
+        else{
+            $("#pickup_time_from").removeClass("is-invalid");
+            $("#from_pickup_time_error").removeClass("text-danger ml8");
+            $("#from_pickup_time_error").html('');
+            var hour_to = (parseInt(hour_from.substring(0,2)) + 3).toString().concat(hour_from.substring(2,5));
+            $('#pickup_time_to').val(hour_to);
+        }
     });
     $(rma_obj).on("change", "input[type=radio][name=operation_type]", function () {
         if(this.value == 'return'){
             $('#return_info').show();
-            $('.submit_rma_obj').addClass('disabled');
+            $('#rma_info').hide();
+            // $('.submit_rma_obj').addClass('disabled');
 
         }
         else{
             $('#return_info').hide();
-            $('.submit_rma_obj').removeClass('disabled');
+            $('#rma_info').show();
+            // $('.submit_rma_obj').removeClass('disabled');
 
         }
     });
-    $(document).on("click", ".rma_check_order", function () {
-        var order_reference = $('#order_reference').val();
-        var message_div = $('#return_info_message');
-        message_div.attr('class', 'col-3');
-        message_div.empty()
-        ajax.jsonRpc("/my/check_order_date", "call", {
-            order_ref: order_reference,
-        }).then(function (result) {
-            if((!result && result != 0) || result == -1){
-                message_div.addClass('alert alert-danger');
-                $('.submit_rma_obj').addClass('disabled');
-                message_div.append( "<span>Order not found</span>" );
-            }
-            else if(result < 30){
-                message_div.addClass('alert alert-success');
-                $('.submit_rma_obj').removeClass('disabled');
-                message_div.append( "<span>The order can be returned</span>" );
-
-            }
-            else if(result < 60){
-                message_div.addClass('alert alert-warning');
-                $('.submit_rma_obj').removeClass('disabled');
-                message_div.append( "<span>The return should be approved manually</span>" );
-            }
-            else{
-                message_div.addClass('alert alert-danger');
-                $('.submit_rma_obj').addClass('disabled');
-                message_div.append( "<span>The return can't be created</span>" );
-
-            }
-        });
+    $('.datepicker').datepicker({
+        startDate: '+1d',
+        endDate: '+30d',
+        language: 'es',
+        daysOfWeekDisabled: [0,6]
     });
+
+    // $(document).on("click", ".rma_check_order", function () {
+    //     var order_reference = $('#order_reference').val();
+    //     var message_div = $('#return_info_message');
+    //     message_div.attr('class', 'col-3');
+    //     message_div.empty()
+    //     ajax.jsonRpc("/my/check_order_date", "call", {
+    //         order_ref: order_reference,
+    //     }).then(function (result) {
+    //         if((!result && result != 0) || result == -1){
+    //             message_div.addClass('alert alert-danger');
+    //             $('.submit_rma_obj').addClass('disabled');
+    //             message_div.append( "<span>Order not found</span>" );
+    //         }
+    //         else if(result < 30){
+    //             message_div.addClass('alert alert-success');
+    //             $('.submit_rma_obj').removeClass('disabled');
+    //             message_div.append( "<span>The order can be returned</span>" );
+
+    //         }
+    //         else if(result < 60){
+    //             message_div.addClass('alert alert-warning');
+    //             $('.submit_rma_obj').removeClass('disabled');
+    //             message_div.append( "<span>The return should be approved manually</span>" );
+    //         }
+    //         else{
+    //             message_div.addClass('alert alert-danger');
+    //             $('.submit_rma_obj').addClass('disabled');
+    //             message_div.append( "<span>The return can't be created</span>" );
+
+    //         }
+    //     });
+    // });
 });

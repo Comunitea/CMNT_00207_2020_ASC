@@ -195,3 +195,53 @@ msgstr ""
 msgid "rmas"
 msgstr ""
 
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "From:"
+msgstr "Desde:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "To:"
+msgstr "Hasta:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Product Id"
+msgstr "Producto"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__reception_date
+msgid "Reception Date"
+msgstr "Fecha de recepción"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Reception date"
+msgstr "Fecha de recepción"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__finish_date
+msgid "Finish Date"
+msgstr "Fecha de finalización"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Finish date"
+msgstr "Fecha de finalización"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__creation_date
+msgid "Creation Date"
+msgstr "Fecha de creación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Create date"
+msgstr "Fecha de creación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_home
+msgid "<span>Request RMA</span>"
+msgstr "<span>Solicitar RMA</span>"
