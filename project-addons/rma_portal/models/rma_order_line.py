@@ -16,6 +16,8 @@ class RmaOrder(models.Model):
     creation_date = fields.Date(compute='_compute_creation_date', store=True)
     reception_date = fields.Date()
     finish_date = fields.Date()
+    mail_sended = fields.Boolean()
+    stage_id = fields.Many2one('rma.order.stage', domain=[('type', '=', 'order')])
 
     @api.depends('create_date')
     def _compute_creation_date(self):
@@ -41,8 +43,51 @@ class RmaOrder(models.Model):
         for rma in self:
             rma.access_url = '/my/rma/%s' % (rma.id)
 
+    def send_mail(self):
+        self.ensure_one()
+
+        template = self.env.ref(
+            "rma_portal.email_template_rma", False
+        )
+        ctx = dict(self._context)
+        ctx.update(url=self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
+        ctx.update(
+            {
+                    "default_model": "rma.order",
+                    "default_res_id": self.id,
+                    "default_use_template": bool(template.id),
+                    "default_template_id": template.id,
+                    "default_composition_mode": "comment",
+                }
+            )
+
+        composer_id = self.env["mail.compose.message"].sudo().with_context(ctx).create({})
+        values = composer_id.onchange_template_id(
+            template.id, "comment", 'rma.order', self.id
+        )["value"]
+        composer_id.write(values)
+        if self.delivery_tag:
+            tag_attachment = self.env['ir.attachment'].search([
+                ('res_model', '=', 'rma.order'),
+                ('res_field', '=', 'delivery_tag'),
+                ('res_id', '=', self.id),
+            ], limit=1)
+            composer_id.attachment_ids += tag_attachment
+        composer_id.with_context(ctx).send_mail()
+
 
 class RmaOrderLine(models.Model):
     _inherit = 'rma.order.line'
 
     product_ref = fields.Char()
+    invoice_ref = fields.Char()
+    invoice_id = fields.Many2one('account.invoice')
+    stage_id = fields.Many2one('rma.order.stage', domain=[('type', '=', 'line')])
+
+
+class RmaOrderStage(models.Model):
+    _name = 'rma.order.stage'
+
+    name = fields.Char(required=True)
+    type = fields.Selection([('line', 'Line'), ('order', 'Order')], required=True)
+    sequence = fields.Integer()

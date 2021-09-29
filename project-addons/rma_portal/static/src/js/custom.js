@@ -135,7 +135,8 @@ odoo.define("rma_portal.custom", function (require) {
                 }
 
                 if (product_id) {
-                    var qty = $(list_of_tr[res]).find("input[name='qty']").val();
+                    var qty = $(list_of_tr[res]).find("input[name='quantity']").val();
+                    var invoice = $(list_of_tr[res]).find("input[name='invoice']").val();
                     var searial_num = $(list_of_tr[res])
                         .find("input[name='serial_num']")
                         .val();
@@ -145,6 +146,7 @@ odoo.define("rma_portal.custom", function (require) {
                         qty: parseInt(qty),
                         searial_num: searial_num,
                         note: note,
+                        invoice: invoice,
                         product_ref: product_ref,
                     });
                 }

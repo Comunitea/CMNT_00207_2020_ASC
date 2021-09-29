@@ -79,7 +79,7 @@
                         </td>
                         <td class="text-center">
                             <span class="badge badge-pill">
-                                <i class="fa fa-fw" role="img" t-att-aria-label="rma.state" t-att-title="rma.state"/><span t-esc="rma.state"/>
+                                <i class="fa fa-fw" role="img" t-att-aria-label="rma.stage_id.name" t-att-title="rma.stage_id.name"/><span t-esc="rma.stage_id.name"/>
                             </span>
                         </td>
                         <td class="text-right">

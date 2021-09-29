@@ -143,8 +143,14 @@ class CustomerPortal(CustomerPortal):
             products = (
                 orders.sudo()
                 .mapped("order_line.product_id")
-                .filtered(lambda prod: prod.type not in ("service"))
+                .filtered(lambda prod: prod.type not in ("service") and not prod.pack_product)
             )
+            packs = (
+                orders.sudo()
+                .mapped("order_line.product_id")
+                .filtered(lambda prod: prod.pack_product)
+            )
+            products += packs.mapped('pack_components')
         result = request.env["ir.ui.view"].render_template(
             "rma_portal.rma_add_new_line",
             {"products": products},
@@ -215,10 +221,11 @@ class CustomerPortal(CustomerPortal):
                 line_vals = {
                     "type": "customer",
                     "rma_id": res.id,
+                    "invoice_ref": line.get('invoice'),
                     "product_id": product_id,
                     "informed_lot_id": line.get("searial_num"),
                     "uom_id": request.env.ref('uom.product_uom_unit').id,
-                    "product_qty": 1,
+                    "product_qty": line.get("qty", 1),
                     "description": line.get("note", '') + '\n' + line.get('invoice', ''),
                     "product_ref": line.get("product_ref"),
                     "partner_id": request.env.user.partner_id.id,
@@ -244,17 +251,17 @@ class CustomerPortal(CustomerPortal):
                         value[name] = val[0]
                 line_vals.update(value)
                 request.env['rma.order.line'].sudo().create(line_vals)
+        return res.ids
+        # if res:
+        #     print("llega")
+        #     if res.operation_type == 'return':
+        #         if (date.today() - res.order_id.date_order.date()).days > 30:
+        #             return res.ids
+        #     res.action_rma_approve()
+        #     return res.ids
+        # else:
 
-        if res:
-            print("llega")
-            if res.operation_type == 'return':
-                if (date.today() - res.order_id.date_order.date()).days > 30:
-                    return res.ids
-            res.action_rma_approve()
-            return res.ids
-        else:
-
-            return False
+        #     return False
 
     @http.route(
         ["/my/thanks_rma_msg"], type="http", auth="user", website=True, sitemap=False
