@@ -72,7 +72,7 @@ class StockBatchPicking(models.Model):
             )
             weight += (move_line.product_id.weight or 0.0) * qty
         
-        if weight < 0.0:
+        if weight <= 0.0:
             return 1
         
         return weight
@@ -80,11 +80,9 @@ class StockBatchPicking(models.Model):
     def send_shipping(self):
 
         def compute_timestamp_format(date):
-            calculated_picking_time = "{:%H:%M:%S}".format(
-                date
-            )
+            calculated_picking_time = "{:%Y-%m-%d}T{:%H:%M:%S}".format(date, date)
             picking_time = time.strftime(
-                "%Y-%m-%dT{}%Z".format(calculated_picking_time), time.gmtime()
+                "{}%Z".format(calculated_picking_time), time.gmtime()
             )
             k = "{}:{}".format(
                 time.strftime("%z", time.gmtime())[:3],
@@ -376,10 +374,10 @@ class StockBatchPicking(models.Model):
                                         self.partner_id.name.upper()
                                     ),
                                     "CompanyName": "{}".format(
-                                        self.partner_id.parent_id.name.upper() if self.partner_id.parent_id else ""
+                                        self.partner_id.parent_id.name.upper() if self.partner_id.parent_id else self.partner_id.name.upper()
                                     ),
                                     "PhoneNumber": "{}".format(
-                                        self.partner_id.phone or ""
+                                        self.partner_id.phone if self.partner_id.phone else self.partner_id.mobile if self.partner_id.mobile else "",
                                     ),
                                     "EmailAddress": self.partner_id.email or "",
                                 },
