@@ -61,6 +61,22 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
+    def compute_picking_request_weight(self):
+        weight = 0.0
+        for move_line in self.move_line_ids.filtered('product_qty'):
+            if not move_line.product_id:
+                continue
+            move = move_line.move_id
+            qty = move.product_uom._compute_quantity(
+                move_line.product_qty, move_line.product_id.uom_id,
+            )
+            weight += (move_line.product_id.weight or 0.0) * qty
+        
+        if weight < 0.0:
+            return 1
+        
+        return weight
+
     def send_shipping(self):
 
         def compute_timestamp_format(date):
@@ -77,7 +93,7 @@ class StockBatchPicking(models.Model):
             return "{}{}".format(picking_time, k)
 
         carrier_packages = self.carrier_packages if self.carrier_packages != 0 else 1
-        carrier_weight = self.carrier_weight if self.carrier_weight != 0 else 1
+        carrier_weight = self.compute_picking_request_weight()
         
         self.check_delivery_address()
         if self.carrier_id.code == "MRW" and self.picking_type_id.code == 'incoming':
