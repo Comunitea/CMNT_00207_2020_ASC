@@ -33,6 +33,7 @@
     ],
     "data": [
         "views/carrier_account.xml",
+        "data/carriers_data.xml",
     ],
     "external_dependencies": {"python": ["zeep"]},
     "installable": True,

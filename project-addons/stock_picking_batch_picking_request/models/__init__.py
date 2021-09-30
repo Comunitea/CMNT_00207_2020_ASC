@@ -17,4 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import carrier_account, stock_picking_batch, stock_picking
+from . import carrier_account
+from . import stock_picking_batch
+from . import rma_order

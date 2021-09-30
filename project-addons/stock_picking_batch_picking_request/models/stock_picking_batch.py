@@ -22,18 +22,64 @@ import logging
 import base64
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
+import time
 
 from odoo import models, _
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
+# Zeep debug
+
+#import logging.config
+
+""" logging.config.dictConfig({
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '%(name)s: %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'zeep.transports': {
+            'level': 'DEBUG',
+            'propagate': True,
+            'handlers': ['console'],
+        },
+    }
+}) """
+
 class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
     def send_shipping(self):
+
+        def compute_timestamp_format(date):
+            calculated_picking_time = "{:%H:%M:%S}".format(
+                date
+            )
+            picking_time = time.strftime(
+                "%Y-%m-%dT{}%Z".format(calculated_picking_time), time.gmtime()
+            )
+            k = "{}:{}".format(
+                time.strftime("%z", time.gmtime())[:3],
+                time.strftime("%z", time.gmtime())[3:],
+            )
+            return "{}{}".format(picking_time, k)
+
+        carrier_packages = self.carrier_packages if self.carrier_packages != 0 else 1
+        carrier_weight = self.carrier_weight if self.carrier_weight != 0 else 1
+        
+        self.check_delivery_address()
         if self.carrier_id.code == "MRW" and self.picking_type_id.code == 'incoming':
             
             # A REVISAR SI VIENEN AL CREAR UNO
@@ -113,6 +159,14 @@ class StockBatchPicking(models.Model):
                                 or self.partner_id.commercial_partner_id.phone
                                 or self.partner_id.commercial_partner_id.mobile
                                 or "",
+                                "Horario": {
+                                    "Rangos": {
+                                        "HorarioRangoRequest": {
+                                            "Desde": rma_id.pickup_time.strftime("%H:%M"),
+                                            "Hasta": (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),
+                                        },
+                                    },
+                                },
                                 "Observaciones": "{}".format(self.delivery_note),
                             },
                             "DatosEntrega": {
@@ -130,10 +184,6 @@ class StockBatchPicking(models.Model):
                                     else delivery_partner_id.zip,
                                     "Poblacion": delivery_partner_id.city,
                                     "Provincia": delivery_partner_id.state_id.name,
-                                    "Horario": {
-                                        "Desde": rma_id.pickup_time.strftime("%H:%M"),
-                                        "Hasta": (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),
-                                    }
                                 },
                                 "Nif": delivery_partner_id.vat,
                                 "Nombre": delivery_partner_id.name,
@@ -151,8 +201,8 @@ class StockBatchPicking(models.Model):
                                 "Frecuencia": self.carrier_id.account_id.mrw_frequency
                                 if self.service_code.carrier_code == "0005"
                                 else "",
-                                "NumeroBultos": self.carrier_packages,
-                                "Peso": round(self.carrier_weight),
+                                "NumeroBultos": carrier_packages,
+                                "Peso": round(carrier_weight),
                                 "EntregaSabado": self.carrier_id.account_id.mrw_saturday_delivery,
                                 "Entrega830": self.carrier_id.account_id.mrw_830_delivery,
                                 "Gestion": self.carrier_id.account_id.mrw_delivery_hangle,
@@ -263,10 +313,10 @@ class StockBatchPicking(models.Model):
 
             RequestedPackages = []
             cur_pack = 1
-            while cur_pack <= self.carrier_packages:
+            while cur_pack <= carrier_packages:
                 package_info = {
                     "@number": "{}".format(cur_pack),
-                    "Weight": round(self.carrier_weight / self.carrier_packages, 2),
+                    "Weight": round(carrier_weight / carrier_packages, 2),
                     "Dimensions": {"Length": 1.0, "Width": 1.0, "Height": 1.0},
                     "CustomerReferences": "{}".format(self.name.upper()),
                 }
@@ -287,12 +337,12 @@ class StockBatchPicking(models.Model):
                             "Currency": "EUR",
                             "UnitOfMeasurement": "SI",
                             "LabelType": "PDF",
-                            "PackagesCount": self.carrier_packages,
+                            "PackagesCount": carrier_packages,
                             "LabelTemplate": self.carrier_id.account_id.dhl_label_template,
                         },
-                        "ShipTimestamp": rma_id.pickup_time,
+                        "ShipTimestamp": compute_timestamp_format(rma_id.pickup_time),
                         "PickupLocationCloseTime" : (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),
-                        # SpecialPickupInstruction 75 caracteres con instrucciones
+                        "SpecialPickupInstruction" : "Pickup from {}".format(rma_id.pickup_time),
                         "PaymentInfo": "DAP",
                         "InternationalDetail": {
                             "Commodities": {
