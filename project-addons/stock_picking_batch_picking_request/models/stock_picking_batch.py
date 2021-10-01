@@ -71,10 +71,10 @@ class StockBatchPicking(models.Model):
                 move_line.product_qty, move_line.product_id.uom_id,
             )
             weight += (move_line.product_id.weight or 0.0) * qty
-        
+
         if weight <= 0.0:
             return 1
-        
+
         return weight
 
     def send_shipping(self):
@@ -92,24 +92,24 @@ class StockBatchPicking(models.Model):
 
         carrier_packages = self.carrier_packages if self.carrier_packages != 0 else 1
         carrier_weight = self.compute_picking_request_weight()
-        
+
         self.check_delivery_address()
         if self.carrier_id.code == "MRW" and self.picking_type_id.code == 'incoming':
-            
+
             # A REVISAR SI VIENEN AL CREAR UNO
             if not self.user_id:
                 self.user_id = self.env['res.users'].browse(self.env.uid)
             if not self.partner_id:
                 self.partner_id = self.picking_ids.mapped('partner_id')[0]
-            
+
             if self.picking_type_id.warehouse_id and self.picking_type_id.warehouse_id.partner_id:
                 delivery_partner_id = self.picking_type_id.warehouse_id.partner_id
             else:
                 raise UserError("Picking type missing warehouse or partner.")
-            
+
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
-            
+
             rma_id = self.picking_ids.move_lines.mapped('rma_line_id').rma_id
 
             if not rma_id:
@@ -302,12 +302,12 @@ class StockBatchPicking(models.Model):
                 self.user_id = self.env['res.users'].browse(self.env.uid)
             if not self.partner_id:
                 self.partner_id = self.picking_ids.mapped('partner_id')[0]
-            
+
             if self.picking_type_id.warehouse_id and self.picking_type_id.warehouse_id.partner_id:
                 delivery_partner_id = self.picking_type_id.warehouse_id.partner_id
             else:
                 raise UserError("Picking type missing warehouse or partner.")
-            
+
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
@@ -352,7 +352,7 @@ class StockBatchPicking(models.Model):
                             "UnitOfMeasurement": "SI",
                             "LabelType": "PDF",
                             "PackagesCount": carrier_packages,
-                            "LabelTemplate": self.carrier_id.account_id.dhl_label_template,
+                            "LabelTemplate": 'ECOM26_84_A4_001',
                         },
                         "ShipTimestamp": compute_timestamp_format(rma_id.pickup_time),
                         "PickupLocationCloseTime" : (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),

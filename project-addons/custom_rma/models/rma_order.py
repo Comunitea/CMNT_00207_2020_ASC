@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class RmaOrder(models.Model):
     _inherit = "rma.order"
 
-    delivery_tag = fields.Binary(attachment=True)
+    delivery_tag = fields.Binary(attachment=True, copy=False)
     delivery_address_id = fields.Many2one('res.partner')
 
     def action_rma_approve(self):

@@ -485,7 +485,7 @@
             </td>
             <td>
                 <div class="">
-                    <input type="number" class="form-control" name="quantity" />
+                    <input type="number" class="form-control" name="quantity" value="1"/>
                 </div>
             </td>
             <td>

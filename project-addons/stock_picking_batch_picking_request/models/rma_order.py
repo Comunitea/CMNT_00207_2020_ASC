@@ -33,12 +33,13 @@ class RmaOrder(models.Model):
 
         if not spain_carrier_id or not europe_carrier_id:
             raise UserError("Picking request carriers not configured.")
-
         for rma in self:
             if rma.operation_type == 'rma':
                 picking_ids = []
                 for line in rma.rma_line_ids:
                     for move in line.move_ids:
+                        if move.picking_id in picking_ids:
+                            continue
                         if move.location_dest_id.usage == 'internal':
                             picking_ids.append(move.picking_id)
                         else:
@@ -49,7 +50,7 @@ class RmaOrder(models.Model):
                     for pick in picking_ids:
                         pick.action_assign()
                         pick.auto_assign_batch_id()
-                
+
                         if pick.batch_id and pick.batch_id.partner_id and pick.batch_id.partner_id.country_id:
                             pick.batch_id.carrier_id = int(spain_carrier_id) if pick.batch_id.partner_id.country_id.code.upper() == 'ES' else int(europe_carrier_id)
                             pick.batch_id.send_shipping()

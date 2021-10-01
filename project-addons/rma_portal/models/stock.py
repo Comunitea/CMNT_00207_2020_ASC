@@ -11,3 +11,4 @@ class StockMove(models.Model):
         res = super()._action_done()
         for move in self.filtered(lambda r: r.rma_line_id):
             move.rma_line_id.rma_id.write({'reception_date': fields.Date.today()})
+        return res
