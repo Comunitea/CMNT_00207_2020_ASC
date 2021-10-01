@@ -80,7 +80,7 @@ class ProductProduct(models.Model):
         if not rt.use_lt:
             return res
         date_ago = datetime.now() - relativedelta(days=rt.lt_days)
-        lines = lines.filtered(lambda x: x.date_created >= date_ago)
+        lines = lines.filtered(lambda x: x.create_date >= date_ago)
         total_sales = len(lines.mapped("order_id"))
         if total_sales <= rt.lt_sales:
             res = rt.lt_qty
@@ -93,19 +93,19 @@ class ProductProduct(models.Model):
         if not rt.use_gt:# or not (rt.gt_sales and rt.gt_days and rt.gt_qty):
             return res
         date_ago = datetime.now() - relativedelta(days=rt.gt_days)
-        lines = lines.filtered(lambda x: x.date_created >= date_ago)
+        lines = lines.filtered(lambda x: x.create_date >= date_ago)
         total_sales = len(lines.mapped("order_id"))
         if total_sales >= rt.gt_sales:
             res = rt.gt_qty
         return res
 
     def get_sale_line_by_date(self, days_ago, order="id desc"):
-        current_date = datetime.now().strftime("%Y-%m-%d")
+        # current_date = datetime.now().strftime("%Y-%m-%d")
         date_ago = (datetime.now() - relativedelta(days=days_ago)).strftime("%Y-%m-%d")
         sale_domain = [
             ("product_id", "=", self.id),
             ## La fecha de creación del movimiento es la fecha de confirmación de la venta
-            ("date_created", ">=", date_ago),
+            ("create_date", ">=", date_ago),
             # ("sale_line_id.order_id.confirmation_date", "<=", current_date),
             ("state", "=", "done"),
             # es mas rapido que el mapped, ya que ahora devolvería todos los movimientos del producto
