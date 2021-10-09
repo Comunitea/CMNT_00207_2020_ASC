@@ -54,4 +54,5 @@ class RmaOrder(models.Model):
                         if pick.batch_id and pick.batch_id.partner_id and pick.batch_id.partner_id.country_id:
                             pick.batch_id.carrier_id = int(spain_carrier_id) if pick.batch_id.partner_id.country_id.code.upper() == 'ES' else int(europe_carrier_id)
                             pick.batch_id.send_shipping()
+            rma.send_mail()
         return res

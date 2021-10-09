@@ -12,7 +12,7 @@
                 <field name="pickup_time"/>
                 <field name="operation_type"/>
                 <field name="return_from_sale" attrs="{'invisible': [('operation_type', '!=', 'return')]}"/>
-                <button name="send_mail" type="object" string="Send mail"/>
+                <!-- <button name="send_mail" type="object" string="Send mail"/> -->
                 <field name="reception_date"/>
                 <field name="finish_date"/>
             </field>
