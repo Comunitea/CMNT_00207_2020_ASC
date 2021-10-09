@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rma_form" model="ir.ui.view">
+        <field name="name">rma.order.inherit.view.form</field>
+        <field name="model">rma.order</field>
+        <field name="inherit_id" ref="rma.view_rma_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+            </header>
+            <field name="date_rma" position="replace">
+                <field name="pickup_time"/>
+                <field name="operation_type"/>
+                <field name="return_from_sale" attrs="{'invisible': [('operation_type', '!=', 'return')]}"/>
+                <!-- <button name="send_mail" type="object" string="Send mail"/> -->
+                <field name="reception_date"/>
+                <field name="finish_date"/>
+            </field>
+            <xpath expr="//field[@name='rma_line_ids']/tree/field[@name='lot_id']" position="before">
+                <field name="product_ref"/>
+                <field name="invoice_ref"/>
+                <field name="informed_lot_id"/>
+            </xpath>
+            <xpath expr="//field[@name='rma_line_ids']/tree/field[@name='price_unit']" position="after">
+                <field name="stage_id" widget="selection"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_rma_line_form" model="ir.ui.view">
+        <field name="name">rma.order.line.inherit.view.form</field>
+        <field name="model">rma.order.line</field>
+        <field name="inherit_id" ref="rma.view_rma_line_form"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="product_ref"/>
+                <field name="invoice_ref"/>
+                <field name="stage_id" widget="selection"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_rma_order_document" inherit_id="rma.report_rma_order_document">
+        <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="page">
+                <div class="oe_structure"/>
+                <div class="row">
+                    <div class="col-6">
+                        <t t-if="(doc.customer_to_supplier==False and doc.type=='customer') or (doc.supplier_to_customer==False and doc.type=='supplier')">
+                            <strong>Shipping address:</strong>
+                            <div class="mt8">
+                                <div t-field="doc.in_warehouse_id.partner_id"
+                                    t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                                <p t-if="doc.in_warehouse_id.partner_id.vat">VAT: <span t-field="doc.in_warehouse_id.partner_id.vat"/></p>
+                            </div>
+                        </t>
+                        <div t-if="doc.customer_to_supplier and doc.type=='customer'" class="mt8">
+                            <strong>Shipping address:</strong>
+                            <div t-field="doc.supplier_address_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                            <p t-if="doc.supplier_address_id.vat">VAT: <span t-field="doc.supplier_address_id.vat"/></p>
+                        </div>
+                        <div t-if="doc.supplier_to_customer and doc.type=='supplier'" class="mt8">
+                            <strong>Shipping address:</strong>
+                                <div t-field="doc.customer_address_id"
+                                    t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                                <p t-if="doc.customer_address_id.vat">VAT: <span t-field="doc.customer_address_id.vat"/></p>
+                        </div>
+                    </div>
+                    <div class="col-3 col-offset-1">
+                        <strong t-if="doc.type=='customer'">Customer:</strong>
+                        <strong t-if="doc.type=='supplier'">Supplier:</strong>
+                        <div t-field="doc.partner_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                    </div>
+                </div>
+
+                <h2>
+                    <span t-field="doc.name"/>
+                </h2>
+
+                <div class="row mt32 mb32" id="informations">
+                    <div t-if="doc.reference" class="col-3">
+                        <strong>Reference:</strong>
+                        <p t-field="doc.reference"/>
+                    </div>
+                    <div t-if="doc.date_rma" class="col-3">
+                        <strong>Date Ordered:</strong>
+                        <p t-field="doc.date_rma"/>
+                    </div>
+                    <div t-if="doc.requested_by.name" class="col-3">
+                        <strong>Contact Person:</strong>
+                        <p t-field="doc.requested_by.name"/>
+                    </div>
+                </div>
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Serial number</th>
+                            <th>Invoice number</th>
+                            <th>Symptoms/Notes</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr t-foreach="doc.rma_line_ids" t-as="l">
+                            <td>
+                                <t t-if="l.product_id">
+                                    <span t-field="l.product_id"/>
+
+                                </t>
+                                <t t-else="">
+                                    <span t-field="l.product_ref"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="l.lot_id">
+                                    <span t-field="l.lot_id"/>
+                                </t>
+                                <t t-else="">
+                                    <span t-field="l.informed_lot_id"/>
+                                </t>
+
+                            </td>
+                            <td>
+                                <span t-field="l.informed_invoice_id"/>
+                            </td>
+                            <td>
+                                <span t-field="l.description"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div t-if="doc.comment">
+                    <strong><p>Additional Information</p></strong>
+                    <span t-field="doc.comment"></span>
+                </div>
+                <div t-if="doc.delivery_tag" style="page-break-before: always;">
+                    <img t-att-src="image_data_uri(doc.delivery_tag)"/>
+                </div>
+            </div>
+            <t t-set="type" t-value="'RMA'"/>
+        </xpath>
+    </template>
+</odoo>
