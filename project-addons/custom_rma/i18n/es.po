@@ -208,3 +208,7 @@ msgstr "NIF:"
 msgid "Wizard to create pickings from rma lines"
 msgstr "Asistente para crear albaranes desde las líneas de RMA"
 
+#. module: custom_rma
+#: model_terms:ir.ui.view,arch_db:custom_rma.report_rma_order_document
+msgid "Qty"
+msgstr "Ctdad."

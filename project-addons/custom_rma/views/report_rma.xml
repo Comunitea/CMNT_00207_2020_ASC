@@ -48,16 +48,17 @@
                         <strong>Date Ordered:</strong>
                         <p t-field="doc.date_rma"/>
                     </div>
-                    <div t-if="doc.requested_by.name" class="col-3">
+                    <!-- <div t-if="doc.requested_by.name" class="col-3">
                         <strong>Contact Person:</strong>
                         <p t-field="doc.requested_by.name"/>
-                    </div>
+                    </div> -->
                 </div>
 
                 <table class="table table-condensed">
                     <thead>
                         <tr>
                             <th>Product</th>
+                            <th>Qty</th>
                             <th>Serial number</th>
                             <th>Invoice number</th>
                             <th>Symptoms/Notes</th>
@@ -73,6 +74,9 @@
                                 <t t-else="">
                                     <span t-field="l.product_ref"/>
                                 </t>
+                            </td>
+                            <td>
+                                <span t-field="l.product_qty"/>
                             </td>
                             <td>
                                 <t t-if="l.lot_id">
@@ -95,9 +99,6 @@
                 <div t-if="doc.comment">
                     <strong><p>Additional Information</p></strong>
                     <span t-field="doc.comment"></span>
-                </div>
-                <div t-if="doc.delivery_tag" style="page-break-before: always;">
-                    <img t-att-src="image_data_uri(doc.delivery_tag)"/>
                 </div>
             </div>
             <t t-set="type" t-value="'RMA'"/>
