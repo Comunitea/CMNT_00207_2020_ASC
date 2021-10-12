@@ -101,7 +101,13 @@
                     <span t-field="doc.comment"></span>
                 </div>
             </div>
-            <t t-set="type" t-value="'RMA'"/>
+            <t t-if="doc.type == 'rma'">
+                <t t-set="type" t-value="'RMA'"/>
+            </t>
+            <t t-else="">
+                <t t-set="type" t-value="'return'"/>
+
+            </t>
         </xpath>
     </template>
 </odoo>

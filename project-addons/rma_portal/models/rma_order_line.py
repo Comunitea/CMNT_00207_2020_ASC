@@ -45,10 +45,14 @@ class RmaOrder(models.Model):
 
     def send_mail(self):
         self.ensure_one()
-
-        template = self.env.ref(
-            "rma_portal.email_template_rma", False
-        )
+        if self.operation_type == 'rma':
+            template = self.env.ref(
+                "rma_portal.email_template_rma", False
+            )
+        else:
+            template = self.env.ref(
+                "rma_portal.email_template_return", False
+            )
         ctx = dict(self._context)
         ctx.update(url=self.env['ir.config_parameter'].sudo().get_param('web.base.url'))
         ctx.update(
@@ -66,7 +70,7 @@ class RmaOrder(models.Model):
             template.id, "comment", 'rma.order', self.id
         )["value"]
         composer_id.write(values)
-        if self.delivery_tag:
+        if self.operation_type == 'rma' and self.delivery_tag:
             tag_attachment = self.env['ir.attachment'].search([
                 ('res_model', '=', 'rma.order'),
                 ('res_field', '=', 'delivery_tag'),
