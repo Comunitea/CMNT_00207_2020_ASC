@@ -23,10 +23,7 @@ class DeliverySeurManifiestoWizard(models.TransientModel):
     def get_manifest(self):
         """List of shippings for the given dates as GLS provides them"""
         gls_request = GlsAsmRequest(self.carrier_id._gls_asm_uid())
-        print("gls_request: {}".format(gls_request))
         manifest_data = gls_request._get_manifest(self.date_from)
-        print("manifest_data: {}".format(manifest_data))
-        import ipdb; ipdb.set_trace()
         if not manifest_data:
             raise UserError(_(
                 "It wasn't possible to get the manifest. Maybe there aren't"
@@ -38,7 +35,6 @@ class DeliverySeurManifiestoWizard(models.TransientModel):
             "date_from": self.date_from,
             "company_name": self.carrier_id.company_id.name,
         }
-        print("datas: {}".format(datas))
         return self.env.ref(
             "stock_picking_batch_delivery_carrier_gls_asm.gls_asm_manifest_report"
         ).report_action(self, data=datas)

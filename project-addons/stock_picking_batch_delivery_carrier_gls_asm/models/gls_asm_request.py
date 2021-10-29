@@ -1,4 +1,5 @@
 # Copyright 2020 Tecnativa - David Vidal
+# Copyright (C) 2021 Comunitea Servicios Tecnológicos S.L. All Rights Reserved
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from odoo import _
 from odoo.exceptions import UserError
