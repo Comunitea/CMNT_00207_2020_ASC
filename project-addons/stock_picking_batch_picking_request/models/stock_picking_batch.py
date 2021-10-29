@@ -224,7 +224,7 @@ class StockBatchPicking(models.Model):
                                 "Reembolso": self.carrier_id.account_id.mrw_delivery_pdo
                                 if self.payment_on_delivery
                                 else "N",
-                                "ImporteReembolso": "{}".format(self.mrw_pdo_quantity).replace(".", ",")
+                                "ImporteReembolso": "{}".format(self.pdo_quantity).replace(".", ",")
                                 if self.carrier_id.account_id.mrw_delivery_pdo != "N"
                                 and self.payment_on_delivery
                                 else "",

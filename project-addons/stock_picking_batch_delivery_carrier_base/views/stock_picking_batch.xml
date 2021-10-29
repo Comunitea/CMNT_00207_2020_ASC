@@ -36,6 +36,8 @@
                         <field name="shipment_reference"/>
                         <field name="carrier_tracking_ref"/>
                         <field name="payment_on_delivery" readonly="1"/>
+                        <field name="pdo_quantity"
+                            attrs="{'invisible': [('payment_on_delivery', '=', False)]}"/>
                     </group>
                 </group>
 
