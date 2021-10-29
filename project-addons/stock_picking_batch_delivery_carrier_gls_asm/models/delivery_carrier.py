@@ -178,26 +178,28 @@ class DeliveryCarrier(models.Model):
                 })
         return result
 
-    def gls_asm_tracking_state_update(self, batch):
+    def gls_asm_tracking_state_update(self, pick):
         """Tracking state update"""
         self.ensure_one()
-        if not batch.carrier_tracking_ref:
+        if not pick.carrier_tracking_ref:
             return
         gls_request = GlsAsmRequest(self._gls_asm_uid())
         tracking_states = gls_request._get_tracking_states(
-            batch.carrier_tracking_ref)
+            pick.carrier_tracking_ref)
         if not tracking_states:
             return
-        batch.tracking_state_history = "\n".join([
+        pick.tracking_state_history = "\n".join([
             "%s - [%s] %s" % (
                 t.get("fecha"), t.get("codigo"), t.get("evento"))
             for t in tracking_states
         ])
         tracking = tracking_states.pop()
-        batch.tracking_state = "[{}] {}".format(
+        pick.tracking_state = "[{}] {}".format(
             tracking.get("codigo"), tracking.get("evento"))
-        batch.delivery_state = GLS_DELIVERY_STATES_STATIC.get(
+        pick.delivery_state = GLS_DELIVERY_STATES_STATIC.get(
             tracking.get("codigo"), 'incidence')
+        if pick.delivery_state == 'customer_delivered':
+            pick.delivered = True
 
     def gls_asm_cancel_shipment(self, batchs):
         """Cancel the expedition"""

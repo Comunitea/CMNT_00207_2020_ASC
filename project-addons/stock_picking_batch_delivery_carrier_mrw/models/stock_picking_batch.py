@@ -290,13 +290,9 @@ class StockPicking(models.Model):
                 _logger.error(_("Delivery carrier has no account."))
                 return
 
-            client, history = self.batch_id.create_tracking_client()
-
-            if not client:
-                _logger.error(_("Not possible to establish a client."))
-                return
-
             try:
+                client, history = self.batch_id.create_tracking_client()
+
                 GetEnvios = {
                     "login": self.carrier_id.account_id.mrw_tracking_user,
                     "pass": self.carrier_id.account_id.mrw_tracking_password,
@@ -309,22 +305,22 @@ class StockPicking(models.Model):
                 }
 
                 res = client.service.GetEnvios(**GetEnvios)
+                if (
+                    res["Seguimiento"]["Abonado"]
+                    and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]
+                ):
+                    for seguimiento in res["Seguimiento"]["Abonado"][0][
+                        "SeguimientoAbonado"
+                    ]["Seguimiento"]:
+                        if seguimiento["Estado"] == "00":
+                            self.delivered = True
+                            break
+
+                else:
+                    _logger.error(_("Error: {}").format(res["MensajeSeguimiento"]))
+                    return
             except Exception as e:
                 _logger.error(_("Access error message: {}").format(e))
-                return
-            if (
-                res["Seguimiento"]["Abonado"]
-                and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]
-            ):
-                for seguimiento in res["Seguimiento"]["Abonado"][0][
-                    "SeguimientoAbonado"
-                ]["Seguimiento"]:
-                    if seguimiento["Estado"] == "00":
-                        self.delivered = True
-                        break
-
-            else:
-                _logger.error(_("Error: {}").format(res["MensajeSeguimiento"]))
                 return
         else:
             return super().check_shipment_status()
