@@ -14,6 +14,13 @@ class MrpBom(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if vals.get('product_tmpl_id'):
+        if vals.get('product_tmpl_id') or vals.get('active'):
             self.mapped('product_tmpl_id.product_variant_ids')._compute_pack_product()
+        return res
+
+    @api.multi
+    def unlink(self):
+        recompute_pack_product = self.mapped('product_tmpl_id.product_variant_ids')
+        res = super().unlink()
+        recompute_pack_product._compute_pack_product()
         return res

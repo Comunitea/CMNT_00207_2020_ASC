@@ -26,7 +26,6 @@ from requests import Session
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
-from odoo.addons import decimal_precision as dp
 from zeep import Client
 from zeep.cache import SqliteCache
 from zeep.plugins import HistoryPlugin
@@ -43,31 +42,7 @@ class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
 
-    mrw_pdo_quantity = fields.Float("PDO amount", digits=dp.get_precision("Product Price"))
     carrier_code = fields.Char(related="carrier_id.code")
-
-    def create(self, vals):
-        res = super().create(vals)
-        if vals.get("payment_on_delivery", False):
-            self.get_mrw_pdo_quantity()
-        return res
-            
-    def write(self, vals):
-        res = super().write(vals)
-        if self.payment_on_delivery and not vals.get("mrw_pdo_quantity"):
-            self.get_mrw_pdo_quantity()
-        return res
-
-    @api.multi
-    def get_mrw_pdo_quantity(self):
-        for batch in self:
-            if batch.carrier_id.code == "MRW":
-                pickings_total_value = 0.0
-                for pick in batch.picking_ids:
-                    pickings_total_value += pick.amount_total
-                    if pick.sale_id and (not pick.sale_id.paid_shipping_batch_id or pick.sale_id.paid_shipping_batch_id == batch):
-                        pickings_total_value += pick.sale_id.shipping_amount_total
-                batch.mrw_pdo_quantity = pickings_total_value
             
     def create_tracking_client(self):
         session = Session()
@@ -222,7 +197,7 @@ class StockBatchPicking(models.Model):
                                 "Reembolso": self.carrier_id.account_id.mrw_delivery_pdo
                                 if self.payment_on_delivery
                                 else "N",
-                                "ImporteReembolso": "{}".format(self.mrw_pdo_quantity).replace(".", ",")
+                                "ImporteReembolso": "{}".format(self.pdo_quantity).replace(".", ",")
                                 if self.carrier_id.account_id.mrw_delivery_pdo != "N"
                                 and self.payment_on_delivery
                                 else "",
@@ -315,13 +290,9 @@ class StockPicking(models.Model):
                 _logger.error(_("Delivery carrier has no account."))
                 return
 
-            client, history = self.batch_id.create_tracking_client()
-
-            if not client:
-                _logger.error(_("Not possible to establish a client."))
-                return
-
             try:
+                client, history = self.batch_id.create_tracking_client()
+
                 GetEnvios = {
                     "login": self.carrier_id.account_id.mrw_tracking_user,
                     "pass": self.carrier_id.account_id.mrw_tracking_password,
@@ -334,22 +305,22 @@ class StockPicking(models.Model):
                 }
 
                 res = client.service.GetEnvios(**GetEnvios)
+                if (
+                    res["Seguimiento"]["Abonado"]
+                    and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]
+                ):
+                    for seguimiento in res["Seguimiento"]["Abonado"][0][
+                        "SeguimientoAbonado"
+                    ]["Seguimiento"]:
+                        if seguimiento["Estado"] == "00":
+                            self.delivered = True
+                            break
+
+                else:
+                    _logger.error(_("Error: {}").format(res["MensajeSeguimiento"]))
+                    return
             except Exception as e:
                 _logger.error(_("Access error message: {}").format(e))
-                return
-            if (
-                res["Seguimiento"]["Abonado"]
-                and "SeguimientoAbonado" in res["Seguimiento"]["Abonado"][0]
-            ):
-                for seguimiento in res["Seguimiento"]["Abonado"][0][
-                    "SeguimientoAbonado"
-                ]["Seguimiento"]:
-                    if seguimiento["Estado"] == "00":
-                        self.delivered = True
-                        break
-
-            else:
-                _logger.error(_("Error: {}").format(res["MensajeSeguimiento"]))
                 return
         else:
             return super().check_shipment_status()

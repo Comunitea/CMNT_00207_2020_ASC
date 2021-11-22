@@ -13,6 +13,12 @@
                                 <field name="sale_days"/>
                                 <field name="min_qty"/>
                                 <field name="max_qty"/>
+                                <field name="qty_field"/>
+
+                                <field name="send_cancel_mail"/>
+                                <field name="days_to_second_orderpoint"/>
+                                <field name="quantity_per_cent"/>
+                                
                             </group>
                             <group>
                                 <field name="average_ratio"/>
@@ -64,7 +70,7 @@
               </p>
             </field>
         </record>
-
+       
      <menuitem
             id="menu_variable_replenish"
             action="action_variable_replenish"

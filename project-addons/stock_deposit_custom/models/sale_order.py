@@ -82,7 +82,6 @@ class SaleOrderLine(models.Model):
                         qty -= move.product_uom._compute_quantity(
                             move.quantity_done, line.product_uom
                         )
-                print(qty)
                 line.qty_in_deposit = qty
 
     def action_show_deposit_lots(self):

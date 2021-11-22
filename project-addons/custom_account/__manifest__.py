@@ -18,11 +18,16 @@
         "l10n_es_account_invoice_sequence",
         "l10n_es_aeat_sii",
         "base_automation",
+        "account_reconcile_payment_order",
+        "account_asset_management",
+        "purchase_landed_cost"
     ],
     "data": [
         "data/custom_account_data.xml",
         "views/account_move_view.xml",
         "views/account_payment_mode.xml",
+        "views/account_invoice.xml",
         "views/crm_team.xml",
+        "security/ir.model.access.csv"
     ],
 }

@@ -12,24 +12,23 @@ class ProductProduct (models.Model):
 
     @api.multi
     def compute_reservations(self):
-        self.ensure_one()
-        warehouse_id = self._context.get(('warehouse_id'), False)
-        if not warehouse_id:
-            warehouse_id = self.env['stock.warehouse'].search([], limit=1)
-        else:
-            warehouse_id = self.env['stock.warehouse'].browse(warehouse_id)
-        loc_id = warehouse_id.lot_stock_id
-        domain = [('location_id', 'child_of', loc_id.id),
-                  ('product_id', '=', self.id),
-                  ('state', 'in', ('partially_available', 'assigned'))]
-        reservations_ids = self.env['stock.move.line'].search(domain)
-        self.quantity_reserved_link = sum(x.product_uom_qty for x in reservations_ids)
-        domain = [('location_id', 'child_of', loc_id.id),
-                  ('product_id', '=', self.id),
-                  ('reserved_quantity', '!=', 0)]
-        quant_ids = self.env['stock.quant'].search(domain)
-        self.quantity_reserved = sum(x.reserved_quantity for x in quant_ids)
-
+        for product in self:
+            warehouse_id = self._context.get(('warehouse_id'), False)
+            if not warehouse_id:
+                warehouse_id = self.env['stock.warehouse'].search([], limit=1)
+            else:
+                warehouse_id = self.env['stock.warehouse'].browse(warehouse_id)
+            loc_id = warehouse_id.lot_stock_id
+            domain = [('location_id', 'child_of', loc_id.id),
+                      ('product_id', '=', product.id),
+                      ('state', 'in', ('partially_available', 'assigned'))]
+            reservations_ids = self.env['stock.move.line'].search(domain)
+            product.quantity_reserved_link = sum(x.product_uom_qty for x in reservations_ids)
+            domain = [('location_id', 'child_of', loc_id.id),
+                      ('product_id', '=', product.id),
+                      ('reserved_quantity', '!=', 0)]
+            quant_ids = self.env['stock.quant'].search(domain)
+            product.quantity_reserved = sum(x.reserved_quantity for x in quant_ids)
 
     def action_view_stock_moves_reservations(self):
         self.ensure_one()

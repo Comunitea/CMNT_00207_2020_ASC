@@ -37,12 +37,16 @@ class AsteriskServer(models.Model):
         very old or very new versions of Asterisk'''
         sip_account = user.asterisk_chan_type + '/' + user.resource
         internal_number = user.internal_number
+        internal_number_no_outlet_suffix = internal_number.replace("-outlet", "")
+
+        _logger.info("_get_calling_agi_uniqueid_from_channel: internal_number_no_outlet_suffix {}".format(internal_number_no_outlet_suffix))
+        _logger.info("_get_calling_agi_uniqueid_from_channel: SIP ACC {}, INTERNAL NUMBER: {}, CHAN: {}".format(sip_account, internal_number, chan))
         # 4 = Ring
         # 6 = Up
         if (
                 chan.get('ChannelState') in ('4', '6') and (
-                    chan.get('ConnectedLineNum') == internal_number or
-                    chan.get('EffectiveConnectedLineNum') == internal_number or
+                    chan.get('ConnectedLineNum') in (internal_number, internal_number_no_outlet_suffix) or
+                    chan.get('EffectiveConnectedLineNum') in (internal_number, internal_number_no_outlet_suffix) or
                     sip_account in chan.get('BridgedChannel', ''))):
             _logger.debug(
                 "Found a matching Event with ID = %s",

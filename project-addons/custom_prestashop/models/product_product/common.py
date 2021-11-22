@@ -36,6 +36,7 @@ class ProductProduct(models.Model):
                 product.pack_product = True
             else:
                 product.pack_product = False
+            product.update_prestashop_qty()
 
     def recompute_packs(self):
         for product in self:
@@ -73,6 +74,8 @@ class ProductProduct(models.Model):
                 else:
                     create_bom = True
                 if create_bom:
+                    self.env['stock.warehouse.orderpoint'].search(
+                        [('product_id', '=', product.id)]).unlink()
                     self.env["mrp.bom"].create(
                         {
                             "product_tmpl_id": product.product_tmpl_id.id,

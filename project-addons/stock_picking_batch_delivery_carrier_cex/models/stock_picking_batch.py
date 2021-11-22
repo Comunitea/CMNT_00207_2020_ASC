@@ -56,11 +56,11 @@ class StockBatchPicking(models.Model):
                 raise UserError("Delivery carrier has no account.")
 
             if self.carrier_id.account_id.test_enviroment:
-                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(
+                url = "{}apiRestGrabacionEnviok8s/json/grabacionEnvio".format(
                     self.carrier_id.account_id.service_test_url
                 )
             else:
-                url = "{}apiRestGrabacionEnvio/json/grabacionEnvio".format(
+                url = "{}apiRestGrabacionEnviok8s/json/grabacionEnvio".format(
                     self.carrier_id.account_id.service_url
                 )
 
@@ -145,7 +145,7 @@ class StockBatchPicking(models.Model):
             or partner.commercial_partner_id.mobile
             or partner.commercial_partner_id.phone
             or ""
-        )
+        ).replace(" ","").replace("+","")
         listaBultos = []
         for i in range(0, number_of_packages):
             listaBultos.append(

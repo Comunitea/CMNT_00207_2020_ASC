@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-06 13:54+0000\n"
-"PO-Revision-Date: 2020-08-06 13:54+0000\n"
+"POT-Creation-Date: 2020-12-17 10:36+0000\n"
+"PO-Revision-Date: 2020-12-17 10:36+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #. module: asterisk_phonecall_info
 #. openerp-web
-#: code:addons/asterisk_phonecall_info/static/src/js/note.js:84
+#: code:addons/asterisk_phonecall_info/static/src/js/note.js:85
 #, python-format
 msgid "Add Notes to Phonecall"
 msgstr "Añadir notas a la llamada"
@@ -28,13 +28,13 @@ msgid "Asterisk"
 msgstr ""
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:53
+#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:55
 #, python-format
 msgid "Asterisk Imported Incoming Call"
 msgstr "Llamada entrante importada"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:57
+#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:60
 #, python-format
 msgid "Asterisk Imported Outgoing Call"
 msgstr "Llamada saliente importada"
@@ -43,6 +43,11 @@ msgstr "Llamada saliente importada"
 #: model:ir.model,name:asterisk_phonecall_info.model_asterisk_server
 msgid "Asterisk Servers"
 msgstr "Servidores Asterisk"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__asterisk_notify
+msgid "Asterisk notify"
+msgstr "Notificaciones Asterisk"
 
 #. module: asterisk_phonecall_info
 #: model_terms:ir.ui.view,arch_db:asterisk_phonecall_info.asterisk_phonecall_info_asterisk_server_form
@@ -57,10 +62,15 @@ msgstr "Llamada desde la centralita"
 
 #. module: asterisk_phonecall_info
 #. openerp-web
-#: code:addons/asterisk_phonecall_info/static/src/js/note.js:61
+#: code:addons/asterisk_phonecall_info/static/src/js/note.js:62
 #, python-format
 msgid "Calling party number not retreived from IPBX or IPBX unreachable by Odoo"
 msgstr "Número no recibido desde IPBX o IPBX inaccesible desde Odoo"
+
+#. module: asterisk_phonecall_info
+#: model_terms:ir.ui.view,arch_db:asterisk_phonecall_info.asterisk_phonecall_info_view_partner_form
+msgid "Calls Summary"
+msgstr "Resumen de llamadas"
 
 #. module: asterisk_phonecall_info
 #: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__campaign_id
@@ -101,6 +111,17 @@ msgid "Cdr User"
 msgstr "Usuario CDR"
 
 #. module: asterisk_phonecall_info
+#: selection:res.users,asterisk_user_type:0
+msgid "Commercial"
+msgstr "Comercial"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_partner__commercial_minutes_cur_month
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__commercial_minutes_cur_month
+msgid "Commercial minutes this month"
+msgstr "Min. comerciales este mes"
+
+#. module: asterisk_phonecall_info
 #: model:ir.model,name:asterisk_phonecall_info.model_phone_common
 msgid "Common methods for phone features"
 msgstr "Métodos comunes para funciones del teléfono"
@@ -111,7 +132,12 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:148
+#: model:ir.model,name:asterisk_phonecall_info.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: asterisk_phonecall_info
+#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:160
 #, python-format
 msgid "Could not create row vals for row: {}."
 msgstr "No se han podido generar valores para la fila: {}."
@@ -161,7 +187,7 @@ msgstr ""
 
 #. module: asterisk_phonecall_info
 #. openerp-web
-#: code:addons/asterisk_phonecall_info/static/src/js/note.js:60
+#: code:addons/asterisk_phonecall_info/static/src/js/note.js:61
 #, python-format
 msgid "IPBX error"
 msgstr ""
@@ -174,16 +200,16 @@ msgid "Import cdr logs from Asterisk"
 msgstr "Importar logs CDR de Asterisk"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/phone_common.py:37
+#: code:addons/asterisk_phonecall_info/models/phone_common.py:47
 #, python-format
 msgid "Incoming call"
 msgstr "Llamada entrante"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/phone_common.py:35
+#: code:addons/asterisk_phonecall_info/models/phone_common.py:45
 #, python-format
-msgid "Incoming call from {} ({})"
-msgstr "Llamada entrante de {} ({})"
+msgid "Incoming call from {} ({}) <br/> {}"
+msgstr "Llamada entrante de {} ({}) <br/> {}"
 
 #. module: asterisk_phonecall_info
 #: model:ir.model.fields,field_description:asterisk_phonecall_info.field_phonecall_notes_wizard____last_update
@@ -219,7 +245,7 @@ msgid "New Note"
 msgstr "Nueva Nota"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:75
+#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:78
 #, python-format
 msgid "Not partner_id or opportunity_id for record number {}"
 msgstr "No existe cliente u oportunidad para el número {}"
@@ -233,13 +259,13 @@ msgstr "Notas"
 
 #. module: asterisk_phonecall_info
 #. openerp-web
-#: code:addons/asterisk_phonecall_info/static/src/js/note.js:72
+#: code:addons/asterisk_phonecall_info/static/src/js/note.js:73
 #, python-format
 msgid "Number Not Found"
 msgstr "Número no encontrado"
 
 #. module: asterisk_phonecall_info
-#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:61
+#: code:addons/asterisk_phonecall_info/models/crm_phonecall.py:64
 #, python-format
 msgid "Record number {} not recognized"
 msgstr "Número {} no reconocible"
@@ -255,8 +281,19 @@ msgid "Tags"
 msgstr "Etiquetas"
 
 #. module: asterisk_phonecall_info
+#: selection:res.users,asterisk_user_type:0
+msgid "Technical"
+msgstr "Técnico"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_partner__technical_minutes_cur_month
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__technical_minutes_cur_month
+msgid "Technical minutes this month"
+msgstr "Min. técnicos este mes"
+
+#. module: asterisk_phonecall_info
 #. openerp-web
-#: code:addons/asterisk_phonecall_info/static/src/js/note.js:67
+#: code:addons/asterisk_phonecall_info/static/src/js/note.js:68
 #, python-format
 msgid "The calling number is not a phone number!"
 msgstr "El número no es número de teléfono."
@@ -270,6 +307,34 @@ msgstr "Éste es el método de entrega, por ejemplo, envío postal, Email, o el 
 #: model:ir.model.fields,help:asterisk_phonecall_info.field_crm_phonecall__source_id
 msgid "This is the link source, e.g. Search Engine, another domain,or name of email list"
 msgstr "Ésta es la fuente del link, por ejemplo, buscador, otro dominio, o nombre de lista de email"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_partner__commercial_minutes
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__commercial_minutes
+msgid "Total commercial minutes"
+msgstr "Total minutos comerciales"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_partner__technical_minutes
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__technical_minutes
+msgid "Total technical minutes"
+msgstr "Total minutos técnicos"
+
+#. module: asterisk_phonecall_info
+#: selection:res.users,asterisk_user_type:0
+msgid "Undefined"
+msgstr "Sin seleccionar"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_crm_phonecall__asterisk_user_type
+#: model:ir.model.fields,field_description:asterisk_phonecall_info.field_res_users__asterisk_user_type
+msgid "User type"
+msgstr "Tipo de usuario"
+
+#. module: asterisk_phonecall_info
+#: model:ir.model,name:asterisk_phonecall_info.model_res_users
+msgid "Users"
+msgstr "Usuarios"
 
 #. module: asterisk_phonecall_info
 #: model:ir.model,name:asterisk_phonecall_info.model_crm_phonecall

@@ -16,23 +16,67 @@ class PhoneCommon(models.AbstractModel):
     def incall_notify_by_login(self, number, login_list):
         assert isinstance(login_list, list), "login_list must be a list"
         res = self.get_record_from_phone_number(number)
-        users = self.env["res.users"].search([("login", "in", login_list)])
+        users = self.env["res.users"].search([("login", "in", login_list), ('asterisk_notify', '=', True)])
         logger.info(
             "Notify incoming call from number %s to user IDs %s" % (number, users.ids)
         )
         action = self._prepare_incall_pop_action(res, number)
         action = clean_action(action)
-        partner_id = self.env["phone.common"].get_record_from_phone_number(number)
-        if partner_id and partner_id[2]:
-            partner_name = partner_id[2]
+        partner_notes = False
+        commercial_partner_notes = False
+        technical_partner_notes = False
+        partner_commercial_phonecall_ids = False
+        partner_technical_phonecall_ids = False
+        if res and res[2]:
+            partner_name = res[2]
+            if res[1] and res[0] == 'res.partner':
+                partner_commercial_phonecall_ids = self.env["crm.phonecall"].search([
+                    ('partner_id', 'child_of', res[1]),
+                    ('notes', '!=', False),
+                    ('asterisk_user_type', '=', 'commercial')
+                ], order="id desc", limit=5)
+
+                partner_technical_phonecall_ids = self.env["crm.phonecall"].search([
+                    ('partner_id', 'child_of', res[1]),
+                    ('notes', '!=', False),
+                    ('asterisk_user_type', '=', 'technical')
+                ], order="id desc", limit=5)
+            elif res[1] and res[0] == 'crm.lead':
+                partner_commercial_phonecall_ids = self.env["crm.phonecall"].search([
+                    ('opportunity_id', '=', res[1]),
+                    ('notes', '!=', False),
+                    ('asterisk_user_type', '=', 'commercial')
+                ], order="id desc", limit=5)
+
+                partner_technical_phonecall_ids = self.env["crm.phonecall"].search([
+                    ('opportunity_id', '=', res[1]),
+                    ('notes', '!=', False),
+                    ('asterisk_user_type', '=', 'technical')
+                ], order="id desc", limit=5)
+
+
+            if partner_commercial_phonecall_ids:
+                commercial_partner_notes = ''
+                for phonecall in partner_commercial_phonecall_ids:
+                    commercial_partner_notes += '{}: {} <br/>'.format(phonecall.date, phonecall.notes)
+
+            if partner_technical_phonecall_ids:
+                technical_partner_notes = ''
+                for phonecall in partner_commercial_phonecall_ids:
+                    technical_partner_notes += '{}: {} <br/>'.format(phonecall.date, phonecall.notes)
         else:
             partner_name = "Unknown"
         if action:
             for user in users:
+                partner_notes = ''
                 channel = "notify_info_%s" % user.id
+                if user.asterisk_user_type == 'commercial':
+                    partner_notes = commercial_partner_notes
+                elif user.asterisk_user_type == 'technical':
+                    partner_notes = technical_partner_notes
                 bus_message = {
                     "message": _(
-                        "Incoming call from {} ({})".format(partner_name, number)
+                        "Incoming call from {} ({}) <br/> {}".format(partner_name, number, partner_notes if partner_notes else '')
                     ),
                     "title": _("Incoming call"),
                     "action": action,

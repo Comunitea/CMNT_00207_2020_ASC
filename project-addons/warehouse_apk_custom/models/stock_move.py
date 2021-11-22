@@ -37,7 +37,7 @@ class StockMove(models.Model):
 
         sml_ids_to_update = self.env['stock.move.line']
         sml_no_lot_ids = move_ids.filtered(lambda x: x.qty_done == 0 and x.lot_id not in lot_ids)
-        domain = [('state', '=', 'assigned'),
+        domain = [('state', 'in', ['partially_available', 'assigned']),
                   ('move_id', '!=', move.id),
                   ('move_id.product_id', '=', move.product_id.id),
                   ('location_id', 'child_of', move.location_id.id),  # No tienen porque estar en la misma estanteria

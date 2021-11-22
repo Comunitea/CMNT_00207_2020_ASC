@@ -17,6 +17,7 @@
         "base_location",
         "stock_custom",
         "sale_financial_risk",
+        "product_brand"
     ],
     "data": [
         "views/account_payment_term.xml",
@@ -26,6 +27,7 @@
         "views/prestashop_backend.xml",
         "views/sale_order_state.xml",
         "views/account_fiscal_position.xml",
+        "views/product_template.xml",
         "data/sale_exception.xml",
         "data/ir_cron.xml",
         "security/ir.model.access.csv",

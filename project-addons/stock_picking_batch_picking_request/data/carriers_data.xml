@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<odoo>
+    <data noupdate="1">
+        <!-- ir_config_parameter -->
+        <record id="picking_request_spain_carrier_id" model="ir.config_parameter">
+            <field name="key">stock_picking_batch_picking_request.spain_carrier_id</field>
+            <field name="value">8</field>
+        </record>
+
+        <record id="picking_request_europe_carrier_id" model="ir.config_parameter">
+            <field name="key">stock_picking_batch_picking_request.europe_carrier_id</field>
+            <field name="value">2</field>
+        </record>
+
+    </data>
+
+</odoo>

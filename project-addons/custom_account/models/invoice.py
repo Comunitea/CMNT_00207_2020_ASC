@@ -11,17 +11,19 @@ class AccountInvoice(models.Model):
     @api.constrains("invoice_number")
     def check_last_invoice_number(self):
         for inv in self:
-            if inv.invoice_number:
+            if inv.invoice_number and inv.type \
+                    in ("out_refund", "out_invoice"):
                 sequence = inv.journal_id.invoice_sequence_id
                 if (
-                    inv.type in {"out_refund", "in_refund"}
+                    inv.type == "out_refund"
                     and inv.journal_id.refund_inv_sequence_id
                 ):
                     sequence = inv.journal_id.refund_inv_sequence_id
                 if sequence.implementation == "no_gap":
                     prefix, suffix = sequence.with_context(
                         ir_sequence_date=inv.date_invoice.strftime("%Y-%m-%d"),
-                        ir_sequence_date_range=inv.date_invoice.strftime("%Y-%m-%d"),
+                        ir_sequence_date_range=inv.
+                        date_invoice.strftime("%Y-%m-%d"),
                     )._get_prefix_suffix()
                     num_char = inv.invoice_number.replace(prefix, "").replace(
                         suffix, ""
@@ -51,7 +53,8 @@ class AccountInvoice(models.Model):
 
     @api.model
     def _prepare_refund(
-        self, invoice, date_invoice=None, date=None, description=None, journal_id=None
+        self, invoice, date_invoice=None, date=None, description=None,
+        journal_id=None
     ):
         vals = super(AccountInvoice, self)._prepare_refund(
             invoice, date_invoice, date, description, journal_id
@@ -60,3 +63,17 @@ class AccountInvoice(models.Model):
         if invoice.payment_term_id:
             vals["payment_term_id"] = invoice.payment_term_id.id
         return vals
+
+    @api.multi
+    def action_invoice_open(self):
+        if self.filtered(lambda r: not r.fiscal_position_id):
+            raise exceptions.ValidationError(_('cannot validate invoices without fiscal position'))
+        return super().action_invoice_open()
+
+    @api.multi
+    def write(self, vals):
+        """No resetear la fecha contable al cambiar a borrador"""
+        if vals.get('state') == 'draft' and 'date' in vals:
+            del vals['date']
+        return super().write(vals)
+

@@ -5,3 +5,5 @@ from . import account_payment_mode
 from . import credit_control_run
 from . import crm_team
 from . import sale
+from . import account_reconciliation_widget
+from . import res_partner

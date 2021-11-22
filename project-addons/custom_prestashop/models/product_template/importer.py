@@ -2,15 +2,40 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
+from prestapyt.prestapyt import PrestaShopWebServiceError
 
 
 class ProductTemplateImporter(Component):
 
     _inherit = "prestashop.product.template.importer"
 
+    def deactivate_default_product(self, binding):
+        if binding.product_variant_count != 1:
+            for product in binding.with_context(
+                    active_test=True).product_variant_ids:
+                if not product.attribute_value_ids:
+                    self.env['product.product'].browse(product.id).orderpoint_ids.write(
+                        {'active': False})
+        return super().deactivate_default_product(binding)
+
+    def _import_dependencies(self):
+        res = super()._import_dependencies()
+        self._import_brand()
+        return res
+
+    def _import_brand(self):
+        record = self.prestashop_record
+        if record.get('id_manufacturer') and record.get('id_manufacturer') not in ('0', 0):
+            try:
+                self._import_dependency(record['id_manufacturer'],
+                                        'prestashop.product.brand')
+            except PrestaShopWebServiceError as e:
+                return
+
     def _after_import(self, binding):
         super()._after_import(binding)
-        self.import_bundles(binding)
+        if not binding.odoo_managed_bom:
+            self.import_bundles(binding)
 
     def import_bundles(self, binding):
         record = self._get_prestashop_data()
@@ -58,6 +83,9 @@ class ProductTemplateImporter(Component):
                 else:
                     create_bom = True
                 if create_bom:
+                    self.env['stock.warehouse.orderpoint'].search(
+                        [('product_id', 'in',
+                          binding.odoo_id.product_variant_ids._ids)]).unlink()
                     self.env["mrp.bom"].create(
                         {
                             "product_tmpl_id": binding.odoo_id.id,
@@ -120,3 +148,13 @@ class TemplateMapper(Component):
         if template_exists:
             return {"odoo_id": template_exists.id}
         return {}
+
+    @mapping
+    def product_brand_id(self, record):
+        if record.get('id_manufacturer') and record.get('id_manufacturer') not in ('0', 0):
+            brand_binder = self.binder_for("prestashop.product.brand")
+            brand = brand_binder.to_internal(
+                record["id_manufacturer"], unwrap=True
+            )
+            if brand:
+                return {'product_brand_id': brand.id}

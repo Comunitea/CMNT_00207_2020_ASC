@@ -117,6 +117,7 @@
                         <span t-if="type == 'delivery'">Delivery</span>
                         <span t-if="type == 'purchase'">Purchase</span>
                         <span t-if="type == 'RMA'">RMA</span>
+                        <span t-if="type == 'return'">Return</span>
                         <br t-else=""/>
                     </div>
 

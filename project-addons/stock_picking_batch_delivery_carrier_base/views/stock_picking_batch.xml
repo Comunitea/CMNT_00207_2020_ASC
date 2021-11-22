@@ -14,13 +14,11 @@
                     ]}"/>
                 <button name="send_shipping" string="Request Shipping" type="object"
                     attrs="{'invisible': [
-                        '|', ('shipment_reference', '!=', False),
                         ('carrier_tracking_ref', '!=', False)
                     ]}"/>
                 <button name="remove_tracking_info" string="Remove Tracking" type="object"
                     confirm="Are you sure you want to remove the tracking info of this batch?"
                     attrs="{'invisible': [
-                        '|',('shipment_reference', '=', False),
                         ('carrier_tracking_ref', '=', False)
                     ]}"/>
             </header>
@@ -38,6 +36,8 @@
                         <field name="shipment_reference"/>
                         <field name="carrier_tracking_ref"/>
                         <field name="payment_on_delivery" readonly="1"/>
+                        <field name="pdo_quantity"
+                            attrs="{'invisible': [('payment_on_delivery', '=', False)]}"/>
                     </group>
                 </group>
 

@@ -28,4 +28,15 @@
             </filter>
         </field>
     </record>
+    
+    <record id="view_calendar_event_calendar" model="ir.ui.view">
+        <field name="name">calendar.event.inherit.view.calendar</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <calendar position="attributes">
+                <attribute name="mode">month</attribute>
+            </calendar>
+        </field>
+    </record>
 </odoo>

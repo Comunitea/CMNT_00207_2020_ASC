@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="rma_order_stage_view_tree" model="ir.ui.view">
+        <field name="name">rma.order.stage.view.tree</field>
+        <field name="model">rma.order.stage</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="rma_order_stage_view_form" model="ir.ui.view">
+        <field name="name">rma.order.stage.view.form</field>
+        <field name="model">rma.order.stage</field>
+        <field name="arch" type="xml">
+            <form string="Stages">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="sequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="rma_order_stage_action" model="ir.actions.act_window">
+        <field name="name">RMA stages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rma.order.stage</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+    </record>
+
+    <menuitem id="rma_order_stage_menu_act" name="Rma Stages" parent="rma.menu_rma_config" action="rma_order_stage_action" sequence="99"/>
+</odoo>

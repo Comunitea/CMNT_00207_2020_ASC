@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record model="ir.ui.view" id="purchase_order_form">
+    <field name="name">purchase.custom.order.form</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+    <field name="arch" type="xml">
+      <field name="origin" position="after">
+           <label for="purchase_line_common"/>
+            <div>
+            <field class="oe_inline" name="purchase_line_common"/>
+            <button name="apply_purchase_line_common" string="↳Aplicar" type="object"/>
+            </div>
+      </field>
+    </field>
+  </record>
+  <record id="send_mail_to_waiting_picks" model="ir.actions.server">
+    <field name="name">Avisar a Salidas</field>
+    <field name="model_id" ref="purchase.model_purchase_order"/>
+    <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+    <field name="state">code</field>
+    <field name="code">
+      records.send_mail_to_waiting_picks()
+    </field>
+  </record>
+</odoo>

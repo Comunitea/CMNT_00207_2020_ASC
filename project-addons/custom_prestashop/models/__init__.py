@@ -19,3 +19,4 @@ from . import stock_tracking
 from . import delivery_carrier
 from . import automatic_workflow_job
 from . import mrp_bom
+from . import product_brand

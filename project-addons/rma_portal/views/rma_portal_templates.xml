@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template
+        id="rma_assets_file"
+        inherit_id="website.assets_frontend"
+        name="website rma assets"
+    >
+        <xpath expr="script[last()]" position="after">
+            <script src="/rma_portal/static/src/js/custom.js" />
+        </xpath>
+        <xpath expr="." position="inside">
+                <link
+                href="/rma_portal/static/src/css/custom.css"
+                rel="stylesheet"
+                type="text/css"
+            />
+            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css"/>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"></script>
+        </xpath>
+    </template>
+
+    <template id="portal_layout" name="Portal layout: rma menu entry" inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'rma' or rma" t-attf-class="breadcrumb-item #{'active ' if not rma else ''}">
+                <a t-if="rma" t-attf-href="/my/rmas?{{ keep_query() }}">rmas</a>
+                <t t-else="">rmas</t>
+            </li>
+            <li t-if="rma" class="breadcrumb-item active">
+                <t t-esc="rma.name"/>
+            </li>
+        </xpath>
+    </template>
+    <template id="remove_my_details" inherit_id="portal.portal_layout">
+        <xpath expr="//div[hasclass('o_portal_my_details')]" position="replace">
+        </xpath>
+    </template>
+
+    <template id="portal_my_home" name="Portal My Home: rma entries" inherit_id="portal.portal_my_home" priority="999">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="rma_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">rmas</t>
+                <t t-set="url" t-value="'/my/rmas'"/>
+                <t t-set="count" t-value="rma_count"/>
+            </t>
+            <a href="/requestrma" title="Request RMA" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                <span>Request RMA</span>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="portal_my_rmas" name="My rma">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">rma</t>
+            </t>
+            <t t-if="not rmas">
+                <div class="alert alert-warning mt8" role="alert">
+                    There are no rmas.
+                </div>
+            </t>
+            <t t-if="rmas" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-center">State</th>
+                        <th class="text-right">Create date</th>
+                        <th class="text-right">Reception date</th>
+                        <th class="text-right">Finish date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="rmas" t-as="rma">
+                        <td>
+                            <a t-attf-href="/my/rma/#{rma.id}?{{ keep_query() }}"><span t-field="rma.name"/></a>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-pill">
+                                <i class="fa fa-fw" role="img" t-att-aria-label="rma.stage_id.name" t-att-title="rma.stage_id.name"/><span t-esc="rma.stage_id.name"/>
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="rma.creation_date"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="rma.reception_date"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="rma.finish_date"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_rma" name="My rma">
+        <t t-call="portal.portal_layout">
+            <t t-call="portal.portal_record_layout">
+                <t t-set="card_header">
+                    <h2 class="my-0">
+                        <em t-esc="rma.name"/>
+                    </h2>
+                </t>
+                <t t-set="card_body">
+
+                    <div id="general_information">
+                        <div class="row mt4">
+                            <div t-if="rma.partner_id" class="col-12 col-md-6 mb-4 mb-md-0">
+                                <h6><strong>Customer:</strong></h6>
+                                <div class="row">
+                                    <div class="col flex-grow-0 pr-3">
+                                        <img t-if="rma.partner_id.image" class="rounded-circle mt-1 o_portal_contact_img" t-att-src="image_data_uri(rma.partner_id.image)" alt="Contact"/>
+                                        <img t-else="" class="rounded-circle mt-1 o_portal_contact_img" src="/web/static/src/img/user_menu_avatar.png" alt="Contact"/>
+                                    </div>
+                                    <div class="col pl-sm-0">
+                                        <address t-field="rma.partner_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt32" id="product_information">
+                            <div class="col-12 col-md-6">
+                                <!-- <div t-if="rma.date" class="row mb-2 mb-sm-1">
+                                    <div class="col-12 col-sm-4">
+                                        <strong>RMA Date</strong>
+                                    </div>
+                                    <div class="col-12 col-sm-8">
+                                        <span t-field="rma.date" t-options='{"widget": "date"}'/>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt32">
+                        <div class="col-24 col-md-12">
+                            <table class="table table-sm" id="rma_table">
+                                <thead class="bg-100">
+                                    <tr>
+                                        <t t-set="colspan" t-value="3" />
+                                        <th class="text-left">Products</th>
+                                        <th>Quantity</th>
+                                        <th>Lot</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+                                    <t t-foreach="rma.rma_line_ids" t-as="rma_line">
+                                        <tr>
+                                            <td class="text-left">
+                                                <img
+                                                    t-if="rma_line.product_id.image"
+                                                    t-att-src="image_data_uri(rma_line.product_id.image_small)"
+                                                    alt="Product"
+                                                />
+                                                <img
+                                                    t-else=""
+                                                    style="max-width:64px;width:100%;max-height:64px;height:100%"
+                                                    class="img-thumbnail"
+                                                    src="/web/static/src/img/placeholder.png"
+                                                    alt="Product"
+                                                />
+                                                <t t-if="rma_line.product_ref">
+                                                    <span t-field="rma_line.product_ref" />
+                                                </t>
+                                                <t t-else="">
+                                                    <span
+                                                        t-field="rma_line.product_id.display_name"
+                                                    />
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span t-field="rma_line.product_qty" />
+                                            </td>
+                                            <td>
+                                                <t t-if="rma_line.lot_id">
+                                                    <span
+                                                        t-field="rma_line.lot_id"
+                                                    />
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-field="rma_line.informed_lot_id" />
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-4">
+                            Product: <span t-esc="rma.product_id.display_name"/>
+                        </div>
+                        <div class="col-4 col-offset-2">
+                            Serial number: <span t-esc="rma.lot_id.name"/>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-4">
+                            <t t-if="rma.under_warranty">
+                                <p style="color: green;">The product is under warranty</p>
+                            </t>
+                            <t t-if="not rma.under_warranty">
+                                <p style="color: red;">The product is not under warranty</p>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            Requested by: <span t-field="rma.requested_by.name"/>
+                        </div>
+                        <div class="col-4 col-offset-2">
+                            Assigned to: <span t-field="rma.assigned_to.name"/>
+                        </div>
+                        <div class="col-4 col-offset-2">
+                            Operation: <span t-esc="rma.operation_id.name"/>
+                        </div>
+                    </div>
+                    <div id="rma_communication" class="mt-4">
+                        <h2>Communication</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="rma"/>
+                        </t>
+                    </div> -->
+                </t>
+                <!--
+                <t t-set="card_body">
+                    <div class="row">
+                        <div t-if="rma.partner_id" class="col-12 col-md-6 mb-2 mb-md-0">
+                            <h6>Customer</h6>
+                            <div class="row">
+                                <div class="col flex-grow-0 pr-3">
+                                    <img t-if="rma.partner_id.image" class="rounded-circle mt-1 o_portal_contact_img" t-att-src="image_data_uri(rma.partner_id.image)" alt="Contact"/>
+                                    <img t-else="" class="rounded-circle mt-1 o_portal_contact_img" src="/web/static/src/img/user_menu_avatar.png" alt="Contact"/>
+                                </div>
+                                <div class="col pl-sm-0">
+                                    <address t-field="rma.partner_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-if="rma.user_id" class="col-12 col-md-6">
+                            <h6>rma Manager</h6>
+                            <div class="row">
+                                <div class="col flex-grow-0 pr-3">
+                                    <img t-if="rma.user_id.image" class="rounded-circle mt-1 o_portal_contact_img" t-att-src="image_data_uri(rma.user_id.image)" alt="Contact"/>
+                                    <img t-else="" class="rounded-circle mt-1 o_portal_contact_img" src="/web/static/src/img/user_menu_avatar.png" alt="Contact"/>
+                                </div>
+                                <div class="col pl-sm-0">
+                                    <address t-field="rma.user_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t> -->
+            </t>
+        </t>
+    </template>
+
+
+    <template id="add_rma_portal" name="Add RMA">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container rma_add_object_page">
+                    <form action="#" method="POST">
+                        <div class="row">
+                            <div class="col-2 offset-5"><label>Operation type</label></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 offset-5">
+                                <input type="radio" id="operation_type_rma"
+                                        name="operation_type" value="rma" checked="true"/>
+                                <label for="operation_type_rma">RMA</label>
+                                <input type="radio" id="operation_type_return"
+                                        name="operation_type" value="return"/>
+                                <label for="operation_type_return">Return</label>
+                            </div>
+                        </div>
+                        <div id="return_info" style="display: none;">
+                            <div class="row mt16">
+                                <div class="col-2">
+                                    <label>Order: </label>
+                                </div>
+                                <div class="col-3">
+                                    <select class="form-control" name="order_reference">
+                                        <t t-foreach="orders" t-as="order">
+                                            <option t-att-value="order['id']">
+                                                <!-- <t t-esc="order['name']"/> -->
+                                                <t t-esc="order.name_get()[0][1]" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="rma_info">
+                            <div class="row mt32 form-group">
+                                <div class="col-2">
+                                    <label>pick up day</label>
+                                </div>
+                                <div class="col-3">
+                                    <!-- <input type="date" id="start" name="trip-start" class="form-control"
+                                        t-att-value="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')"
+                                        t-att-min="(datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')" t-att-max="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')"/> -->
+                                        <input type="text" name="date" class="form-control datepicker" autocomplete="off"/>
+                                </div>
+                                <div class="col-2">
+                                    <label title="The pick-up time will be in a range of 3 hours">pick up time</label>
+                                </div>
+                                <div class="col-3">
+                                    From:<span id="from_pickup_time_error"/> <input class="form-control" type="time" id="pickup_time_from" name="pickup_time_from" min="08:00" max="20:00"/>
+                                    To: <input class="form-control" type="time" id="pickup_time_to" name="pickup_time_to" min="08:00" max="20:00" readonly="True"/>
+
+                                </div>
+                            </div>
+
+                            <div class="row mt16">
+                                <div class="col-2">
+                                    <label>Return Delivery Address: </label>
+                                </div>
+                                <div class="col-10">
+                                    <select
+                                        class="form-control"
+                                        id="delivery_address"
+                                        name="delivery_address"
+                                    >
+                                        <option value="" />
+                                        <t
+                                            t-foreach="delivery_partners"
+                                            t-as="delivery_partner"
+                                        >
+                                            <option t-att-value="delivery_partner['id']">
+                                                <!-- <t t-esc="delivery_partner['name']"/> -->
+                                                <t
+                                                    t-esc="delivery_partner.name_get()[0][1]"
+                                                />
+                                                <t t-set="address" t-value="[]" />
+                                                <t t-if="delivery_partner.street">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.street]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.street2">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.street2]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.zip">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.zip]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.city">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.city]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.state_id">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.state_id.name]"
+                                                    />
+                                                </t>
+                                                <t t-if="delivery_partner.country_id">
+                                                    <t
+                                                        t-set="address"
+                                                        t-value="address + [delivery_partner.country_id.name]"
+                                                    />
+                                                </t>
+
+                                                <t
+                                                    t-if="delivery_partner.zip or delivery_partner.street or delivery_partner.city or delivery_partner.state_id or delivery_partner.country_id"
+                                                >
+                                                    (
+                                                        <t
+                                                        t-esc="', '.join(map(lambda x: x, address))"
+                                                    />
+                                                    )
+                                                </t>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="nav nav-tabs mt32">
+                            <li role="presentation" class="active">
+                                <a
+                                    href="#editor-rma-lines"
+                                    style="font-weight:bold;"
+                                    data-toggle="tab"
+                                >RMA Lines</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div
+                                class="tab-pane fade show active"
+                                id="editor-rma-lines"
+                            >
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="active">
+                                            <th style="width:30%">Product Id</th>
+                                            <!-- <th>Lot Id</th> -->
+                                            <th style="width:15%">Serial Number</th>
+                                            <th style="width:8%">Qty</th>
+                                            <th style="width:17%">Invoice number</th>
+                                            <!-- <th style="width:15%">Reason</th> -->
+                                            <th style="width:25%">Symptoms/Notes</th>
+                                            <th style="width:5%" />
+                                        </tr>
+                                    </thead>
+                                    <tbody class="rma_line_tbody">
+                                    </tbody>
+                                </table>
+                                <a class="btn btn-primary rma_add_line_btn">Add Line</a>
+                            </div>
+                            <script>
+                                function not_prod_in_list(obj) {
+                                    if(obj.value == "-1"){
+                                        $(obj).parent().find('input').css("display", "block");
+                                    }
+
+                                    if(obj.value != "-1"){
+                                        $(obj).parent().find('input').css("display", "none");
+                                    }
+                                }
+                            </script>
+                        </div>
+                        <div class="checkbox mt32">
+                            <input type="checkbox"
+                                value="accepted"
+                                id="privacy_policy"
+                                name="privacy_policy"
+                                class="o_website_form_input"
+                                required="required"/>
+                            <label class="control-label" id="privacy_policy_label">
+                                <t t-call="website_legal_page.acceptance_full"/>
+                            </label>
+                        </div>
+
+                        <span
+                            class="btn btn-primary pull-left submit_rma_obj"
+                        >Submit RMA</span>
+                        <span id="s_website_form_result"></span>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="rma_add_new_line" name="RMA Add New Line">
+        <tr>
+            <td>
+                <select
+                    class="form-control o_order_product"
+                    name="product_id"
+                    onchange="not_prod_in_list(this)"
+                >
+                    <option></option>
+                    <t t-foreach="products" t-as="product">
+                        <option t-att-value="product['id']"><t
+                                t-esc="product.name_get()[0][1]"
+                            /></option>
+                    </t>
+                    <option t-att-value="-1">Not in List</option>
+                </select>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="not_in_list"
+                    style="display:none"
+                />
+            </td>
+            <td>
+                <div class="">
+                    <input type="text" class="form-control" name="serial_num" />
+                </div>
+            </td>
+            <td>
+                <div class="">
+                    <input type="number" class="form-control" name="quantity" value="1"/>
+                </div>
+            </td>
+            <td>
+                <div class="">
+                    <input type="text" class="form-control" name="invoice" />
+                </div>
+            </td>
+            <td style="width:30%">
+                <div class="">
+                    <input type="text" class="form-control" name="note" />
+                </div>
+            </td>
+            <td>
+                <div class="">
+                    <i class="fa fa-trash-o remove_rma_line" />
+                </div>
+            </td>
+        </tr>
+    </template>
+
+    <template id="thank_rma_msg">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <!-- <h1 class="text-center">Thanks For Create RMA.</h1> -->
+                    <h1>Your RMA : <span
+                            t-field="rma_order.name"
+                        /> has been submitted.</h1>
+                    <h1>You can go to <a
+                            href="/my/home"
+                        >My account</a> RMA list to check the status. </h1>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_home_sale" inherit_id="sale.portal_my_home_sale">
+        <xpath expr="//t[@t-if='quotation_count']" position="replace"></xpath>
+        <xpath expr="//t[@t-if='order_count']" position="replace"></xpath>
+    </template>
+
+
+    <template id="portal_my_invoices" inherit_id="account.portal_my_invoices">
+        <xpath expr="//td[hasclass('tx_status')]" position="replace">
+            <td class="tx_status">
+                <t t-if="invoice.portal_state == 'open'">
+                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"/><span class="d-none d-md-inline"> Opened</span></span>
+                </t>
+                <t t-if="invoice.portal_state == 'paid'">
+                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"/><span class="d-none d-md-inline"> Paid</span></span>
+                </t>
+                <t t-if="invoice.portal_state == 'remitted'">
+                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-university" aria-label="Remitted" title="Remitted" role="img"/><span class="d-none d-md-inline"> Remitted</span></span>
+                </t>
+            </td>
+        </xpath>
+    </template>
+
+</odoo>

@@ -44,6 +44,7 @@ class CrmPhonecall(models.Model):
         help="This is the delivery method, e.g. Postcard, Email, or Banner Ad",
         default=lambda self: self.env.ref("utm.utm_medium_email", False),
     )
+    asterisk_user_type = fields.Selection(related='user_id.asterisk_user_type')
 
     def _parse_row_vals(self, row):
 
@@ -118,6 +119,7 @@ class CrmPhonecall(models.Model):
         ast_server.cdr_last_imported_date = datetime.now()
 
     def import_master_file(self, cdr_last_imported_date):    
+        _logger.info('import_master_file')
 
         # we use this function to remove the empty lines, otherwise we'll get an error on the loop
         def mycsv_reader(csv_reader): 
@@ -132,6 +134,7 @@ class CrmPhonecall(models.Model):
             return
 
         reader = mycsv_reader(csv.reader(open(ABSOLUTE_PATH, 'rU'), delimiter=',', quotechar='"'))
+        _logger.info('reader: {}.'.format(reader))
 
         calls = [x for x in reader if x and x[3] in ['odoo-cola', 'from-outlet'] \
             and x[14] == 'ANSWERED' \
@@ -139,6 +142,8 @@ class CrmPhonecall(models.Model):
             and datetime.strptime(x[9], "%Y-%m-%d %H:%M:%S") > cdr_last_imported_date]
         
         for line in calls:
+
+            _logger.info('line: {}.'.format(line))
 
             try:
 

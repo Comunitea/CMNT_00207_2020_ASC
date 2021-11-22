@@ -14,17 +14,20 @@
         "stock_picking_report_valued",
         "stock_picking_type_group",
         "warehouse_apk",
+        "rma"
     ],
     "data": [
         "security/ir.model.access.csv",
         "data/cron.xml",
         "data/prestashop_cancel_alerts.xml",
+        "data/ir_config_parameter.xml",
         "views/stock_location.xml",
         "views/product_view.xml",
         "views/stock_picking.xml",
         "views/sale_order.xml",
         "views/variable_replensih.xml",
         "views/stock_production_lot.xml",
+        "views/stock_move.xml"
     ],
     "installable": True,
     "license": "AGPL-3",

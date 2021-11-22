@@ -21,6 +21,7 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 from base64 import b64decode
+from odoo.addons import decimal_precision as dp
 
 
 class StockBatchPicking(models.Model):
@@ -37,6 +38,7 @@ class StockBatchPicking(models.Model):
     )
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
+    pdo_quantity = fields.Float("PDO amount", digits=dp.get_precision("Product Price"))
     needs_signature = fields.Boolean(
         related="carrier_id.needs_signature", readonly=True
     )
@@ -47,6 +49,21 @@ class StockBatchPicking(models.Model):
     carrier_packages = fields.Integer(default=0)
     partner_id = fields.Many2one("res.partner", string="Empresa")
 
+    @api.multi
+    def get_pdo_quantity(self):
+        for batch in self:
+            pickings_total_value = 0.0
+            for pick in batch.picking_ids:                    
+                for line in pick.move_line_ids.mapped('sale_line'):
+                    pickings_total_value += line.price_total
+                if pick.sale_id and (not pick.sale_id.paid_shipping_batch_id or pick.sale_id.paid_shipping_batch_id == batch):
+                    pickings_total_value += pick.sale_id.shipping_amount_total
+                if pick.sale_id:
+                    discount = pick.sale_id.order_line.filtered(lambda x: x.product_id.type == 'service' and x.price_total < 0.0)
+                    for dis in discount:
+                        pickings_total_value += dis.price_total
+            batch.pdo_quantity = pickings_total_value
+
     @api.model
     def create(self, vals):
         if vals.get("carrier_id"):
@@ -55,6 +72,8 @@ class StockBatchPicking(models.Model):
             )
             if carrier_id and carrier_id.service_code:
                 vals["service_code"] = carrier_id.service_code.id
+        if vals.get("payment_on_delivery", False):
+            self.get_pdo_quantity()
         return super(StockBatchPicking, self).create(vals)
 
     @api.onchange("service_code")
@@ -119,6 +138,9 @@ class StockBatchPicking(models.Model):
                 if batch.carrier_tracking_ref:
                     for pick in batch.picking_ids:
                         pick.write({"carrier_tracking_ref": batch.carrier_tracking_ref})
+        
+        if self.payment_on_delivery and not vals.get("pdo_quantity"):
+            self.get_pdo_quantity()
         return res
 
     @api.multi

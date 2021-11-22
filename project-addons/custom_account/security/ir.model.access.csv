@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_payment_method,read access to account.payment.method,account.model_account_payment_method,account_payment_order.group_account_payment,1,0,0,0
+access_payment,full access to account.payment,account.model_account_payment,account_payment_order.group_account_payment,1,1,1,1
+access_account_move,full access to account.move,account.model_account_move,account_payment_order.group_account_payment,1,1,1,0
+access_account_move_line,full access to account.move.line,account.model_account_move_line,account_payment_order.group_account_payment,1,1,1,0
+access_purchase_cost_distribution_expense,purchase.cost.distribution.expense,purchase_landed_cost.model_purchase_cost_distribution_expense,account_payment_order.group_account_payment,1,1,1,0
+access_account_asset_line_invoice,account.asset.line,account_asset_management.model_account_asset_line,account_payment_order.group_account_payment,1,0,0,0
+access_account_partial_reconcile,account.partial.reconcile,account.model_account_partial_reconcile,account_payment_order.group_account_payment,1,1,1,0
+access_account_account_type,account.account.type,account.model_account_account_type,account_payment_order.group_account_payment,1,0,0,0
+access_account_full_reconcile,account.full.reconcile,account.model_account_full_reconcile,account_payment_order.group_account_payment,1,1,1,0

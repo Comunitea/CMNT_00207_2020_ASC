@@ -10,6 +10,7 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     prestashop_unique_id = fields.Char()
+    odoo_managed_bom = fields.Boolean()
 
     _sql_constraints = [
         (

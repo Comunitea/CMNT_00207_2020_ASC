@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- carrier.account Form View -->
+    <record id="cmnt_delivery_carrier_dhl_impex_account" model="ir.ui.view">
+        <field name="name">cmnt.delivery.carrier.dhl.carrier.account</field>
+        <field name="model">carrier.account</field>
+        <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_dhl.cmnt_delivery_carrier_dhl_carrier_account"/>
+        <field name="arch" type="xml">
+            <field name="dhl_account" position="after">
+                <field name="dhl_impex_account" attrs="{'invisible': [('delivery_carrier', '!=', 'dhl')]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

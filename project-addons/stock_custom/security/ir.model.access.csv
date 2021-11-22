@@ -1,2 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_variable_replenish","access_variable_replenish","model_variable_replenish","base.group_user",1,1,1,1
+"access_not_lot_name","access_not_lot_name","model_not_lot_name","base.group_user",1,1,1,1
