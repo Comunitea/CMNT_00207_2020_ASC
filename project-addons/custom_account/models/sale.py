@@ -18,12 +18,36 @@ class SaleOrder(models.Model):
             if self.fiscal_position_id:
                 fpos_xml_id = self.fiscal_position_id._get_external_ids()[
                     self.fiscal_position_id.id
-                ][0]
-                new_fpos_xml_id = fpos_xml_id.replace(
-                    "{}_".format(self.fiscal_position_id.company_id.id),
-                    "{}_".format(self.team_id.invoice_on_company.id),
-                )
-                fiscal_position = self.sudo().env.ref(new_fpos_xml_id)
+                ]
+                if fpos_xml_id and "__export__" not in fpos_xml_id[0]:
+                    fpos_xml_id = fpos_xml_id[0]
+                    new_fpos_xml_id = fpos_xml_id.replace(
+                        "{}_".format(self.fiscal_position_id.company_id.id),
+                        "{}_".format(self.team_id.invoice_on_company.id),
+                    )
+                    fiscal_position = self.sudo().env.ref(new_fpos_xml_id)
+                else:
+                    fiscal_position = (
+                        self.env["account.fiscal.position"]
+                        .sudo()
+                        .search(
+                            [
+                                (
+                                    "country_id",
+                                    "=",
+                                    self.fiscal_position_id.country_id.id,
+                                ),
+                                (
+                                    "fiscal_position_type",
+                                    "=",
+                                    self.fiscal_position_id.fiscal_position_type,
+                                ),
+                                ("company_id", "=", self.team_id.invoice_on_company.id),
+                            ],
+                            limit=1,
+                        )
+                    )
+
             else:
                 fiscal_position = (
                     self.partner_invoice_id.with_context(
@@ -61,14 +85,21 @@ class SaleOrder(models.Model):
                 old_payment_mode = self.env["account.payment.mode"].browse(
                     res.get("payment_mode_id")
                 )
-                old_payment_mode_xml_id = old_payment_mode._get_external_ids()[
-                    old_payment_mode.id
-                ][0]
-                new_payment_mode_xml_id = old_payment_mode_xml_id.replace(
-                    "{}_".format(old_payment_mode.company_id.id),
-                    "{}_".format(crm_company.id),
+                new_payment_mode = (
+                    self.env["account.payment.mode"]
+                    .sudo()
+                    .search(
+                        [
+                            (
+                                "prestashop_module",
+                                "=",
+                                old_payment_mode.prestashop_module,
+                            ),
+                            ("company_id", "=", self.team_id.invoice_on_company.id),
+                        ],
+                        limit=1,
+                    )
                 )
-                new_payment_mode = self.sudo().env.ref(new_payment_mode_xml_id)
                 res["payment_mode_id"] = new_payment_mode.id
             res.pop("payment_term_id")
         return res
@@ -106,12 +137,33 @@ class SaleOrderLine(models.Model):
             taxes = []
             for tax_id in res["invoice_line_tax_ids"][0][2]:
                 old_tax = self.env["account.tax"].browse(tax_id)
-                old_tax_xml_id = old_tax._get_external_ids()[old_tax.id][0]
-                new_tax_xml_id = old_tax_xml_id.replace(
-                    "{}_".format(old_tax.company_id.id),
-                    "{}_".format(self.order_id.team_id.invoice_on_company.id),
-                )
-                new_tax = self.sudo().env.ref(new_tax_xml_id)
+                old_tax_xml_id = old_tax._get_external_ids()[old_tax.id]
+                if old_tax_xml_id and "__export__" not in old_tax_xml_id[0]:
+                    old_tax_xml_id = old_tax_xml_id[0]
+
+                    new_tax_xml_id = old_tax_xml_id.replace(
+                        "{}_".format(old_tax.company_id.id),
+                        "{}_".format(self.order_id.team_id.invoice_on_company.id),
+                    )
+                    new_tax = self.sudo().env.ref(new_tax_xml_id)
+                else:
+                    new_tax = (
+                        self.env["account.tax"]
+                        .sudo()
+                        .search(
+                            [
+                                ("oss_country_id", "=", old_tax.oss_country_id.id),
+                                ("amount", "=", old_tax.amount),
+                                (
+                                    "company_id",
+                                    "=",
+                                    self.order_id.team_id.invoice_on_company.id,
+                                ),
+                            ],
+                            limit=1,
+                        )
+                    )
+
                 taxes.append(new_tax.id)
             res["invoice_line_tax_ids"] = [(6, 0, taxes)]
         return res
