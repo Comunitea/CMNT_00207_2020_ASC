@@ -22,6 +22,8 @@ class DaysWithNoStock(models.Model):
         )]
     
     def get_all_no_stock_days(self):
+        
+        self.env['days.no.stock'].search([]).unlink()
         _days = 180
         ctx = self._context.copy()
         while _days >=1:
@@ -30,29 +32,29 @@ class DaysWithNoStock(models.Model):
             domain = ctx.get('domain', [])
             product_ids = self.env['product.product'].with_context(to_date=to_date).search(domain).filtered(lambda x: x.qty_available <= 0)
             _logger.info (">>>>>>>>>>>>>>>>>>>>%s %d"%(to_date, len(product_ids)))
+            cont = len(product_ids)
             for product in product_ids:
+                _logger.info (">>>>>>>>>>>>>>>>>>>>%s %d"%(product.display_name, cont))
+                cont -=1
                 vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': to_date}
-                #print("   >> %s %s"%(vals, product.qty_available))
                 self.env['days.no.stock'].create(vals)
             _days -= 1
 
 
     @api.multi
     def compute_days_with_no_stock(self):
-       
-        domain = [('qty_available', '<=', 0)]
+        ## DIARIO
+        p_domain = [('qty_available', '<=', 0)]
+        product_ids = self.env['product.product'].search(p_domain)
         today_date = fields.Date.from_string(fields.Date.today())
-        
         ## Borro los anteriores a 180 días
         last_date = today_date - relativedelta(days=180)
-        domain = [('date', '<', last_date)]
+        domain = ['|', ('date', '=', today_date), ('date', '<', last_date)]
         self.env['days.no.stock'].search(domain).unlink()
-        product_ids = self.env['product.product'].search(domain)
         for product in product_ids:
             domain = [('product_id', '=', product.id), ('date', '=', today_date)]
-            if not self.env['days.no.stock'].search(domain):
-                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
-                self.env['days.no.stock'].create(vals)
+            vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
+            self.env['days.no.stock'].create(vals)
             product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
         
 
