@@ -8,6 +8,6 @@
     "website": "comunitea.com",
     "license": "AGPL-3",
     "depends": ["rma_sale"],
-    "data": ['views/rma_order_line.xml'],
+    "data": ['views/rma_order_line.xml', 'views/rma_order.xml', 'views/report_rma.xml'],
     "installable": True,
 }

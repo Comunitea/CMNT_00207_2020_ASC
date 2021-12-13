@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="invoice_form_fecha_valor" model="ir.ui.view">
+        <field name="name">account.invoice.inherit.view.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="partner_paydays.invoice_form_fecha_valor"/>
+        <field name="arch" type="xml">
+            <field name="value_date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
     <record id="invoice_supplier_form" model="ir.ui.view">
         <field name="name">account.invoice.inherit.view.form</field>
         <field name="model">account.invoice</field>
@@ -13,6 +24,17 @@
         </field>
     </record>
 
+    <record id="invoice_supplier_form_fecha_valor" model="ir.ui.view">
+        <field name="name">account.invoice.inherit.view.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="partner_paydays.invoice_supplier_form_fecha_valor"/>
+        <field name="arch" type="xml">
+            <field name="value_date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+    
     <record id="invoice_form" model="ir.ui.view">
         <field name="name">account.invoice.inherit.view.form</field>
         <field name="model">account.invoice</field>
@@ -21,7 +43,7 @@
             <button id="account_invoice_payment_btn" position="attributes">
                 <attribute name="groups"></attribute>
             </button>
-            
+
         </field>
     </record>
 

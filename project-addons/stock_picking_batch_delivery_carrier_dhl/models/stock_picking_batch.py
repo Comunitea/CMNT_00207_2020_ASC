@@ -330,30 +330,35 @@ class StockPicking(models.Model):
             }
 
             try:
-                r = requests.request(
+                res = requests.request(
                     "POST", url, data=json.dumps(payload), headers=headers
                 )
-            except requests.exceptions.RequestException as e:
-                _logger.error(_("Access error message: {}").format(e))
-                return
 
-            response = r.json()["trackShipmentRequestResponse"]
-            awbinfoitem = response["trackingResponse"]["TrackingResponse"]["AWBInfo"][
-                "ArrayOfAWBInfoItem"
-            ]
-            if "ShipmentInfo" in awbinfoitem:
-                if "ShipmentEvent" in awbinfoitem["ShipmentInfo"]:
-                    delivery_status = awbinfoitem["ShipmentInfo"]["ShipmentEvent"][
-                        "ArrayOfShipmentEventItem"
-                    ]["ServiceEvent"]["EventCode"]
-                    if delivery_status == "OK":
-                        self.delivered = True
-            else:
-                _logger.error(
-                    _("Access error message: {}").format(
-                        awbinfoitem["Status"]["ActionStatus"]
-                    )
-                )
+                if res.json() and "trackShipmentRequestResponse" in res.json():
+
+                    response = res.json()["trackShipmentRequestResponse"]
+                    awbinfoitem = response["trackingResponse"]["TrackingResponse"]["AWBInfo"][
+                        "ArrayOfAWBInfoItem"
+                    ]
+                    if "ShipmentInfo" in awbinfoitem:
+                        if "ShipmentEvent" in awbinfoitem["ShipmentInfo"]:
+                            delivery_status = awbinfoitem["ShipmentInfo"]["ShipmentEvent"][
+                                "ArrayOfShipmentEventItem"
+                            ]["ServiceEvent"]["EventCode"]
+                            if delivery_status == "OK":
+                                self.delivered = True
+                    else:
+                        _logger.error(
+                            _("Access error message: {}").format(
+                                awbinfoitem["Status"]["ActionStatus"]
+                            )
+                        )
+                        return
+                else:
+                   _logger.error(_("Error in response."))
+
+            except Exception as e:
+                _logger.error(_("Access error message: {}").format(e))
                 return
         else:
             return super().check_shipment_status()

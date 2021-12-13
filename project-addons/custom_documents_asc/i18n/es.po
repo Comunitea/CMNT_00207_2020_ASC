@@ -16,6 +16,19 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "&amp;nbsp;<span>on</span>"
+msgstr "&amp;nbsp;<span>en</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span groups=\"account.group_show_line_subtotals_tax_excluded\">Amount</span>\n"
+"                                    <span groups=\"account.group_show_line_subtotals_tax_included\">Total Price</span>"
+msgstr "<span groups=\"account.group_show_line_subtotals_tax_excluded\">Importe</span>\n"
+"                                    <span groups=\"account.group_show_line_subtotals_tax_included\">Precio Total</span>"
+
+
+#. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
 msgid "<b>Accounts</b>"
 msgstr "<b>Cuentas</b>"
@@ -46,8 +59,14 @@ msgstr "<span style=\"color: #1176D9;\">\n"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
 msgid "<span>Description</span>"
 msgstr "<span>Descripción</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span>Disc.(%)</span>"
+msgstr "<span>Desc.(%)</span>"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -75,6 +94,26 @@ msgid "<strong>Customer</strong>"
 msgstr "<strong>Cliente</strong>"
 
 #. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong>Description:</strong>"
+msgstr "<strong>Descripción:</strong>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong>Due Date:</strong>"
+msgstr "<strong>Fecha de vencimiento:</strong>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong>Invoice Date:</strong>"
+msgstr "<strong>Fecha de factura:</strong>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong>Reference:</strong>"
+msgstr "<strong>Referencia:</strong>"
+
+#. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Description</strong>"
 msgstr "<strong>Descripción</strong>"
@@ -83,6 +122,46 @@ msgstr "<strong>Descripción</strong>"
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_purchaseorder_document
 msgid "<strong>Qty</strong>"
 msgstr "<strong>Cant</strong>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span>Quantity</span>"
+msgstr "<span>Cantidad</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span>Source Document</span>"
+msgstr "<span>Documento de Origen</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span>Taxes</span>"
+msgstr "<span>Impuestos</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<span>Unit Price</span>"
+msgstr "<span>Precio Unitario</span>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr ""
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong class=\"text-center\">Scan me with your banking app.</strong><br/><br/>"
+msgstr "<strong class=\"text-center\">Para ser escaneado con la aplicación bancaria.</strong><br/><br/>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong class=\"text-center\">The SEPA QR Code informations are not set correctly.</strong><br/>"
+msgstr "<strong class=\"text-center\">Las informaciones del código QR SEPA no están configuradas correctamente..</strong><br/>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
+msgid "<strong>Customer Code:</strong>"
+msgstr "<strong>Código del cliente:</strong>"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.valued_report_picking
@@ -121,6 +200,7 @@ msgstr "Adjuntos"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
 msgid "Cancelled Invoice"
 msgstr "Factura cancelada"
 
@@ -156,6 +236,7 @@ msgstr "Creado el"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
 msgid "Credit Note"
 msgstr "Rectificativa"
 
@@ -207,6 +288,7 @@ msgstr "Información para Documentos"
 
 #. module: custom_documents_asc
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
 msgid "Draft Invoice"
 msgstr "Factura borrador"
 
@@ -243,6 +325,7 @@ msgstr ""
 #: model:ir.model,name:custom_documents_asc.model_account_invoice
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard
 #: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.report_invoice_document_amz
 msgid "Invoice"
 msgstr "Factura"
 
@@ -497,3 +580,18 @@ msgstr "Puede seleccionar qué empresas tienen albarán valorado"
 msgid "crm.class"
 msgstr ""
 
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard_orig
+msgid "Email:"
+msgstr "Email:"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard_orig
+msgid "Page: <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr "Página: <span class=\"page\"/>/<span class=\"topage\"/>"
+
+#. module: custom_documents_asc
+#: model_terms:ir.ui.view,arch_db:custom_documents_asc.external_layout_standard_orig
+msgid "Phone:"
+msgstr "Teléfono:"

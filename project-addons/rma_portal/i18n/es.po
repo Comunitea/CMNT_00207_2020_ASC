@@ -1,0 +1,247 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* rma_portal
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-20 11:56+0000\n"
+"PO-Revision-Date: 2020-03-20 11:56+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Assigned to:"
+msgstr "Asignado a:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Communication"
+msgstr "Comunicación"
+
+#. module: rma_portal
+#: code:addons/rma_portal/controllers/portal.py:35
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+#, python-format
+msgid "Name"
+msgstr "Nombre"
+
+#. module: rma_portal
+#: code:addons/rma_portal/controllers/portal.py:34
+#, python-format
+msgid "Newest"
+msgstr "Más nuevos"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Operation:"
+msgstr "Operación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Product:"
+msgstr "Producto:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Quantity:"
+msgstr "Cantidad:"
+
+#. module: rma_portal
+#: model:ir.model,name:rma_portal.model_rma_order_line
+msgid "RMA"
+msgstr ""
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Requested by:"
+msgstr "Solicitado por:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Serial number:"
+msgstr "Número de serie"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Serial Number"
+msgstr "Número de serie"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Add Line"
+msgstr "Añadir linea"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__operation_type
+msgid "Operation Type"
+msgstr "Tipo de operación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Operation type"
+msgstr "Tipo de operación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Order reference:"
+msgstr "Referencia del pedido"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+#: selection:rma.order,operation_type:0
+msgid "Return"
+msgstr "Devolución"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Return Delivery Address:"
+msgstr "Dirección de recogida"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.rma_add_new_line
+msgid "Not in List"
+msgstr "No está en la lista"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Invoice number"
+msgstr "Nº de factura"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Symptoms/Notes"
+msgstr "Descripción del problema"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "<span class=\"btn btn-primary pull-right submit_rma_obj\">Submit RMA</span>"
+msgstr "<span class=\"btn btn-primary pull-right submit_rma_obj\">Enviar</span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "State"
+msgstr "Estado"
+
+#. module: rma_portal
+#: selection:account.invoice,portal_state:0
+msgid "Paid"
+msgstr "Pagado"
+
+#. module: rma_portal
+#: selection:account.invoice,portal_state:0
+msgid "Remitted"
+msgstr "Girado"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Products"
+msgstr "Productos"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "Lot"
+msgstr "Número de serie"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "<strong>Customer:</strong>"
+msgstr "<strong>Cliente:</strong>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "pick up time"
+msgstr "Hora de recogida"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "pick up day"
+msgstr "Fecha de recogida"
+
+#. module: rma_portal
+#: selection:account.invoice,portal_state:0
+msgid "Open"
+msgstr "Abierto"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "The product is not under warranty"
+msgstr "El producto está fuera de garantía"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rma
+msgid "The product is under warranty"
+msgstr "El producto se encuentra en garantía"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "There are no rmas."
+msgstr "No hay RMAS"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "rma"
+msgstr ""
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_layout
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_home
+msgid "rmas"
+msgstr ""
+
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "From:"
+msgstr "Desde:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "To:"
+msgstr "Hasta:"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.add_rma_portal
+msgid "Product Id"
+msgstr "Producto"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__reception_date
+msgid "Reception Date"
+msgstr "Fecha de recepción"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Reception date"
+msgstr "Fecha de recepción"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__finish_date
+msgid "Finish Date"
+msgstr "Fecha de finalización"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Finish date"
+msgstr "Fecha de finalización"
+
+#. module: rma_portal
+#: model:ir.model.fields,field_description:rma_portal.field_rma_order__creation_date
+msgid "Creation Date"
+msgstr "Fecha de creación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_rmas
+msgid "Create date"
+msgstr "Fecha de creación"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_home
+msgid "<span>Request RMA</span>"
+msgstr "<span>Solicitar RMA</span>"

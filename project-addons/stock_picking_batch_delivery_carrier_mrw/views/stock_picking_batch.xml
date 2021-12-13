@@ -8,8 +8,6 @@
         <field name="arch" type="xml">
             <field name="carrier_tracking_ref" position="after">
                 <field name="carrier_code" invisible="1"/>
-                <field name="mrw_pdo_quantity"
-                    attrs="{'invisible': ['|', ('carrier_code', '!=', 'MRW'),('payment_on_delivery', '=', False)]}"/>
             </field>
         </field>
     </record>

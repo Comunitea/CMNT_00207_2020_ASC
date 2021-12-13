@@ -46,6 +46,8 @@ class PartnerImportMapper(Component):
 
     @mapping
     def sale_team(self, record):
+        if self.backend_record.sale_team_id:
+            return {'team_id': self.backend_record.sale_team_id.id}
         if record.get("odoo_shop_id"):
             crm_team = self.env["crm.team"].search(
                 [("prestashop_id", "=", record.get("odoo_shop_id"))]

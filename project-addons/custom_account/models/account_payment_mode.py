@@ -5,6 +5,6 @@ from odoo import fields, models
 
 class AccountPaymentMode(models.Model):
 
-    _inherit = 'account.payment.mode'
+    _inherit = "account.payment.mode"
 
     credit_control = fields.Boolean()

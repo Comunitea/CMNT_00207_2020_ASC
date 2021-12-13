@@ -8,14 +8,16 @@ class StockMove(models.Model):
 
     def _search_picking_for_assignation(self):
         self.ensure_one()
-        picking = self.env['stock.picking'].search([
+        domain = [
             ('group_id', '=', self.group_id.id),
             ('location_id', '=', self.location_id.id),
             ('location_dest_id', '=', self.location_dest_id.id),
             ('picking_type_id', '=', self.picking_type_id.id),
             ('printed', '=', False),
-            ('scheduled_date', '=', self.date_expected),
-            ('state', 'in', ['draft', 'confirmed', 'waiting', 'partially_available', 'assigned'])], limit=1)
+            ('state', 'in', ['draft', 'confirmed', 'waiting', 'partially_available', 'assigned'])]
+        if not self.rma_line_id:
+            domain.append(('scheduled_date', '=', self.date_expected))
+        picking = self.env['stock.picking'].search(domain, limit=1)
         return picking
 
     def reassing_split_from_picking(self):
@@ -72,4 +74,4 @@ class StockMove(models.Model):
                 action = self.env.ref('stock.action_picking_tree_all').read()[0]
                 action['domain'] = [('id', 'in', backorder_ids.ids)]
                 return action
-            """       
+            """
