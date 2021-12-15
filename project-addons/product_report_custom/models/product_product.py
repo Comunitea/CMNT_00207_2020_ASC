@@ -5,6 +5,7 @@ from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 from odoo.osv import expression
 import logging
+from calendar import day_abbr
 
 _logger = logging.getLogger(__name__)
 DAYS = 180
@@ -16,85 +17,13 @@ class DaysWithNoStock(models.Model):
     tmpl_id = fields.Many2one('product.template', string='Artículo')
     date = fields.Date('Date')
     qty_available= fields.Float('Qty', default=0)
-
+    
     _sql_constraints = [(
         'product_date_unique',
         'unique(product_id, date)',
         'No puedes tener 2 registros para mismo artículo y fecha!'
         )]
     
-    def get_no_stock_days_at_date(self, to_date=False,product_ids=False):
-       
-        if not product_ids:
-            p_domain = ['|', ('active', '=', True),('active', '=', False)]
-        else:
-            p_domain = [('id', 'in', product_ids.ids)]
-        ctx = self._context.copy()
-        if to_date:
-            ctx.update(to_date=to_date)
-        else:
-            to_date = fields.Date.from_string(fields.Date.today())
-        
-        product_ids = self.env['product.product'].with_context(ctx).search(p_domain)
-        _logger.info (">>>>>>>>>>>>>>>>>>>>%s %d"%(to_date, len(product_ids)))
-        cont = len(product_ids)
-
-        for product in product_ids:
-            #_logger.info (">>>>>>>>>>>>>>>>>%s>>>%s %d"%(to_date, product.display_name, cont))
-            cont -=1
-            vals = {'product_id': product.id, 
-                    'tmpl_id': product.product_tmpl_id.id, 
-                    'date': to_date, 
-                    'qty_available': product.qty_available,
-                    }
-            self.env['days.no.stock'].create(vals)
-            
-
-    def get_all_no_stock_days(self):
-        ## Solo se ejecuta una vez.
-        self.env['days.no.stock'].search([]).unlink()
-        self._get_all_no_stock_days()
-
-    def _get_all_no_stock_days(self, product_ids= False):
-        ## Revisa todos los días por si alguno no se lanzó el cron. Si hay algun registro es que se lanzó.
-        _days = DAYS
-        ctx = self._context.copy()
-        while _days >1:
-            to_date = fields.Datetime.to_string(fields.Date.today()- relativedelta(days=_days))
-            domain = [('date', '=', to_date)]
-            if product_ids:
-                domain += [('product_id', 'in', product_ids.ids)]
-            if not self.search(domain, limit=1):
-                _logger.info (">>>>>>>>>>>>>>>>>>>>Generando no stock days para %s "%to_date)
-                self.get_no_stock_days_at_date(to_date, product_ids)
-            _days -= 1
-
-    @api.multi
-    def compute_days_with_no_stock(self, product_ids = False):
-        ## DIARIO
-        today_date = fields.Date.from_string(fields.Date.today())
-        ## Borro los anteriores a 180 días
-        last_date = today_date - relativedelta(days=DAYS)
-        domain = ['|', ('date', '=', today_date), ('date', '<', last_date)]
-        _logger.info (">>>>> Borrando anteriores ....")
-        if product_ids:
-            domain = [('product_id', 'in', product_ids.ids)] + domain
-        self.env['days.no.stock'].search(domain).unlink()
-        ## Creo los de hoy
-        _logger.info (">>>>> Genrando para hoy")
-        self.get_no_stock_days_at_date(False, product_ids)
-        _logger.info (">>>>> Genrando anteriores perdidos")
-        self._get_all_no_stock_days(product_ids)
-        if not product_ids:
-            p_domain = ['|', ('active', '=', True),('active', '=', False)]
-            product_ids = self.env['product.product'].search(p_domain)
-        for product in product_ids:
-            days_with_no_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: not x.qty_available)
-            days_with_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: x.qty_available)
-            product.days_with_no_stock_count = len(days_with_no_stock_ids)
-            product.last_no_stock_day = days_with_no_stock_ids and days_with_no_stock_ids[-1].date or False
-            product.last_stock_day = days_with_stock_ids and days_with_stock_ids[-1].date or False
-            
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
     _rec_name = "code"
@@ -191,9 +120,116 @@ class ProductProduct(models.Model):
             self = self.search([])
         self._compute_product_sales()
 
+    def get_no_stock_days_at_date(self, to_date=False, search=True):
+        
+        ctx = self._context.copy()
+        if to_date:
+            ctx.update(to_date=to_date)
+            product = self.with_context(ctx)
+        else:
+            to_date = fields.Date.from_string(fields.Date.today())
+            product = self
+        vals = {'product_id': product.id, 
+                'tmpl_id': product.product_tmpl_id.id, 
+                'date': to_date, 
+                'qty_available': product.qty_available}
+        if search:
+            domain = [('product_id', '=', product.id), ('date', '=', to_date)]
+            day_id = self.env['days.no.stock'].search(domain)
+            if day_id:
+                day_id.qty_available = product.qty_available
+            else:
+                day_id = self.env['days.no.stock'].create(vals)
+        else:
+            day_id = self.env['days.no.stock'].create(vals)
+        #_logger.info (">>>>> Generado para %s > %s. Stock %s"%(self.default_code, to_date, day_id.qty_available))
+
+    
+    def _get_all_no_stock_days(self):
+        while self:
+            product_ids = self[:200]
+            _logger.info (">>>>> Quedan %s"%len(self))
+            product_ids.__get_all_no_stock_days()
+            ## Creo los de hoy
+            for product in product_ids:
+                _logger.info (">>>>> Generando Stock Hoy y Actualizando %s"%product.default_code)
+                product.get_no_stock_days_at_date()
+                days_with_no_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: not x.qty_available)
+                days_with_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: x.qty_available)
+                product.days_with_no_stock_count = len(days_with_no_stock_ids)
+                product.last_no_stock_day = days_with_no_stock_ids and days_with_no_stock_ids[-1].date or False
+                product.last_stock_day = days_with_stock_ids and days_with_stock_ids[-1].date or False
+            self._cr.commit()
+            self -= product_ids
+
+
+    def __get_all_no_stock_days(self):
+        ## Revisa todos los días por si alguno no se lanzó el cron. Si hay algun registro es que se lanzó.
+        _days = DAYS
+        to_dates = []
+        while _days > 0:
+            to_date = fields.Datetime.to_string(fields.Date.today() - relativedelta(days=_days))
+            to_dates += [fields.Date.from_string(to_date)]
+            _days -= 1
+        domain = [('product_id', 'in', self.ids), ('date', 'in', to_dates)]
+        day_ids = self.env['days.no.stock'].search(domain)
+        _logger.info (">>>>> Generando anteriores para %s articulos en %s dias (%s) y hay %s"%(len(self), len(to_dates), len(self) * len(to_dates), len(day_ids)))
+        if  (len(self) * len(to_dates))!= len(day_ids):
+            _logger.info (">>>>> Generando lista de existentes")
+            hay = []
+            for day_id in day_ids:
+                hay += [(day_id.product_id, day_id.date)]
+            _logger.info (">>>>> Generando stock en fechas anteriores")
+            for product_id in self:
+                for to_date in to_dates:
+                    item = [(product_id, to_date)]
+                    if item[0] in hay:
+                        hay.remove(item[0])
+                    else:
+                        product_id.get_no_stock_days_at_date(to_date, False)
+                
+            
+
     @api.multi
     def compute_days_with_no_stock(self):
-        self.env['days.no.stock'].compute_days_with_no_stock(self)
+        ### Supongo que es por fecha y no por producto
+        if not self:
+            p_domain = [('default_on', '=', True), ('type', '=', 'product')]
+            self = self.env['product.product'].search(p_domain)
+        return self._compute_days_with_no_stock()
+
+
+    @api.multi
+    def _compute_days_with_no_stock(self):
+        if not self:
+            return False
+        ## CRON DIARIO
+        today_date = fields.Date.from_string(fields.Date.today())
+        ## Borro los anteriores a 180 días
+        last_date = today_date - relativedelta(days=DAYS)
+        domain = [('product_id', 'in', self.ids), ('date', '<', last_date)]
+        _logger.info (">>>>> Borrando anteriores a %d...."%DAYS)
+        self.env['days.no.stock'].search(domain).unlink()
+        _logger.info (">>>>> Generando anteriores")
+        self._get_all_no_stock_days()
+        return
+        ## Creo los de hoy
+        for product in self:
+            _logger.info (">>>>> Generando para %s"%product.display_name)
+            # Genero anteriores
+            #_logger.info (">>>>> Generando anteriores")
+            # product._get_all_no_stock_days()
+            #Genero para hoy
+            _logger.info (">>>>> Generando Hoy")
+            product.get_no_stock_days_at_date()
+            #Actualizo campos de producto
+            _logger.info (">>>>> Actualizo producto")
+            days_with_no_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: not x.qty_available)
+            days_with_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: x.qty_available)
+            product.days_with_no_stock_count = len(days_with_no_stock_ids)
+            product.last_no_stock_day = days_with_no_stock_ids and days_with_no_stock_ids[-1].date or False
+            product.last_stock_day = days_with_stock_ids and days_with_stock_ids[-1].date or False
+            self._cr.commit()
 
     @api.multi
     def _compute_product_sales(self):
