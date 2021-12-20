@@ -44,6 +44,7 @@ class DeliveryCarrier(models.Model):
         help="Used for issues debugging",
         readonly=True,
     )
+    gls_printer = fields.Many2one('printing.printer')
 
     def _gls_asm_uid(self):
         """The carrier can be put in test mode. The tests user must be set.

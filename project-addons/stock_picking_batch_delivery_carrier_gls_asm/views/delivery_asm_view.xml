@@ -29,6 +29,9 @@
                                 name="gls_asm_postage_type"
                                 attrs="{'required': [('delivery_type', '=', 'gls_asm'), ('prod_environment', '!=', False)]}"
                             />
+                            <field
+                                name="gls_printer"
+                            />
                         </group>
                     </group>
                 </page>
