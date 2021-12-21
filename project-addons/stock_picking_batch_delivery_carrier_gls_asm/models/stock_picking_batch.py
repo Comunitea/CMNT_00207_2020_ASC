@@ -66,7 +66,12 @@ class StockPicking(models.Model):
 
     def check_shipment_status(self):
         if self.carrier_id.delivery_type == "gls_asm":
-            self.carrier_id.gls_asm_tracking_state_update(self)
+            try:
+                self.carrier_id.gls_asm_tracking_state_update(self)
+            except Exception as e:
+                self.message_post(
+                    body=(_("Unable to check the state of the shipment. Error: {}.".format(e))),
+                )
         else:
             return super().check_shipment_status()
 

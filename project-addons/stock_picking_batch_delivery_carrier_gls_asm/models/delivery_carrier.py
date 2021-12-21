@@ -189,17 +189,27 @@ class DeliveryCarrier(models.Model):
             pick.carrier_tracking_ref)
         if not tracking_states:
             return
-        pick.tracking_state_history = "\n".join([
+        tracking_state_history = "\n".join([
             "%s - [%s] %s" % (
                 t.get("fecha"), t.get("codigo"), t.get("evento"))
             for t in tracking_states
         ])
+
         tracking = tracking_states.pop()
-        pick.tracking_state = "[{}] {}".format(
+        tracking_state = "[{}] {}".format(
             tracking.get("codigo"), tracking.get("evento"))
-        pick.delivery_state = GLS_DELIVERY_STATES_STATIC.get(
+        delivery_state = GLS_DELIVERY_STATES_STATIC.get(
             tracking.get("codigo"), 'incidence')
-        if pick.delivery_state == 'customer_delivered':
+        
+        body = _("Tracking state history:\n {}.\n Tracking state: {}. \n Delivery state: {}.".format(
+            tracking_state_history,
+            tracking_state,
+            delivery_state,
+        ))
+
+        pick.message_post(body=body)
+        
+        if delivery_state == 'customer_delivered':
             pick.delivered = True
 
     def gls_asm_cancel_shipment(self, batchs):
