@@ -48,11 +48,16 @@ class StockBatchPicking(models.Model):
                     doc_format = "pdf"
                 else:
                     doc_format = "raw"
-                self.carrier_id.gls_printer.print_document(
-                    None, b64decode(label.datas), doc_format=doc_format
-                )
+                try:
+                    self.carrier_id.gls_printer.print_document(
+                        None, b64decode(label.datas), doc_format=doc_format
+                    )
+                except Exception as e:
+                    self.message_post(
+                        body=(_("Unable to print the label {}. Error: {}.".format(label.name, e))),
+                    )
         else:
-            super(StockBatchPicking, self).print_created_labels()
+            return super(StockBatchPicking, self).print_created_labels()
 
 
 class StockPicking(models.Model):
