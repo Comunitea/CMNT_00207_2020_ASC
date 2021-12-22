@@ -44,7 +44,7 @@ class StockBatchPicking(models.Model):
                 [("res_id", "=", self.id), ("res_model", "=", self._name)]
             )
             for label in labels:
-                if label.mimetype == "application/x-pdf":
+                if label.mimetype == "application/x-pdf" or label.mimetype == "application/pdf":
                     doc_format = "pdf"
                 else:
                     doc_format = "raw"
