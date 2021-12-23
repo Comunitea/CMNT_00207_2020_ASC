@@ -5,57 +5,25 @@ from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 from odoo.osv import expression
 import logging
+from calendar import day_abbr
 
 _logger = logging.getLogger(__name__)
+DAYS = 180
 
 class DaysWithNoStock(models.Model):
     _name = "days.no.stock"
-
+    order = "date desc"
     product_id = fields.Many2one('product.product', string='Artículo')
     tmpl_id = fields.Many2one('product.template', string='Artículo')
     date = fields.Date('Date')
-
+    qty_available= fields.Float('Qty', default=0)
+    
     _sql_constraints = [(
         'product_date_unique',
         'unique(product_id, date)',
         'No puedes tener 2 registros para mismo artículo y fecha!'
         )]
-
-    def get_all_no_stock_days(self):
-        _days = 180
-        ctx = self._context.copy()
-        while _days >=1:
-            to_date = fields.Datetime.to_string(fields.Date.today()- relativedelta(days=_days))
-            ctx.update(to_date=to_date)
-            domain = ctx.get('domain', [])
-            product_ids = self.env['product.product'].with_context(to_date=to_date).search(domain).filtered(lambda x: x.qty_available <= 0)
-            _logger.info (">>>>>>>>>>>>>>>>>>>>%s %d"%(to_date, len(product_ids)))
-            for product in product_ids:
-                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': to_date}
-                #print("   >> %s %s"%(vals, product.qty_available))
-                self.env['days.no.stock'].create(vals)
-            _days -= 1
-
-
-    @api.multi
-    def compute_days_with_no_stock(self):
-
-        domain = [('qty_available', '<=', 0)]
-        today_date = fields.Date.from_string(fields.Date.today())
-
-        ## Borro los anteriores a 180 días
-        last_date = today_date - relativedelta(days=180)
-        domain = [('date', '<', last_date)]
-        self.env['days.no.stock'].search(domain).unlink()
-        product_ids = self.env['product.product'].search(domain)
-        for product in product_ids:
-            domain = [('product_id', '=', product.id), ('date', '=', today_date)]
-            if not self.env['days.no.stock'].search(domain):
-                vals = {'product_id': product.id, 'tmpl_id': product.product_tmpl_id.id, 'date': today_date}
-                self.env['days.no.stock'].create(vals)
-            product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
-
-
+    
 class ProductAlarmDays(models.Model):
     _name = "product.alarm.days"
     _rec_name = "code"
@@ -79,7 +47,7 @@ class ProductTemplate(models.Model):
     def compute_days_with_no_stock(self):
         for template in self:
             template.days_with_no_stock_count = len(template.days_with_no_stock_ids)
-
+            
 
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
@@ -90,6 +58,9 @@ class ProductTemplate(models.Model):
     days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
     days_with_no_stock_count = fields.Integer('Days with no stock count') #, compute=compute_days_with_no_stock)
     days_with_no_stock_ids = fields.One2many('days.no.stock', 'tmpl_id',  string='Days with no stock')
+    last_no_stock_day = fields.Date('Day with stock=0', help ="Ultimo día sin stock")
+    last_stock_day = fields.Date('Day with stock', help ="Ultimo día con stock")
+
 
     @api.multi
     def compute_product_template_sales(self):
@@ -131,7 +102,7 @@ class ProductProduct(models.Model):
     def compute_days_with_stock_count(self):
         for product in self:
             product.days_with_no_stock_count = len(product.days_with_no_stock_ids)
-
+       
     count_sales = fields.Char("Count sales")
     count_sales_0 = fields.Float(string="Count sales 0")
     count_sales_1 = fields.Float(string="Count sales 1")
@@ -139,9 +110,9 @@ class ProductProduct(models.Model):
     count_sales_3 = fields.Float(string="Count sales 3")
     days_with_sales = fields.Boolean(string="Sale alarm day")
     days_for_alarm = fields.Many2one("product.alarm.days", string="Days for sale alarm")
-    days_with_no_stock_count = fields.Integer('Days with no stock count', compute=compute_days_with_stock_count)
+    days_with_no_stock_count = fields.Integer('Days with no stock count')
     days_with_no_stock_ids = fields.One2many('days.no.stock', 'product_id', string='Days with no stock')
-
+    
 
     @api.multi
     def compute_product_sales(self):
@@ -149,13 +120,124 @@ class ProductProduct(models.Model):
             self = self.search([])
         self._compute_product_sales()
 
+    def get_no_stock_days_at_date(self, to_date=False, search=True):
+        
+        ctx = self._context.copy()
+        if to_date:
+            ctx.update(to_date=to_date)
+            product = self.with_context(ctx)
+        else:
+            to_date = fields.Date.from_string(fields.Date.today())
+            product = self
+        vals = {'product_id': product.id, 
+                'tmpl_id': product.product_tmpl_id.id, 
+                'date': to_date, 
+                'qty_available': product.qty_available}
+        if search:
+            domain = [('product_id', '=', product.id), ('date', '=', to_date)]
+            day_id = self.env['days.no.stock'].search(domain)
+            if day_id:
+                day_id.qty_available = product.qty_available
+            else:
+                day_id = self.env['days.no.stock'].create(vals)
+        else:
+            day_id = self.env['days.no.stock'].create(vals)
+        #_logger.info (">>>>> Generado para %s > %s. Stock %s"%(self.default_code, to_date, day_id.qty_available))
+
+    
+    def _get_all_no_stock_days(self):
+        while self:
+            product_ids = self[:200]
+            _logger.info (">>>>> Quedan %s"%len(self))
+            product_ids.__get_all_no_stock_days()
+            ## Creo los de hoy
+            for product in product_ids:
+                _logger.info (">>>>> Generando Stock Hoy y Actualizando %s"%product.default_code)
+                product.get_no_stock_days_at_date()
+                days_with_no_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: not x.qty_available)
+                days_with_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: x.qty_available)
+                product.days_with_no_stock_count = len(days_with_no_stock_ids)
+                product.last_no_stock_day = days_with_no_stock_ids and days_with_no_stock_ids[-1].date or False
+                product.last_stock_day = days_with_stock_ids and days_with_stock_ids[-1].date or False
+            self._cr.commit()
+            self -= product_ids
+
+
+    def __get_all_no_stock_days(self):
+        ## Revisa todos los días por si alguno no se lanzó el cron. Si hay algun registro es que se lanzó.
+        _days = DAYS
+        to_dates = []
+        while _days > 0:
+            to_date = fields.Datetime.to_string(fields.Date.today() - relativedelta(days=_days))
+            to_dates += [fields.Date.from_string(to_date)]
+            _days -= 1
+        domain = [('product_id', 'in', self.ids), ('date', 'in', to_dates)]
+        day_ids = self.env['days.no.stock'].search(domain)
+        _logger.info (">>>>> Generando anteriores para %s articulos en %s dias (%s) y hay %s"%(len(self), len(to_dates), len(self) * len(to_dates), len(day_ids)))
+        if  (len(self) * len(to_dates))!= len(day_ids):
+            _logger.info (">>>>> Generando lista de existentes")
+            hay = []
+            for day_id in day_ids:
+                hay += [(day_id.product_id, day_id.date)]
+            _logger.info (">>>>> Generando stock en fechas anteriores")
+            for product_id in self:
+                for to_date in to_dates:
+                    item = [(product_id, to_date)]
+                    if item[0] in hay:
+                        hay.remove(item[0])
+                    else:
+                        product_id.get_no_stock_days_at_date(to_date, False)
+                
+            
+
+    @api.multi
+    def compute_days_with_no_stock(self):
+        ### Supongo que es por fecha y no por producto
+        if not self:
+            p_domain = [('default_on', '=', True), ('type', '=', 'product')]
+            self = self.env['product.product'].search(p_domain)
+        return self._compute_days_with_no_stock()
+
+
+    @api.multi
+    def _compute_days_with_no_stock(self):
+        if not self:
+            return False
+        ## CRON DIARIO
+        today_date = fields.Date.from_string(fields.Date.today())
+        ## Borro los anteriores a 180 días
+        last_date = today_date - relativedelta(days=DAYS)
+        domain = [('product_id', 'in', self.ids), ('date', '<', last_date)]
+        _logger.info (">>>>> Borrando anteriores a %d...."%DAYS)
+        self.env['days.no.stock'].search(domain).unlink()
+        _logger.info (">>>>> Generando anteriores")
+        self._get_all_no_stock_days()
+        return
+        ## Creo los de hoy
+        for product in self:
+            _logger.info (">>>>> Generando para %s"%product.display_name)
+            # Genero anteriores
+            #_logger.info (">>>>> Generando anteriores")
+            # product._get_all_no_stock_days()
+            #Genero para hoy
+            _logger.info (">>>>> Generando Hoy")
+            product.get_no_stock_days_at_date()
+            #Actualizo campos de producto
+            _logger.info (">>>>> Actualizo producto")
+            days_with_no_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: not x.qty_available)
+            days_with_stock_ids = product.days_with_no_stock_ids.filtered(lambda x: x.qty_available)
+            product.days_with_no_stock_count = len(days_with_no_stock_ids)
+            product.last_no_stock_day = days_with_no_stock_ids and days_with_no_stock_ids[-1].date or False
+            product.last_stock_day = days_with_stock_ids and days_with_stock_ids[-1].date or False
+            self._cr.commit()
+
     @api.multi
     def _compute_product_sales(self):
         if len(self)> 1:
             _where =  ' and  product_id in {}'.format((tuple(self.ids)))
         elif len(self) == 1:
             _where =  ' and  product_id = {}'.format(self.id)
-        else:
+        else: 
             _where = ''
 
         domain = [("key", "ilike", "count_sales_")]
@@ -173,11 +255,11 @@ class ProductProduct(models.Model):
 
         sql ="""
             with grouped as (
-            select
-                case when sl.usage = 'internal' then product_uom_qty
+            select 
+                case when sl.usage = 'internal' then product_uom_qty 
                 else product_uom_qty * -1
                 end quantity,
-                product_uom_qty, sm.id, sl.usage, product_id, now(),
+                product_uom_qty, sm.id, sl.usage, product_id, now(), 
                 now() - interval '{} month' < sm.date as ventas_0,
                 now() - interval '{} month' < sm.date as ventas_1,
                 now() - interval '{} month' < sm.date as ventas_2,
@@ -190,13 +272,13 @@ class ProductProduct(models.Model):
                 order by date
             )
             select sum(quantity) as quantity, product_id, ventas_0, ventas_1, ventas_2, ventas_3
-            from grouped
+            from grouped 
             group by product_id, ventas_0, ventas_1, ventas_2, ventas_3
             order by product_id
             """.format(interval_0, interval_1,interval_2, interval_3, _where)
         self._cr.execute(sql)
         res = self._cr.fetchall()
-
+        
         product_ids = {}
         for product in self:
             product_ids[product.id] = {'count_sales_0': 0, 'count_sales_1': 0, 'count_sales_2': 0, 'count_sales_3': 0}
@@ -209,19 +291,19 @@ class ProductProduct(models.Model):
             ventas_1 = item[3]
             ventas_2 = item[4]
             ventas_3 = item[5]
-            if ventas_0:
+            if ventas_0: 
                 product_ids[product_id]['count_sales_0'] += quantity
-            if ventas_1:
+            if ventas_1: 
                 product_ids[product_id]['count_sales_1'] += quantity
-            if ventas_2:
+            if ventas_2: 
                 product_ids[product_id]['count_sales_2'] += quantity
-            if ventas_3:
+            if ventas_3: 
                 product_ids[product_id]['count_sales_3'] += quantity
-
+        
         while self:
             _logger.info ('Faltan %d'%total)
             rg = self[:100]
-
+            
             for product in rg:
                 total -= 1
                 _logger.info ('%s'%product.display_name)
@@ -238,7 +320,7 @@ class ProductProduct(models.Model):
 
     @api.multi
     def _compute_product_sales_bis(self):
-
+        
         domain = [("key", "ilike", "count_sales_")]
         count = dict(
             (item["key"], int(item["value"]))
@@ -267,7 +349,7 @@ class ProductProduct(models.Model):
             max_month = max(max_month, month)
             start = next_date + relativedelta(day=1, months=-month)
             start_date = fields.Date.to_string(start)
-            domain = ['&', '&',
+            domain = ['&', '&', 
                 ("state", "=", "done"),
                 ("date", ">=", start_date),
                 ("product_id", "in", self.ids)]
@@ -282,12 +364,12 @@ class ProductProduct(models.Model):
                 product_ids[product_id] += item['product_uom_qty']
             #devoluciones
             domain_in = expression.AND([domain, ['&', ('location_id.usage', '=', 'customer'), ('location_dest_id.usage', '!=', 'customer')]])
-
+            
             move_in = self.env["stock.move"].read_group(domain_in, ["product_id", 'product_uom_qty'], ["product_id"])
             for item in move_in:
                 product_id = item['product_id'][0]
                 product_ids[product_id] -= item['product_uom_qty']
-
+            
             res[month_str] = product_ids
         """for i in range(0, 4):
             month_str = "{}".format(i)
@@ -309,11 +391,11 @@ class ProductProduct(models.Model):
 """
         cont = len(self) +1
         for product in self:
-
-            # print ('{}: {}'.format(cont, product.name))
+        
+            print ('{}: {}'.format(cont, product.name))
             cont -= 1
             for i in range(0, 4):
-
+               
                 month_str = "{}".format(i)
                 if res[month_str] and res[month_str].get(product.id, False):
                     product["count_sales_{}".format(month_str)] = res[month_str][
@@ -328,7 +410,7 @@ class ProductProduct(models.Model):
                         month_str, product["count_sales_{}".format(month_str)]
                     )
                 product.count_sales = month_str
-
+            
 
     @api.multi
     def _compute_product_sale_alarm(self):

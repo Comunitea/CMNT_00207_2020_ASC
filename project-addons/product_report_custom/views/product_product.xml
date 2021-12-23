@@ -27,6 +27,9 @@
                     <field name="count_sales_2"/>
                     <field name="count_sales_3"/>
                     <field name="days_with_no_stock_count"/>
+                    <field name="qty_available" invisible="1"/>
+                    <field name="last_no_stock_day" attrs="{'invisible': [('qty_available', '=', 0)]}"/>
+                    <field name="last_stock_day" attrs="{'invisible': [('qty_available', '>', 0)]}"/>
                     <!--field name="days_with_no_stock_ids"/-->
                 </group>
             </group>
@@ -39,5 +42,16 @@
         <field name="state">code</field>
         <field name="code">record.compute_product_sales()</field>
     </record>
+
+    <record id="recompute_stock_days" model="ir.actions.server">
+        <field name="name">Dias (sin) stock</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="binding_model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">
+          records.compute_days_with_no_stock()
+        </field>
+      </record>
+
 
 </odoo>

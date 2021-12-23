@@ -27,8 +27,6 @@
     "license": "AGPL-3",
     "depends": [
         "stock_picking_batch_delivery_carrier_base",
-        "delivery_package_number",
-        "delivery_state",
     ],
     "external_dependencies" : {
         "python" : ["suds"],
