@@ -123,7 +123,7 @@ class CustomerPortal(CustomerPortal):
         from_date_order = (datetime.now() + timedelta(days=-60)).date()
         orders = request.env['sale.order'].search([('date_order', '>=', from_date_order)])
         delivery_partners = partners.filtered(
-            lambda rec: rec.type in ("delivery") or not rec.parent_id
+            lambda rec: (rec and rec.type in ("delivery")) or not rec.parent_id
         )
         return request.render(
             "rma_portal.add_rma_portal",
