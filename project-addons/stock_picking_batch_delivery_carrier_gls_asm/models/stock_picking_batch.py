@@ -23,11 +23,6 @@ class StockBatchPicking(models.Model):
             attachments=[(label_name, pdf)],
         )
     
-    def check_delivery_address(self):
-        super(StockBatchPicking, self).check_delivery_address()
-        if self.carrier_id.delivery_type == "gls_asm":
-            if not self.partner_id.email:
-                raise UserError(_("Partner address is not complete (Email missing)."))
     
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
