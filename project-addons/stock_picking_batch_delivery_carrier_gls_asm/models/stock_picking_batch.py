@@ -4,6 +4,7 @@
 from odoo import _, fields, models, api
 from odoo.addons import decimal_precision as dp
 from base64 import b64decode
+from odoo.exceptions import UserError
 
 class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
@@ -21,6 +22,12 @@ class StockBatchPicking(models.Model):
             body=(_("GLS label for %s") % self.carrier_tracking_ref),
             attachments=[(label_name, pdf)],
         )
+    
+    def check_delivery_address(self):
+        super(StockBatchPicking, self).check_delivery_address()
+        if self.carrier_id.delivery_type == "gls_asm":
+            if not self.partner_id.email:
+                raise UserError(_("Partner address is not complete (Email missing)."))
     
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
