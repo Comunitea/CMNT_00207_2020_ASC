@@ -26,7 +26,7 @@ class ResUsers(models.Model):
 
     @api.model
     def get_user_token(self, prestashop_customer_id):
-        existing_partner = self.env['prestashop.res.partner'].search(
+        existing_partner = self.env['prestashop.res.partner'].sudo().search(
             [('prestashop_id', '=', prestashop_customer_id)]).odoo_id
         if not existing_partner:
             return False
@@ -40,7 +40,7 @@ class ResUsers(models.Model):
             })
             # existing_partner.refresh()
         if not existing_partner.user_ids[0].prestashop_access_token:
-            existing_partner.user_ids[0].generate_prestashop_token()
+            existing_partner.user_ids[0].sudo().generate_prestashop_token()
         return existing_partner.user_ids[0].prestashop_access_token
 
     @api.multi
