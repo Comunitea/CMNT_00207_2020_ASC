@@ -31,7 +31,7 @@ class ResUsers(models.Model):
         if not existing_partner:
             return False
         if not existing_partner.user_ids:
-            self.env['res.users'].with_context(no_reset_password=True)._create_user_from_template({
+            self.env['res.users'].sudo().with_context(no_reset_password=True)._create_user_from_template({
                 'email': extract_email(existing_partner.email),
                 'login': extract_email(existing_partner.email),
                 'partner_id': existing_partner.id,
