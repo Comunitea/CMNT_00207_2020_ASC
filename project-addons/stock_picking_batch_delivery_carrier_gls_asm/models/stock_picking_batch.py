@@ -4,6 +4,7 @@
 from odoo import _, fields, models, api
 from odoo.addons import decimal_precision as dp
 from base64 import b64decode
+from odoo.exceptions import UserError
 
 class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
@@ -21,6 +22,7 @@ class StockBatchPicking(models.Model):
             body=(_("GLS label for %s") % self.carrier_tracking_ref),
             attachments=[(label_name, pdf)],
         )
+    
     
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()

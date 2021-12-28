@@ -112,9 +112,9 @@ class DeliveryCarrier(models.Model):
             "destinatario_pais": (
                 batch.partner_id.country_id.phone_code or ""),
             "destinatario_cp": batch.partner_id.zip,
-            "destinatario_telefono": batch.partner_id.phone or "",
-            "destinatario_movil": batch.partner_id.mobile or "",
-            "destinatario_email": batch.partner_id.email or "",
+            "destinatario_telefono": batch.partner_id.phone or batch.partner_id.commercial_partner_id.phone or "",
+            "destinatario_movil": batch.partner_id.mobile or batch.partner_id.commercial_partner_id.mobile or "",
+            "destinatario_email": batch.partner_id.email or batch.partner_id.commercial_partner_id.email or "",
             "destinatario_observaciones": "",
             "destinatario_att": "",
             "destinatario_departamento": "",
@@ -147,7 +147,6 @@ class DeliveryCarrier(models.Model):
         result = []
         for batch in batchs:
             vals = self._prepare_gls_asm_shipping(batch)
-            print("vals: {}".format(vals))
             vals.update({"tracking_number": False, "exact_price": 0})
             response = gls_request._send_shipping(vals)
             self.gls_last_request = response and response.get(
