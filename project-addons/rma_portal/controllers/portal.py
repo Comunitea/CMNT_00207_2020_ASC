@@ -22,7 +22,7 @@ class CustomerPortal(CustomerPortal):
     @http.route('/web/login_prestashop', type='http', auth="none", sitemap=False, csrf=False)
     def web_login_prestashop(self, redirect=None, **kw):
         ensure_db()
-        if request.httprequest.method == 'POST' and request.params.get('presta_token'):
+        if request.params.get('presta_token'):
             # Se establece el username, y el token como password para la funcion _check_credentials
             presta_user = request.env['res.users'].search([('prestashop_access_token', '=', request.params['presta_token'])])
             request.params['login'] = presta_user.login
@@ -37,14 +37,13 @@ class CustomerPortal(CustomerPortal):
             except AccessDenied:
                 values['databases'] = None
 
-            if request.httprequest.method == 'POST':
-                old_uid = request.uid
-                try:
-                    uid = request.session.authenticate(request.session.db, request.params['login'], request.params['password'])
-                    request.params['login_success'] = True
-                    return http.redirect_with_hash(self._login_redirect(uid, redirect=redirect))
-                except AccessDenied:
-                    request.uid = old_uid
+            old_uid = request.uid
+            try:
+                uid = request.session.authenticate(request.session.db, request.params['login'], request.params['password'])
+                request.params['login_success'] = True
+                return http.redirect_with_hash(self._login_redirect(uid, redirect=redirect))
+            except AccessDenied:
+                request.uid = old_uid
         return http.local_redirect('/')
 
     def _prepare_portal_layout_values(self):
