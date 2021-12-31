@@ -245,3 +245,18 @@ msgstr "Fecha de creación"
 #: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_home
 msgid "<span>Request RMA</span>"
 msgstr "<span>Solicitar RMA</span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
+msgid "<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\" aria-label=\"Opened\" title=\"Opened\" role=\"img\"/><span class=\"d-none d-md-inline\"> Opened</span></span>"
+msgstr "<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\" aria-label=\"Opened\" title=\"Opened\" role=\"img\"/><span class=\"d-none d-md-inline\"> Abierto</span></span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
+msgid "<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-university\" aria-label=\"Remitted\" title=\"Remitted\" role=\"img\"/><span class=\"d-none d-md-inline\"> Remitted</span></span>"
+msgstr "<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-university\" aria-label=\"Remitted\" title=\"Remitted\" role=\"img\"/><span class=\"d-none d-md-inline\"> Remesado</span></span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
+msgid "<span class=\"badge badge-pill badge-success\"><i class=\"fa fa-fw fa-check\" aria-label=\"Paid\" title=\"Paid\" role=\"img\"/><span class=\"d-none d-md-inline\"> Paid</span></span>"
+msgstr "<span class=\"badge badge-pill badge-success\"><i class=\"fa fa-fw fa-check\" aria-label=\"Paid\" title=\"Paid\" role=\"img\"/><span class=\"d-none d-md-inline\"> Pagado</span></span>"

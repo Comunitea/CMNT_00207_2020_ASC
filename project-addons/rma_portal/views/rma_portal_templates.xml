@@ -544,4 +544,13 @@
         </xpath>
     </template>
 
+    <template id="portal_invoice_page" inherit_id="account.portal_invoice_page">
+        <xpath expr="//li[@t-if='invoice.user_id']" position="replace"></xpath>
+    </template>
+
+    <template id="footer_custom" inherit_id="website.footer_custom">
+        <xpath expr="//div[hasclass('col-lg-4')][3]" position="replace"></xpath>
+        <xpath expr="//div[hasclass('col-lg-4')][1]" position="replace"></xpath>
+
+    </template>
 </odoo>
