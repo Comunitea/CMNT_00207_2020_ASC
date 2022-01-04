@@ -31,17 +31,7 @@ from odoo import _, models
 from odoo.exceptions import UserError
 from unidecode import unidecode
 
-try:
-    import genshi
-    import genshi.template
-except (ImportError, IOError) as err:
-    import logging
 
-    logging.getLogger(__name__).warn("Module genshi is not available")
-
-loader = genshi.template.TemplateLoader(
-    os.path.join(os.path.dirname(__file__), "template"), auto_reload=True
-)
 
 
 class StockBatchPicking(models.Model):
@@ -268,40 +258,32 @@ class StockPicking(models.Model):
     def check_shipment_status(self):
         if self.carrier_id.code == "CEX":
             if self.carrier_id.account_id.test_enviroment:
-                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(
+                url = "{}apiRestSeguimientoEnviosk8s/json/seguimientoEnvio".format(
                     self.carrier_id.account_id.service_test_url
                 )
             else:
-                url = "{}apiRestSeguimientoEnvios/rest/seguimientoEnvios".format(
+                url = "{}apiRestSeguimientoEnviosk8s/json/seguimientoEnvio".format(
                     self.carrier_id.account_id.service_url
                 )
             username = self.carrier_id.account_id.account
             password = self.carrier_id.account_id.password
             vals = {
-                "solicitante": self.carrier_id.account_id.cex_solicitante,
+                "codigoCliente": self.carrier_id.account_id.cex_codRte,
                 "dato": self.carrier_tracking_ref,
             }
-            tmpl = loader.load("check_status.xml")
-            xml = tmpl.generate(**vals).render()
             try:
                 response = requests.post(
                     url,
                     auth=(username, password),
-                    data=xml,
+                    json=vals,
                     timeout=5000,
-                    headers={"Content-Type": "text/xml; charset=utf-8"},
                 )
-                xml_start = response.content.decode("iso-8859-1").find("<")
-                result_xml = parseString(
-                    response.content.decode("iso-8859-1")[xml_start:]
-                )
-                state_nodes = result_xml.getElementsByTagName("EstadoEnvios")
+                result = response.json()
+                state_nodes = result.get("estadoEnvios")
                 for state_node in state_nodes:
                     if (
-                        state_node.getElementsByTagName("CodEstado")
-                        and state_node.getElementsByTagName("CodEstado")[
-                            0
-                        ].firstChild.data
+                        state_node.get("codEstado")
+                        and state_node.get("codEstado")
                         == "12"
                     ):
                         self.delivered = True
