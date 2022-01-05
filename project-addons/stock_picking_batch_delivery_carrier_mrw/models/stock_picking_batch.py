@@ -298,7 +298,7 @@ class StockPicking(models.Model):
                     "pass": self.carrier_id.account_id.mrw_tracking_password,
                     "codigoIdioma": 3082,
                     "tipoFiltro": 0,
-                    "valorFiltroDesde": self.carrier_tracking_ref,
+                    "valorFiltroDesde": "{}".format(self.carrier_tracking_ref),
                     "tipoInformacion": 1,
                     "codigoAbonado": self.carrier_id.account_id.mrw_account,
                     "codigoFranquicia": self.carrier_id.account_id.mrw_franchise,
@@ -312,8 +312,32 @@ class StockPicking(models.Model):
                     for seguimiento in res["Seguimiento"]["Abonado"][0][
                         "SeguimientoAbonado"
                     ]["Seguimiento"]:
-                        if seguimiento["Estado"] == "00":
+                        # ESTADOS:
+                        # 00 - Entregado
+                        # 04 - Dirección incorrecta
+                        # 05 - No acepta el envío
+                        # 08 - Devuelto a remitente
+                        # 11 - Reexpedido
+                        # 13 - Recibido en franquicia destino
+                        # 14 - Retenido en franquicia por orden cliente
+                        # 16 - En reparto
+                        # 17 - Recogido
+                        # 33 - Concertada próxima entrega
+                        # 35 - Entrega aplazada pendiente de cobro o de cita previa
+                        # 44 - Emisor anula la recogida
+                        # 72 - Recogido en plataforma
+                        # 79 - Paso por plataforma
+                        # 91 - No recibido
+                        # 93 - Extraviado
+                        # 96 - Retraso en ruta
+                        
+                        if seguimiento["Estado"] in ["00", "17", "72"]:
                             self.delivered = True
+                            body = _("Tracking state updated:\n Delivery state: {}.".format(                                
+                                seguimiento['EstadoDescripcion'],
+                            ))
+
+                            self.message_post(body=body)
                             break
 
                 else:
