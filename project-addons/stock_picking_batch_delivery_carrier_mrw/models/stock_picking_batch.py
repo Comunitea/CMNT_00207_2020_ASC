@@ -333,11 +333,6 @@ class StockPicking(models.Model):
                         
                         if seguimiento["Estado"] in ["00", "17", "72"]:
                             self.delivered = True
-                            body = _("Tracking state updated:\n Delivery state: {}.".format(                                
-                                seguimiento['EstadoDescripcion'],
-                            ))
-
-                            self.message_post(body=body)
                             break
 
                 else:
