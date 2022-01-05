@@ -7,7 +7,7 @@ from base64 import b64decode
 from odoo.exceptions import UserError
 
 class StockBatchPicking(models.Model):
-    _inherit = "stock.picking.batch"
+    _inherit = "stock.picking.batch"   
 
     def gls_asm_get_label(self):
         """Get GLS Label for this picking expedition"""
