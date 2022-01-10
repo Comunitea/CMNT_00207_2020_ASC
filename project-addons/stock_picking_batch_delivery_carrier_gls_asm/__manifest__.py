@@ -33,6 +33,7 @@
     },
     "data": [
         "data/delivery_asm_data.xml",
+        "data/mail_data.xml",
         "views/delivery_asm_view.xml",
         "views/gls_asm_manifest_template.xml",
         "wizard/gls_asm_manifest_wizard_views.xml",

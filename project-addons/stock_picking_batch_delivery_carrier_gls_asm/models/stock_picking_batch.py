@@ -5,9 +5,71 @@ from odoo import _, fields, models, api
 from odoo.addons import decimal_precision as dp
 from base64 import b64decode
 from odoo.exceptions import UserError
+import math
 
 class StockBatchPicking(models.Model):
     _inherit = "stock.picking.batch"
+
+    source_sale_id = fields.Many2one('sale.order', string='Venta')
+    gls_origin_batch_id = fields.Many2one('stock.picking.batch', string='GLS Origin Batch')
+    gls_extra_batch_ids = fields.One2many('stock.picking.batch', 'gls_origin_batch_id',  string='GLS Extra Batchs')
+
+    @api.multi
+    def action_transfer(self):
+        for batch in self:
+            if batch.carrier_id.delivery_type == "gls_asm" and (batch.carrier_packages > 1 or round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5):
+                if round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5:
+                    batch.carrier_packages = math.ceil(batch.carrier_weight/31.5)
+                packages_to_create = batch.carrier_packages
+                created_packages = 1
+                while created_packages < packages_to_create:
+                    values = {
+                        'name': "{}-{}".format(batch.name, created_packages),
+                        'user_id': batch.user_id.id,
+                        'carrier_packages': 1,
+                        'carrier_weight': round(batch.carrier_weight/batch.carrier_packages, 3),
+                        'notes': batch.notes,
+                        'source_sale_id': batch.sale_id.id if batch.sale_id else None,
+                        'gls_origin_batch_id': batch.id,
+                    }
+                    
+                    new_batch = batch.copy(
+                        default=values
+                    )
+
+                    new_batch.picking_type_id = batch.picking_type_id.id
+                    
+                    body=_("New batch created: <a href='{}' target='_blank'>{}</a>".format(
+                        new_batch.get_base_url() + new_batch.get_backend_url(),
+                        new_batch.name
+                    ))
+                    batch.message_post(
+                        body=body
+                    )
+                    created_packages += 1
+                batch.carrier_weight = round(batch.carrier_weight/batch.carrier_packages, 3)
+                batch.carrier_packages = 1
+                batch.gls_extra_batch_ids.write({'state': 'done'})
+        return super(StockBatchPicking, self).action_transfer()
+    
+    @api.multi
+    def get_base_url(self):
+        """Get the base URL for the current batch."""
+        self.ensure_one()
+        return self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    
+    @api.multi
+    def get_backend_url(self):
+        """Get the backend URL for the current batch."""
+        self.ensure_one()
+        return '/web#id={}&model=stock.picking.batch&view_type=form'.format(self.id)
+    
+    @api.multi
+    def _compute_order_ids(self):
+        super(StockBatchPicking, self)._compute_order_ids()
+        for batch in self:
+            if len(batch.picking_ids) == 0 and batch.source_sale_id and not batch.sale_id:
+                batch.sale_id = batch.source_sale_id
 
     def gls_asm_get_label(self):
         """Get GLS Label for this picking expedition"""
@@ -23,11 +85,12 @@ class StockBatchPicking(models.Model):
             attachments=[(label_name, pdf)],
         )
     
-    
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
-        if self.carrier_id.delivery_type == "gls_asm":
+        if (self.carrier_id.delivery_type == "gls_asm"):
             self.carrier_id.gls_asm_send_shipping(self)
+            if self.gls_extra_batch_ids:
+                self.carrier_id.gls_asm_send_shipping(self.gls_extra_batch_ids)
             self.print_created_labels()
 
     @api.multi
