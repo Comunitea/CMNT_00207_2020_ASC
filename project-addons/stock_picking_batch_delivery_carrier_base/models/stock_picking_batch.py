@@ -48,6 +48,12 @@ class StockBatchPicking(models.Model):
     carrier_weight = fields.Float(default=0)
     carrier_packages = fields.Integer(default=0)
     partner_id = fields.Many2one("res.partner", string="Empresa")
+    carrier_tracking_url = fields.Char(string='Tracking URL', compute='_compute_carrier_tracking_url')
+
+    @api.depends('carrier_id', 'carrier_tracking_ref')
+    def _compute_carrier_tracking_url(self):
+        for batch in self:
+            batch.carrier_tracking_url = batch.carrier_id.get_tracking_link(batch) if batch.carrier_id and batch.carrier_tracking_ref else False
 
     @api.multi
     def get_pdo_quantity(self):
@@ -139,8 +145,9 @@ class StockBatchPicking(models.Model):
                     for pick in batch.picking_ids:
                         pick.write({"carrier_tracking_ref": batch.carrier_tracking_ref})
         
-        if self.payment_on_delivery and not vals.get("pdo_quantity"):
-            self.get_pdo_quantity()
+        for batch in self:
+            if batch.payment_on_delivery and not vals.get("pdo_quantity"):
+                batch.get_pdo_quantity()
         return res
 
     @api.multi

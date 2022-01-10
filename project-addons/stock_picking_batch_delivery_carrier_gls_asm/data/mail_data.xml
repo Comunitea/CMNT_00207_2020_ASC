@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="gls_extra_batch_mail_template" model="mail.template">
+            <field name="name">Stock Picking: GLS Extra batch</field>
+            <field name="model_id" ref="stock_picking_batch.model_stock_picking_batch" />
+            <field
+                name="subject"
+            >${object.sale_id.company_id.name} (Ref ${object.sale_id.name or 'n/a' })</field>
+            <field
+                name="email_from"
+            >${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;margin: 0px; padding: 0px;">
+                    <p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                        <span lang="EN">Dear </span>
+                        <span style="font-family: Helvetica, sans-serif; font-size: 10pt; font-style: initial; font-variant-ligatures: initial; font-variant-caps: initial; font-weight: initial; text-align: inherit;">${object.partner_id.name}.</span>
+                    </p>
+                    <p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                        <span lang="EN">We attach the delivery note belonging to your order <span style="font-size: 10pt; line-height: 107%; font-family: Helvetica, sans-serif;">${object.sale_id.name}</span>, which has been sent through </span><span style="font-family: Helvetica, sans-serif; font-size: 10pt; font-style: initial; font-variant-ligatures: initial; font-variant-caps: initial; font-weight: initial; text-align: inherit;">${object.carrier_id.name}.</span>
+                    </p>
+                    <p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                        <span lang="EN">For tracking click on the following link: </span><span style="font-family: Helvetica, sans-serif; font-size: 10pt; font-style: initial; font-variant-ligatures: initial; font-variant-caps: initial; font-weight: initial; text-align: inherit;">${object.carrier_tracking_url} </span></p><p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;line-height: normal; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;"><span style="font-size: 10pt; font-family: Helvetica, sans-serif;"></span></p><p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><span lang="EN">We are at your disposal for any clarification needed</span></p><p style="font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px;"></p><p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><span lang="EN">Best regards and thanks for trusting </span><span style="color: rgb(34, 34, 34); font-family: Arial, sans-serif; font-size: 12pt; font-style: initial; font-variant-ligatures: initial; font-variant-caps: initial; font-weight: initial; text-align: inherit;">${object.team_id.team_name}</span></p><p class="MsoNormal" style="margin:0px 0 1rem 0;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;line-height: normal; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;"><span style="font-size: 10pt; font-family: Helvetica, sans-serif;"></span>
+                    </p>
+                </div>        
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False" />
+            <field name="auto_delete" eval="True" />
+        </record>
+
+    </data>
+</odoo>
