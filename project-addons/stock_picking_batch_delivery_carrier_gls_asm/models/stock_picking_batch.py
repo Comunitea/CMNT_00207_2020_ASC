@@ -88,9 +88,11 @@ class StockBatchPicking(models.Model):
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
         if (self.carrier_id.delivery_type == "gls_asm"):
-            self.carrier_id.gls_asm_send_shipping(self)
+            # We send first the extra batchs
+            # This way we can add the extra batchs tracking ref to the mail.template
             if self.gls_extra_batch_ids:
-                self.carrier_id.gls_asm_send_shipping(self.gls_extra_batch_ids)
+                self.carrier_id.gls_asm_send_shipping(self.gls_extra_batch_ids.filtered(lambda x: not x.carrier_tracking_ref))
+            self.carrier_id.gls_asm_send_shipping(self)
             self.print_created_labels()
 
     @api.multi
