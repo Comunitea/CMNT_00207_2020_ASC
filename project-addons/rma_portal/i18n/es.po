@@ -260,3 +260,17 @@ msgstr "<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-unive
 #: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
 msgid "<span class=\"badge badge-pill badge-success\"><i class=\"fa fa-fw fa-check\" aria-label=\"Paid\" title=\"Paid\" role=\"img\"/><span class=\"d-none d-md-inline\"> Paid</span></span>"
 msgstr "<span class=\"badge badge-pill badge-success\"><i class=\"fa fa-fw fa-check\" aria-label=\"Paid\" title=\"Paid\" role=\"img\"/><span class=\"d-none d-md-inline\"> Pagado</span></span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
+msgid "<span class=\"overdue_bill\" style=\"color: red;\">\n"
+"                    OVERDUE\n"
+"                </span>"
+msgstr "<span class=\"overdue_bill\" style=\"color: red;\">\n"
+"                    VENCIDA\n"
+"                </span>"
+
+#. module: rma_portal
+#: model_terms:ir.ui.view,arch_db:rma_portal.portal_my_invoices
+msgid "Total amount"
+msgstr "Importe total"

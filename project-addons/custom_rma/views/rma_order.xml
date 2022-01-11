@@ -6,6 +6,9 @@
         <field name="model">rma.order</field>
         <field name="inherit_id" ref="rma.view_rma_form"/>
         <field name="arch" type="xml">
+            <field name="message_ids" position="before">
+                <field name="activity_ids" widget="mail_activity"/>
+            </field>
             <xpath expr="//header" position="inside">
                 <button name="action_rma_approve" type="object" string="Approve" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
             </xpath>

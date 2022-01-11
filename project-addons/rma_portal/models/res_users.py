@@ -17,6 +17,7 @@ class ResUsers(models.Model):
     _inherit = 'res.users'
 
     prestashop_access_token = fields.Char()
+    notify_portal_rma = fields.Boolean()
 
     _sql_constraints = [
         ('prestashop_access_token_uniq',
