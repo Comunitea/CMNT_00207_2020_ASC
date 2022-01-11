@@ -176,14 +176,25 @@ class DeliveryCarrier(models.Model):
                 batch.picking_ids.update({
                     'carrier_tracking_ref': batch.carrier_tracking_ref
                 })
-            if batch.gls_origin_batch_id:
-                template = self.env.ref(
-                    "stock_picking_batch_delivery_carrier_gls_asm.gls_extra_batch_mail_template"
-                )
-                batch.with_context(force_send=True).message_post_with_template(
-                    template.id,
-                    composition_mode="mass_mail",
-                )
+            # Adding this to the stock.picking mail.template:
+            #
+            #% if object.batch_id and object.batch_id.gls_extra_batch_ids:
+            #    % for batch in object.batch_id.gls_extra_batch_ids:
+            #        % if batch.carrier_tracking_url:
+            #            ${batch.carrier_tracking_url}<br/>
+            #        % endif
+            #    % endfor
+            #% endif
+            #
+            # So where are not using this anymore. 
+            #if batch.gls_origin_batch_id:
+            #    template = self.env.ref(
+            #        "stock_picking_batch_delivery_carrier_gls_asm.gls_extra_batch_mail_template"
+            #    )
+            #    batch.with_context(force_send=True).message_post_with_template(
+            #        template.id,
+            #        composition_mode="mass_mail",
+            #    )
         return result
 
     def gls_asm_tracking_state_update(self, pick):
