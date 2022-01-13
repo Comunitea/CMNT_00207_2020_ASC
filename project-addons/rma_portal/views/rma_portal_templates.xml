@@ -543,7 +543,7 @@
             </td>
         </xpath>
         <xpath expr="//td[last()]" position="replace">
-            <td class="text-right"><span t-esc="invoice.amount_tax_signed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"/></td>
+            <td class="text-right"><span t-esc="invoice.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"/></td>
         </xpath>
         <xpath expr="//th[last()]" position="replace">
             <th class="text-right">Total amount</th>
