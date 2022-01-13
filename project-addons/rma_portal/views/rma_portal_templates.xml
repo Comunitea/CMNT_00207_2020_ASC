@@ -542,6 +542,28 @@
                 </t>
             </td>
         </xpath>
+        <xpath expr="//td[last()]" position="replace">
+            <td class="text-right"><span t-esc="invoice.amount_tax_signed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"/></td>
+        </xpath>
+        <xpath expr="//th[last()]" position="replace">
+            <th class="text-right">Total amount</th>
+        </xpath>
+        <xpath expr="//span[@t-field='invoice.date_due']" position="after">
+            <t t-if="invoice.date_due and invoice.date_due &lt; datetime.date.today() and invoice.portal_state == 'open'">
+                <span class="overdue_bill" style="color: red;">
+                    OVERDUE
+                </span>
+            </t>
+        </xpath>
     </template>
 
+    <template id="portal_invoice_page" inherit_id="account.portal_invoice_page">
+        <xpath expr="//li[@t-if='invoice.user_id']" position="replace"></xpath>
+    </template>
+
+    <template id="footer_custom" inherit_id="website.footer_custom">
+        <xpath expr="//div[hasclass('col-lg-4')][3]" position="replace"></xpath>
+        <xpath expr="//div[hasclass('col-lg-4')][1]" position="replace"></xpath>
+
+    </template>
 </odoo>

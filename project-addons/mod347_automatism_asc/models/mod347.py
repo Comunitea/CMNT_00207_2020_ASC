@@ -11,7 +11,7 @@ class L10nEsAeatMod347Report(models.Model):
 
     def autogenerate_model347(self):
         now = datetime.datetime.now()
-        year = now.year
+        year = now.year - 1
         date_start = datetime.datetime.strptime(
             "{}-01-01".format(year), "%Y-%m-%d"
         ).date()

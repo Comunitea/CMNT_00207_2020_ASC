@@ -44,6 +44,7 @@ class DeliveryCarrier(models.Model):
         help="Used for issues debugging",
         readonly=True,
     )
+    gls_printer = fields.Many2one('printing.printer')
 
     def _gls_asm_uid(self):
         """The carrier can be put in test mode. The tests user must be set.
@@ -111,9 +112,9 @@ class DeliveryCarrier(models.Model):
             "destinatario_pais": (
                 batch.partner_id.country_id.phone_code or ""),
             "destinatario_cp": batch.partner_id.zip,
-            "destinatario_telefono": batch.partner_id.phone or "",
-            "destinatario_movil": batch.partner_id.mobile or "",
-            "destinatario_email": batch.partner_id.email or "",
+            "destinatario_telefono": batch.partner_id.phone or batch.partner_id.commercial_partner_id.phone or "",
+            "destinatario_movil": batch.partner_id.mobile or batch.partner_id.commercial_partner_id.mobile or "",
+            "destinatario_email": batch.partner_id.email or batch.partner_id.commercial_partner_id.email or "",
             "destinatario_observaciones": "",
             "destinatario_att": "",
             "destinatario_departamento": "",
@@ -146,7 +147,6 @@ class DeliveryCarrier(models.Model):
         result = []
         for batch in batchs:
             vals = self._prepare_gls_asm_shipping(batch)
-            print("vals: {}".format(vals))
             vals.update({"tracking_number": False, "exact_price": 0})
             response = gls_request._send_shipping(vals)
             self.gls_last_request = response and response.get(
@@ -176,6 +176,25 @@ class DeliveryCarrier(models.Model):
                 batch.picking_ids.update({
                     'carrier_tracking_ref': batch.carrier_tracking_ref
                 })
+            # Adding this to the stock.picking mail.template:
+            #
+            #% if object.batch_id and object.batch_id.gls_extra_batch_ids:
+            #    % for batch in object.batch_id.gls_extra_batch_ids:
+            #        % if batch.carrier_tracking_url:
+            #            ${batch.carrier_tracking_url}<br/>
+            #        % endif
+            #    % endfor
+            #% endif
+            #
+            # So where are not using this anymore. 
+            #if batch.gls_origin_batch_id:
+            #    template = self.env.ref(
+            #        "stock_picking_batch_delivery_carrier_gls_asm.gls_extra_batch_mail_template"
+            #    )
+            #    batch.with_context(force_send=True).message_post_with_template(
+            #        template.id,
+            #        composition_mode="mass_mail",
+            #    )
         return result
 
     def gls_asm_tracking_state_update(self, pick):
@@ -188,17 +207,27 @@ class DeliveryCarrier(models.Model):
             pick.carrier_tracking_ref)
         if not tracking_states:
             return
-        pick.tracking_state_history = "\n".join([
+        tracking_state_history = "\n".join([
             "%s - [%s] %s" % (
                 t.get("fecha"), t.get("codigo"), t.get("evento"))
             for t in tracking_states
         ])
+
         tracking = tracking_states.pop()
-        pick.tracking_state = "[{}] {}".format(
+        tracking_state = "[{}] {}".format(
             tracking.get("codigo"), tracking.get("evento"))
-        pick.delivery_state = GLS_DELIVERY_STATES_STATIC.get(
+        delivery_state = GLS_DELIVERY_STATES_STATIC.get(
             tracking.get("codigo"), 'incidence')
-        if pick.delivery_state == 'customer_delivered':
+        
+        body = _("Tracking state history:\n {}.\n Tracking state: {}. \n Delivery state: {}.".format(
+            tracking_state_history,
+            tracking_state,
+            delivery_state,
+        ))
+
+        pick.message_post(body=body)
+        
+        if delivery_state == 'customer_delivered':
             pick.delivered = True
 
     def gls_asm_cancel_shipment(self, batchs):

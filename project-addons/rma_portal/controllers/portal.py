@@ -22,7 +22,7 @@ class CustomerPortal(CustomerPortal):
     @http.route('/web/login_prestashop', type='http', auth="none", sitemap=False, csrf=False)
     def web_login_prestashop(self, redirect=None, **kw):
         ensure_db()
-        if request.httprequest.method == 'POST' and request.params.get('presta_token'):
+        if request.params.get('presta_token'):
             # Se establece el username, y el token como password para la funcion _check_credentials
             presta_user = request.env['res.users'].search([('prestashop_access_token', '=', request.params['presta_token'])])
             request.params['login'] = presta_user.login
@@ -37,14 +37,13 @@ class CustomerPortal(CustomerPortal):
             except AccessDenied:
                 values['databases'] = None
 
-            if request.httprequest.method == 'POST':
-                old_uid = request.uid
-                try:
-                    uid = request.session.authenticate(request.session.db, request.params['login'], request.params['password'])
-                    request.params['login_success'] = True
-                    return http.redirect_with_hash(self._login_redirect(uid, redirect=redirect))
-                except AccessDenied:
-                    request.uid = old_uid
+            old_uid = request.uid
+            try:
+                uid = request.session.authenticate(request.session.db, request.params['login'], request.params['password'])
+                request.params['login_success'] = True
+                return http.redirect_with_hash(self._login_redirect(uid, redirect=redirect))
+            except AccessDenied:
+                request.uid = old_uid
         return http.local_redirect('/')
 
     def _prepare_portal_layout_values(self):
@@ -123,7 +122,7 @@ class CustomerPortal(CustomerPortal):
         from_date_order = (datetime.now() + timedelta(days=-60)).date()
         orders = request.env['sale.order'].search([('date_order', '>=', from_date_order)])
         delivery_partners = partners.filtered(
-            lambda rec: rec.type in ("delivery") or not rec.parent_id
+            lambda rec: (rec.type and rec.type in ("delivery")) or not rec.parent_id
         )
         return request.render(
             "rma_portal.add_rma_portal",
@@ -243,7 +242,7 @@ class CustomerPortal(CustomerPortal):
                     if isinstance(val, tuple):
                         value[name] = val[0]
                 line_vals.update(value)
-                line_vals['operation_id'] = 5
+                line_vals['operation_id'] = request.env.user.company_id.get_rma_operation_type(rma_obj['operation_type'])
                 updates = request.env['rma.order.line'].sudo().onchange(line_vals, ['operation_id'], specs)
                 value = updates.get('value', {})
                 for name, val in value.items():
@@ -251,6 +250,17 @@ class CustomerPortal(CustomerPortal):
                         value[name] = val[0]
                 line_vals.update(value)
                 request.env['rma.order.line'].sudo().create(line_vals)
+        for user in request.env['res.users'].sudo().search([('notify_portal_rma', '=', True)]):
+            request.env['mail.activity'].sudo().create({
+                'activity_type_id': request.env.ref('mail.mail_activity_data_todo').id,
+                'note': "Nuevo rma desde portal",
+                'user_id':
+                    user.id,
+                'res_id':
+                    res.id,
+                'res_model_id': request.env.ref(
+                    'rma.model_rma_order').id,
+            })
         return res.ids
         # if res:
         #     print("llega")

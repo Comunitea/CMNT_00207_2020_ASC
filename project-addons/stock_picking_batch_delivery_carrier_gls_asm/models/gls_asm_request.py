@@ -131,6 +131,52 @@ GLS_DELIVERY_STATES_STATIC = {
     "25": "in_transit",  # ASM PARCELSHOP CONFIRMA RECEPCION
 }
 
+GLS_ASM_ERRORS = {
+    '36': 'Error, Consignee Zipcode, wrong format.', # Shouldn't be -36 ?
+    '38': 'Error, Invalid consignee phone number.', # Shouldn't be -38 ?
+    '-1': 'Exception. APP error',
+    '-3': 'Error, The barcode of the shipment already exists.',
+    '-33': 'Error: check the following: ZIPCODE, POD amount, expedition date, negative packages, unauthorized user, incorrect secvice or time frame.',    '-48': 'Error, EuroEstandar/EBP service: the number of parcels should always be 1 (<Bultos>)',
+    '-49': 'Error, EuroEstandar/EBP service: weight should be <= 31.5 kgs (<Peso>).',
+    '-50': 'Error, EuroEstandar/EBP service: there can be no RCS (return stamped copy), <Pod>.',
+    '-51': 'Error, EuroEstandar/EBP service: there can be no SWAP (<Retorno>).',
+    '-52': 'Error, EuroEstandar/EBP service: reported a country that is not included on the service (<Destinatario>.<Pais>).',
+    '-53': 'Error, EuroEstandar/EBP service: agency is not authorized to insert EuroEstandar/EBP service.',
+    #'-53': 'Error, ParcelShop   service: <Destinatario>.<Codigo> is the ParcelShop point code, is mandatory and is not informed.', <= duplicada en la docu?
+    '-54': 'Error, EuroEstandar/EBP service: The consignee mail address is required (<Destinatario>.<Email>).',
+    '-55': 'Error, EuroEstandar/EBP service: The consignee mobile phone is required (<Destinatario>.<Movil>).',
+    '-57': 'Error, EuroEstandar/EBP service: reported a country that is not included on the service (<Destinatario>.<Pais>).',
+    '-69': 'Error, I can not Channeling, wrong consignee zipcode.', # 'I can not channeling' ?¿??
+    '-70': 'Error, The order number already exists (<Referencia tipo="0"> or first 10 digits of the <Referencia tipo="C"> if not exists tipo="0") to this date and customer code.',
+    '-80': 'EuroBusiness shipments. A mandatory field is missing.',
+    '-81': 'EuroBusiness shipments. A wrong format is transmitted in field.',
+    '-82': 'EuroBusiness shipments. Wrong zipcode /wrong country code. Error in zip code or its format, and maybe, a bad combination of city and zip code.',
+    '-83': 'EuroBusiness shipments. GLS internal error. No free parcel number is available within the range.',
+    '-84': 'EuroBusiness shipments. GLS internal error. A parameter is missing within the configuration file of the UNI-BOX.',
+    '-85': 'EuroBusiness shipments. Is not able to make the routing.',
+    '-86': 'EuroBusiness shipments. GLS internal error. A needed template-file cannot be found or opened.',
+    '-87': 'EuroBusiness shipments. GLS internal error. Duplicated sequence.',
+    '-88': 'EuroBusiness shipments. Other errors.',
+    '-96': 'Error, EBP service: Sequential error.',
+    '-97': 'Error, EuroEstandar/EBP service: <Portes> can not be "D", <Reembolso> can not be > 0.',
+    '-99': 'Warning, Webservices are temporarily out of service.',
+    '-103': 'Error, plaza solicita es null (alta).',
+    '-104': 'Error, plaza origen es null (alta).',
+    '-106': 'Error, CodCli es null (alta).',
+    '-107': 'Error, CodCliRed es null (alta).',
+    '-108': 'Error, Sender Name must be at least three characters.',
+    '-109': 'Error, Sender Address must be at least three characters.',
+    '-110': 'Error, Sender City must be at least three characters.',
+    '-111': 'Error, Sender Zipcode must be at least four characters.',
+    '-117': 'Error, los locales solo en la plaza de origen para la web.', # ?¿??¿
+    '-118': 'Error, customer reference is duplicated.',
+    '-119': 'Error, exception, uncontrolled error.',
+    '-128': 'Error, Consignee Name must be at least three characters.',
+    '-129': 'Error, Consignee Address must be at least three characters.',
+    '-130': 'Error, Consignee City must be at least three characters.',
+    '-131': 'Error, Consignee Zipcode must be at least four characters.',
+    '-6565': 'Error, Volume is incorrect, remember that the unit is m3.',
+}
 
 class GlsAsmRequest():
     """Interface between GLS-ASM SOAP API and Odoo recordset
@@ -295,12 +341,26 @@ class GlsAsmRequest():
         _logger.debug(res)
         res["_return"] = int(res["Resultado"]["_return"])
         if res["_return"] < 0:
-            raise UserError(_(
-                "GLS returned an error trying to record the shipping for {}.\n"
-                "Error:\n{}").format(
-                    vals.get("referencia_c", ""),
-                    res.get("Errores", {}).get(
-                        "Error", "code {}".format(res["_return"]))))
+            try:
+                raise UserError(_(
+                    "GLS returned an error trying to record the shipping for {}.\n"
+                    "Error:\n{}").format(
+                        vals.get("referencia_c", ""),
+                        res.get("Errores", {}).get(
+                            "Error", "code {}".format(res["_return"]))))
+            except Exception as e:
+                str_return = str(res["Resultado"]["_return"])
+                if str_return in GLS_ASM_ERRORS:
+                    raise UserError(
+                        _("GLS returned an error trying to record the shipping for {}. Error: {}".format(
+                        vals.get("referencia_c", ""),
+                        GLS_ASM_ERRORS[str_return]
+                        ))
+                    )
+                else:
+                    raise UserError(_(
+                        "Undocumented error: check all the picking parameters."
+                    ))
         if res.get('Etiquetas', {}).get('Etiqueta', {}).get("value"):
             res["gls_label"] = (
                 binascii.a2b_base64(res["Etiquetas"]["Etiqueta"]["value"]))

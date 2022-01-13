@@ -17,6 +17,7 @@ class ResUsers(models.Model):
     _inherit = 'res.users'
 
     prestashop_access_token = fields.Char()
+    notify_portal_rma = fields.Boolean()
 
     _sql_constraints = [
         ('prestashop_access_token_uniq',
@@ -26,12 +27,12 @@ class ResUsers(models.Model):
 
     @api.model
     def get_user_token(self, prestashop_customer_id):
-        existing_partner = self.env['prestashop.res.partner'].search(
+        existing_partner = self.env['prestashop.res.partner'].sudo().search(
             [('prestashop_id', '=', prestashop_customer_id)]).odoo_id
         if not existing_partner:
             return False
         if not existing_partner.user_ids:
-            self.env['res.users'].with_context(no_reset_password=True)._create_user_from_template({
+            self.env['res.users'].sudo().with_context(no_reset_password=True)._create_user_from_template({
                 'email': extract_email(existing_partner.email),
                 'login': extract_email(existing_partner.email),
                 'partner_id': existing_partner.id,
@@ -40,7 +41,7 @@ class ResUsers(models.Model):
             })
             # existing_partner.refresh()
         if not existing_partner.user_ids[0].prestashop_access_token:
-            existing_partner.user_ids[0].generate_prestashop_token()
+            existing_partner.user_ids[0].sudo().generate_prestashop_token()
         return existing_partner.user_ids[0].prestashop_access_token
 
     @api.multi

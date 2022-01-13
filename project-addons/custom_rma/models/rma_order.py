@@ -4,7 +4,9 @@ from odoo import api, fields, models
 
 
 class RmaOrder(models.Model):
-    _inherit = "rma.order"
+
+    _name = "rma.order"
+    _inherit = ["rma.order", 'mail.thread', "mail.activity.mixin"]
 
     delivery_tag = fields.Binary(attachment=True, copy=False)
     delivery_address_id = fields.Many2one('res.partner')
