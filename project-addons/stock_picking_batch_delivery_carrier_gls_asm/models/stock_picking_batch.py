@@ -15,7 +15,7 @@ class StockBatchPicking(models.Model):
     gls_extra_batch_ids = fields.One2many('stock.picking.batch', 'gls_origin_batch_id',  string='GLS Extra Batchs')
 
     @api.multi
-    def gls_divine_in_packages(self):
+    def gls_divide_in_packages(self):
         for batch in self:
             if round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5:
                 batch.carrier_packages = math.ceil(batch.carrier_weight/31.5)
@@ -87,8 +87,13 @@ class StockBatchPicking(models.Model):
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
         if (self.carrier_id.delivery_type == "gls_asm"):
-            if(self.carrier_packages > 1 or round(self.carrier_weight/self.carrier_packages, 3) > 31.5):
-                self.gls_divine_in_packages()
+            # We need to divide the package if the destiny country is not Spain/Portugal and
+            # the number of packages is > 1 or the weight per package is > 31.5
+            if self.partner_id.country_id and not self.partner_id.country_id.code in ['ES', 'PT'] and (
+                self.carrier_packages > 1
+                or round(self.carrier_weight / self.carrier_packages, 3) > 31.5
+            ):
+                self.gls_divide_in_packages()
             # We send first the extra batchs
             # This way we can add the extra batchs tracking ref to the mail.template
             if self.gls_extra_batch_ids:
