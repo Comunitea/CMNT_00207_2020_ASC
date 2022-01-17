@@ -20,6 +20,7 @@
                             <field name="team_phone"/>
                             <field name="team_website"/>
                             <field name="team_accounts"/>
+                            <field name="neutral_document"/>
                         </group>
                     </group>
                 </page>

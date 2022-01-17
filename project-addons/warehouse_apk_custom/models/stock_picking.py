@@ -134,6 +134,10 @@ class StockPicking(models.Model):
                     batch_id.notes = "{}: {}".format(
                         pick.name, pick.note
                     )
+            if batch_id.team_id.neutral_document:
+                notes = batch_id.notes or ''
+                notes += '\nALBARÁN NEUTRO'
+                batch_id.notes = notes
             if batch_id:
                 pick.write({"batch_id": batch_id.id})
                 batch_id.assign_order_moves()
