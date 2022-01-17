@@ -15,42 +15,41 @@ class StockBatchPicking(models.Model):
     gls_extra_batch_ids = fields.One2many('stock.picking.batch', 'gls_origin_batch_id',  string='GLS Extra Batchs')
 
     @api.multi
-    def action_transfer(self):
+    def gls_divine_in_packages(self):
         for batch in self:
-            if batch.carrier_id.delivery_type == "gls_asm" and (batch.carrier_packages > 1 or round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5):
-                if round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5:
-                    batch.carrier_packages = math.ceil(batch.carrier_weight/31.5)
-                packages_to_create = batch.carrier_packages
-                created_packages = 1
-                while created_packages < packages_to_create:
-                    values = {
-                        'name': "{}-{}".format(batch.name, created_packages),
-                        'user_id': batch.user_id.id,
-                        'carrier_packages': 1,
-                        'carrier_weight': round(batch.carrier_weight/batch.carrier_packages, 3),
-                        'notes': batch.notes,
-                        'source_sale_id': batch.sale_id.id if batch.sale_id else None,
-                        'gls_origin_batch_id': batch.id,
-                    }
-                    
-                    new_batch = batch.copy(
-                        default=values
-                    )
+            if round(batch.carrier_weight/batch.carrier_packages, 3) > 31.5:
+                batch.carrier_packages = math.ceil(batch.carrier_weight/31.5)
+            packages_to_create = batch.carrier_packages
+            each_package_weight = round(batch.carrier_weight/batch.carrier_packages, 3)
+            created_packages = 1
+            while created_packages < packages_to_create:
+                values = {
+                    'name': "{}-{}".format(batch.name, created_packages),
+                    'user_id': batch.user_id.id,
+                    'carrier_packages': 1,
+                    'carrier_weight': each_package_weight,
+                    'notes': batch.notes,
+                    'source_sale_id': batch.sale_id.id if batch.sale_id else None,
+                    'gls_origin_batch_id': batch.id,
+                }
+                
+                new_batch = batch.copy(
+                    default=values
+                )
 
-                    new_batch.picking_type_id = batch.picking_type_id.id
-                    
-                    body=_("New batch created: <a href='{}' target='_blank'>{}</a>".format(
-                        new_batch.get_base_url() + new_batch.get_backend_url(),
-                        new_batch.name
-                    ))
-                    batch.message_post(
-                        body=body
-                    )
-                    created_packages += 1
-                batch.carrier_weight = round(batch.carrier_weight/batch.carrier_packages, 3)
-                batch.carrier_packages = 1
-                batch.gls_extra_batch_ids.write({'state': 'done'})
-        return super(StockBatchPicking, self).action_transfer()
+                new_batch.picking_type_id = batch.picking_type_id.id
+                
+                body=_("New batch created: <a href='{}' target='_blank'>{}</a>".format(
+                    new_batch.get_base_url() + new_batch.get_backend_url(),
+                    new_batch.name
+                ))
+                batch.message_post(
+                    body=body
+                )
+                created_packages += 1
+            batch.carrier_weight = each_package_weight
+            batch.carrier_packages = 1
+            batch.gls_extra_batch_ids.write({'state': 'done'})
     
     @api.multi
     def get_base_url(self):
@@ -88,10 +87,17 @@ class StockBatchPicking(models.Model):
     def send_shipping(self):
         super(StockBatchPicking, self).send_shipping()
         if (self.carrier_id.delivery_type == "gls_asm"):
+            if(self.carrier_packages > 1 or round(self.carrier_weight/self.carrier_packages, 3) > 31.5):
+                self.gls_divine_in_packages()
             # We send first the extra batchs
             # This way we can add the extra batchs tracking ref to the mail.template
             if self.gls_extra_batch_ids:
-                self.carrier_id.gls_asm_send_shipping(self.gls_extra_batch_ids.filtered(lambda x: not x.carrier_tracking_ref))
+                not_sent_batchs = self.gls_extra_batch_ids.filtered(
+                    lambda x: not x.carrier_tracking_ref
+                )
+                self.carrier_id.gls_asm_send_shipping(not_sent_batchs)
+                for batch in not_sent_batchs:
+                    batch.print_created_labels()
             self.carrier_id.gls_asm_send_shipping(self)
             self.print_created_labels()
 
