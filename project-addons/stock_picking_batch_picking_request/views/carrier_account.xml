@@ -12,4 +12,26 @@
         </field>
     </record>
 
+    <record id="cmnt_delivery_carrier_mrw_carrier_account" model="ir.ui.view">
+        <field name="name">cmnt.delivery.carrier.dhl.carrier.account</field>
+        <field name="model">carrier.account</field>
+        <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_mrw.cmnt_delivery_carrier_mrw_carrier_account"/>
+        <field name="arch" type="xml">
+            <field name="mrw_tracking_password" position="after">
+                <field name="mrw_rma_delivery_partner_id" attrs="{'invisible': [('delivery_carrier', '!=', 'mrw')]}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_picking_batch_delivery_carrier_form" model="ir.ui.view">
+        <field name="name">stock.picking.batch.dispatch.field</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch_delivery_carrier_base.stock_picking_batch_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_tracking_ref" position="after">
+                <field name="carrier_dispatch_ref"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>

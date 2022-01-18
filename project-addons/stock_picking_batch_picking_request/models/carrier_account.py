@@ -25,3 +25,5 @@ class CarrierAccount(models.Model):
     _inherit = "carrier.account"
 
     dhl_impex_account = fields.Char("DHL IMPEX Account")
+    mrw_rma_delivery_partner_id = fields.Many2one(comodel_name='res.partner', string='RMA delivery address for MRW')
+    

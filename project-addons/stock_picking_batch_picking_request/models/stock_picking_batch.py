@@ -25,7 +25,7 @@ import json
 from datetime import timedelta
 import time
 
-from odoo import models, _
+from odoo import models, _, fields
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
@@ -60,6 +60,8 @@ _logger = logging.getLogger(__name__)
 class StockBatchPicking(models.Model):
 
     _inherit = "stock.picking.batch"
+
+    carrier_dispatch_ref = fields.Char(string='Dispatch confirmation number')    
 
     def compute_picking_request_weight(self):
         weight = 0.0
@@ -102,10 +104,10 @@ class StockBatchPicking(models.Model):
             if not self.partner_id:
                 self.partner_id = self.picking_ids.mapped('partner_id')[0]
 
-            if self.picking_type_id.warehouse_id and self.picking_type_id.warehouse_id.partner_id:
-                delivery_partner_id = self.picking_type_id.warehouse_id.partner_id
+            if self.carrier_id.account_id.mrw_rma_delivery_partner_id:
+                delivery_partner_id = self.carrier_id.account_id.mrw_rma_delivery_partner_id
             else:
-                raise UserError("Picking type missing warehouse or partner.")
+                raise UserError("RMA delivery partner for MRW is not configured.")
 
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
@@ -341,9 +343,7 @@ class StockBatchPicking(models.Model):
                 "ShipmentRequest": {
                     "RequestedShipment": {
                         "ShipmentInfo": {
-                            "DropOffType": "REGULAR_PICKUP"
-                            if self.carrier_id.account_id.daily_picking
-                            else "REQUEST_COURIER",
+                            "DropOffType": "REQUEST_COURIER",
                             "ServiceType": self.service_code.carrier_code,
                             "Account": "{}".format(
                                 self.carrier_id.account_id.dhl_impex_account
@@ -357,6 +357,7 @@ class StockBatchPicking(models.Model):
                         "ShipTimestamp": compute_timestamp_format(rma_id.pickup_time),
                         "PickupLocationCloseTime" : (rma_id.pickup_time + timedelta(hours=3)).strftime("%H:%M"),
                         "SpecialPickupInstruction" : "Pickup from {}".format(rma_id.pickup_time),
+                        "PickupLocation": self.delivery_note or "N/A",
                         "PaymentInfo": "DAP",
                         "InternationalDetail": {
                             "Commodities": {
@@ -441,15 +442,15 @@ class StockBatchPicking(models.Model):
                 r = requests.request(
                     "POST", url, data=json.dumps(payload), headers=headers
                 )
-                response = r.json()["ShipmentResponse"]
 
                 if r.json()["ShipmentResponse"]:
                     response = r.json()["ShipmentResponse"]
-                    if "ShipmentIdentificationNumber" not in response:
+                    if ("ShipmentIdentificationNumber" not in response) or ("DispatchConfirmationNumber" not in response):
                         raise UserError(
                             "Error: {}".format(response["Notification"][0]["Message"])
                         )
                     self.carrier_tracking_ref = response["ShipmentIdentificationNumber"]
+                    self.carrier_dispatch_ref = response["DispatchConfirmationNumber"]
 
                     if response["LabelImage"]:
                         self.env["ir.attachment"].create(

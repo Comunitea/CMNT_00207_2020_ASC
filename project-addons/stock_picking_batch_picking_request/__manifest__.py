@@ -32,8 +32,8 @@
         "rma_portal",
     ],
     "data": [
-        "views/carrier_account.xml",
         "data/carriers_data.xml",
+        "views/carrier_account.xml",
     ],
     "external_dependencies": {"python": ["zeep"]},
     "installable": True,
