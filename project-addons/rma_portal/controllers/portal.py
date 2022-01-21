@@ -191,7 +191,7 @@ class CustomerPortal(CustomerPortal):
             return_delivery_address = rma_obj.get("return_delivery_address", False)
         if rma_line:
             vals = {
-                "partner_id": request.env.user.partner_id.id,
+                "partner_id": rma_obj['return_delivery_address'],
                 "operation_type": rma_obj['operation_type'],
                 "requested_by": request.env.user.id
             }
@@ -224,7 +224,7 @@ class CustomerPortal(CustomerPortal):
                     "product_qty": line.get("qty", 1),
                     "description": line.get("note", '') + '\n' + line.get('invoice', ''),
                     "product_ref": line.get("product_ref"),
-                    "partner_id": request.env.user.partner_id.id,
+                    "partner_id": rma_obj['return_delivery_address'],
                 }
                 lot_exists = request.env['stock.production.lot'].sudo().search([
                     ('product_id', '=', product_id),

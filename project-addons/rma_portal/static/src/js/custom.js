@@ -251,7 +251,7 @@ odoo.define("rma_portal.custom", function (require) {
     });
     $('.datepicker').datepicker({
         startDate: '+1d',
-        endDate: '+30d',
+        endDate: '+10d',
         language: 'es',
         daysOfWeekDisabled: [0,6]
     });
