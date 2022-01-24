@@ -12,6 +12,13 @@
             <field name="value">2</field>
         </record>
 
+        <!-- Spain service -->
+
+        <record id="picking_request_spain_carrier_service_id" model="ir.config_parameter">
+            <field name="key">stock_picking_batch_picking_request.spain_carrier_service_id</field>
+            <field name="value">21</field>
+        </record>
+
     </data>
 
 </odoo>

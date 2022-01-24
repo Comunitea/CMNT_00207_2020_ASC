@@ -29,10 +29,11 @@ class RmaOrder(models.Model):
         res = super(RmaOrder, self).action_rma_approve()
         get_param = self.env['ir.config_parameter'].sudo().get_param
         spain_carrier_id = get_param('stock_picking_batch_picking_request.spain_carrier_id')
+        spain_carrier_service_id = get_param('stock_picking_batch_picking_request.spain_carrier_service_id')
         europe_carrier_id = get_param('stock_picking_batch_picking_request.europe_carrier_id')
 
-        if not spain_carrier_id or not europe_carrier_id:
-            raise UserError("Picking request carriers not configured.")
+        if not spain_carrier_id or not europe_carrier_id or not spain_carrier_service_id:
+            raise UserError("Picking request carriers or service not configured.")
         for rma in self:
             if rma.operation_type == 'rma':
                 picking_ids = []
@@ -52,7 +53,11 @@ class RmaOrder(models.Model):
                         pick.auto_assign_batch_id()
 
                         if pick.batch_id and pick.batch_id.partner_id and pick.batch_id.partner_id.country_id:
-                            pick.batch_id.carrier_id = int(spain_carrier_id) if pick.batch_id.partner_id.country_id.code.upper() == 'ES' else int(europe_carrier_id)
+                            if pick.batch_id.partner_id.country_id.code.upper() in ['ES', 'PT', 'AD', 'GI']:
+                                pick.batch_id.carrier_id = int(spain_carrier_id)
+                                pick.batch_id.service_code = int(spain_carrier_service_id)
+                            else:
+                                pick.batch_id.carrier_id = int(europe_carrier_id)
                             pick.batch_id.send_shipping()
             rma.send_mail()
         return res
