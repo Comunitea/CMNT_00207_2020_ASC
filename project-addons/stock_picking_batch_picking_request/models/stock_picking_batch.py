@@ -74,8 +74,8 @@ class StockBatchPicking(models.Model):
             )
             weight += (move_line.product_id.weight or 0.0) * qty
 
-        if weight <= 1.0:
-            return 1
+        if weight <= 2.0:
+            return 2
 
         return weight
 
