@@ -112,7 +112,7 @@ class StockBatchPicking(models.Model):
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
-            rma_id = self.picking_ids.move_lines.mapped('rma_line_id').rma_id
+            rma_id = self.picking_ids.move_lines.mapped("rma_line_id").mapped('rma_id')
 
             if not rma_id:
                 raise UserError("There is no rma_id.")
@@ -313,7 +313,7 @@ class StockBatchPicking(models.Model):
             if not self.carrier_id.account_id:
                 raise UserError("Delivery carrier has no account.")
 
-            rma_id = self.picking_ids.move_lines.mapped('rma_line_id').rma_id
+            rma_id = self.picking_ids.move_lines.mapped("rma_line_id").mapped('rma_id')
 
             if not rma_id:
                 raise UserError("There is no rma_id.")
