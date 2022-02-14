@@ -191,12 +191,13 @@ class CustomerPortal(CustomerPortal):
             return_delivery_address = rma_obj.get("return_delivery_address", False)
         if rma_line:
             vals = {
-                "partner_id": rma_obj['return_delivery_address'],
                 "operation_type": rma_obj['operation_type'],
                 "requested_by": request.env.user.id
             }
             if rma_obj['operation_type'] == 'return':
                 vals['return_from_sale'] = rma_obj['order_id']
+                vals['partner_id'] = request.env.user.partner_id.id
+                partner = request.env.user.partner_id.id
             else:
                 pickup_date = rma_obj.get("pickup_date", False)
                 pickup_hour = rma_obj.get("pickup_hour", False)
@@ -207,6 +208,8 @@ class CustomerPortal(CustomerPortal):
                 pickup_time = datetime.strptime(pickup_time, '%d/%m/%Y %H:%M')
                 vals['pickup_time'] = pickup_time
                 vals['delivery_address_id'] = return_delivery_address
+                vals['partner_id'] = return_delivery_address
+                partner = return_delivery_address
             res = request.env["rma.order"].sudo().create(vals)
             for line in rma_line:
                 product_id = line.get("pid")
@@ -224,7 +227,7 @@ class CustomerPortal(CustomerPortal):
                     "product_qty": line.get("qty", 1),
                     "description": line.get("note", '') + '\n' + line.get('invoice', ''),
                     "product_ref": line.get("product_ref"),
-                    "partner_id": rma_obj['return_delivery_address'],
+                    "partner_id": partner,
                 }
                 lot_exists = request.env['stock.production.lot'].sudo().search([
                     ('product_id', '=', product_id),
