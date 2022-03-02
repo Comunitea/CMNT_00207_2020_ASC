@@ -26,13 +26,15 @@ class SaleOrderLine(models.Model):
         "stock.move", "deposit_line_id", string="Deposit Stock Moves"
     )
 
+    def recompute_is_deposit(self):
+        for line in self:
+            deposit_route = any(x.picking_type_id.is_deposit for x in line.route_id.rule_ids)
+            line.deposit = line.route_id and deposit_route
+
+
     @api.onchange("route_id")
     def _onchange_route_id_set_deposit(self):
-        deposit_route = any(
-            x.location_src_id.usage == "internal" and x.location_id.deposit_location
-            for x in self.route_id.rule_ids
-        )
-        self.deposit = self.route_id and deposit_route
+        self.recompute_is_deposit()
 
     @api.multi
     def _prepare_procurement_values(self, group_id=False):
@@ -124,6 +126,7 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_confirm(self):
+        self.order_line.recompute_is_deposit()
         res = super().action_confirm()
         for order in self:
             deposit_ids = order.order_line.filtered("deposit")
