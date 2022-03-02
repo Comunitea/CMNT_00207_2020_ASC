@@ -22,3 +22,6 @@ class PrestashopBackend(models.Model):
                 backend_record,
             )
         return True
+
+    def import_stock_qty(self):
+        raise Exception()
