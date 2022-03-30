@@ -129,8 +129,13 @@ class ProductProduct(models.Model):
             sale_days = max(rt.gt_days, rt.lt_days,rt.sale_days, max_days)
 
             ## Si hay días sin stock, entonces busco las ventas de los días anteriores que no tengan stock
-            if product.days_with_no_stock_count > 1:
-                days_with_no_stock_count = product.days_with_no_stock_count
+            if product.qty_available <= 0:
+                if product.last_stock_day:
+                    days_with_no_stock_count = (fields.date.today()-product.last_stock_day).days
+                    print(">>>>>> Se traslada el cálculo a la fecha %s"%product.last_stock_day)
+                else:
+                    days_with_no_stock_count = 181
+                    print(">>>>>> Se traslada el cálculo a la fecha de hace 6 meses")
             else:
                 days_with_no_stock_count = 0
             sale_days += days_with_no_stock_count
