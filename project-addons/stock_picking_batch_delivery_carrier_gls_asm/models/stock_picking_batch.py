@@ -89,7 +89,9 @@ class StockBatchPicking(models.Model):
         if (self.carrier_id.delivery_type == "gls_asm"):
             # We need to divide the package if the destiny country is not Spain/Portugal and
             # the number of packages is > 1 or the weight per package is > 31.5
-            if self.partner_id.country_id and not self.partner_id.country_id.code in ['ES', 'PT'] and (
+            if self.carrier_packages < 1:
+                self.carrier_packages = 1
+            if self.partner_id.country_id and not self.partner_id.country_id.code == 'ES' and (
                 self.carrier_packages > 1
                 or round(self.carrier_weight / self.carrier_packages, 3) > 31.5
             ):
