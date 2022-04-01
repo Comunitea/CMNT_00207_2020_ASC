@@ -112,8 +112,8 @@ class DeliveryCarrier(models.Model):
             "destinatario_pais": (
                 batch.partner_id.country_id.phone_code or ""),
             "destinatario_cp": batch.partner_id.zip,
-            "destinatario_telefono": batch.partner_id.phone or batch.partner_id.commercial_partner_id.phone or "",
-            "destinatario_movil": batch.partner_id.mobile or batch.partner_id.commercial_partner_id.mobile or "",
+            "destinatario_telefono": batch.partner_id.phone or batch.partner_id.commercial_partner_id.phone or batch.partner_id.mobile or batch.partner_id.commercial_partner_id.mobile or "",
+            "destinatario_movil": batch.partner_id.mobile or batch.partner_id.commercial_partner_id.mobile or batch.partner_id.phone or batch.partner_id.commercial_partner_id.phone or "",
             "destinatario_email": batch.partner_id.email or batch.partner_id.commercial_partner_id.email or "",
             "destinatario_observaciones": "",
             "destinatario_att": "",
@@ -146,55 +146,60 @@ class DeliveryCarrier(models.Model):
         gls_request = GlsAsmRequest(self._gls_asm_uid())
         result = []
         for batch in batchs:
-            vals = self._prepare_gls_asm_shipping(batch)
-            vals.update({"tracking_number": False, "exact_price": 0})
-            response = gls_request._send_shipping(vals)
-            self.gls_last_request = response and response.get(
-                "gls_sent_xml", "")
-            self.gls_last_response = response or ""
-            if not response or response.get("_return", -1) < 0:
+            try:
+                vals = self._prepare_gls_asm_shipping(batch)
+                vals.update({"tracking_number": False, "exact_price": 0})
+                response = gls_request._send_shipping(vals)
+                self.gls_last_request = response and response.get(
+                    "gls_sent_xml", "")
+                self.gls_last_response = response or ""
+                if not response or response.get("_return", -1) < 0:
+                    result.append(vals)
+                    continue
+                # For compatibility we provide this number although we get
+                # two more codes: codbarras and uid
+                vals["tracking_number"] = response.get("_codexp")
+                batch.carrier_tracking_ref = response.get("_codbarras")
+                # We post an extra message in the chatter with the barcode and the
+                # label because there's clean way to override the one sent by core.
+                body = _(
+                    "GLS Shipping extra info:\n"
+                    "barcode: %s") % response.get("_codbarras")
+                attachment = []
+                if response.get("gls_label"):
+                    attachment = [(
+                        "gls_label_{}.pdf".format(response.get("_codbarras")),
+                        response.get("gls_label")
+                    )]
+                batch.message_post(body=body, attachments=attachment)
                 result.append(vals)
+                if batch.carrier_tracking_ref:
+                    batch.picking_ids.update({
+                        'carrier_tracking_ref': batch.carrier_tracking_ref
+                    })
+                # Adding this to the stock.picking mail.template:
+                #
+                #% if object.batch_id and object.batch_id.gls_extra_batch_ids:
+                #    % for batch in object.batch_id.gls_extra_batch_ids:
+                #        % if batch.carrier_tracking_url:
+                #            ${batch.carrier_tracking_url}<br/>
+                #        % endif
+                #    % endfor
+                #% endif
+                #
+                # So where are not using this anymore. 
+                #if batch.gls_origin_batch_id:
+                #    template = self.env.ref(
+                #        "stock_picking_batch_delivery_carrier_gls_asm.gls_extra_batch_mail_template"
+                #    )
+                #    batch.with_context(force_send=True).message_post_with_template(
+                #        template.id,
+                #        composition_mode="mass_mail",
+                #    )
+            except Exception as e:
+                body = _("Error retrieving the label: {}".format(e))
+                batch.message_post(body=body)
                 continue
-            # For compatibility we provide this number although we get
-            # two more codes: codbarras and uid
-            vals["tracking_number"] = response.get("_codexp")
-            batch.carrier_tracking_ref = response.get("_codbarras")
-            # We post an extra message in the chatter with the barcode and the
-            # label because there's clean way to override the one sent by core.
-            body = (_(
-                "GLS Shipping extra info:\n"
-                "barcode: %s") % response.get("_codbarras"))
-            attachment = []
-            if response.get("gls_label"):
-                attachment = [(
-                    "gls_label_{}.pdf".format(response.get("_codbarras")),
-                    response.get("gls_label")
-                )]
-            batch.message_post(body=body, attachments=attachment)
-            result.append(vals)
-            if batch.carrier_tracking_ref:
-                batch.picking_ids.update({
-                    'carrier_tracking_ref': batch.carrier_tracking_ref
-                })
-            # Adding this to the stock.picking mail.template:
-            #
-            #% if object.batch_id and object.batch_id.gls_extra_batch_ids:
-            #    % for batch in object.batch_id.gls_extra_batch_ids:
-            #        % if batch.carrier_tracking_url:
-            #            ${batch.carrier_tracking_url}<br/>
-            #        % endif
-            #    % endfor
-            #% endif
-            #
-            # So where are not using this anymore. 
-            #if batch.gls_origin_batch_id:
-            #    template = self.env.ref(
-            #        "stock_picking_batch_delivery_carrier_gls_asm.gls_extra_batch_mail_template"
-            #    )
-            #    batch.with_context(force_send=True).message_post_with_template(
-            #        template.id,
-            #        composition_mode="mass_mail",
-            #    )
         return result
 
     def gls_asm_tracking_state_update(self, pick):
