@@ -43,7 +43,11 @@
             </div>
             <br/>
         </xpath>
-        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//h2" position="replace">
+            <t t-if="o.team_id.neutral_document">
+                <h2 t-field="o.batch_id.notes"/>
+            </t>
+        </xpath>
         <xpath expr="//div[@class='page']/table[@class='table table-sm']" position="replace"/>
         <xpath expr="//table[@class='table table-condensed mt32']/.." position="replace">
             <t t-if="o.valued and o.sale_id and o.move_line_ids">
