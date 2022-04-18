@@ -8,3 +8,6 @@ class CrmTeam(models.Model):
     _inherit = 'crm.team'
 
     automatic_leads = fields.Boolean()
+    geolocation_active = fields.Boolean(string="Active Geolocation")
+
+

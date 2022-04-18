@@ -6,14 +6,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-12 09:27+0000\n"
-"PO-Revision-Date: 2020-03-12 09:27+0000\n"
+"POT-Creation-Date: 2022-04-18 14:09+0000\n"
+"PO-Revision-Date: 2022-04-18 14:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: custom_crm
+#: model:ir.model.fields,field_description:custom_crm.field_crm_team__geolocation_active
+msgid "Active Geolocation"
+msgstr "Geolocalización activa"
+
+#. module: custom_crm
+#: model:ir.model.fields,field_description:custom_crm.field_crm_team__automatic_leads
+msgid "Automatic Leads"
+msgstr "Iniciativas automáticas"
+
+#. module: custom_crm
+#: model:ir.model,name:custom_crm.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: custom_crm
+#: model:ir.model.fields,field_description:custom_crm.field_res_partner__crm_id
+#: model:ir.model.fields,field_description:custom_crm.field_res_users__crm_id
+msgid "CrM"
+msgstr ""
 
 #. module: custom_crm
 #: selection:crm.lead,priority:0
@@ -46,9 +67,14 @@ msgid "Priority"
 msgstr "Prioridad"
 
 #. module: custom_crm
+#: model:ir.model,name:custom_crm.model_crm_team
+msgid "Sales Channels"
+msgstr "Canales de Ventas"
+
+#. module: custom_crm
 #: model_terms:ir.ui.view,arch_db:custom_crm.view_crm_case_opportunities_filter
 msgid "State"
-msgstr "Estado"
+msgstr "Provincia"
 
 #. module: custom_crm
 #: selection:crm.lead,priority:0
@@ -59,3 +85,9 @@ msgstr "Muy alta"
 #: selection:crm.lead,priority:0
 msgid "Very Low"
 msgstr "Muy baja"
+
+#. module: custom_crm
+#: model:ir.model,name:custom_crm.model_custom_geolocation
+msgid "custom.geolocation"
+msgstr ""
+
