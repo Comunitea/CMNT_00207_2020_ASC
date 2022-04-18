@@ -9,5 +9,3 @@ class CrmTeam(models.Model):
 
     automatic_leads = fields.Boolean()
     geolocation_active = fields.Boolean(string="Active Geolocation")
-
-

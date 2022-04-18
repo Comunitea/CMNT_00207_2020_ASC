@@ -31,12 +31,6 @@ msgid "Contact"
 msgstr "Contacto"
 
 #. module: custom_crm
-#: model:ir.model.fields,field_description:custom_crm.field_res_partner__crm_id
-#: model:ir.model.fields,field_description:custom_crm.field_res_users__crm_id
-msgid "CrM"
-msgstr ""
-
-#. module: custom_crm
 #: selection:crm.lead,priority:0
 msgid "High"
 msgstr "Alta"
@@ -85,9 +79,3 @@ msgstr "Muy alta"
 #: selection:crm.lead,priority:0
 msgid "Very Low"
 msgstr "Muy baja"
-
-#. module: custom_crm
-#: model:ir.model,name:custom_crm.model_custom_geolocation
-msgid "custom.geolocation"
-msgstr ""
-
