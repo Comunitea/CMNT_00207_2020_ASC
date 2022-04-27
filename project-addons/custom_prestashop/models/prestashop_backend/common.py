@@ -8,6 +8,7 @@ class PrestashopBackend(models.Model):
 
     sent_state = fields.Many2one("sale.order.state")
     delivered_state = fields.Many2one("sale.order.state")
+    early_payment_term = fields.Many2one('account.payment.term')
 
     def import_attributes(self):
         for backend_record in self:

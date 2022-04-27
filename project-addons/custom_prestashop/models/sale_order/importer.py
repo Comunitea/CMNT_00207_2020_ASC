@@ -5,7 +5,8 @@ from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.component.core import Component
 from odoo.addons.queue_job.exception import FailedJobError, NothingToDoJob
 
-MODO_DIFERIDO = "_sd_pago_rapido"
+MODO_DIFERIDO = ("_sd_pago_rapido", "transbancaria_asecur")
+MODO_PRONTO_PAGO = "transbancaria_asecur"
 
 
 class SaleImportRule(Component):
@@ -22,7 +23,7 @@ class SaleImportRule(Component):
         payment_mode = False
         ps_payment_method = record["module"]
         mode_binder = self.binder_for("account.payment.mode")
-        if ps_payment_method == MODO_DIFERIDO:
+        if ps_payment_method in MODO_DIFERIDO:
             partner_id = record["id_customer"]
 
             partner_adapter = self.component(
@@ -39,7 +40,7 @@ class SaleImportRule(Component):
             if not payment_mode:
                 payment_mode = mode_binder.to_internal(ps_payment_method)
         else:
-            payment_mode = mode_binder.to_internal(ps_payment_method)
+            raise FailedJobError("El cliente no tiene establecido el tipo de pago diferido en prestashop.")
         if not payment_mode:
             raise FailedJobError(
                 _(
@@ -117,8 +118,9 @@ class SaleOrderImportMapper(Component):
 
     @mapping
     def payment(self, record):
+        res = {}
         ps_payment_method = record["module"]
-        if ps_payment_method == MODO_DIFERIDO:
+        if ps_payment_method in MODO_DIFERIDO:
             partner = record["id_customer"]
             partner_binder = self.binder_for("prestashop.res.partner")
             payment_mode = partner_binder.to_internal(
@@ -126,6 +128,8 @@ class SaleOrderImportMapper(Component):
             ).customer_payment_mode_id
             if not payment_mode:
                 raise Exception("Payment mode not configured in partner")
+            if ps_payment_method == MODO_PRONTO_PAGO:
+                res['payment_term_id'] = self.backend_record.early_payment_term.id
         else:
             binder = self.binder_for("account.payment.mode")
             payment_mode = binder.to_internal(record["module"])
@@ -133,7 +137,8 @@ class SaleOrderImportMapper(Component):
             "import of error fail in SaleImportRule.check "
             "when the payment mode is missing"
         )
-        return {"payment_mode_id": payment_mode.id}
+        res['payment_mode_id'] = payment_mode.id
+        return res
 
     @mapping
     @only_create

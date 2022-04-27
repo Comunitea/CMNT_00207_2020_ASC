@@ -26,6 +26,7 @@
                 <group>
                     <field name="sent_state"/>
                     <field name="delivered_state"/>
+                    <field name="early_payment_term"/>
                 </group>
             </xpath>
         </field>
