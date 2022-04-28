@@ -38,9 +38,9 @@ class SaleImportRule(Component):
                     [("prestashop_name", "=", partner_data.get("f_pago"))]
                 )
             if not payment_mode:
-                payment_mode = mode_binder.to_internal(ps_payment_method)
+                raise FailedJobError("El cliente no tiene establecido el tipo de pago diferido en prestashop.")
         else:
-            raise FailedJobError("El cliente no tiene establecido el tipo de pago diferido en prestashop.")
+            payment_mode = mode_binder.to_internal(ps_payment_method)
         if not payment_mode:
             raise FailedJobError(
                 _(
