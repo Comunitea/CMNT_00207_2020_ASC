@@ -161,5 +161,5 @@ class StockPickingBatch(models.Model):
         for batch in self:
             message = 'Se ha eliminado el batch {}'.format(batch.name)
             for pick in batch.picking_ids:
-                pick.message_post(message)
+                pick.message_post(body=message)
         return super().unlink()
