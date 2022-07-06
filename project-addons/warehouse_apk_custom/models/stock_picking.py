@@ -98,7 +98,7 @@ class StockPicking(models.Model):
             "partner_id": self.partner_id.id,
             "carrier_id": self.carrier_id.id,
             "service_code": self.carrier_service
-            and self.carrier_service
+            and self.carrier_service.id
             or self.carrier_id.service_code.id,
             "team_id": self.team_id.id,
             "state": "draft",
