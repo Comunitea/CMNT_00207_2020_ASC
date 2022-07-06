@@ -39,6 +39,7 @@ class StockBatchPicking(models.Model):
     shipment_reference = fields.Char("Shipment Reference")
     payment_on_delivery = fields.Boolean("Payment on delivery")
     pdo_quantity = fields.Float("PDO amount", digits=dp.get_precision("Product Price"))
+    declared_value = fields.Float("Declared value", digits=dp.get_precision("Product Price"))
     needs_signature = fields.Boolean(
         related="carrier_id.needs_signature", readonly=True
     )
@@ -69,6 +70,7 @@ class StockBatchPicking(models.Model):
                     for dis in discount:
                         pickings_total_value += dis.price_total
             batch.pdo_quantity = pickings_total_value
+            batch.declared_value = pickings_total_value
 
     @api.model
     def create(self, vals):
@@ -213,9 +215,14 @@ class StockBatchPicking(models.Model):
                 doc_format = "pdf"
             else:
                 doc_format = "raw"
-            self.carrier_id.account_id.printer.print_document(
-                None, b64decode(label.datas), doc_format=doc_format
-            )
+            try:
+                self.carrier_id.account_id.printer.print_document(
+                    None, b64decode(label.datas), doc_format=doc_format
+                )
+            except Exception as e:
+                self.message_post(
+                    body=(_("Unable to print the label {}. Error: {}.".format(label.name, e))),
+                )
 
     def get_state_id(self, partner_id):
         if partner_id.country_id and partner_id.zip:

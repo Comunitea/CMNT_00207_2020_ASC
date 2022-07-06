@@ -202,6 +202,9 @@ class StockBatchPicking(models.Model):
                 }
             }
 
+            if not self.partner_id.country_id.intrastat:
+                payload["ShipmentRequest"]["RequestedShipment"]["InternationalDetail"]["Commodities"]["CustomsValue"] = self.declared_value
+
             try:
                 r = requests.request(
                     "POST", url, data=json.dumps(payload), headers=headers

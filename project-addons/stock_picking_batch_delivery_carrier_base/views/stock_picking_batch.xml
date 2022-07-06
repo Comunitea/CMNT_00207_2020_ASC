@@ -38,6 +38,7 @@
                         <field name="payment_on_delivery" readonly="1"/>
                         <field name="pdo_quantity"
                             attrs="{'invisible': [('payment_on_delivery', '=', False)]}"/>
+                        <field name="declared_value"/>
                     </group>
                 </group>
 
