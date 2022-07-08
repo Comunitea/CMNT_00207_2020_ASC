@@ -66,7 +66,7 @@ class StockPicking(models.Model):
     @api.multi
     def _create_backorder(self, backorder_moves=None):
         backorder = super()._create_backorder(backorder_moves=backorder_moves)
-        backorder.write({"move_type": "one"})
+        backorder.write({"move_type": "one", "ready_to_send": self.ready_to_send})
         return backorder
 
     @api.multi
