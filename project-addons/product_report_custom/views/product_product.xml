@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record id="days_no_stock_tree" model ="ir.ui.view">
+        <field name="name">days.no.stock.tree</field>
+        <field name="model">days.no.stock</field>
+        <field name="arch" type="xml">
+            <tree>
+                    <field name="product_id"/>
+                    <field name="date"/>
+                    <field name="qty_available"/>
+            </tree>
+        </field>
+    </record>
+
+     <record id="action_days_no_stock_tree" model="ir.actions.act_window">
+        <field name="name">Stock Diario</field>
+        <field name="res_model">days.no.stock</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+     </record>
+
+     <menuitem
+        action="action_days_no_stock_tree"
+        id="menu_action_days_no_stock_tree"
+        parent="stock.menu_warehouse_report" sequence="990"/>
+    <record model="ir.ui.view" id="search_days_no_stock_filter">
+        <field name="name">Daily Stock Filter</field>
+        <field name="model">days.no.stock</field>
+        <field name="arch" type="xml">
+            <search string="Product Filter">
+                <field name="product_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_product" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="product_alarm_days_view" model="ir.ui.view">
         <field name="name">product.template.alarm_days_form</field>
         <field name="model">product.alarm.days</field>
@@ -49,9 +85,10 @@
         <field name="binding_model_id" ref="product.model_product_product"/>
         <field name="state">code</field>
         <field name="code">
-          records.compute_days_with_no_stock()
+            records.compute_days_with_no_stock()
         </field>
-      </record>
+    </record>
 
 
 </odoo>
+
