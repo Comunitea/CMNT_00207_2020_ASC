@@ -168,7 +168,7 @@ class ProductProduct(models.Model):
             _days -= 1
         domain = [('product_id', 'in', self.ids), ('date', '>',  fields.Datetime.to_string(fields.Date.today() - relativedelta(days=DAYS)))]
         day_ids = self.env['days.no.stock'].search(domain, order = "date desc")
-        _logger.info (">>>>> Generando anteriores para %s articulos en %s dias (%s) y hay %s. Primero %s"%(len(self), len(to_dates), len(self) * len(to_dates), len(day_ids), day_ids[0].date))
+        # _logger.info (">>>>> Generando anteriores para %s articulos en %s dias (%s) y hay %s. Primero %s"%(len(self), len(to_dates), len(self) * len(to_dates), len(day_ids), day_ids[0].date))
         for product_id in self:
             product_day_ids = day_ids.filtered(lambda x: x.product_id == product_id)
 
@@ -216,7 +216,7 @@ class ProductProduct(models.Model):
         
         while self:
             _logger.info("Quedan %d"%len(self))
-            product_ids = self[0:10]
+            product_ids = self[0:25]
             product_ids.get_all_no_stock_days()
             self -= product_ids
             self._cr.commit()
