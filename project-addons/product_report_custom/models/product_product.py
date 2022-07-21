@@ -119,12 +119,7 @@ class ProductProduct(models.Model):
     days_with_no_stock_count = fields.Integer('Days with no stock count')
     days_with_no_stock_ids = fields.One2many('days.no.stock', 'product_id', string='Days with no stock')
     
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        res.with_context(from_create=True).compute_days_with_no_stock()
-        return res
-
+    
     @api.multi
     def compute_product_sales(self):
         if not self:
@@ -132,26 +127,18 @@ class ProductProduct(models.Model):
         self._compute_product_sales()
 
     def get_no_stock_days_at_date(self, to_date=False, search=True):
-        from_create = self._context.get('from_create', False)
-        if from_create:
-            vals = {
-                'product_id': product.id, 
+       
+        ctx = self._context.copy()
+        if to_date:
+            ctx.update(to_date=to_date)
+            product = self.with_context(ctx)
+        else:
+            to_date = fields.Date.from_string(fields.Date.today())
+            product = self
+        vals = {'product_id': product.id, 
                 'tmpl_id': product.product_tmpl_id.id, 
                 'date': to_date, 
-                'qty_available': 0}
-
-        else:   
-            ctx = self._context.copy()
-            if to_date:
-                ctx.update(to_date=to_date)
-                product = self.with_context(ctx)
-            else:
-                to_date = fields.Date.from_string(fields.Date.today())
-                product = self
-            vals = {'product_id': product.id, 
-                    'tmpl_id': product.product_tmpl_id.id, 
-                    'date': to_date, 
-                    'qty_available': product.qty_available}
+                'qty_available': product.qty_available}
         try:
             day_id = self.env['days.no.stock'].create(vals)
         except:
