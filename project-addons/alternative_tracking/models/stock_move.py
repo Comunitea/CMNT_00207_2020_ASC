@@ -1,0 +1,113 @@
+# © 2019 Comunitea Servicios Tecnológicos S.L.
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+import logging
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.float_utils import float_compare
+# from odoo.tools.float_utils import float_compare
+
+_logger = logging.getLogger(__name__)
+
+class StockMoveLocationWizard(models.TransientModel):
+    _inherit = "wiz.stock.move.location"
+
+    ## NECESITO QUE TENGA UN TIPO DE ALBARÁN PARA PODER SABER SI REQUIERE O NO NUMEROS DE SERIE
+    def _get_move_values(self, picking, lines):
+        res = super()._get_move_values(picking, lines)
+        res.update(picking_type_id=self.picking_type_id.id)
+        return res
+
+
+class StockPickingType(models.Model):
+    _inherit = "stock.picking.type"
+
+    bypass_tracking = fields.Boolean("By pass tracking")
+    check_serial_qties = fields.Boolean("Comprobar Cant <> Nº Serie")
+
+class StockMove(models.Model):
+    _inherit = "stock.move"
+
+    @api.multi
+    def _get_available_serial_ids(self):
+        self.ensure_one()
+        self.available_serial_ids = self.move_line_ids.mapped("available_serial_ids")
+
+    @api.multi
+    def _compute_lot_ids(self):
+        for move in self:
+            move.serial_name_ids = move.move_line_ids.mapped("serial_name_ids")
+            move.lot_ids = move.move_line_ids.mapped("lot_ids")
+
+    lot_ids = fields.One2many(comodel_name="stock.production.lot",compute="_compute_lot_ids")
+    serial_name_ids = fields.One2many(comodel_name='virtual.serial', compute="_compute_lot_ids")
+
+    available_serial_ids = fields.One2many(
+        "stock.production.lot", compute=_get_available_serial_ids
+    )
+    lot_ids_string = fields.Text("Serial list to add")
+
+    use_existing_lots = fields.Boolean(
+        related="picking_id.picking_type_id.use_existing_lots", readonly=True
+    )
+    use_create_lots = fields.Boolean(
+        related="picking_id.picking_type_id.use_create_lots", readonly=True
+    )
+
+    virtual_tracking = fields.Boolean(related='product_id.virtual_tracking', store=True)
+    tracking = fields.Selection(related='product_id.template_tracking', store=True)
+
+
+    def action_alternative_product(self):
+        """Returns an action that will open a form view (in a popup) allowing to
+        add lot for alternative tracking.
+        """
+        self.ensure_one()
+        view = self.env.ref("alternative_tracking.view_stock_move_lot_names")
+        return {
+            "name": _("Detailed Lots"),
+            "type": "ir.actions.act_window",
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": "stock.move",
+            "views": [(view.id, "form")],
+            "view_id": view.id,
+            "target": "new",
+            "res_id": self.id,
+            "context": dict(
+                self.env.context,
+                default_product_id=self.product_id,
+                default_usage=self.location_dest_id.usage,
+            ),
+        }
+
+    def filter_affected_moves(self):
+        ## Los movimientos afectados son:
+        ##
+        return self.filtered(lambda x: 
+                                x.state != 'done' 
+                                and x.virtual_tracking
+                                and not x.inventory_id ## Los que vengan de un inventario
+                                and not x.picking_type_id.bypass_tracking ## tipo de albarán arcado para ignorarlos
+                                and not (x.raw_material_production_id or x.production_id) ## Los que vengan de producciones.
+                            )
+
+    def _action_done(self):
+        return super()._action_done()
+
+    @api.multi
+    def action_view_serials(self):
+        action = self.env.ref("stock.action_production_lot_form").read()[0]
+        action['context']={'product_id': self.product_id.id,
+                           'default_product_id': self.product_id.id,
+                           'default_virtual_tracking': self.virtual_tracking}
+        action["domain"] = [("id", "in", self.lot_ids.ids)]
+        return action
+
+    def action_show_details(self):
+        res = super().action_show_details()
+        context = res['context']
+        res['context'] = dict(context, recal_qty_done=True)
+        return res
+  

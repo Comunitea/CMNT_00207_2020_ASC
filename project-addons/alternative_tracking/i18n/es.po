@@ -1,0 +1,398 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* alternative_tracking
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-28 17:55+0000\n"
+"PO-Revision-Date: 2020-11-28 17:55+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.product_form_view_at
+msgid "<span class=\"o_stat_text\">Barcodes</span>"
+msgstr "<span class=\"o_stat_text\">C.D.B.</span>"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.product_template_search_view_At
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.search_product_lot_filter_inherit_product_expiry
+msgid "A. Tracking"
+msgstr "Tracking virtual Virtual"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:101
+#, python-format
+msgid "All serials must have same lenght"
+msgstr "Todos los números de serie deben tener la misma longitud"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_inventory_form_at
+msgid "Alternate to delete lot"
+msgstr "(No) Borrar lote"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,help:alternative_tracking.field_product_product__virtual_tracking
+#: model:ir.model.fields,help:alternative_tracking.field_product_template__virtual_tracking
+#: model:ir.model.fields,help:alternative_tracking.field_stock_move__virtual_tracking
+#: model:ir.model.fields,help:alternative_tracking.field_stock_move_line__virtual_tracking
+msgid "Alternative tracking for products with tracking = 'none'"
+msgstr "Tracking virtual para artículos sin seguimiento"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.stock_move_line_tracking_form
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_lot_names
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_operations_at
+msgid "Apply"
+msgstr "Aplicar"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.search_product_lot_filter_inherit_product_expiry
+msgid "Available"
+msgstr "Reservado"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move__available_serial_ids
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move_line__available_serial_ids
+msgid "Available Serial"
+msgstr "Nº de Serie disponibles"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_picking_type__bypass_tracking
+msgid "By pass tracking"
+msgstr "Ignorar tracking virtual"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.stock_move_line_tracking_form
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_lot_names
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:288
+#, python-format
+msgid "Detailed Lots"
+msgstr "Números de serie"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.stock_move_line_tracking_form
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_lot_names
+msgid "Discard"
+msgstr "Descartar"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__id
+msgid "ID"
+msgstr ""
+
+#. module: alternative_tracking
+#: model:ir.model.fields,help:alternative_tracking.field_stock_move__use_existing_lots
+msgid "If this is checked, you will be able to choose the Lots/Serial Numbers. You can also decide to not put lots in this operation type.  This means it will create stock with no lot or not put a restriction on the lot taken. "
+msgstr "Si esto está marcado, podrá elegir los Lotes / Números de serie. También puede decidir no poner lotes en este tipo de operación. Esto significa que creará stock sin lote o no pondrá una restricción sobre el lote seleccionado."
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:130
+#: code:addons/alternative_tracking/models/stock_move.py:268
+#, python-format
+msgid "Incorrect move state"
+msgstr "Movimiento en estado incorrectao"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:266
+#: code:addons/alternative_tracking/models/stock_move.py:276
+#, python-format
+msgid "Incorrect state. Change in move lines"
+msgstr "El movimiento no permite esta operación, deberás cambiarlo en las operaciones"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_inventory
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__inventory_id
+msgid "Inventory"
+msgstr "Inventario"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_location
+msgid "Inventory Locations"
+msgstr "Ubicaciones de inventario"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory__inventory_type
+msgid "Inventory Type"
+msgstr "Tipo de inventario"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_inventory.py:126
+#, python-format
+msgid "Inventory loss location not found"
+msgstr "Ubicación de pérdidas de inventario no definida"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización de"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__write_date
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_inventory.py:68
+#, python-format
+msgid "Lines to add need serial"
+msgstr "Líneas sin nº de serie"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_inventory.py:59
+#, python-format
+msgid "Lines to delete need serial"
+msgstr "Líneas sin nº de serie"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__location_id
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_production_lot__location_id
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.search_product_lot_filter_inherit_product_expiry
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move__lot_ids
+msgid "Lot"
+msgstr "Lote"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_production_lot__alternative_tracking
+msgid "Lot for alternative tracking"
+msgstr "Nº serie para tracking virtual"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__lot_name
+msgid "Lot name"
+msgstr "Nº de serie"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Nº de serie"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__prod_lot_id
+msgid "Lot/Serial Number"
+msgstr "Nº de serie"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move_line__lot_ids
+msgid "Lots"
+msgstr "Nº(s) de serie"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_production_lot__move_ids
+msgid "Move"
+msgstr "Movimiento"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.stock_move_line_tracking_form
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_lot_names
+msgid "Move Detail"
+msgstr "Operaciones"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_production_lot__move_line_ids
+msgid "Move Line"
+msgstr "Operación"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/wizard/stock_move_change_reserve_wzd.py:137
+#, python-format
+msgid "Move is asigned, please unreserve to change asigned stock"
+msgstr "El movimiento está reservado, quita la reserva para poder cambiarla"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/wizard/stock_move_change_reserve_wzd.py:135
+#, python-format
+msgid "Move is waiting, you must validate previous move"
+msgstr "El movimiento está en espera, debes validar el movimiento anterior"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.product_form_view_at
+msgid "Open serial list"
+msgstr "Abrir lista de números de serie"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_line_operation_tree_at
+msgid "Open tracking"
+msgstr "Tracking virtual"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_picking_type
+msgid "Picking Type"
+msgstr "Tipo de operación"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_product_product
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.search_product_lot_filter_inherit_product_expiry
+msgid "Product Lots"
+msgstr "Nº(s) de serie"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Movimientos de producto (operaciones)"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_inventory.py:128
+#, python-format
+msgid "Products with no tracking"
+msgstr "Productos sin tracking virtual"
+
+#. module: alternative_tracking
+#: selection:stock.inventory,inventory_type:0
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_picking_form_at
+msgid "Register alternative lots"
+msgstr "Registrar Nº de serie."
+
+#. module: alternative_tracking
+#: selection:stock.inventory,inventory_type:0
+msgid "Serial"
+msgstr "Nº de serie"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory__available_lot_ids
+msgid "Serial Inventories"
+msgstr "Inventario de tracking virtual"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_inventory_form_at
+msgid "Serial Inventory Details"
+msgstr "Líneas de tracking virtual"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move__lot_ids_string
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move_line__lot_ids_string
+msgid "Serial list to add"
+msgstr "Nº de serie para añadir"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_inventory_form_at
+msgid "Serial numbers Moves"
+msgstr "Nº de serie"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_inventory_form_at
+msgid "Start Serial Inventory"
+msgstr "Iniciar inventario de tracking "
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_inventory_tracking__to_delete
+msgid "To delete"
+msgstr "Para eliminar"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:184
+#: code:addons/alternative_tracking/models/stock_move.py:207
+#, python-format
+msgid "Too much lots to assign. Check productions"
+msgstr "Demasiados números de serie para asignar. Comprueba producciones u otro tipo de entradas"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_traceability_report
+msgid "Traceability Report"
+msgstr "Informe de trazabilidad"
+
+#. module: alternative_tracking
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.stock_move_line_tracking_form
+#: model_terms:ir.ui.view,arch_db:alternative_tracking.view_stock_move_operations_at
+msgid "Tracking"
+msgstr "Seguimiento"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:138
+#: code:addons/alternative_tracking/models/stock_move.py:156
+#, python-format
+msgid "Tracking Form Operations"
+msgstr "Formulario de operaciones para tracking virtual"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_product_product__tracking_count
+msgid "Tracking serial count"
+msgstr "Total de nº serie"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_picking
+msgid "Transfer"
+msgstr "Transferir"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move__use_existing_lots
+msgid "Use Existing Lots/Serial Numbers"
+msgstr "Utilizar números de Lotes/Serie existentes"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:107
+#, python-format
+msgid "Values in unknown format"
+msgstr "Formato no reconocido"
+
+#. module: alternative_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_product_product__virtual_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_product_template__virtual_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move__virtual_tracking
+#: model:ir.model.fields,field_description:alternative_tracking.field_stock_move_line__virtual_tracking
+msgid "With tracking"
+msgstr "Tracking virtual"
+
+#. module: alternative_tracking
+#: code:addons/alternative_tracking/models/stock_move.py:316
+#, python-format
+msgid "You must enter serial names"
+msgstr "Debes introducir números de serie"
+
+#. module: alternative_tracking
+#: model:ir.model,name:alternative_tracking.model_stock_inventory_tracking
+msgid "stock.inventory.tracking"
+msgstr ""

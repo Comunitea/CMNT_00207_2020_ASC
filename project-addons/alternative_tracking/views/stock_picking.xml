@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_picking_form_at" model="ir.ui.view">
+            <field name="name">view.picking.form.at</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_initial_demand_editable']" position="before">
+                    
+                    <field name="virtual_tracking" invisible="1"/>
+                        <button
+                            name="action_alternative_product"
+                            string="Register alternative lots"
+                            type="object"
+                            icon="fa-barcode"
+                            attrs="{'invisible': [('virtual_tracking', '=', False)]}"
+                            options='{"warn": true}'/>
+
+                </xpath>
+            </field>
+     </record>
+
+    <record id="view_picking_type_form_at" model="ir.ui.view">
+        <field name="name">stock.picking.type.form.sptg</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form" />
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="use_existing_lots" position="after">
+                <field name="bypass_tracking" />
+                <field name="check_serial_qties" />
+            </field>
+        </field>
+    </record>
+    <record id="product_template_search_view_At" model="ir.ui.view">
+            <field name="name">product.template.search.at</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view" />
+            <field name="arch" type="xml">
+                <filter name="consumable" position="after">
+                    <filter
+                    string="A. Tracking"
+                    name="alternative_tracking"
+                    domain="[('virtual_tracking','=',True)]"
+                />
+                </filter>
+            </field>
+        </record>
+        <record id="picking_check_quant_reserved_availability" model="ir.actions.server">
+            <field name="name">Check reserves</field>
+            <field name="model_id" ref="model_stock_picking"/>
+            <field name="binding_model_id" ref="model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="code">records.mapped('move_lines.product_id').check_quant_reserved_quantity()</field>
+        </record>
+</odoo>
