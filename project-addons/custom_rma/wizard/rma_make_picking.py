@@ -4,6 +4,16 @@ from odoo import api, models, _
 from odoo.exceptions import ValidationError
 
 
+class RmaMakePickingItem(models.TransientModel):
+    _inherit = "rma_make_picking.wizard.item"
+
+    def get_partner_id(self):
+        rma_id = self.line_id.rma_id
+        line_id = self.line_id
+        partner_id = rma_id.delivery_address_id or rma_id.partner_id or line_id.delivery_address_id or line_id.partner_id
+        return partner_id and partner_id.id or False
+
+
 class RmaMakePicking(models.TransientModel):
     _inherit = 'rma_make_picking.wizard'
 
