@@ -21,6 +21,7 @@
                             <field name="team_website"/>
                             <field name="team_accounts"/>
                             <field name="neutral_document"/>
+                            <field name="overwrite_company_in_docs"/>
                         </group>
                     </group>
                 </page>

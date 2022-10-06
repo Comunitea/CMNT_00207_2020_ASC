@@ -134,6 +134,9 @@
         </xpath>
 
         <xpath expr="//div[hasclass('o_standard_footer')]" position="replace">
+            <t t-if="'team_id' in o and o.team_id.invoice_on_company and o.team_id.overwrite_company_in_docs">
+                <t t-set="company" t-value="o.sudo().team_id.invoice_on_company"/>
+            </t>
             <div class="footer o_standard_footer">
                 <style>
                     .container {

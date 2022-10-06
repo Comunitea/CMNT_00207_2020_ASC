@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="wizard_intercompany_regularization_form" model="ir.ui.view">
+        <field name="name">wzd.intercompany.regularization.form</field>
+        <field name="model">wzd.intercompany.regularization</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Intercompany regularization">
+                <h4 colspan="4">This process will creates supplier invoices with the sold stock that belongs to other companies.</h4>
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="action_regularize"
+                            string="Execute"
+                            type="object"
+                            class="oe_highlight"/>
+                    or
+                    <button string="Close"
+                            class="oe_link"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="wizard_intercompany_regularization_act" model="ir.actions.act_window">
+        <field name="name">Intercompany regularization</field>
+        <field name="res_model">wzd.intercompany.regularization</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="wizard_intercompany_regularization_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Intercompany regularization" action="wizard_intercompany_regularization_act" id="menu_wizard_intercompany_regularization_act" parent="account.menu_finance_payables" sequence="999"/>
+
+</odoo>

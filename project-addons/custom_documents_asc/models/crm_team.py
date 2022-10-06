@@ -16,3 +16,4 @@ class CrmTeam(models.Model):
     css_class = fields.Many2one("crm.class")
     team_accounts = fields.Text(string="Accounts")
     neutral_document = fields.Boolean()
+    overwrite_company_in_docs = fields.Boolean("Overwrite footer company", default=False)
