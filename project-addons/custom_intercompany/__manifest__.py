@@ -18,6 +18,7 @@
     ],
     "data": [
         "views/account_invoice.xml",
+        "views/crm_team.xml",
         "wizard/wzd_intercomp_invoice_view.xml",
     ],
     "installable": True,

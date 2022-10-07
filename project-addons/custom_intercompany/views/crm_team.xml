@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="crm_team_view_form" model="ir.ui.view">
+        <field name="name">crm.team.inherit.view.form</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="custom_account.crm_team_view_form"/>
+        <field name="arch" type="xml">
+            <field name="invoice_on_company" position="after">
+                <field name="ic_journal_id" groups="account.group_account_manager"/>
+                <field name="purchase_ic_journal_id" groups="account.group_account_manager"/>
+            </field>
+        </field>
+    </record>
+</odoo>
