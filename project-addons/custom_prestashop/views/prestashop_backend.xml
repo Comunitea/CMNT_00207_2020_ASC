@@ -29,6 +29,10 @@
                     <field name="early_payment_term"/>
                 </group>
             </xpath>
+            <field name="product_qty_field" position="after">
+                <field name="backend_export_qty"/>
+            </field>
         </field>
     </record>
 </odoo>
+

@@ -69,3 +69,21 @@ class PrestashopProductTemplate(models.Model):
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="standard_price.exporter")
             return exporter.run(self)
+
+
+
+class ProductQtyMixin(models.AbstractModel):
+    _inherit = 'prestashop.product.qty.mixin'
+
+    @api.multi
+    def _recompute_prestashop_qty_backend(self, backend):
+        if not backend.backend_export_qty:
+            return True
+        locations = backend._get_locations_for_stock_quantities()
+        self_loc = self.with_context(location=locations.ids,
+                                     compute_child=False)
+        for product_binding in self_loc:
+            new_qty = product_binding._prestashop_qty(backend)
+            if product_binding.quantity != new_qty:
+                product_binding.quantity = new_qty
+        return True
