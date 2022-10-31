@@ -70,6 +70,15 @@ class PrestashopProductTemplate(models.Model):
             exporter = work.component(usage="standard_price.exporter")
             return exporter.run(self)
 
+    @job(default_channel='root.prestashop')
+    def export_inventory(self, fields=None):
+        """ Export the inventory configuration and quantity of a product. """
+        backend = self.backend_id
+        if not backend.backend_export_qty:
+            return True
+        with backend.work_on('prestashop.product.template') as work:
+            exporter = work.component(usage='inventory.exporter')
+            return exporter.run(self, fields)
 
 
 class ProductQtyMixin(models.AbstractModel):

@@ -158,3 +158,17 @@ class ProductProduct(models.Model):
                     record
                 )
         return res
+
+
+class PrestashopProductCombination(models.Model):
+    _inherit = 'prestashop.product.combination'
+
+    @job(default_channel='root.prestashop')
+    def export_inventory(self, fields=None):
+        """ Export the inventory configuration and quantity of a product. """
+        backend = self.backend_id
+        if not backend.backend_export_qty:
+            return True
+        with backend.work_on('prestashop.product.combination') as work:
+            exporter = work.component(usage='inventory.exporter')
+            return exporter.run(self, fields)
