@@ -14,9 +14,7 @@ class StockProductionLot(models.Model):
     @api.multi
     @api.constrains('product_id', 'name')
     def _check_name_validity(self):
-        
         for lot in self:
-
             not_names = self.product_id.not_lot_name_ids.mapped('name')
             if lot.name in not_names:
                 raise ValidationError ("El lot {} no es válido para el arículo {}".format(lot.name, lot.product_id.display_name))    

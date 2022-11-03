@@ -63,17 +63,14 @@ class ProductTemplate(models.Model):
     last_stock_day = fields.Date('Day with stock', help ="Ultimo día con stock")
 
 
+    
+
     @api.multi
     def compute_product_template_sales(self):
         if not self:
             self = self.search([])
-        template_ids = self[0:50]
-        while self:
-            template_ids._compute_product_template_sales()
-            template_ids._compute_product_template_sale_alarm()
-            self -= template_ids
-            self._cr.commit()
-            template_ids = self[0:50]
+        self._compute_product_template_sales()
+        self._compute_product_template_sale_alarm()
 
     @api.multi
     def _compute_product_template_sales(self):
