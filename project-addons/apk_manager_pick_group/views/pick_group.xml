@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="pick_group_line_tree" model="ir.ui.view">
+        <field name="name">pick.group.line.tree</field>
+        <field name="model">pick.group.line</field>
+        <field name="arch" type="xml">
+            <tree string="Pick Group Lines" decoration-success="picked == True"  create="0">
+                <field name="product_id"/>
+                <field name="qty"/>
+                <field name="product_uom_id" groups="uom.group_uom"/>
+                <field name="location_id"/>
+                <field name="removal_priority" />
+                <field name="volume"/>
+                <field name="weight" />
+                <field name="picked" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="pick_group_line_search" model="ir.ui.view">
+        <field name="name">pick.group.line.search</field>
+        <field name="model">pick.group.line</field>
+        <field name="arch" type="xml">
+            <search string="Search pick group Lines">
+                <field name="product_id"/>
+                <field name="location_id" groups="stock.group_stock_multi_locations"/>
+            </search>
+        </field>
+    </record>
+ <record id="pick_group_search" model="ir.ui.view">
+        <field name="name">pick.group.search</field>
+        <field name="model">pick.group</field>
+        <field name="arch" type="xml">
+            <search string="Search pick group">
+                <field name="name"/>
+                <field name="state"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="confirm" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Picked" name="done" domain="[('state', '=', 'picked')]"/>
+            </search>
+        </field>
+    </record>
+    
+
+    <record id="pick_group_tree" model="ir.ui.view">
+        <field name="name">pick.group.tree</field>
+        <field name="model">pick.group</field>
+        <field name="arch" type="xml">
+            <tree string="Pick Group"  create="0" decoration-success="state == 'picked'">
+                <field name="name"/>
+                <field name="date_picked"/>
+                <field name="state"/>
+
+                <field name="nlines"/>
+                <field name="nitems"/>
+                <field name="weight"/>
+                <field name="volume" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pick_group_kanban" model="ir.ui.view">
+        <field name="name">pick.group.kanban</field>
+        <field name="model">pick.group</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="date_picked"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title"><span><t t-esc="record.name.value"/></span></strong>
+                                </div>
+                                <field name="state" widget="label_selection" options="{'classes': {'in_progress': 'info', 'draft': 'default', 'picked': 'success'}}"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <i class="fa fa-clock-o" role="img" aria-label="Date" title="Date"/> <t t-esc="record.date_picked.value"/>
+                                </div>
+                            </div>
+
+                             <div class="row">
+                                <div class="col-12 text-muted">
+                                    <span><t t-esc='record.volume.string'/>: <t t-esc='record.volume.value'/></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-muted">
+                                    <span><t t-esc='record.weight.string'/>: <t t-esc='record.weight.value'/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_pick_group_form" model="ir.ui.view">
+        <field name="name">pick.group.form</field>
+        <field name="model">pick.group</field>
+        <field name="arch" type="xml">
+            <form string="Pick Group">
+            <header>
+                <button name="picked_reset" states="picked" string="Reset Picked" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+                <button name="run_picked" states="in_progress" string="Set Picked" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,picked"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_inventory_line_tree"
+                        class="oe_stat_button"
+                        icon="fa-building-o"
+                        type="object"
+                        help="List view of lines"
+                        groups="base.group_no_one"
+                        states="confirm">
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_text">Details</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="oe_title">
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name" /></h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="date_picked"/>
+                        <field name="scheduled_date"/>
+                        <field name="picking_type_id" string="Tipo"/>
+                    </group>
+                    <group>
+                        <field name="volume"/>
+                        <field name="weight"/>
+                        <field name="nlines"/>
+                        <field name="nitems"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Details" name="lines">
+                        <field name="line_ids" string="Details" mode="tree,kanban">
+                            <tree string="Details" decoration-success="picked==True">
+                                <field name="product_id"/>
+                                <field name="qty"/>
+                                <field name="product_uom_id" groups="uom.group_uom"/>
+                                <field name="location_id"/>
+                                <field name="removal_priority" />
+                                <field name="volume"/>
+                                <field name="location_dest_id"/>
+                                <field name="weight" />
+                                <field name="nlines" />
+                                <field name="picked" />
+                            </tree>
+                        </field></page>
+                    <page string="Batchs" name='batchs'>
+                        <field name="batch_ids" string="Batchs" mode="tree">
+                            <tree string="Details">
+                                <field name="name"/>
+                                <field name="box_id"/>
+                                <field name="nlines"/>
+                                <field name="nitems"/>
+                                <field name="weight"/>
+                                <field name="volume" />
+                                <field name="picked" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Info" name='info'>
+                        <group>
+                            <group>
+                                <field name="origin"/>
+                            </group>
+                            <group></group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pick_group_form" model="ir.actions.act_window">
+        <field name="name">Pick Group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pick.group</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="pick_group_tree"/>
+        <field name="search_view_id" ref="pick_group_search"/>
+    </record>
+
+    <record id="action_pick_group_tree" model="ir.actions.act_window">
+        <field name="name">Pick Group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pick.group</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="pick_group_tree"/>
+        <field name="search_view_id" ref="pick_group_search"/>
+        <field name="domain"></field>
+    </record>
+    <menuitem id="menu_pick_group_parent" parent="stock.menu_stock_warehouse_mgmt" name="Pick Group" sequence="30"/>
+    <menuitem action="action_pick_group_form" id="menu_action_pick_group_form" parent="menu_pick_group_parent"/>
+</odoo>

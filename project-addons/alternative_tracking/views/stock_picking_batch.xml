@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    
+    <record id="stock_batch_picking_form" model="ir.ui.view">
+            <field name="name">stock.picking.batch.form</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='move_line_ids']/tree/field[@name='is_initial_demand_editable']" position="before">
+                    <field name="template_tracking" invisible="1"/>
+                        <button
+                            name="action_alternative_tracking_in_move_line"
+                            string="Register alternative lots"
+                            type="object"
+                            icon="fa-barcode"
+                            attrs="{'invisible': [('template_tracking', '!=', 'virtual')]}"
+                            options='{"warn": true}'/>
+
+                </xpath>
+            </field>
+     </record>
+</odoo>

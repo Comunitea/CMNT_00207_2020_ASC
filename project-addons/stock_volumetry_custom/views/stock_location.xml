@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <record id="view_location_form" model="ir.ui.view">
+            <field name="name">stock.location.form</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='localization']" position="after">
+                    <group name='volumetry' string="Volumetry">
+                        <field name="has_volumetry"/>
+                    
+                        <field name="height" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+                        <field name="length" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+                        <field name="width" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+                        <field name="volume" digits="[42,5]" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+                        <field name="volume_factor" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+                        <field name="volume_available" attrs="{'invisible': [('has_volumetry', '=', False)]}"/>
+
+                    </group>
+                </xpath>
+            </field>
+     </record>
+  
+</odoo>
+   

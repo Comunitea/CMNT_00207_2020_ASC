@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="stock_serial_line_wzd_tree" model="ir.ui.view">
+        <field name="name">stock.serioal.line.wzd.line.tree</field>
+        <field name="model">serial.line.wzd</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Inventory Lines" editable="bottom"
+            decoration-muted="to_delete == True">
+                <field name="line_id" invisible="1"/>
+                <field name="product_id" invisible="1"/>
+                <field name="location_id" invisible="1"/>
+                <field name="name"/>
+                <field name="serial_id" invisible="1"/>
+                <field name="to_delete" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+    <record id="stock_serial_inventory_line_tree" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.line.tree</field>
+        <field name="model">stock.serial.inventory.line</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Inventory Lines">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="serial_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--record id="stock_serial_inventory_line_tree2" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.line.tree2</field>
+        <field name="model">stock.serial_inventory.line</field>
+        <field name="arch" type="xml">
+            <tree editable="top" string="Inventory Details" decoration-info="product_qty != theoretical_qty" decoration-danger="theoretical_qty &lt; 0">
+                <field name="product_tracking" invisible="1"/>
+                <field name="product_id"  domain="[('type','=','product')]"/>
+                <field name="product_uom_id" string="UoM" groups="uom.group_uom"/>
+                <field name="location_id" domain="[('id', 'child_of', inventory_location_id)]" groups="stock.group_stock_multi_locations"/>
+                <field name="prod_lot_id" domain="[('product_id', '=', product_id)]" attrs="{'readonly': [('product_tracking', '=', 'none')]}" context="{'default_product_id': product_id}"  groups="stock.group_production_lot"/>
+                <field name="package_id" domain="['|', ('location_id','=', False), ('location_id', '=', location_id)]" groups="stock.group_tracking_lot"/>
+                <field name="partner_id" groups="stock.group_tracking_owner"/>
+                <field name="theoretical_qty" readonly="1"/>
+                <field name="product_qty" string="Real Quantity"/>
+                <field name="state" invisible="1"/>
+                <field name="inventory_id" invisible="1"/>
+                <field name="inventory_location_id" invisible="1"/>
+            </tree>
+        </field>
+    </record-->
+
+    <record id="stock_serial_inventory_line_search" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.line.search</field>
+        <field name="model">stock.serial.inventory.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Inventory Lines">
+                <field name="product_id"/>
+                <field name="location_id" groups="stock.group_stock_multi_locations"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_serial_inventory_filter" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.filter</field>
+        <field name="model">stock.serial.inventory</field>
+        <field name="arch" type="xml">
+            <search string="Search Inventory">
+                <field name="name" string="Inventory Reference"/>
+                <field name="date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <!--field name="product_id" string="Inventory Product" filter_domain="['|', ('product_id', 'ilike', self), ('line_ids.product_id','ilike',self)]"/-->
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="confirm" domain="[('state', '=', 'confirm')]"/>
+                <filter string="Validated" name="done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Inventories Date" name="inventories_month" domain="[]" context="{'group_by':'date'}" help="Physical Inventories by Date"/>
+                </group>
+            </search>
+
+        </field>
+    </record>
+
+    <record id="view_serial_inventory_tree" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.tree</field>
+        <field name="model">stock.serial.inventory</field>
+        <field name="arch" type="xml">
+            <tree string="Lot/Serial Number Inventory" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_stock_serial_inventory_kanban" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.kanban</field>
+        <field name="model">stock.serial.inventory</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title"><span><t t-esc="record.name.value"/></span></strong>
+                                </div>
+                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'info', 'cancel': 'default', 'confirm': 'success', 'done': 'success'}}"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <i class="fa fa-clock-o" role="img" aria-label="Date" title="Date"/> <t t-esc="record.date.value"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_serial_inventory_form" model="ir.ui.view">
+        <field name="name">stock.serial_inventory.form</field>
+        <field name="model">stock.serial.inventory</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment">
+            <header>
+                <button name="action_start" states="draft" string="Start Inventory" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+                <button name="action_validate" states="confirm" string="Validate Inventory" type="object" class="oe_highlight" groups="stock.group_stock_manager"/>
+                <button name="action_validate_qty" attrs="{'invisible': ['|', ('update_quant_qty', '=', False), '|', ('state', '!=', 'done'), ('inventory_id', '!=', False)]}" string="Validate Qty Inventory" type="object" class="oe_highlight" groups="stock.group_stock_manager"/>
+                <button name="action_cancel_draft" states="cancel" string="Set to Draft" type="object"/>
+                <button name="action_cancel_draft" states="confirm" string="Cancel Inventory" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_serial_inventory_line_tree"
+                        class="oe_stat_button"
+                        icon="fa-building-o"
+                        type="object"
+                        help="List view of lines"
+                        groups="base.group_no_one"
+                        states="confirm">
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_text">Details</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="oe_title">
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name" placeholder="e.g. Annual inventory"/></h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="location_id" domain="[('usage','not in', ['supplier','production'])]" groups="stock.group_stock_multi_locations"/>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="inventory_id" readonly="1" attrs="{'invisible': [('inventory_id', '=', False)]}"/>
+                        <field name="update_quant_qty"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    </group>
+                </group>
+                <notebook attrs="{'invisible':[('state','=','draft')]}">
+                    <page string="Inventory Details" >
+                        <button name="action_reset_product_qty" states="confirm" string="⇒ Set quantities to 0" type="object" class="oe_link oe_right"/>
+                        <field name="line_ids" string="Inventory Details" mode="tree,kanban">
+                            <tree string="Inventory Details" editable="bottom">
+                                <field name="product_id" force_save="1"/>
+                                <field name="location_id" domain="[('id', 'child_of', parent.location_id)]"/>
+                                <button
+                                        name="action_open_serial_mngt_line_wzd"
+                                        string="Open Wizard"
+                                        type="object"
+                                        icon="fa-magic"
+                                    />
+
+                                <field name="serial_ids"/>
+                                <button
+                                        name="open_serial_line_wzd"
+                                        string="Open tracking"
+                                        type="object"
+                                        icon="fa-barcode"
+                                    />
+    
+                                
+                            </tree>
+                        </field>
+                        <p></p>
+                        <h3 class="oe_grey">Notes</h3>
+                        <ul class="oe_grey"><li>Inventory adjustments will be made by comparing the theoretical and the checked quantities.</li>
+                        <li>You can delete lines to ignore some products.</li>
+                        <li>If a product is not at the right place, set the checked quantity to 0 and create a new line with correct location.</li>
+                        </ul>
+                    </page>
+                    <page string="Inventory Adjustments" attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <field name="move_ids">
+                            <tree string="Stock Moves">
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="picking_id" invisible="1" />
+                                <field name="create_date" invisible="1" />
+                                <field name="date_expected" invisible="1" />
+                                <field name="scrapped" invisible="1"/>
+                                <field name="state" invisible="1"/>
+                                <field name="location_id" string="From"/>
+                                <field name="location_dest_id" string="To"/>
+                                <field name="quantity_done"/>
+                                <field name="serial_ids"/>
+                                <button name="action_view_serials" string="Series/Lotes" type="object" icon="fa-barcode"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_serial_inventory_form" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.serial.inventory</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="view_serial_inventory_tree"/>
+        <field name="search_view_id" ref="view_serial_inventory_filter"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new inventory adjustment
+          </p><p>
+            This is used to correct the product quantities you have in stock.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_serial_inventory_line_tree" model="ir.actions.act_window">
+        <field name="name">Inventory Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.serial.inventory.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="stock_serial_inventory_line_tree"/>
+        <field name="domain">[('inventory_id', '=', active_id)]</field>
+    </record>
+    <record id="action_stock_serial_line_wzd_tree" model="ir.actions.act_window">
+        <field name="name">Inventory Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">serial.line.wzd</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="stock_serial_line_wzd_tree"/>
+    </record>
+
+    <menuitem action="action_serial_inventory_form" id="menu_action_serial_inventory_form" parent="stock.menu_stock_warehouse_mgmt" sequence="31"/>
+</odoo>

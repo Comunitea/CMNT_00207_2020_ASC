@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!-- add picking to batch  -->
+    <record id="stock_picking_to_pda" model="ir.ui.view">
+        <field name="name">stock.picking.to.pda.form</field>
+        <field name="model">stock.picking.to.pda</field>
+        <field name="arch" type="xml">
+            <form string="Send pickings to pda">
+                <group string="Select a pda batch" >
+                    <group>
+                        <field
+                            name="batch_id"
+                            class="oe_inline"
+                            options="{'no_open': True}"
+                            context="{'default_picking_type_id': picking_type_id}"
+                        />
+
+                    </group>
+                    <group>
+                        <field name="picking_type_id"/>
+                    </group>
+                </group>
+                <group>
+
+                    <group string="Pickings">
+
+                        <field name="line_ids" nolabel="1">
+                            <tree create="0" editable="top">
+                                <field name="sale_id" />
+                                <field name="picking_id" readonly="1" />
+                                <field name="box_id" context="{'short_name': True}"/>
+                                <button
+                                    name="compute_parent_move_line_ids"
+                                    icon="fa-list"
+                                    type='object'
+                                />
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Moves">
+                        <field name="move_line_ids" readonly="1" nolabel="1">
+                            <tree
+                                decoration-muted="state == 'cancel'"
+                                decoration-danger="(state not in ('cancel','done'))"
+                                string="Move Lines"
+                                create="0"
+                            >
+                                <field name="product_id" />
+                                <field name="product_uom_qty" />
+                                <button
+                                    name="action_open_tracking_form"
+                                    string="Open tracking"
+                                    type="object"
+                                    icon="fa-barcode"
+                                />
+                                <field name="qty_done" string="Quantity Done" />
+                                <field
+                                    name="product_uom_id"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    string="Unit of Measure"
+                                    groups="uom.group_uom"
+                                />
+                                <field name="state" />
+
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="attach_pickings"
+                        type="object"
+                        string="Send to pda"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--  add picking to batch action -->
+    <record id="stock_picking_to_pda_action" model="ir.actions.act_window">
+        <field name="name">Send to pda</field>
+        <field name="res_model">stock.picking.to.pda</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="stock_picking_to_pda" />
+        <field name="target">current</field>
+    </record>
+
+    <act_window name="Add to PDA"
+        id="stock_picking_to_pda_action_stock_picking"
+        res_model="stock.picking.to.pda"
+        src_model="stock.picking"
+        view_mode="form"
+        view_type="form"
+        target="new"
+    />
+
+
+    <act_window name="Add to PDA tree"
+        id="stock_picking_to_pda_action_stock_picking_tree"
+        res_model="stock.picking.to.pda"
+        src_model="stock.picking"
+        view_mode="form"
+        target="new"
+        multi="True"
+        key2="client_action_multi"/>
+
+
+
+</odoo>

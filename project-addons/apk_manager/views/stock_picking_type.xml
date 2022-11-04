@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_warehouse" model="ir.ui.view">
+        <field name="name">view_warehouse</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='wh_input_stock_loc_id']" position="before">
+                <field name="location_barcode" />
+            </xpath>
+        </field>
+    </record>
+     <record model="ir.ui.view" id="view_picking_type_form">
+            <field name="name">Operation Types</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.view_picking_type_form"/>
+            <field name="arch" type="xml">
+                <field name="barcode" position="after">
+                    <field name="app_integrated"/>
+                </field>
+                <xpath expr="//sheet/group[2]" position="inside">
+                    <group name="apk_config" string="Conf. APK" attrs="{'invisible': [('app_integrated', '=', False)]}">
+                        <group>
+                            <field name="allow_overprocess"/>
+                            <field name="need_package"/>
+                            <field name="need_weight"/>
+                            <field name="next_move_on_qty_done"/>
+                            <field name="validate_on_finish"/>
+                            <field name="icon"/>
+                        </group>
+                        <group>
+                            <field name="default_location"/>
+                            <field name="need_location_id"/>
+                            <field name="allow_change_location_id"/>
+                            <field name="need_location_dest_id"/>
+                            <field name="allow_change_location_dest_id"/>
+                            <field name="need_loc_before_qty"/>
+                            <field name="need_confirm_lot_id"/>
+                            <field name="need_confirm_product_id"/>
+                        </group>
+                        
+                        
+                           
+                          
+                    </group>
+                </xpath>
+            </field>
+    </record>
+    <record id="stock_picking_type_kanban_apk" model="ir.ui.view">
+            <field name="name">stock.picking.type.kanban.apk</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.stock_picking_type_kanban" />
+            <field name="arch" type="xml">
+                <field name="count_picking_ready" position="after">
+                    <field name="count_picking_batch_ready" />
+                    <field name="app_integrated" />
+                </field>
+                <xpath expr="//div/button[@name='get_action_picking_tree_ready']" position="after">
+                    <hr t-if="record.count_picking_batch_ready.raw_value &gt; 0"/>
+                    <div t-if="record.count_picking_batch_ready.raw_value &gt; 0" class="col-6 o_kanban_primary_left">
+                        <button
+                        class="btn btn-primary"
+                        name="get_action_picking_batch_tree_ready"
+                        type="object">
+                        <span><t t-esc="record.count_picking_batch_ready.value"/> To Pda</span>
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_location_form" model="ir.ui.view">
+    <field name="name">stock.location.form</field>
+    <field name="model">stock.location</field>
+    <field name="inherit_id" ref="stock.view_location_form"/>
+    <field name="arch" type="xml">
+      <field name="barcode" position="after">
+        <field name="is_box" readonly="0"/>
+
+
+      </field>
+    </field>
+  </record>
+  <record model="ir.ui.view" id="view_stock_location_kanban">
+            <field name="name">stock.location.kanban</field>
+            <field name="model">stock.location</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors">
+                    <field name="name"/>
+                    <field name="location_id"/>
+                    <field name="color"/>
+                    <field name="removal_priority"/>
+                    <field name="barcode"/>
+                    <field name="usage"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click o_has_icon">
+                                <div class="o_project_kanban_main">
+                                    <div class="o_kanban_card_content">
+                                        <div class="o_kanban_primary_left">
+                                            <div class="o_primary">
+                                                <span><field name="name"/></span>
+                                                <span t-if="record.location_id.value">
+                                                    <strong><t t-esc="record.location_id.value"/></strong>
+                                                </span>
+                                            </div>
+                                            <div >
+                                                <span><field name="usage"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                         <div class="col-6">
+                                            <span><field name="barcode"/></span>
+                                        </div>
+                                         <div class="col-6">
+                                            <span>Prioridad: <field name="removal_priority"/></span>
+                                        </div>
+                                    </div>
+
+                                        <a class="o_kanban_manage_toggle_button o_left" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                        <div class="o_kanban_card_manage_pane dropdown-menu"  role="menu">
+                                        <!--div class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                            <div role="menuitem">
+                                                <a name="%(portal.portal_share_action)d" type="action">Share</a>
+                                            </div>
+                                            <div role="menuitem">
+                                                <a type="edit">Edit</a>
+                                            </div>
+                                            <div role="menuitem" t-if="record.rating_status.raw_value != 'no'">
+                                                <a name="action_view_all_rating" type="object">Customer Ratings</a>
+                                            </div>
+                                        </div-->
+                                        <div role="menuitem" aria-haspopup="true" class="o_no_padding_kanban_colorpicker">
+                                            <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                                        </div>
+                                </div>
+                                    <!--a class="o_kanban_manage_toggle_button o_left" href="#" groups="project.group_project_manager"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a-->
+                                    <span class="o_right"><field name="active" widget="boolean_favorite" nolabel="1" force_save="1" /></span>
+                                </div>
+
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    <!--record id="actualizar_removal_priority_char" model="ir.actions.server">
+        <field name="name">Act. Grupos de prioridad</field>
+        <field name="model_id" ref="stock.model_stock_location"/>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="state">code</field>
+        <field name="code">records.actualizar_removal_priority_char()</field>
+    </record-->
+
+    <!--record id="stock_location_size_action" model="ir.actions.act_window">
+        <field name="name">Location Sizes</field>
+        <field name="res_model">stock.location.size</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        action="warehouse_apk_custom.stock_location_size_action"
+        id="menu_stockstock_location_size_action"
+        parent="stock.menu_warehouse_config" sequence="900"/-->
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="stock_picking_batch_tree">
+         <field name="name">stock.picking.batch.tree.wac</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="pick_group_id"/>
+                </field>
+            </field>
+    </record>
+
+     <record model="ir.ui.view" id="stock_batch_picking_form">
+            <field name="name">stock.picking.batch.form</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_custom.stock_batch_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                     <field name="pick_group_id"/>
+                     <field name="picked"/>
+
+                </xpath>
+                <xpath expr="//field[@name='move_line_ids']/tree/field[@name='qty_done']" position="after">
+                    <field name="picked"/>
+                </xpath>
+
+                <xpath expr="//header" position="after">
+                    <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('picked','=',True)]}">
+                        Este albarán está pendiente de picking. Puedes liberarlo 
+                        <button name="set_picked" string="Aquí" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+                    </div>
+                </xpath>
+
+            </field>
+    </record>   
+    
+    <record id="action_assign_to_pick_group" model="ir.actions.server">
+        <field name="name">Send to Pick</field>
+        <field name="model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="binding_model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="state">code</field>
+        <field name="code">records.assign_to_pick_group()</field>
+    </record>
+
+    <record id="action_assign_to_pick_new_group" model="ir.actions.server">
+        <field name="name">Create &amp; Send to Pick</field>
+        <field name="model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="binding_model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="state">code</field>
+        <field name="code">records.assign_to_new_pick_group()</field>
+    </record>
+
+
+
+</odoo>
+

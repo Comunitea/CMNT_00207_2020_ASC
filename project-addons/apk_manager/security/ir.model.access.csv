@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_apk_manager,stock_apk_manager,model_apk_manager,stock.group_stock_user,1,1,1,1
+access_pick_group_line_user,pick.group.line user,model_pick_group_line,stock.group_stock_user,1,1,1,1
+access_pick_group_user,pick.group user,model_pick_group,stock.group_stock_user,1,1,1,1

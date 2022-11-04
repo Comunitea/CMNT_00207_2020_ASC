@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="serial_mngt_line_wzd" model="ir.ui.view">
+        <field name="name">Asistente Nº Serie</field>
+        <field name="model">serial.mngt.wzd</field>
+        <field name="arch" type="xml">
+            <form string="Lectura de series y lotes">
+                <header>
+                    <!--button name="update_line"
+                        string="Actualizar línea"
+                        type="object"/>
+
+                    <button name="reset_line"
+                        string="Resetear línea"
+                        type="object"/-->
+                </header>
+                <h2>
+                    
+                    <field name="line_id" invisible="1"/>
+
+                </h2>
+                <p><i class="fa fa-info-circle"/>
+                Asistente para Nº de series
+                </p>
+                <field name="location_id" readonly="1"/>
+                <field name="product_id" readonly="1"/>
+                <group>
+                    <field name="act_mode"/>
+                </group>
+                <field name="line_ids">
+                    <tree editable="bottom">
+                        <field name="name"/>
+                    </tree>
+
+                </field>
+                
+                <footer>
+                    <button name="action_add_names" string="Añadir" type="object" class="oe_highlight"/>
+                    <button name="action_del_names" attrs="{'invisible': [('act_mode', '=', 'zero')]}" string="Eliminar" type="object" class="btn-danger"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_open_serial_mngt_line_wzd">
+        <field name="name">Serial to Inventory Line</field>
+        <field name="res_model">serial.mngt.wzd</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="serial_mngt_line_wzd"/>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pick_group_compute_wizard" model="ir.ui.view">
+        <field name="name">Preparation Pick Group</field>
+        <field name="model">pick.group.compute</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+                <p>
+                Prepare new pick groups.
+                </p>
+                <footer>
+                    <button name="pick_group_calculation" string="Run preparations" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pick_group_compute" model="ir.actions.act_window">
+        <field name="name">Preparation Pick Group</field>
+        <field name="res_model">pick.group.compute</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem action="action_pick_group_compute" id="menu_pick_group_compute" parent="menu_pick_group_parent" sequence="200"/>
+
+
+</odoo>

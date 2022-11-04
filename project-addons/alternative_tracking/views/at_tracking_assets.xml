@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="stock_assets_backend" inherit_id="stock.stock_assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/alternative_tracking/static/src/js/stock_traceability_report_widgets.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+ 
+     <record model="ir.ui.view" id="view_picking_type_form">
+            <field name="name">Operation Types</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="apk_manager.view_picking_type_form"/>
+            <field name="arch" type="xml">
+                <field name="app_integrated" position="after">
+                    <field name="is_only_for_picking"/>
+                </field>
+                <field name="icon" position="after">
+                    <field name="need_picking"/>
+                    <field name="merge_in_batch" invisible="1"/>
+                </field>
+            </field>
+    </record>
+
+     <record id="stock_picking_type_kanban" model="ir.ui.view">
+            <field name="name">stock.picking.type.kanban</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.stock_picking_type_kanban" />
+            <field name="arch" type="xml">
+                  <field name="count_picking_ready" position="after">
+                    <field name="count_pick_group_ready" />
+                    <field name="count_pick_group_late" />
+                </field>
+                <xpath expr="//div/button[@name='get_action_picking_tree_ready']" position="after">
+                    <hr t-if="record.count_pick_group_ready.raw_value &gt; 0"/>
+                    <div t-if="record.count_pick_group_ready.raw_value &gt; 0" class="col-6 o_kanban_primary_left">
+                        <button
+                        class="btn btn-primary"
+                        name="get_action_pick_group_ready"
+                        type="object">
+                        <span><t t-esc="record.count_pick_group_ready.value"/> To Pick</span>
+                        </button>
+                    </div>
+                </xpath>
+
+                 <xpath expr="//div/div/a[@name='get_action_picking_tree_waiting']/../.." position="after">
+                    <div t-if="record.count_pick_group_late.raw_value &gt; 0" class="row">
+                        <div class="col-9">
+                            <a name="get_action_pick_group_late" type="object">
+                                Late
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <field name="count_pick_group_late"/>
+                        </div>
+                    </div>
+
+                </xpath>
+            </field>
+        </record>
+</odoo>

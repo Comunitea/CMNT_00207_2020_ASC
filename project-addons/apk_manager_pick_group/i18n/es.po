@@ -1,0 +1,409 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* apk_manager_pick_group
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-25 07:51+0000\n"
+"PO-Revision-Date: 2022-08-25 07:51+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_kanban
+msgid "<i class=\"fa fa-clock-o\" role=\"img\" aria-label=\"Date\" title=\"Date\"/>"
+msgstr "<i class=\"fa fa-clock-o\" role=\"img\" aria-label=\"Fecha\" title=\"Fecha\"/>"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "<span class=\"o_stat_text\">Details</span>"
+msgstr "<span class=\"o_stat_text\">Detalles</span>"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__apk_name
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__apk_name
+msgid "Apk Name"
+msgstr "Nombre en aplicación"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_stock_picking_batch
+msgid "Batch Picking"
+msgstr "Agrupación de albaranes"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_pick_group_compute
+msgid "Batch Picking Lines To Grouped"
+msgstr "Lineas de agrupación de albaranes"
+
+#. module: apk_manager_pick_group
+#: code:addons/apk_manager_pick_group/wizard/pick_group_wzd.py:19
+#, python-format
+msgid "Batch to pick not found"
+msgstr "No se ha encontrado una agrupación de picking"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__batch_ids
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Batchs"
+msgstr "Agrupaciones"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_compute_wizard
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__purchase_ids
+msgid "Compras"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model:ir.actions.server,name:apk_manager_pick_group.action_assign_to_pick_new_group
+msgid "Create & Send to Pick"
+msgstr "Enviar para recoger (Nuevo)"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__create_uid
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__create_uid
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__create_date
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__create_date
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,help:apk_manager_pick_group.field_pick_group_line__product_uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr "Unidad de medida por defecto utilizada para todas las operaciones de stock"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Details"
+msgstr "Detalles"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__display_name
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__display_name
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,help:apk_manager_pick_group.field_pick_group__apk_name
+#: model:ir.model.fields,help:apk_manager_pick_group.field_pick_group_line__apk_name
+msgid "Display name para la apk"
+msgstr "Nombre mostrado en apliación"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_search
+#: selection:pick.group,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__group_id
+msgid "Group"
+msgstr "Grupo"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__id
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__id
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__id
+msgid "ID"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_search
+#: selection:pick.group,state:0
+msgid "In Progress"
+msgstr "En progreso"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Info"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group____last_update
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute____last_update
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__write_uid
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__write_uid
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__write_date
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_compute__write_date
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.stock_picking_type_kanban
+msgid "Late"
+msgstr "Retrasado"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__line_ids
+msgid "Lines"
+msgstr "Líneas"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "List view of lines"
+msgstr "Vista de lista de líneas"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__location_dest_id
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__location_id
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_type__merge_in_batch
+msgid "Merge in prev. picking"
+msgstr "Mezclar en picking anterior"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__move_line_ids
+msgid "Move lines"
+msgstr "Líneas"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_type__need_picking
+msgid "Need previuous picking"
+msgstr "Necesita picking anterior"
+
+#. module: apk_manager_pick_group
+#: code:addons/apk_manager_pick_group/models/pick_group.py:301
+#, python-format
+msgid "Not found type GR.PICK"
+msgstr "No se ha enontrado la secuencia: GR.PICK"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__nitems
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__nitems
+msgid "Nº items"
+msgstr "# Items"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__nlines
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__nlines
+msgid "Nº lines"
+msgstr "# Líneas"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__origin
+msgid "Origin"
+msgstr "Origen"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_compute_wizard
+msgid "Parameters"
+msgstr "Parámetros"
+
+#. module: apk_manager_pick_group
+#: model:ir.actions.act_window,name:apk_manager_pick_group.action_pick_group_form
+#: model:ir.actions.act_window,name:apk_manager_pick_group.action_pick_group_tree
+#: model:ir.model,name:apk_manager_pick_group.model_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_batch__pick_group_id
+#: model:ir.ui.menu,name:apk_manager_pick_group.menu_action_pick_group_form
+#: model:ir.ui.menu,name:apk_manager_pick_group.menu_pick_group_parent
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_tree
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Pick Group"
+msgstr "Picking"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_type__count_pick_group_late
+msgid "Pick Group Late"
+msgstr "Retrasados"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_pick_group_line
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_move_line__pick_group_line_id
+msgid "Pick Group Line"
+msgstr "Línea de picking"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_line_tree
+msgid "Pick Group Lines"
+msgstr "Líneas de picking"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_type__count_pick_group_ready
+msgid "Pick Group Ready"
+msgstr "Picking listo"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__picked
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_move_line__picked
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_stock_picking_batch__picked
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_search
+#: selection:pick.group,state:0
+msgid "Picked"
+msgstr "Realizado"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__date_picked
+msgid "Picked Date"
+msgstr "Fecha de realización"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__user_id
+msgid "Picker"
+msgstr "Recogedor"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__picking_ids
+msgid "Picking"
+msgstr "Albarán"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_stock_picking_type
+msgid "Picking Type"
+msgstr "Tipo de albarán"
+
+#. module: apk_manager_pick_group
+#: model:ir.actions.act_window,name:apk_manager_pick_group.action_pick_group_compute
+#: model:ir.ui.menu,name:apk_manager_pick_group.menu_pick_group_compute
+msgid "Preparation Pick Group"
+msgstr "Crear preparaciones (Auto)"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_compute_wizard
+msgid "Prepare new pick groups."
+msgstr "Generar nuevos pickings"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Movimientos de Producto (Stock Move Line)"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__template_tracking
+msgid "Product Tracking"
+msgstr "Tracking"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__qty
+msgid "Qty"
+msgstr "Cant."
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__removal_priority
+msgid "Removal priority"
+msgstr "Prioridad"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Reset Picked"
+msgstr "Marcar no hechos"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_compute_wizard
+msgid "Run preparations"
+msgstr "Marcar hechos"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__scheduled_date
+msgid "Scheduled Date"
+msgstr "Fecha prevista"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_search
+msgid "Search pick group"
+msgstr "Buscar picking"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.pick_group_line_search
+msgid "Search pick group Lines"
+msgstr "Buscar línea de picking"
+
+#. module: apk_manager_pick_group
+#: model:ir.actions.server,name:apk_manager_pick_group.action_assign_to_pick_group
+msgid "Send to Pick"
+msgstr "Enviar para recoger (Existente)"
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Set Picked"
+msgstr "Marcar hecho"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__state
+msgid "State"
+msgstr "Provincia"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__picking_type_id
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.view_pick_group_form
+msgid "Tipo"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model_terms:ir.ui.view,arch_db:apk_manager_pick_group.stock_picking_type_kanban
+msgid "To Pick"
+msgstr "A recoger"
+
+#. module: apk_manager_pick_group
+#: model:ir.model,name:apk_manager_pick_group.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__product_uom_id
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__sale_ids
+msgid "Ventas"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__volume
+msgid "Volume (l.)"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__volume
+msgid "Volumen"
+msgstr ""
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group_line__weight
+msgid "Weight"
+msgstr "Peso"
+
+#. module: apk_manager_pick_group
+#: model:ir.model.fields,field_description:apk_manager_pick_group.field_pick_group__weight
+msgid "Weight (Kgrs.)"
+msgstr "Peso (Kgrs.)"

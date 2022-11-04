@@ -1,0 +1,795 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* apk_manager
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-24 11:04+0000\n"
+"PO-Revision-Date: 2022-08-24 11:04+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__move_line_count
+msgid "# Operaciones"
+msgstr ""
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.view_stock_location_kanban
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+msgstr "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Gestión\" title=\"Gestión\"/>"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_production_lot__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: apk_manager
+#: model:ir.actions.act_window,name:apk_manager.stock_picking_to_pda_action_stock_picking
+msgid "Add to PDA"
+msgstr "Enviar a PDA"
+
+#. module: apk_manager
+#: model:ir.actions.act_window,name:apk_manager.stock_picking_to_pda_action_stock_picking_tree
+msgid "Add to PDA tree"
+msgstr "Enviar a PDA"
+
+#. module: apk_manager
+#: code:addons/apk_manager/wizard/stock_picking_to_pda.py:84
+#, python-format
+msgid "All pickings must be 'assigned'"
+msgstr "Todos los albaranes debe estar 'Preparados'"
+
+#. module: apk_manager
+#: code:addons/apk_manager/wizard/stock_picking_to_pda.py:81
+#, python-format
+msgid "All pickings must be assigned to box"
+msgstr "Todos los albaranes debe estar asignados a una caja"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_delivery_carrier__wh_code
+#: model:ir.model.fields,field_description:apk_manager.field_prestashop_delivery_carrier__wh_code
+#: model:ir.model.fields,field_description:apk_manager.field_uom_uom__wh_code
+msgid "Apk Code"
+msgstr "Código en aplicación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_model__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_prestashop_product_combination__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_product_product__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_purchase_order__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_location__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking__apk_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__apk_name
+msgid "Apk Name"
+msgstr "Nombre en aplicación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__apk_state
+msgid "Apk State"
+msgstr "Estado en aplicación"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.view_move_line_form
+msgid "Apk Values"
+msgstr "Valores en apliación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__need_location_dest_id
+msgid "Apk confirma destino"
+msgstr "APK necesita confirmar destino"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__need_confirm_lot_id
+msgid "Apk confirma lote"
+msgstr "APK necesita confirmar lote"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__need_location_id
+msgid "Apk confirma origen"
+msgstr "APK necesita confirmar origen"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__need_confirm_product_id
+msgid "Apk confirma producto"
+msgstr "APK necesita confirmar producto"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__need_loc_before_qty
+msgid "Apk confirma ubic antes qty"
+msgstr "APK necesita confirmar ubicación antes de cantidad"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__next_move_on_qty_done
+msgid "Auto Siguiente"
+msgstr "Siguiente Auto"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__validate_on_finish
+msgid "Auto Validación"
+msgstr "Validación Auto"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_picking_batch
+msgid "Batch Picking"
+msgstr "Agrupación de albaranes"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_picking_to_pda
+msgid "Batch Picking Lines"
+msgstr "Lineas de agrupación por albarán"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_picking_to_pda_lines
+msgid "Batch Picking Lines Picks"
+msgstr "Lineas de agrupación de picking por albarán
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_pick_group_compute
+msgid "Batch Picking Lines To Grouped"
+msgstr "Lineas para agrupar"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__box_id
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking__box_id
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__box_id
+msgid "Box"
+msgstr "Caja"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__search_str
+msgid "Cadena de busqueda en APK"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__allow_change_location_dest_id
+msgid "Cambiar destino?"
+msgstr "Permite cambiar destino"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__allow_change_location_id
+msgid "Cambiar origen?"
+msgstr "Permite cambiar origen"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Cancelado"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__carrier_id
+msgid "Carrier"
+msgstr "Transportista"
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_delivery_carrier__wh_code
+#: model:ir.model.fields,help:apk_manager.field_prestashop_delivery_carrier__wh_code
+#: model:ir.model.fields,help:apk_manager.field_uom_uom__wh_code
+msgid "Code to use in app"
+msgstr "Códifo en aplicación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_location__color
+msgid "Color Box"
+msgstr "Color de la caja"
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Completado"
+msgstr ""
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.view_picking_type_form
+msgid "Conf. APK"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_confirm_product_id
+msgid "Confirma Artículo?"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_confirm_lot_id
+msgid "Confirma Lote?"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_location_dest_id
+msgid "Confirma destino?"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_location_id
+msgid "Confirma origen?"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_loc_before_qty
+msgid "Confirma ubic antes de cant.?"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Confirmado"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__count_picking_batch_ready
+msgid "Count Picking Batch Ready"
+msgstr "# Agrupaciones preparadas."
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__create_uid
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__create_uid
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__create_date
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__create_date
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__scheduled_date
+msgid "Date"
+msgstr "Fecha"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking__delayed
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__delayed
+msgid "Delayed"
+msgstr "Retrasado"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_delivery_carrier
+msgid "Delivery Methods"
+msgstr "Método de envío"
+
+#. module: apk_manager
+#: selection:stock.picking.type,default_location:0
+msgid "Destino"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__display_name
+#: model:ir.model.fields,field_description:apk_manager.field_apk_model__display_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__display_name
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_apk_model__apk_name
+#: model:ir.model.fields,help:apk_manager.field_prestashop_product_combination__apk_name
+#: model:ir.model.fields,help:apk_manager.field_product_product__apk_name
+#: model:ir.model.fields,help:apk_manager.field_purchase_order__apk_name
+#: model:ir.model.fields,help:apk_manager.field_stock_location__apk_name
+#: model:ir.model.fields,help:apk_manager.field_stock_move__apk_name
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__apk_name
+#: model:ir.model.fields,help:apk_manager.field_stock_picking__apk_name
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_batch__apk_name
+msgid "Display name para la apk"
+msgstr "Nombre mostrado en apliación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__partner_id
+msgid "Empresa"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "En espera"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+#: selection:stock.move.line,filterqties:0
+msgid "En proceso"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__location_barcode
+#: model:ir.model.fields,help:apk_manager.field_stock_warehouse__location_barcode
+msgid "Expresión regular para leer ubiaciones"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__filterqties
+msgid "Filterqties"
+msgstr "Filtro por cantidades"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__id
+#: model:ir.model.fields,field_description:apk_manager.field_apk_model__id
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__id
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__id
+msgid "ID"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__icon
+msgid "Icono"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_location__is_box
+msgid "If checked, is dest location for batch pickings. Customer usage"
+msgstr "Si está marcado, es una ubicación de tipo caja"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_inventory
+msgid "Inventory"
+msgstr "Inventario"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_inventory_line
+msgid "Inventory Line"
+msgstr "Línea inventario"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_location
+msgid "Inventory Locations"
+msgstr "Ubicaciones de inventario"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_location__is_box
+msgid "Is Box"
+msgstr "Es caja"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager____last_update
+#: model:ir.model.fields,field_description:apk_manager.field_apk_model____last_update
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda____last_update
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__write_uid
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__write_uid
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_apk_manager__write_date
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__write_date
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__box_id
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Lote/Número de serie"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Move Lines"
+msgstr "Movimientos"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_move_line_grouped
+msgid "Move line grouped for picking"
+msgstr "Lineas agrupadas para picking"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__move_line_ids
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Moves"
+msgstr "Movimientos"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_location__no_child_ids
+msgid "No childs"
+msgstr "Sin hijos"
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "No disponible"
+msgstr ""
+
+#. module: apk_manager
+#: code:addons/apk_manager/wizard/stock_picking_to_pda.py:55
+#, python-format
+msgid "No pickings to send"
+msgstr "No hay albaranes para enviar"
+
+#. module: apk_manager
+#: code:addons/apk_manager/models/stock_move_line.py:478
+#, python-format
+msgid "No puedes crear lotes en este tipo"
+msgstr ""
+
+#. module: apk_manager
+#: code:addons/apk_manager/models/stock_move_line.py:430
+#, python-format
+msgid "Not found: %s"
+msgstr "No se ha encontrado: %s"
+
+#. module: apk_manager
+#: code:addons/apk_manager/models/stock_move_line.py:416
+#, python-format
+msgid "Not over process allowed"
+msgstr "No se permite más cantidad"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__nitems
+msgid "Nº items"
+msgstr "# Items"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__nlines
+msgid "Nº lines"
+msgstr "# Líneas"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Open tracking"
+msgstr "Tracking virtual"
+
+#. module: apk_manager
+#: selection:stock.picking.type,default_location:0
+msgid "Origen"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__allow_overprocess
+msgid "Overprocess"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__batch_id
+msgid "PDA Batch"
+msgstr "Agrupación"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_package
+msgid "Paquetes"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Parcial"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,filterqties:0
+msgid "Pendientes"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__allow_overprocess
+msgid "Permitir realizar más cantidad que la reservada"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__need_weight
+msgid "Peso"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,filterqties:0
+msgid "Pick Completo"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_pick_group
+msgid "Pick Group"
+msgstr "Agrupación de picking"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_pick_group_line
+msgid "Pick Group Line"
+msgstr "Línea de agrupación de picking"
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Picked"
+msgstr "Realizado"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__line_ids
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__picking_id
+msgid "Picking"
+msgstr "Albarán"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_picking_type
+msgid "Picking Type"
+msgstr "Tipo de albarán"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Pickings"
+msgstr "Albaranes"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.view_stock_location_kanban
+msgid "Prioridad:"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Movimientos de Producto (Stock Move Line)"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_uom_uom
+msgid "Product Unit of Measure"
+msgstr "Unidad de medida del producto"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: apk_manager
+#: code:addons/apk_manager/models/stock_move_line.py:395
+#: code:addons/apk_manager/models/stock_move_line.py:426
+#, python-format
+msgid "Qty done must be 0, to change lot/serial"
+msgstr "La cantidad hecha debe ser 0 para cambiar lote/serie"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Quantity Done"
+msgstr "Cantidad hecha"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_quant
+msgid "Quants"
+msgstr "Quants"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__location_barcode
+#: model:ir.model.fields,field_description:apk_manager.field_stock_warehouse__location_barcode
+msgid "Reg. Ubicación"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_location__removal_priority_char
+msgid "Removal Priority"
+msgstr "Prioridad"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__removal_dest_priority
+msgid "Removal dest priority"
+msgstr "Prioridad de destino"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_move_line__removal_priority
+msgid "Removal priority"
+msgstr "Prioridad"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__needed_space
+msgid "Required vol in box"
+msgstr "Volumen requerido en caja"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__sale_id
+msgid "Sale"
+msgstr "Venta"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_sale_order
+msgid "Sale Order"
+msgstr "Pedido de venta"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Select a pda batch"
+msgstr "Seleccina agrupación"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Send pickings to pda"
+msgstr "Envia albaranes a la PDA"
+
+#. module: apk_manager
+#: model:ir.actions.act_window,name:apk_manager.stock_picking_to_pda_action
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Send to pda"
+msgstr "Enviar a la PDA"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_serial_inventory
+msgid "Serial Inventory"
+msgstr "Ajuste de Nº de serie"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_serial_inventory_line
+msgid "Serial Inventory Line"
+msgstr "Linea de ajuste de nº de serie"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__app_integrated
+msgid "Show in app"
+msgstr "Mostrar en PDA"
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_package
+msgid "Si está marcado no permite validar con paquetes a 0"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__need_location_dest_id
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_location_dest_id
+msgid "Si está marcado, la aplicación necesitará confimar destino para cada movimiento"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_confirm_product_id
+msgid "Si está marcado, la aplicación necesitará confimar el artículo antes de nada"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_confirm_lot_id
+msgid "Si está marcado, la aplicación necesitará confimar el lote"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__need_confirm_lot_id
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__need_confirm_product_id
+msgid "Si está marcado, la aplicación necesitará confimar el lote para cada movimiento"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__need_location_id
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_location_id
+msgid "Si está marcado, la aplicación necesitará confimar origen para cada movimiento"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_move_line__need_loc_before_qty
+msgid "Si está marcado, la aplicación necesitará confimar ubicaciones antes de cantidades"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_loc_before_qty
+msgid "Si está marcado, la aplicación necesitará confimar ubicaciones antes que cambiar las cantidades"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__allow_change_location_dest_id
+msgid "Si está marcado, la aplicación permite cambiar destino"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__allow_change_location_id
+msgid "Si está marcado, la aplicación permite cambiar origen"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__next_move_on_qty_done
+msgid "Si está marcado, la aplicación saltará al siguiente movimiento una vez todos hechos"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__validate_on_finish
+msgid "Si está marcado, la aplicación validará automaticamente"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_type__need_weight
+msgid "Si está marcdo no permite validar con peso a 0.00"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_type__default_location
+msgid "Tipo de ubicación por defecto"
+msgstr ""
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_type_kanban_apk
+msgid "To Pda"
+msgstr "En PDA"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_picking
+msgid "Transfer"
+msgstr "Albarán"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda__picking_type_id
+msgid "Type"
+msgstr "Tipo"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_prestashop_product_combination__wh_code
+#: model:ir.model.fields,field_description:apk_manager.field_product_product__wh_code
+msgid "Unique WH Code"
+msgstr "Código único de almacén"
+
+#. module: apk_manager
+#: model_terms:ir.ui.view,arch_db:apk_manager.stock_picking_to_pda
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking__try_validate
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__try_validate
+msgid "Validación desde PDA"
+msgstr ""
+
+#. module: apk_manager
+#: selection:stock.move.line,apk_state:0
+msgid "Validado"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__volume
+msgid "Volumen"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Almacén"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_batch__weight
+msgid "Weight"
+msgstr "Peso"
+
+#. module: apk_manager
+#: model:ir.model.fields,field_description:apk_manager.field_stock_picking_to_pda_lines__wzd_id
+msgid "Wizard"
+msgstr "Asistente"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_apk_manager
+msgid "apk.manager"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_apk_manager_hardware
+msgid "apk.manager.hardware"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_apk_model
+msgid "apk.model"
+msgstr ""
+
+#. module: apk_manager
+#: model:ir.model.fields,help:apk_manager.field_stock_picking_batch__scheduled_date
+msgid "date on which the batch picking is to be processed"
+msgstr "fecha en la que el grupo de albaranes se procesará"
+
+#. module: apk_manager
+#: model:ir.model,name:apk_manager.model_virtual_serial
+msgid "virtual.serial"
+msgstr ""

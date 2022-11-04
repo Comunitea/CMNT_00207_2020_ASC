@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="stock_picking_batch_tree">
+         <field name="name">stock.picking.batch.tree.wac</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="picking_ids"/>
+                    <field name="box_id"/>
+                    <field name="nlines"/>
+                    <field name="nitems"/>
+                </field>
+            </field>
+    </record>
+
+     <record model="ir.ui.view" id="stock_batch_picking_form">
+            <field name="name">stock.picking.batch.form</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_custom.stock_batch_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="box_id"/>
+                    <field name="try_validate" invisible="1"/>
+                </xpath>
+                <field name="notes" position="before">
+                    <field name="search_str" readonly="1"/>
+                </field>
+                <xpath expr="//header" position="after">
+                    <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('try_validate','=',False)]}">
+                        Has intentado validar este albarán desde la PDA.Puedes resetearlo
+                        <button name="reset_try_validate" string="Aquí" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+                    </div>
+                </xpath>
+            </field>
+    </record>
+
+
+     <!--record model="ir.ui.view" id="stock_batch_picking_form">
+            <field name="name">stock.picking.batch.form</field>
+            <field name="model">stock.picking.batch</field>
+            <field name="inherit_id" ref="stock_picking_batch_extended.stock_batch_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_stock_move_lines" class="oe_stat_button" icon="fa-list" type="object">
+                        <field string="Operaciones" name="move_line_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+    </record-->
+
+
+</odoo>
