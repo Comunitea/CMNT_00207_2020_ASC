@@ -10,7 +10,7 @@
                 <xpath expr="//button[@name='action_view_stock_move_lines']" position="before">
                     <button name="open_incoming_moves_view" type="object" class="oe_stat_button" icon="fa-sign-in" attrs="{'invisible': [('date_estimated_stock', '=', False)]}">
                         
-                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': [('date_estimated_stock_available', '=', 0)]}">
+                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': [('date_estimated_stock_available', '=', False)]}">
                             <span class="o_stat_value">
                                 <field name="estimated_stock_available" widget="statinfo" nolabel="1" class="mr4"/>
                                 <span class="o_stat_text">at</span>
@@ -20,7 +20,7 @@
                                 <span class="o_stat_text"></span>
                             </span>
                         </div>
-                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': ['|', ('date_estimated_stock', '=', False), ('estimated_stock_available', '!=', 0)]}">
+                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': [('date_estimated_stock_available', '!=', False)]}">
                             <span class="o_stat_value">
                                 <span class="o_stat_text">Incoming at</span>
                             </span>
