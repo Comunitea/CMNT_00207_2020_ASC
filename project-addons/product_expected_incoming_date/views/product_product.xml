@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+     <record model="ir.ui.view" id="product_normal_form_view">
+            <field name="name">product.product.normal.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_view_stock_move_lines']" position="before">
+                    <button name="open_incoming_moves_view" type="object" class="oe_stat_button" icon="fa-sign-in" attrs="{'invisible': [('date_estimated_stock', '=', False)]}">
+                        
+                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': [('estimated_stock_available', '=', 0)]}">
+                            <span class="o_stat_value">
+                                <field name="estimated_stock_available" widget="statinfo" nolabel="1" class="mr4"/>
+                                <span class="o_stat_text">at</span>
+                            </span>
+                            <span class="o_stat_value">
+                                <field name="date_estimated_stock_available" widget="statinfo" nolabel="1" class="mr4"/>
+                                <span class="o_stat_text"></span>
+                            </span>
+                        </div>
+                        <div class="o_field_widget o_stat_info danger" attrs="{'invisible': ['|', ('date_estimated_stock', '=', False), ('estimated_stock_available', '!=', 0)]}">
+                            <span class="o_stat_value">
+                                <span class="o_stat_text">Incoming at</span>
+                            </span>
+                            <span class="o_stat_value">
+                                <field name="date_estimated_stock" widget="statinfo" nolabel="1" class="mr4"/>
+                            </span>
+                        </div>
+                    </button>
+                </xpath>    
+
+                <xpath expr="//group[@name='purchase']" position="after">
+                    <group string="Expected Incomings" name="expected_incomings">
+                        <field name="estimated_stock_available"/>
+                        <field name="date_estimated_stock_available"/>
+                        <field name="date_estimated_stock"/>
+                        <field name="incoming_vendor_moves">
+                            <tree>
+                              <field name="state" />
+                                <field name="date_expected" />
+                                <field name="product_uom_qty"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    
+        <record id="view_move_tree_incoming" model="ir.ui.view">
+            <field name="name">stock.move.tree.incoming</field>
+            <field name="model">stock.move</field>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <tree decoration-danger="date_expected > current_date" string="Moves" create="0">
+                    <field name="product_id" invisible="context.get('hide_product',0)"/>
+                    <field name="state" invisible="1"/>
+                    <field name="picking_id"/>
+                    <field name="date_expected" />
+                    <field name="picking_type_id" invisible="1"/>
+                    <field name="product_uom_qty"/>
+                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                </tree>
+            </field>
+        </record>
+</odoo>
+
