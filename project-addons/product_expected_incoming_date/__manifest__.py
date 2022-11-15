@@ -10,6 +10,10 @@
     "depends": ["stock"],
     "data": [
         "views/product_product.xml",
+        "views/product_qty_state.xml",
+        "views/stock.xml",
+        "wizard/wzd_incoming_product.xml",
+        "security/ir.model.access.csv"
     ],
     "installable": True,
     "license": "AGPL-3",

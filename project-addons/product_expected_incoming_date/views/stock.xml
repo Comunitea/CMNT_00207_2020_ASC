@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+        <record id="view_move_tree_incoming" model="ir.ui.view">
+            <field name="name">stock.move.tree.incoming</field>
+            <field name="model">stock.move</field>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <tree decoration-danger="date &gt; current_date" string="Moves" create="0" default_order="date asc">
+                    <field name="product_id" invisible="context.get('hide_product',0)"/>
+                    <field name="state" invisible="1"/>
+                    <field name="picking_id"/>
+                    <field name="date" />
+                    <field name="picking_type_id" invisible="1"/>
+                    <field name="product_uom_qty"/>
+                    <field name="virtual_available"/>
+                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                </tree>
+            </field>
+        </record>
+
+
+     <record id="view_move_tree" model="ir.ui.view">
+        <field name="name">stock.move.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree"/>
+        <field name="arch" type="xml">
+            <field name="product_uom_qty" position="after">
+                <field name="reserved_availability"/>
+                <field name="virtual_available"/>
+            </field>
+            <!--field name="date" position="after">
+                <field name="date_expected"/>
+            </field-->
+        </field>
+    </record>
+    
+
+    <!--menuitem id="menu_show_wzd_product_incoming"
+        name="Show incoming"
+        action="action_show_wzd_product_incoming"
+        parent="sale.menu_sale_report"
+        sequence="99"/-->
+
+
+    <record forcecreate="True" id="ir_cron_update_product_qty_State" model="ir.cron">
+        <field name="name">Update Product Qties Incoming Info</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="state">code</field>
+        <field name="code">model.update_product_qty_status()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="product_expected_incoming_date.model_product_qty_state"/>
+    </record>
+</odoo>
+

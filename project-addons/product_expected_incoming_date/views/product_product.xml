@@ -32,37 +32,67 @@
                 </xpath>    
 
                 <xpath expr="//group[@name='purchase']" position="after">
-                    <group string="Expected Incomings" name="expected_incomings" attrs="{'invisible': [('date_estimated_stock', '=', False)]}">
+                    <group string="Expected Incomings" name="expected_incomings" >
+                        <field name="product_qty_state_id"/>
                         <field name="estimated_stock_available"/>
                         <field name="date_estimated_stock_available"/>
                         <field name="date_estimated_stock"/>
                         <field name="incoming_vendor_moves">
                             <tree>
                               <field name="state" />
-                                <field name="date_expected" />
+                                <field name="date" />
                                 <field name="product_uom_qty"/>
                             </tree>
                         </field>
+                        <button name="recalc_product_qty_state" type='object' string="Recalc Incoming Qties Info"/>
                     </group>
                 </xpath>
             </field>
         </record>
     
-        <record id="view_move_tree_incoming" model="ir.ui.view">
-            <field name="name">stock.move.tree.incoming</field>
-            <field name="model">stock.move</field>
+        <record id="view_incoming_product_tree" model="ir.ui.view">
+            <field name="name">view.incoming.product.tree</field>
+            <field name="model">product.product</field>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <tree decoration-danger="date_expected > current_date" string="Moves" create="0">
-                    <field name="product_id" invisible="context.get('hide_product',0)"/>
-                    <field name="state" invisible="1"/>
-                    <field name="picking_id"/>
-                    <field name="date_expected" />
-                    <field name="picking_type_id" invisible="1"/>
-                    <field name="product_uom_qty"/>
-                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                <tree decoration-danger="qty_available &lt;= 0" string="Products" edit="0" create="0" >
+                    <field name="display_name"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                    <field name="date_estimated_stock" />
+                    <field name="date_estimated_stock_available"/>
+                    <field name="estimated_stock_available"/>
+                    <field name="incoming_vendor_moves"/>
                 </tree>
             </field>
         </record>
+        <!--record id="action_show_wzd_product_incoming" model="ir.actions.act_window">
+            <field name="name">Show incoming</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wzd.incoming.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_show_wzd_product_incoming"
+            name="Show incoming"
+            action="action_show_wzd_product_incoming"
+            parent="sale.menu_sale_report"
+            sequence="99"/-->
+
+
+    <record forcecreate="True" id="ir_cron_update_product_qty_State" model="ir.cron">
+        <field name="name">Update Product Qties Incoming Info</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="state">code</field>
+        <field name="code">model.update_product_qty_status()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="product_expected_incoming_date.model_product_qty_state"/>
+    </record>
 </odoo>
 

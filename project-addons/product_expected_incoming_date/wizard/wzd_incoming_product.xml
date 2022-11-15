@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wzd_incoming_product_form" model="ir.ui.view">
+        <field name="name">wzd.incoming.product.show</field>
+        <field name="model">wzd.incoming.product</field>
+        <field name="arch" type="xml">
+            <form string="Incoming Product">
+                <group>
+                    <field name="with_available_stock"/>
+                    <field name="with_incoming_moves"/>
+                    <field name="category_ids"/>
+                    <field name="product_ids"/>
+                </group>
+                <footer>
+                    <button string="Show Incoming" name="show_incoming_product" type="object"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

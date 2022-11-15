@@ -35,3 +35,12 @@ class ProductInventoryExporter(Component):
         binder = self.binder_for()
         prestashop_id = binder.to_external(template)
         return {"filter[id_product]": prestashop_id}
+
+    def get_quantity_vals(self, template):
+        vals = super().get_quantity_vals(template=template)
+        vals.update({
+            'estimated_stock_available': int(template.estimated_stock_available),
+            'date_estimated_stock': template.date_estimated_stock,
+            'date_estimated_stock_available': template.date_estimated_stock_available
+        })
+        return vals

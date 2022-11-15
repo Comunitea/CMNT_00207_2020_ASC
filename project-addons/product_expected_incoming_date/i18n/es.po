@@ -1,0 +1,249 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_expected_incoming_date
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-15 16:21+0000\n"
+"PO-Revision-Date: 2022-11-15 16:21+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.product_normal_form_view
+msgid "<span class=\"o_stat_text\">at</span>"
+msgstr ""
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.product_normal_form_view
+msgid "<span class=\"o_stat_value\">\n"
+"                                <span class=\"o_stat_text\">Incoming at</span>\n"
+"                            </span>"
+msgstr "<span class=\"o_stat_value\">\n"
+"                                <span class=\"o_stat_text\">Entrada el</span>\n"
+"                            </span>"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.wzd_incoming_product_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__category_ids
+msgid "Categories"
+msgstr "Categorias"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__create_uid
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__create_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_product__date_estimated_stock
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__date_estimated_stock
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_template__date_estimated_stock
+msgid "Date for 1º incoming"
+msgstr "Fecha de 1ª entrada"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_product__date_estimated_stock_available
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__date_estimated_stock_available
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_template__date_estimated_stock_available
+msgid "Date for available stock"
+msgstr "Fecha para disponibilidad"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__display_name
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_product__estimated_stock_available
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__estimated_stock_available
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_template__estimated_stock_available
+msgid "Estimated Stock Available"
+msgstr "Stock estimado disponible"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.product_normal_form_view
+msgid "Expected Incomings"
+msgstr "Recepciones Programadas"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_product__date_estimated_stock
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_qty_state__date_estimated_stock
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_template__date_estimated_stock
+msgid "Fecha de la primera recepción de mercancía"
+msgstr "Fecha de la primera recepción de mercancía"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__virtual_available
+msgid "Forecast Quantity"
+msgstr "Cantidad prevista"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_stock_move__virtual_available
+msgid "Forecasted Quantity"
+msgstr "Cantidad pronosticada"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__id
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__id
+msgid "ID"
+msgstr ""
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_product__date_estimated_stock_available
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_product__estimated_stock_available
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_qty_state__date_estimated_stock_available
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_qty_state__estimated_stock_available
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_template__date_estimated_stock_available
+#: model:ir.model.fields,help:product_expected_incoming_date.field_product_template__estimated_stock_available
+msgid "If stock, then today; else date for the first day qith available stock. False if not incoming qty"
+msgstr "Si no hay stock, fecha de disponibilidad. Si no hay entradas, vacío"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.wzd_incoming_product_form
+msgid "Incoming Product"
+msgstr "Recepciones"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state____last_update
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__write_uid
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__write_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.view_move_tree_incoming
+msgid "Moves"
+msgstr "Movimientos"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,help:product_expected_incoming_date.field_wzd_incoming_product__with_available_stock
+msgid "Negative forecast quantity"
+msgstr "Stock previsto negativo"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__outgoing_moves
+msgid "Outgoing"
+msgstr "Saliente"
+
+#. module: product_expected_incoming_date
+#: model:ir.model,name:product_expected_incoming_date.model_product_product
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_expected_incoming_date
+#: model:ir.model,name:product_expected_incoming_date.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__product_tmpl_id
+msgid "Product Tmpl"
+msgstr "Plantilla del Producto"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__product_ids
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.view_incoming_product_tree
+msgid "Products"
+msgstr "Productos"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_product__product_qty_state_id
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_template__product_qty_state_id
+msgid "Qty State"
+msgstr "Previsión de cantidades"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__qty_available
+msgid "Qty available"
+msgstr "Cantidad disponible"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.product_normal_form_view
+msgid "Recalc Incoming Qties Info"
+msgstr "Recalcular Previsión Recepciones"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_product__incoming_vendor_moves
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_qty_state__incoming_vendor_moves
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_product_template__incoming_vendor_moves
+msgid "Receipts"
+msgstr "Recepciones"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.wzd_incoming_product_form
+msgid "Show Incoming"
+msgstr "Mostrar Entradas"
+
+#. module: product_expected_incoming_date
+#: model:ir.actions.act_window,name:product_expected_incoming_date.action_show_product_qty_state_tree
+#: model:ir.ui.menu,name:product_expected_incoming_date.menu_show_product_qty_state
+msgid "Show Qty State"
+msgstr "Mostrar Previsión Entradas"
+
+#. module: product_expected_incoming_date
+#: model:ir.model,name:product_expected_incoming_date.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: product_expected_incoming_date
+#: model_terms:ir.ui.view,arch_db:product_expected_incoming_date.view_move_tree_incoming
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: product_expected_incoming_date
+#: model:ir.actions.server,name:product_expected_incoming_date.ir_cron_update_product_qty_State_ir_actions_server
+#: model:ir.cron,cron_name:product_expected_incoming_date.ir_cron_update_product_qty_State
+#: model:ir.cron,name:product_expected_incoming_date.ir_cron_update_product_qty_State
+msgid "Update Product Qties Incoming Info"
+msgstr "Actualizar Información de recepciones"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__with_available_stock
+msgid "With available stock"
+msgstr "Con stock"
+
+#. module: product_expected_incoming_date
+#: model:ir.model.fields,field_description:product_expected_incoming_date.field_wzd_incoming_product__with_incoming_moves
+#: model:ir.model.fields,help:product_expected_incoming_date.field_wzd_incoming_product__with_incoming_moves
+msgid "With incoming purchases"
+msgstr "Con recepciones"
+
+#. module: product_expected_incoming_date
+#: model:ir.model,name:product_expected_incoming_date.model_product_qty_state
+msgid "product.qty.state"
+msgstr "Información de Recepciones"
+
+#. module: product_expected_incoming_date
+#: model:ir.model,name:product_expected_incoming_date.model_wzd_incoming_product
+msgid "wzd.incoming.product"
+msgstr "Asistente de información de recepciones"

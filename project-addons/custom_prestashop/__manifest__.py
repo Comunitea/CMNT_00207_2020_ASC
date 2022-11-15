@@ -17,7 +17,8 @@
         "base_location",
         "stock_custom",
         "sale_financial_risk",
-        "product_brand"
+        "product_brand",
+        'product_expected_incoming_date'
     ],
     "data": [
         "views/account_payment_term.xml",

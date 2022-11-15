@@ -8,11 +8,35 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+class ProductTemplate(models.Model):
+
+    _inherit = "product.template"
+
+    def action_view_stock_move_lines(self):
+        self.ensure_one()
+        action = self.env.ref('stock.stock_move_action').read()[0]
+        action['domain'] = [('product_id.product_tmpl_id', '=', self.id)]
+        action['context'] = {
+            'default_groupby_status': 1
+        }
+        return action
+
+    @api.multi
+    def recalc_product_qty_state(self):
+        self.env['product.qty.state'].update_product_qty_status(last_days=0,product_ids=self.mapped('product_variant_ids').filtered(lambda x:x.default_on))
+
+    product_qty_state_id = fields.Many2one("product.qty.state", "Qty State")
+    estimated_stock_available = fields.Float(related="product_qty_state_id.estimated_stock_available")
+    date_estimated_stock = fields.Date(related="product_qty_state_id.date_estimated_stock")
+    date_estimated_stock_available = fields.Date(related="product_qty_state_id.date_estimated_stock_available")
+    incoming_vendor_moves = fields.Many2many(related="product_qty_state_id.incoming_vendor_moves")
+
+
 class ProductProduct(models.Model):
     _inherit = "product.product"
     
 
-    def _get_domain_for_incoming_qtys(self, location_id=False):
+    def get_domain_for_incoming_qtys(self, location_id=False):
         location_id = location_id or self.env['stock.warehouse'].search([], limit=1)
         domain = [
             ('picking_type_id.code', '=', 'incoming'),
@@ -20,47 +44,47 @@ class ProductProduct(models.Model):
             ('location_dest_id', 'child_of', location_id.id), 
             ('location_id.usage', '=', 'supplier')]
         if self:
-            domain += [('product_id', '=', self.id)]
+            domain += [('product_id', 'in', self.ids)]
         return domain
 
-    def _get_domain_for_outgoing_qtys(self, location_id=False):
+    def get_domain_for_outgoing_qtys(self, location_id=False):
         location_id = location_id or self.env['stock.warehouse'].search([], limit=1)
+
         domain = [
             ('state', 'in', ['confirmed', 'assigned', 'partially_available']),
             ('location_dest_id.usage', '!=', 'internal'),
-            ('picking_id.ready_to_send', '=', True),
+            ('picking_id.ready_to_send', '=', True), ## Ojo con esta línea ....
             ('location_id', 'child_of', location_id.id)]
+
         if self:
-            domain += [('product_id', '=', self.id)]
+            domain += [('product_id', 'in', self.ids)]
         return domain
     
     @api.multi
-    def _compute_date_estimated_stock(self):
+    def compute_date_estimated_stock(self):
+        
         ## Disponible, menos lo que hay confirmado - lo que hay pendiente de salir sin entradas
         now = fields.datetime.now()
         ctx = self._context.copy()
         wh_id = self.env['stock.warehouse'].search([], limit=1)
+        outgoing_moves_all = self.env['stock.move'].search(self.get_domain_for_outgoing_qtys(wh_id.lot_stock_id))
+        incoming_moves_all = self.env['stock.move'].search(self.get_domain_for_incoming_qtys(wh_id.lot_stock_id), order="date asc")
+        res = {}
+        ctx.update(location=wh_id.lot_stock_id.id)
         for product_id in self:
-            ctx.update(location=wh_id.lot_stock_id.id)
-            outgoing_moves = self.env['stock.move'].search(self._get_domain_for_outgoing_qtys(wh_id.lot_stock_id))
-            print(outgoing_moves)
+            outgoing_moves = outgoing_moves_all.filtered(lambda x: x.product_id == product_id)
             outgoing_qty = sum(x.product_uom_qty for x in outgoing_moves)
-
             qty_available = product_id.qty_available - outgoing_qty
-            moves = self.env['stock.move'].search(product_id._get_domain_for_incoming_qtys(wh_id.lot_stock_id), order="date_expected asc")
+            moves = incoming_moves_all.filtered(lambda x: x.product_id == product_id)
             date_estimated_stock = date_estimated_stock_available = False
             estimated_stock_available = qty_available if qty_available > 0  else 0.00
-          
-            
             if moves:
                 product_id.incoming_vendor_moves = moves
                 date_estimated_stock_available = False
                 date_estimated_stock = moves[0].date_expected
                 if qty_available > 0:
-                    print("Tengo cantidad disponible")
                     estimated_stock_available =  moves[0].reserved_availability + qty_available
                 else:
-                    print("NO Tengo cantidad disponible")
                     qty_available = -qty_available
                     for move in moves:
                         qty = move.reserved_availability
@@ -70,38 +94,61 @@ class ProductProduct(models.Model):
                             break
                         else:
                             qty_available -= qty
-            product_id.date_estimated_stock = fields.Date.to_string(date_estimated_stock)
-            product_id.date_estimated_stock_available = fields.Date.to_string(date_estimated_stock_available)
-            product_id.estimated_stock_available=estimated_stock_available
-            product_id.incoming_vendor_moves = moves
+            vals = {
+                'qty_available': product_id.qty_available,
+                'virtual_available': product_id.virtual_available,
+                'date_estimated_stock': fields.Date.to_string(date_estimated_stock),
+                'date_estimated_stock_available': fields.Date.to_string(date_estimated_stock_available),
+                'estimated_stock_available': estimated_stock_available,
+                'outgoing_moves': [(6, 0, outgoing_moves.ids)],
+                'incoming_vendor_moves':  [(6, 0, moves.ids)]}
+            res[product_id] = vals
+        return res
 
-    estimated_stock_available = fields.Float("Estimated Stock Available", compute='_compute_date_estimated_stock', help="If stock, then today; else date for the first day qith available stock. False if not incoming qty")
-    date_estimated_stock = fields.Date("Date for 1º incoming", compute='_compute_date_estimated_stock', help="Fecha de la primera recepción de mercancía")
-    date_estimated_stock_available = fields.Date("Date for available stock", compute='_compute_date_estimated_stock', help="If stock, then today; else date for the first day qith available stock. False if not incoming qty")
-    incoming_vendor_moves = fields.One2many('stock.move', string='Receipts', compute='_compute_date_estimated_stock')
+    product_qty_state_id = fields.Many2one("product.qty.state", "Qty State")
+    estimated_stock_available = fields.Float(related="product_qty_state_id.estimated_stock_available")
+    date_estimated_stock = fields.Date(related="product_qty_state_id.date_estimated_stock")
+    date_estimated_stock_available = fields.Date(related="product_qty_state_id.date_estimated_stock_available")
+    incoming_vendor_moves = fields.Many2many(related="product_qty_state_id.incoming_vendor_moves")
 
 
     @api.multi
     def open_incoming_moves_view(self):
-
         product_id = self._context.get('product_id', False)
-
         tree_view = self.env.ref('product_expected_incoming_date.view_move_tree_incoming')
         action = self.env.ref('stock.stock_move_action').read()[0]
         action['view_id'] =  tree_view.id
         action['views'] = [(tree_view.id, 'tree')]
         action['view_mode'] =  'tree'
         if product_id:
-            domain = product_id._get_domain_for_incoming_qtys()
+            domain = product_id.get_domain_for_incoming_qtys()
             hide_product = 1
         else:
-            domain = self._get_domain_for_incoming_qtys()
+            domain = self.get_domain_for_incoming_qtys()
             hide_product = 0
         action["domain"] = domain
         action["context"] = {
             'hide_product': hide_product,
-            'search_default_done': 0, 
-            'search_default_ready': 1,
-            'search_default_groupby_location_id': 0
+            'search_default_done': False, 
+            'search_default_future': True,
+            'search_default_groupby_location_id': False,
+            'search_default_groupby_picking_type': True
         }
         return action
+    
+    def action_view_stock_move_lines(self):
+        self.ensure_one()
+        action = self.env.ref('stock.stock_move_action').read()[0]
+        action['domain'] = [('product_id', '=', self.id)]
+        action["context"] = {
+            'search_default_done': False, 
+            'search_default_future': True,
+            'search_default_groupby_status': False,
+            'search_default_groupby_picking_type': True
+        }
+        return action
+
+    @api.multi
+    def recalc_product_qty_state(self):
+
+        self.env['product.qty.state'].update_product_qty_status(last_days=0,product_ids=self)
