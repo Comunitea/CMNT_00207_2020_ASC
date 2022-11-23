@@ -8,6 +8,8 @@
     "website": "www.comunitea.com",
     "license": "AGPL-3",
     "depends": ["account_financial_risk", "sale_financial_risk"],
-    "data": [],
+    "data": [
+        'views/res_partner.xml'
+    ],
     "installable": True,
 }
