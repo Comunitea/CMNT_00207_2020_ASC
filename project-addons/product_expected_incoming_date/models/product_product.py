@@ -71,7 +71,11 @@ class ProductProduct(models.Model):
         incoming_moves_all = self.env['stock.move'].search(self.get_domain_for_incoming_qtys(wh_id.lot_stock_id), order="date asc")
         res = {}
         ctx.update(location=wh_id.lot_stock_id.id)
-        for product_id in self:
+        product_ids = self.filtered(lambda x: x.orderpoint_ids)
+        cont = len(product_ids)
+        for product_id in product_ids:
+            _logger.info("%d >> Recepciones para %s"%(cont, product_id.display_name))
+            cont -= 1
             outgoing_moves = outgoing_moves_all.filtered(lambda x: x.product_id == product_id)
             outgoing_qty = sum(x.product_uom_qty for x in outgoing_moves)
             qty_available = product_id.qty_available - outgoing_qty
@@ -101,7 +105,8 @@ class ProductProduct(models.Model):
                 'date_estimated_stock_available': fields.Date.to_string(date_estimated_stock_available),
                 'estimated_stock_available': estimated_stock_available,
                 'outgoing_moves': [(6, 0, outgoing_moves.ids)],
-                'incoming_vendor_moves':  [(6, 0, moves.ids)]}
+                'orderpoint': True if product_id.orderpoint_ids else False,
+                'incoming_vendor_moves': [(6, 0, moves.ids)]}
             res[product_id] = vals
         return res
 
@@ -117,9 +122,9 @@ class ProductProduct(models.Model):
         product_id = self._context.get('product_id', False)
         tree_view = self.env.ref('product_expected_incoming_date.view_move_tree_incoming')
         action = self.env.ref('stock.stock_move_action').read()[0]
-        action['view_id'] =  tree_view.id
+        action['view_id'] = tree_view.id
         action['views'] = [(tree_view.id, 'tree')]
-        action['view_mode'] =  'tree'
+        action['view_mode'] = 'tree'
         if product_id:
             domain = product_id.get_domain_for_incoming_qtys()
             hide_product = 1
@@ -150,5 +155,4 @@ class ProductProduct(models.Model):
 
     @api.multi
     def recalc_product_qty_state(self):
-
-        self.env['product.qty.state'].update_product_qty_status(last_days=0,product_ids=self)
+        self.env['product.qty.state'].update_product_qty_status(last_days=0, product_ids=self)

@@ -11,6 +11,7 @@
                     edit="0" create="0">
                     <field name="product_id" invisible="0"/>
                     <field name="product_tmpl_id" invisible="1"/>
+                    <field name="orderpoint" invisible="1"/>
                     <field name="qty_available"/>
                     <field name="virtual_available"/>
                     <field name="date_estimated_stock" />

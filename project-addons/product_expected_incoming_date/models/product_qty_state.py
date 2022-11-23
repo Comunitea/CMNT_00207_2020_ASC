@@ -19,11 +19,11 @@ class ProductQtyState(models.Model):
     estimated_stock_available = fields.Float("Estimated Stock Available", help="If stock, then today; else date for the first day qith available stock. False if not incoming qty")
     date_estimated_stock = fields.Date("Date for 1º incoming", help="Fecha de la primera recepción de mercancía")
     date_estimated_stock_available = fields.Date("Date for available stock", help="If stock, then today; else date for the first day qith available stock. False if not incoming qty")
-    incoming_vendor_moves = fields.Many2many('stock.move', string='Receipts')
+    incoming_vendor_moves = fields.Many2many('stock.move', string='Receipts', domain=[('picking_type_id.code', '=', 'incoming')])
     outgoing_moves = fields.Many2many('stock.move', string='Outgoing')
-
+    orderpoint = fields.Boolean("Aprovisionamiento")
     
-    def update_product_qty_status(self, last_days= 1, product_ids = False):
+    def update_product_qty_status(self, last_days=1, product_ids=False):
         domain = []
         if product_ids and last_days == 0:
             pass
@@ -36,7 +36,7 @@ class ProductQtyState(models.Model):
             
             p_ids = [x['product_id'][0] for x in self.env['stock.move'].search_read(domain, ['product_id'])]
             product_ids = self.env['product.product'].browse(p_ids)
-
+        product_ids = product_ids.filtered(lambda x: x.orderpoint_ids)
         vals = product_ids.filtered(lambda x: x.default_on).compute_date_estimated_stock()    
         for product_id in vals.keys():
             obj_id = self.search([('product_id', '=', product_id.id)])
