@@ -9,8 +9,8 @@
                <tree 
                     decoration-danger="virtual_available &lt; 0" 
                     edit="0" create="0">
-                    <field name="product_id" invisible="1"/>
-                    <field name="product_tmpl_id" invisible="context.get('hide_product',0)"/>
+                    <field name="product_id" invisible="0"/>
+                    <field name="product_tmpl_id" invisible="1"/>
                     <field name="qty_available"/>
                     <field name="virtual_available"/>
                     <field name="date_estimated_stock" />
