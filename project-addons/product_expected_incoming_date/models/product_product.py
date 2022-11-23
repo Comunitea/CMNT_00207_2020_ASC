@@ -71,9 +71,8 @@ class ProductProduct(models.Model):
         incoming_moves_all = self.env['stock.move'].search(self.get_domain_for_incoming_qtys(wh_id.lot_stock_id), order="date asc")
         res = {}
         ctx.update(location=wh_id.lot_stock_id.id)
-        product_ids = self.filtered(lambda x: x.orderpoint_ids)
-        cont = len(product_ids)
-        for product_id in product_ids:
+        cont = len(self)
+        for product_id in self:
             _logger.info("%d >> Recepciones para %s"%(cont, product_id.display_name))
             cont -= 1
             outgoing_moves = outgoing_moves_all.filtered(lambda x: x.product_id == product_id)
@@ -85,7 +84,7 @@ class ProductProduct(models.Model):
             if moves:
                 product_id.incoming_vendor_moves = moves
                 date_estimated_stock_available = False
-                date_estimated_stock = moves[0].date_expected
+                date_estimated_stock = moves[0].date
                 if qty_available > 0:
                     estimated_stock_available =  moves[0].reserved_availability + qty_available
                 else:
@@ -93,7 +92,7 @@ class ProductProduct(models.Model):
                     for move in moves:
                         qty = move.reserved_availability
                         if qty > qty_available:
-                            date_estimated_stock_available = move.date_expected
+                            date_estimated_stock_available = move.date
                             estimated_stock_available = qty - qty_available
                             break
                         else:

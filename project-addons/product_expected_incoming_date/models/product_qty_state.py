@@ -36,8 +36,7 @@ class ProductQtyState(models.Model):
             
             p_ids = [x['product_id'][0] for x in self.env['stock.move'].search_read(domain, ['product_id'])]
             product_ids = self.env['product.product'].browse(p_ids)
-        product_ids = product_ids.filtered(lambda x: x.orderpoint_ids)
-        vals = product_ids.filtered(lambda x: x.default_on).compute_date_estimated_stock()    
+        vals = product_ids.filtered(lambda x: x.default_on and  x.orderpoint_ids).compute_date_estimated_stock()    
         for product_id in vals.keys():
             obj_id = self.search([('product_id', '=', product_id.id)])
             val = vals[product_id]
