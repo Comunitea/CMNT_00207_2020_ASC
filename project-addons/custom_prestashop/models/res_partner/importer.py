@@ -22,6 +22,8 @@ class PartnerImportMapper(Component):
                     )
                 )
             return {"property_payment_term_id": payment_term.id}
+        if record.get("plazo") and record.get("plazo") == "0":
+            return {"property_payment_term_id": None}
 
     @mapping
     def customer_payment_mode_id(self, record):
@@ -36,6 +38,8 @@ class PartnerImportMapper(Component):
                     )
                 )
             return {"customer_payment_mode_id": payment_mode.id}
+        if record.get("f_pago") and record.get("f_pago") == "0":
+            return {"customer_payment_mode_id": None}
         return {}
 
     @mapping
@@ -43,6 +47,8 @@ class PartnerImportMapper(Component):
         if record.get("dias") and record.get("dias") not in ["0", ""]:
             payment_days = int(record.get("dias"))
             return {"payment_days": payment_days}
+        if record.get("dias") and record.get("dias") == "0":
+            return {"payment_days": None}
 
     @mapping
     def sale_team(self, record):
@@ -55,7 +61,7 @@ class PartnerImportMapper(Component):
             if not crm_team:
                 raise MappingError(
                     _("CRM team with {} prestashop id not found.").format(
-                        record.get("plazo")
+                        record.get("odoo_shop_id")
                     )
                 )
             return {"team_id": crm_team.id}
